@@ -284,7 +284,7 @@ public class WonderlandUHC extends SimplePlugin {
                 "&3Author: &fLU__LU",
                 "&3Version: &f" + getDescription().getVersion(),
                 "",
-                "&3Enjoy your own UHC time!",
+                "&3Enjoy your own UHC time! BRUH",
                 Common.consoleLineSmooth());
     }
 

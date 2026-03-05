@@ -6,6 +6,10 @@ plugins {
 group = 'me.lulu'
 version = '1.0.0-alpha-2'
 
+def foundationVersion = '6.0.8'
+def useLocalFoundation = project.hasProperty('useLocalFoundation')
+def localFoundationJar = file("../lib-foundation/target/Foundation-${foundationVersion}.jar")
+
 compileJava {
     sourceCompatibility = 8
     targetCompatibility = 8
@@ -24,6 +28,7 @@ shadowJar {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     flatDir { dir("./libs") }
 
@@ -40,14 +45,25 @@ repositories {
     maven { url 'https://oss.sonatype.org/content/groups/public/' }
     maven { url 'https://repo.papermc.io/repository/maven-public/' }
 
-    maven {
-        name = "naluwan"
-        url = uri("https://repo.naluwan.net/public-snapshot")
+    if (project.hasProperty('useNaluwanRepo')) {
+        maven {
+            name = "naluwan"
+            url = uri("https://repo.naluwan.net/public-snapshot")
+        }
     }
 }
 
 dependencies {
-    implementation 'org.mineacademy:Foundation:6.0.8'
+    if (useLocalFoundation) {
+        implementation files(localFoundationJar)
+    } else {
+        // Default to the public JitPack artifact to make clean setups work.
+        implementation("com.github.kangarko:Foundation:${foundationVersion}") {
+            // Foundation POM still references private/legacy optional hooks.
+            // We only need the main Foundation jar for this plugin.
+            transitive = false
+        }
+    }
     implementation 'com.github.lulu2002:DatouNms:1.2.2'
 
     compileOnly 'com.discordsrv:discordsrv:1.25.1'

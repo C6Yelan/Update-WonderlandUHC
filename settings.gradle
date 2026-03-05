@@ -3,3 +3,5 @@
  */
 
 rootProject.name = 'WonderlandUHC'
+include(':lib-foundation')
+project(':lib-foundation').projectDir = file('../lib-foundation')

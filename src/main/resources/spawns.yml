@@ -1,0 +1,2 @@
+# Location format: "world x y z yaw pitch"  (yaw/pitch can be omitted)
+Lobby: "world 0 80 0 0 0"
