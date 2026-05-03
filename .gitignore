@@ -2,6 +2,9 @@
 .idea/
 .vscode/
 build/
+gradle.properties
+.gradle-local/
+.m2-local/
 
 *.iml
 *.ipr
