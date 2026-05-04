@@ -70,7 +70,7 @@ bash scripts/package-plugin.sh --skip-foundation --no-clean
 目前的 1.21.11 Windows server 檢查結果：
 
 - Paper `1.21.11-130` 下載成功，sha256 為 `25eb85bd8415195ce4bc188e1939e0c7cef77fb51d26d4e766407ee922561097`。
-- Paper `1.21.11` 使用 Windows Java `25.0.2` 在連接埠 `25567` 啟動。
+- Paper `1.21.11` 使用 Windows Java `21.0.11` 在連接埠 `25567` 啟動。
 - `not updated in a while` 警告已消失；若 Paper 顯示 1.21.11 已是該 Minecraft 版本最新 build、但落後更新的 stable release，代表要改升級目標版本，而不是更換同版本 jar。
 - WonderlandUHC 目前不部署到 1.21.11 server，因為目前插件仍是 1.16 時期的 jar，已知會失敗：
   - Foundation `Remain` 嘗試使用舊 NMS 類別，例如 `net.minecraft.server.Entity`。

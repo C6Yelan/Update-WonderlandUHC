@@ -96,7 +96,7 @@ C:\Users\a0919\OneDrive\桌面\Minecraft local server\paper-1.21.11
 Java 注意事項：
 
 - `paper-1.16.5/start.bat` 固定使用 Windows Java 8：`C:\Program Files (x86)\Java\jre1.8.0_491\bin\java.exe`
-- `paper-1.21.11/start.bat` 使用 Windows 預設 Java，目前是 Java 25，可執行 Paper 1.21.11。
+- `paper-1.21.11/start.bat` 固定使用 Windows Java 21：`C:\Program Files\Java\jdk-21.0.11\bin\java.exe`
 - `paper-1.21.11/server.jar` 使用 Paper `1.21.11-130` stable build；更新時以 Fill v3 API 為準：`https://fill.papermc.io/v3/projects/paper/versions/1.21.11/builds`。
 - 如果 Paper 提示 1.21.11 已是該 Minecraft 版本最新 build、但落後更新的 stable release，這不是 jar 過舊，而是升級目標版本本身需要重新決定。
 - `C6Yelan` 已寫入兩套 server 的 `ops.json`。
