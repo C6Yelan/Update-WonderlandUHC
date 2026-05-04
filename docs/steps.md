@@ -189,14 +189,17 @@ org.mcwonderland.uhc
 
 1. 將 `loadFiles()`、`setupNms()`、`registerListeners()`、`registerCommands()`、`loadStatsStorage()`、`checkDepends()` 拆到 bootstrap/application services。
 2. `WonderlandUHC.onPluginStart()` 只保留：建立 bootstrap、啟動核心、註冊 presentation、輸出啟動結果。
-3. 外部依賴檢查改成 `DependencyReport`，回傳 available/disabled/reason，不直接 throw 讓插件死亡。
+3. 外部依賴檢查先集中成 `DependencyReport`，回傳 available/disabled/reason，並輸出啟動時的依賴狀態。
 4. listener、command、scenario、scoreboard、practice、Discord hook 都透過 feature registry 註冊。
 5. `TEST_MODE`、`Common.runLater`、`CacheSaver` 等全域行為不要直接散在主類。
+6. `WorldBorder`、`PacketListenerAPI` 等目前仍作為啟動硬依賴的解除，不在本步驟處理；完整 optional integration 策略留到 Step 7。
 
 完成條件：
 
 - 主類能在 150 行左右表達啟動流程。
-- 缺少選配依賴時只停用對應 feature。
+- 已有 `DependencyReport` 可觀察依賴狀態。
+- 缺少已確認為選配的依賴時，只停用對應 feature。
+- `WorldBorder`、`PacketListenerAPI` 的 hard dependency 解除與 packet/worldborder gate 不屬於 Step 1，必須在 Step 7 處理。
 
 ## 2. 定義核心 UHC 模型
 
