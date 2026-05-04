@@ -4,10 +4,10 @@ import lombok.Getter;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
+import org.mcwonderland.uhc.bootstrap.DependencyReport;
 import org.mcwonderland.uhc.bootstrap.FeatureRegistry;
 import org.mcwonderland.uhc.bootstrap.PluginBootstrap;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
-import org.mcwonderland.uhc.populator.Populator;
 import org.mcwonderland.uhc.practice.Practice;
 import org.mcwonderland.uhc.practice.SimplePractice;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
@@ -76,7 +76,7 @@ public class WonderlandUHC extends SimplePlugin {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
 
-        bootstrap.checkDependencies();
+        DependencyReport dependencyReport = bootstrap.checkDependencies();
 
         bootstrap.registerPluginChannels();
         bootstrap.configureFoundationLibrary();
@@ -86,8 +86,7 @@ public class WonderlandUHC extends SimplePlugin {
 
         statsStorage = bootstrap.loadStatsStorage();
 
-        if (Dependency.CUSTOM_ORE_GENERATOR.isHooked())
-            Populator.loadPopulators();
+        featureRegistry.loadOrePopulators(dependencyReport);
 
         if (bootstrap.isWorldLoadingDone()) {
             featureRegistry.registerPacketListeners();

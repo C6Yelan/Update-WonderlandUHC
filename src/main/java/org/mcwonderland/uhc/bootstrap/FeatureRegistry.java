@@ -40,6 +40,7 @@ import org.mcwonderland.uhc.listener.ToolListener;
 import org.mcwonderland.uhc.listener.WorldFillListener;
 import org.mcwonderland.uhc.listener.WorldInitListener;
 import org.mcwonderland.uhc.model.tutorial.model.TutorialListener;
+import org.mcwonderland.uhc.populator.Populator;
 import org.mcwonderland.uhc.practice.Practice;
 import org.mcwonderland.uhc.scenario.ScenarioListener;
 import org.mcwonderland.uhc.scoreboard.ScoreBoardUpdater;
@@ -120,6 +121,11 @@ public final class FeatureRegistry {
 
     public void startScoreboardUpdater() {
         ScoreBoardUpdater.start();
+    }
+
+    public void loadOrePopulators(DependencyReport dependencyReport) {
+        if (dependencyReport.isAvailable(Dependency.CUSTOM_ORE_GENERATOR))
+            Populator.loadPopulators();
     }
 
     public void registerPacketListeners() {

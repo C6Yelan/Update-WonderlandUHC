@@ -56,19 +56,49 @@ public final class PluginBootstrap {
         }
     }
 
-    public void checkDependencies() {
-        Dependency.WORLD_BORDER.check();
-        Dependency.PACKET_LISTENER_API.check();
+    public DependencyReport checkDependencies() {
+        DependencyReport report = new DependencyReport();
+
+        checkRequiredDependency(report, Dependency.WORLD_BORDER);
+        checkRequiredDependency(report, Dependency.PACKET_LISTENER_API);
         checkWorldBorderVer();
 
         if (Dependency.CUSTOM_ORE_GENERATOR.isHooked())
-            checkCustomOreGenerator();
+            checkCustomOreGenerator(report);
+        else
+            report.markDisabled(Dependency.CUSTOM_ORE_GENERATOR, "Plugin is not hooked.");
+
+        logDependencyReport(report);
+
+        return report;
     }
 
-    private void checkCustomOreGenerator() {
+    private void logDependencyReport(DependencyReport report) {
+        Common.log("&7Dependency status:");
+
+        for (DependencyReport.Entry entry : report.getEntries()) {
+            String status = entry.isAvailable() ? "&aAvailable" : entry.isDisabled() ? "&eDisabled" : "&cUnavailable";
+            String reason = entry.getReason().isEmpty() ? "" : " &7(" + entry.getReason() + ")";
+
+            Common.log("&7- &f" + entry.getDependency().getPluginName() + "&7: " + status + reason);
+        }
+    }
+
+    private void checkRequiredDependency(DependencyReport report, Dependency dependency) {
+        if (dependency.isHooked())
+            report.markAvailable(dependency);
+        else
+            report.markUnavailable(dependency, "Required plugin is missing.");
+
+        dependency.check();
+    }
+
+    private void checkCustomOreGenerator(DependencyReport report) {
         try {
             Class.forName("de.derfrzocker.custom.ore.generator.api.OreSettingContainer");
+            report.markAvailable(Dependency.CUSTOM_ORE_GENERATOR);
         } catch (ClassNotFoundException e) {
+            report.markUnavailable(Dependency.CUSTOM_ORE_GENERATOR, "Installed plugin version is too old.");
             throw new FoException("&cCustomOreGenerator 版本過舊，請至 &f"
                     + Dependency.CUSTOM_ORE_GENERATOR.getDownloadUrl() +
                     " &c下載最新版本！");
