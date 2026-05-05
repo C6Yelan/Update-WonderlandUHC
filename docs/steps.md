@@ -308,18 +308,19 @@ org.mcwonderland.uhc
 - `Update-WonderlandUHC/gradle/wrapper/gradle-wrapper.properties`
 - `scripts/deploy-to-windows-server.sh`
 - `scripts/package-plugin.sh`
+- `scripts/package-plugin-1.21.sh`
 - `scripts/clean-workspace.sh`
 - `Update-WonderlandUHC/.github/workflows/build-and-publish-release.yml`
 
 要做的事：
 
-1. Gradle Wrapper 升級到支援 Java 21。
-2. Shadow plugin 升級到相容新版 Gradle 的版本。
+1. Gradle Wrapper 升級到支援 Java 21，例如 Gradle `8.10.2`。
+2. Shadow plugin 升級到相容新版 Gradle 的版本，例如 `com.gradleup.shadow` `8.3.6`。
 3. Java target 改成 Java 21 toolchain 或 `release = 21`。
 4. `spigot-api:1.16.5` 改成 Paper `1.21.11` API 或 Paper userdev。
-5. Lombok 升級到支援 Java 21 的版本。
+5. Lombok 升級到支援 Java 21 的版本，例如 `1.18.44`。
 6. 測試依賴升級；MockBukkit 若不支援 1.21.11，拆成純單元測試與真 Paper smoke test。
-7. 腳本與 CI 改成 Java 21 / Paper `1.21.11` 的建置與部署入口；封裝仍必須透過 `scripts/package-plugin.sh`，部署仍必須透過 `scripts/deploy-to-windows-server.sh`。
+7. 腳本與 CI 改成 Java 21 / Paper `1.21.11` 的建置與部署入口；過渡期間可用 `scripts/package-plugin-1.21.sh` 固定 Java 21，完成後再收斂回 `scripts/package-plugin.sh`，部署仍必須透過 `scripts/deploy-to-windows-server.sh`。
 8. 第一輪 `compileJava` / `compileTestJava` 只用來分流錯誤：build/toolchain 問題在本步驟修正；Foundation、DatouNMS、WorldBorder、Packet、自訂礦物與 runtime 行為錯誤記錄到後續步驟，不在本步驟擴張處理。
 
 本步驟不要做：
@@ -759,6 +760,7 @@ GUI 與指令是操作入口，不應含核心邏輯。
 - `lib-foundation/pom.xml`
 - `scripts/deploy-to-windows-server.sh`
 - `scripts/package-plugin.sh`
+- `scripts/package-plugin-1.21.sh`
 - `scripts/bootstrap-foundation-deps.sh`
 - `scripts/clean-workspace.sh`
 

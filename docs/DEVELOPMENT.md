@@ -62,10 +62,20 @@ build/libs/WonderlandUHC-1.0.0-alpha-2.jar
 bash scripts/package-plugin.sh --skip-foundation --no-clean
 ```
 
+Java 21 / Paper 1.21.11 升級線的過渡封裝入口：
+
+```bash
+bash scripts/package-plugin-1.21.sh --check-env
+bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean
+```
+
+這個腳本固定使用 WSL JDK 21，預設路徑為 `/home/ayaya/.jdks/corretto-21`，並使用 Gradle `8.10.2`、Shadow `8.3.6`、Lombok `1.18.44`、`.gradle-java21-local/` 與 `.m2-java21-local/`，避免污染 Java 8 / 1.16.5 基線快取。`--check-env` 只驗證 Java 21 與本機快取路徑，不會封裝。
+
 ## 腳本職責
 
 - [常用] `scripts/deploy-to-windows-server.sh`：封裝 WonderlandUHC 並複製 jar 到 Windows 1.16.5 測試服；不控制伺服器啟停。
 - [常用] `scripts/package-plugin.sh`：刷新 Foundation 相容依賴、建置 `lib-foundation`、執行 Gradle test、產生 shadow jar。
+- [常用] `scripts/package-plugin-1.21.sh`：使用 WSL JDK 21 與獨立本機快取執行升級線封裝；目前屬 Step 4 過渡入口。
 - [維護] `scripts/bootstrap-foundation-deps.sh`：準備 `lib-foundation` 需要的本機 Maven 相容依賴。
 - [維護] `scripts/clean-workspace.sh`：清理 WSL 建置產物與本機快取；不清 Windows 測試服。
 
@@ -74,6 +84,7 @@ bash scripts/package-plugin.sh --skip-foundation --no-clean
 - `FOUNDATION_DIR`：指定 `lib-foundation` repo 位置，預設 `../lib-foundation`。
 - `LOCAL_M2_REPO`：指定本機 Maven alias repository，預設 `.m2-local`。
 - `LOCAL_GRADLE_HOME`：指定本機 Gradle user home，預設 `.gradle-local`。
+- `JAVA21_HOME`：指定 WSL JDK 21 位置，`scripts/package-plugin-1.21.sh` 預設 `/home/ayaya/.jdks/corretto-21`。
 - `WINDOWS_SERVER_DIR`：指定 Windows 測試服目錄，預設目前本機 1.16.5 測試服路徑。
 - `WINDOWS_SERVER_PORT`：指定部署前 port 檢查，預設 `25566`。
 
@@ -97,6 +108,7 @@ Java 注意事項：
 
 - `paper-1.16.5/start.bat` 固定使用 Windows Java 8：`C:\Program Files (x86)\Java\jre1.8.0_491\bin\java.exe`
 - `paper-1.21.11/start.bat` 固定使用 Windows Java 21：`C:\Program Files\Java\jdk-21.0.11\bin\java.exe`
+- WSL 的 Java 21 封裝入口使用 `/home/ayaya/.jdks/corretto-21`；Windows Java 21 只負責開啟 Paper server，不負責 WSL 封裝。
 - `paper-1.21.11/server.jar` 使用 Paper `1.21.11-130` stable build；更新時以 Fill v3 API 為準：`https://fill.papermc.io/v3/projects/paper/versions/1.21.11/builds`。
 - 如果 Paper 提示 1.21.11 已是該 Minecraft 版本最新 build、但落後更新的 stable release，這不是 jar 過舊，而是升級目標版本本身需要重新決定。
 - `C6Yelan` 已寫入兩套 server 的 `ops.json`。

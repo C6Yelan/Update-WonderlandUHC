@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.gradleup.shadow' version '8.3.6'
 }
 
 group = 'me.lulu'
@@ -10,9 +10,10 @@ def foundationVersion = '6.0.8'
 def useLocalFoundation = project.hasProperty('useLocalFoundation')
 def localFoundationJar = file("../lib-foundation/target/Foundation-${foundationVersion}.jar")
 
-compileJava {
-    sourceCompatibility = 8
-    targetCompatibility = 8
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 processResources {
@@ -24,7 +25,7 @@ processResources {
 shadowJar {
     relocate("org.mineacademy", "org.mcwonderland.uhc.lib.mineacademy")
     relocate("org.apache", "org.mcwonderland.uhc.lib.apache")
-    classifier = ""
+    archiveClassifier.set("")
 }
 
 repositories {
@@ -78,11 +79,11 @@ dependencies {
     implementation 'commons-lang:commons-lang:2.6'
 
     // Lombok
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.44'
+    annotationProcessor 'org.projectlombok:lombok:1.18.44'
 
-    testCompileOnly 'org.projectlombok:lombok:1.18.24'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+    testCompileOnly 'org.projectlombok:lombok:1.18.44'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.44'
 
     testImplementation 'org.spigotmc:spigot-api:1.16.5-R0.1-SNAPSHOT'
     testImplementation 'com.github.seeseemelk:MockBukkit-v1.16:1.5.2'
@@ -97,9 +98,10 @@ test {
 }
 
 configurations {
-    testCompile.extendsFrom compileOnly
+    testCompileOnly.extendsFrom compileOnly
 }
 
 tasks.withType(JavaCompile).configureEach {
+    options.release.set(21)
     options.forkOptions.jvmArgs.addAll(['--add-opens', 'jdk.compiler/com.sun.tools.javac.code=ALL-UNNAMED'])
 }

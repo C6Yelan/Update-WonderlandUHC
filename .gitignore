@@ -4,7 +4,9 @@
 build/
 gradle.properties
 .gradle-local/
+.gradle-java21-local/
 .m2-local/
+.m2-java21-local/
 
 *.iml
 *.ipr

@@ -58,10 +58,10 @@ ensure_gradle_wrapper_jar() {
     return 0
   fi
 
-  log "gradle-wrapper.jar missing; downloading Gradle 6.9 wrapper jar."
+  log "gradle-wrapper.jar missing; downloading Gradle 8.10.2 wrapper jar."
   curl -sSL --fail \
     -o "$wrapper_jar" \
-    "https://raw.githubusercontent.com/gradle/gradle/v6.9.4/gradle/wrapper/gradle-wrapper.jar"
+    "https://raw.githubusercontent.com/gradle/gradle/v8.10.2/gradle/wrapper/gradle-wrapper.jar"
 }
 
 bootstrap_dependencies() {

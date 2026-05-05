@@ -186,7 +186,7 @@ deploy_plugin() {
     exit 1
   fi
 
-  log "Deployment complete. Restart the Windows Paper 1.16.5 server manually."
+  log "Deployment complete. Restart the Windows Paper server manually: $WINDOWS_SERVER_DIR"
 }
 
 main() {
