@@ -89,7 +89,7 @@ public class RespawnCommand extends SimpleCommand {
             target.setLevel(level);
             target.setExp(exp);
             DaTouNMS.getCommonNMS().setCanPickupExp(target, true);
-            target.spigot().setCollidesWithEntities(true);
+            target.setCollidable(true);
             target.teleport(toTeleport);
         }
 

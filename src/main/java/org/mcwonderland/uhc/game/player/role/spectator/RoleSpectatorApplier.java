@@ -15,7 +15,7 @@ public class RoleSpectatorApplier implements RoleApplier {
     public void apply(Player player) {
         Extra.comepleteClear(player);
         DaTouNMS.getCommonNMS().setCanPickupExp(player, false);
-        player.spigot().setCollidesWithEntities(false);
+        player.setCollidable(false);
 
         switch (Settings.Spectator.SPECTATE_MODE) {
             case SPECTATOR: //

@@ -35,7 +35,7 @@ public class ScenarioFastObsidian extends ConfigBasedScenario implements Listene
 
     private void checkFastDigging(Player player) {
         if (miningPlayers.contains(player.getUniqueId()))
-            Extra.potion(player, PotionEffectType.FAST_DIGGING, 2, 3, false);
+            Extra.potion(player, PotionEffectType.HASTE, 2, 3, false);
     }
 
     @EventHandler

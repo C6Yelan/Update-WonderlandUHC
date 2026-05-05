@@ -10,6 +10,8 @@ import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.GameUtils;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.mineacademy.fo.Common;
@@ -37,7 +39,8 @@ public class RelogExpireChecker extends SecondTimer {
     }
 
     private static void killAndRemove(CombatRelog relog) {
-        Common.callEvent(new EntityDeathEvent(relog.getEntity(), Lists.newArrayList()));
+        DamageSource damageSource = DamageSource.builder(DamageType.GENERIC_KILL).build();
+        Common.callEvent(new EntityDeathEvent(relog.getEntity(), damageSource, Lists.newArrayList()));
         relog.getEntity().remove();
         relog.remove();
     }

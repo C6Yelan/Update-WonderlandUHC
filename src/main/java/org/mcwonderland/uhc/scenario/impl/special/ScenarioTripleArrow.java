@@ -67,7 +67,7 @@ public class ScenarioTripleArrow extends ConfigBasedScenario implements Listener
     }
 
     private boolean isBowInfinity(Player shooter) {
-        return shooter.getItemInHand().getEnchantmentLevel(Enchantment.ARROW_INFINITE) > 0;
+        return shooter.getItemInHand().getEnchantmentLevel(Enchantment.INFINITY) > 0;
     }
 
     private ItemStack getArrowsInInventory(Player shooter) {

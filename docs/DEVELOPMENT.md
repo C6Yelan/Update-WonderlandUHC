@@ -69,7 +69,7 @@ bash scripts/package-plugin-1.21.sh --check-env
 bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean
 ```
 
-這個腳本固定使用 WSL JDK 21，預設路徑為 `/home/ayaya/.jdks/corretto-21`，並使用 Gradle `8.10.2`、Shadow `8.3.6`、Lombok `1.18.44`、`.gradle-java21-local/` 與 `.m2-java21-local/`，避免污染 Java 8 / 1.16.5 基線快取。`--check-env` 只驗證 Java 21 與本機快取路徑，不會封裝。
+這個腳本固定使用 WSL JDK 21，預設路徑為 `/home/ayaya/.jdks/corretto-21`，並使用 Gradle `8.10.2`、Shadow `8.3.6`、Lombok `1.18.44`、Paper API `1.21.11-R0.1-SNAPSHOT`、`.gradle-java21-local/` 與 `.m2-java21-local/`，避免污染 Java 8 / 1.16.5 基線快取。`--check-env` 只驗證 Java 21 與本機快取路徑，不會封裝。MockBukkit v1.16 不支援 Paper API `1.21.11`，升級線測試先保留純單元測試，Bukkit runtime 由真 Paper smoke test 驗證。
 
 ## 腳本職責
 
@@ -133,7 +133,7 @@ Java 注意事項：
 
 ## 1.21.11 收斂提醒
 
-目前 `paper-1.21.11` Windows server 不放 WonderlandUHC。等後續升級相容性完成後，再把部署腳本擴充成可選目標版本。
+目前 `paper-1.21.11` Windows server 可用來放入升級線 jar 做 smoke test，但 WonderlandUHC 仍會在 Foundation/NMS/SnakeYAML 相容性處失敗。等後續升級相容性完成後，再把部署腳本擴充成可選目標版本。
 
 ## 依賴原則
 

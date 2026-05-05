@@ -317,7 +317,7 @@ org.mcwonderland.uhc
 1. Gradle Wrapper 升級到支援 Java 21，例如 Gradle `8.10.2`。
 2. Shadow plugin 升級到相容新版 Gradle 的版本，例如 `com.gradleup.shadow` `8.3.6`。
 3. Java target 改成 Java 21 toolchain 或 `release = 21`。
-4. `spigot-api:1.16.5` 改成 Paper `1.21.11` API 或 Paper userdev。
+4. `spigot-api:1.16.5` 改成 Paper `1.21.11` API；若後續真的需要 NMS 開發，再評估 paperweight-userdev，不在本步驟提前導入。
 5. Lombok 升級到支援 Java 21 的版本，例如 `1.18.44`。
 6. 測試依賴升級；MockBukkit 若不支援 1.21.11，拆成純單元測試與真 Paper smoke test。
 7. 腳本與 CI 改成 Java 21 / Paper `1.21.11` 的建置與部署入口；過渡期間可用 `scripts/package-plugin-1.21.sh` 固定 Java 21，完成後再收斂回 `scripts/package-plugin.sh`，部署仍必須透過 `scripts/deploy-to-windows-server.sh`。

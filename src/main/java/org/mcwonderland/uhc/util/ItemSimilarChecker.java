@@ -3,7 +3,6 @@ package org.mcwonderland.uhc.util;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionData;
 import org.mineacademy.fo.ItemUtil;
 
@@ -41,13 +40,9 @@ public class ItemSimilarChecker {
     }
 
     private static boolean checkPotion() {
-        try {
-            PotionData potionMeta = ((PotionMeta) itemMeta).getBasePotionData();
-            PotionData comparisionData = ((PotionMeta) comparisionMeta).getBasePotionData();
+        PotionData potionMeta = ((PotionMeta) itemMeta).getBasePotionData();
+        PotionData comparisionData = ((PotionMeta) comparisionMeta).getBasePotionData();
 
-            return potionMeta.equals(comparisionData);
-        } catch (NoSuchMethodError | NoClassDefFoundError ex) {
-            return Potion.fromItemStack(item).equals(Potion.fromItemStack(comparision));
-        }
+        return potionMeta.equals(comparisionData);
     }
 }

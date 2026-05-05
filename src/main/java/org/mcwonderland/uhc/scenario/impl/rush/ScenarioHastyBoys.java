@@ -33,7 +33,7 @@ public class ScenarioHastyBoys extends ConfigBasedScenario implements Listener {
     }
 
     private ItemStack applyHastyEnchants(ItemStack result) {
-        result.addUnsafeEnchantment(Enchantment.DIG_SPEED, 3);
+        result.addUnsafeEnchantment(Enchantment.EFFICIENCY, 3);
         return result;
     }
 
