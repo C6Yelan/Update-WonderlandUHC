@@ -204,14 +204,12 @@ org.mcwonderland.uhc
 ## 2. 定義核心 UHC 模型
 
 先把「UHC 是什麼」從 Bukkit listener 與 static util 裡抽出來。
+本步驟只負責建立可測試的核心模型與最小 legacy 橋接，不負責把既有 runtime 權威來源整批切換到新模型。
 
 優先修改：
 
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/Game.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/GameManager.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/StateName.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/UHCTeam.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/player/UHCPlayer.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/settings/*.java`
 - 建議新增 `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/core/`
 
@@ -220,13 +218,26 @@ org.mcwonderland.uhc
 1. 新增 `core/match/Match` 或 `UhcMatch`，代表一場比賽，不直接碰 Bukkit。
 2. 新增 `MatchState`，替代直接散用 `StateName` 與狀態 class。
 3. 新增純資料型 `UhcTeam`、`UhcParticipant`、`MatchSettings`，逐步降低對 Bukkit `Player` 的直接依賴。
-4. 將 `Game.getGame()` 的使用逐步改成注入 `MatchService` 或 `MatchRepository`。
-5. 先保留舊 `Game` 作 facade，讓舊程式能跑；新程式不再直接呼叫它。
+4. 新增 legacy mapper，把舊 `StateName`、`UHCGameSettings` 的必要資料轉成 core `MatchState`、`MatchSettings`。
+5. 新增 `MatchRepository` 或等價入口，保存目前 active `UhcMatch`。
+6. 先保留舊 `Game` 作 facade，讓舊程式能跑；本步驟只讓 `Game` 最小橋接 active match、同步 state/settings。
+7. 不在本步驟大量替換 command、menu、listener、scoreboard 裡的 `Game.getGame()`、`Game.getSettings()`、`UHCTeam`、`UHCPlayer` 使用。
+
+本步驟不要做：
+
+- 不把 `GameManager.getWinner()` 改成以 `UhcMatch` 作為 runtime 權威來源。
+- 不把舊 `UHCTeam`、`UHCPlayer` 的資料來源切到 core model。
+- 不重寫狀態機、倒數、傳送、死亡、勝負、結束流程。
+- 不重整 command、menu、listener、scoreboard 對 `Game` 的直接依賴。
+- 上述 runtime 流程遷移留到步驟 10；presentation 層瘦身留到步驟 12。
 
 完成條件：
 
 - 核心比賽狀態可以不啟動 Bukkit server 也能做單元測試。
-- 舊 `Game` 仍能橋接到新 model，避免一次性大改。
+- `UhcMatch` 能保存 state、settings、participants、teams，並能判斷 alive teams / winner candidate。
+- legacy `StateName` 與 `UHCGameSettings` 能被轉成 core model 的資料。
+- 舊 `Game` 仍能橋接到新 model，至少能建立 active `UhcMatch` 並同步 state/settings，避免一次性大改。
+- 既有 runtime 仍由舊 `Game` / `GameState` / `UHCTeam` / `UHCPlayer` 控制；Step 2 不要求新 model 成為 runtime 權威來源。
 
 ## 3. 建立 Port/Adapter 隔離 Bukkit 與 Paper
 
