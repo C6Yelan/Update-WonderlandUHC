@@ -113,7 +113,7 @@ Java 注意事項：
 - 如果 Paper 提示 1.21.11 已是該 Minecraft 版本最新 build、但落後更新的 stable release，這不是 jar 過舊，而是升級目標版本本身需要重新決定。
 - `C6Yelan` 已寫入兩套 server 的 `ops.json`。
 
-目前 1.21.11 server 不放 WonderlandUHC，因為插件仍會在 Foundation/NMS/SnakeYAML 相容性處失敗。升級收斂完成前，1.21.11 Windows server 只用來確認 Minecraft client 可正常進入新版 Paper。
+目前 1.21.11 server 可放入升級線 jar 做 smoke test；預期結果是 Paper server 進入 `Done` 並嘗試載入 WonderlandUHC，但插件仍會在 Foundation/NMS/SnakeYAML 相容性處停用。升級收斂完成前，這個 smoke test 用來確認 build/platform baseline，不能視為完整遊戲流程驗收。
 
 ## 自動化可行性
 
@@ -121,6 +121,7 @@ Java 注意事項：
 
 - WSL 執行 `package-plugin.sh`。
 - WSL 將 jar 複製到 `/mnt/c/.../paper-1.16.5/plugins/WonderlandUHC.jar`。
+- 升級線可用 `WINDOWS_SERVER_DIR` 與 `WINDOWS_SERVER_PORT` 指向 `paper-1.21.11` 後部署 jar。
 - 部署前檢查 Windows `25566` 是否仍有 server 在監聽；有的話會要求先手動關服。
 
 可以再自動化但目前刻意不做：
@@ -133,7 +134,7 @@ Java 注意事項：
 
 ## 1.21.11 收斂提醒
 
-目前 `paper-1.21.11` Windows server 可用來放入升級線 jar 做 smoke test，但 WonderlandUHC 仍會在 Foundation/NMS/SnakeYAML 相容性處失敗。等後續升級相容性完成後，再把部署腳本擴充成可選目標版本。
+目前 `paper-1.21.11` Windows server 可用來放入升級線 jar 做 smoke test，但 WonderlandUHC 仍會在 Foundation/NMS/SnakeYAML 相容性處失敗。等後續升級相容性完成後，再把部署腳本預設目標收斂到新版 server。
 
 ## 依賴原則
 

@@ -306,6 +306,7 @@ org.mcwonderland.uhc
 - `Update-WonderlandUHC/settings.gradle`
 - `Update-WonderlandUHC/gradle.properties`
 - `Update-WonderlandUHC/gradle/wrapper/gradle-wrapper.properties`
+- `Update-WonderlandUHC/src/main/resources/plugin.yml`
 - `scripts/deploy-to-windows-server.sh`
 - `scripts/package-plugin.sh`
 - `scripts/package-plugin-1.21.sh`
@@ -322,6 +323,7 @@ org.mcwonderland.uhc
 6. 測試依賴升級；MockBukkit 若不支援 1.21.11，拆成純單元測試與真 Paper smoke test。
 7. 腳本與 CI 改成 Java 21 / Paper `1.21.11` 的建置與部署入口；過渡期間可用 `scripts/package-plugin-1.21.sh` 固定 Java 21，完成後再收斂回 `scripts/package-plugin.sh`，部署仍必須透過 `scripts/deploy-to-windows-server.sh`。
 8. 第一輪 `compileJava` / `compileTestJava` 只用來分流錯誤：build/toolchain 問題在本步驟修正；Foundation、DatouNMS、WorldBorder、Packet、自訂礦物與 runtime 行為錯誤記錄到後續步驟，不在本步驟擴張處理。
+9. `plugin.yml` 的 `api-version` 更新到 `1.21`；但 runtime hard dependency 與 optional feature gate 不在本步驟解除，留到 Step 7。
 
 本步驟不要做：
 
@@ -336,6 +338,13 @@ org.mcwonderland.uhc
 - Gradle Wrapper、Shadow plugin、Java 21、Paper `1.21.11` API、Lombok 與測試入口的版本組合不再互相阻塞。
 - 編譯錯誤已集中並分類成 API 相容或耦合點，不再是 build tool 問題。
 - 若 `compileJava` / `compileTestJava` 仍因 Foundation、DatouNMS、WorldBorder、Packet 或 custom-ore-generator 耦合失敗，必須在本步驟輸出收斂清單，不能提前把後續步驟做掉。
+
+Step 4 收斂清單：
+
+- 主插件可用 Java 21、Gradle `8.10.2`、Shadow `8.3.6`、Lombok `1.18.44` 與 Paper API `1.21.11-R0.1-SNAPSHOT` 完成封裝。
+- MockBukkit v1.16 不支援 Paper API `1.21.11`，升級線測試拆成純單元測試與真 Paper smoke test。
+- 真 Paper `1.21.11` smoke test 可讓 server 進入 `Done` 並載入 jar；目前插件仍會在 Foundation / SnakeYAML / DatouNMS 舊類別處停用，分流到 Step 5 與 Step 6。
+- `WorldBorder`、`PacketListenerAPI`、`custom-ore-generator` 的啟動選配化不在 Step 4 處理，分流到 Step 7。
 
 ## 5. 把 Foundation 降級成 Legacy 相容層
 

@@ -3,7 +3,7 @@ name: WonderlandUHC
 version: ${pluginVersion}
 author: LU__LU
 softdepend: [ WorldBorder, PacketListenerApi, DiscordSRV, custom-ore-generator ]
-api-version: 1.13
+api-version: 1.21
 
 permissions:
   wonderland.uhc.admin:
