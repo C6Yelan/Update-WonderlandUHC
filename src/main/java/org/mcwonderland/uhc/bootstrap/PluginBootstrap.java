@@ -3,9 +3,6 @@ package org.mcwonderland.uhc.bootstrap;
 import lombok.SneakyThrows;
 import me.lulu.datounms.DaTouNMS;
 import me.lulu.datounms.UnSupportedNmsException;
-import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
@@ -15,6 +12,14 @@ import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
 import org.mcwonderland.uhc.menu.ButtonLocalization;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
+import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
+import org.mcwonderland.uhc.platform.paper.PaperPluginMessagingPort;
+import org.mcwonderland.uhc.platform.paper.PaperSchedulerPort;
+import org.mcwonderland.uhc.platform.paper.PaperWorldPort;
+import org.mcwonderland.uhc.port.PluginAssetPort;
+import org.mcwonderland.uhc.port.PluginMessagingPort;
+import org.mcwonderland.uhc.port.SchedulerPort;
+import org.mcwonderland.uhc.port.WorldPort;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.UHCFiles;
@@ -38,9 +43,21 @@ import org.mineacademy.fo.remain.CompSound;
 public final class PluginBootstrap {
 
     private final WonderlandUHC plugin;
+    private final PluginAssetPort pluginAssets;
+    private final PluginMessagingPort pluginMessaging;
+    private final SchedulerPort scheduler;
+    private final WorldPort worlds;
 
     public PluginBootstrap(WonderlandUHC plugin) {
+        this(plugin, new PaperPluginAssetPort(), new PaperPluginMessagingPort(plugin), new PaperSchedulerPort(plugin), new PaperWorldPort());
+    }
+
+    PluginBootstrap(WonderlandUHC plugin, PluginAssetPort pluginAssets, PluginMessagingPort pluginMessaging, SchedulerPort scheduler, WorldPort worlds) {
         this.plugin = plugin;
+        this.pluginAssets = pluginAssets;
+        this.pluginMessaging = pluginMessaging;
+        this.scheduler = scheduler;
+        this.worlds = worlds;
     }
 
     public void loadFiles() {
@@ -139,15 +156,15 @@ public final class PluginBootstrap {
     }
 
     public void registerPluginChannels() {
-        Bukkit.getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
+        pluginMessaging.registerOutgoingChannel("BungeeCord");
     }
 
     public void createPluginAssets() {
-        Extra.createHead();
+        pluginAssets.registerRecipes();
     }
 
     public void scheduleDelayedStartupTasks(FeatureRegistry featureRegistry) {
-        Common.runLater(1, () -> {
+        scheduler.runLater(1, () -> {
             featureRegistry.registerDefaultScenarios();
             restoreWorldLoadingStatus();
             UHCGameSettingsSaver.reloadFromFile();
@@ -192,18 +209,14 @@ public final class PluginBootstrap {
     }
 
     private void createUhcWorldIfNotExist() {
-        World uhcWorld = UHCWorldUtils.getWorld();
-        if (uhcWorld == null) {
-
-            Bukkit.createWorld(new WorldCreator(Settings.Game.UHC_WORLD_NAME));
+        if (!worlds.worldExists(Settings.Game.UHC_WORLD_NAME)) {
+            worlds.createWorld(Settings.Game.UHC_WORLD_NAME);
         }
     }
 
     private void checkNetherWorld() {
-        if (UHCWorldUtils.getNether() == null) {
-            WorldCreator wc = new WorldCreator(Settings.Game.UHC_WORLD_NAME + "_nether");
-            wc.environment(World.Environment.NETHER);
-            Bukkit.createWorld(wc);
+        if (!worlds.worldExists(UHCWorldUtils.getNetherName())) {
+            worlds.createNetherWorld(Settings.Game.UHC_WORLD_NAME + "_nether");
         }
     }
 
