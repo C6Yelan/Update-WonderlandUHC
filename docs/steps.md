@@ -298,6 +298,7 @@ org.mcwonderland.uhc
 ## 4. 升級建置平台到 Java 21 / Paper 1.21.11
 
 架構入口與 adapter 邊界建立後，再升級建置平台，編譯錯誤會更集中。
+本步驟只處理 build tool、Java toolchain、Paper API baseline、測試入口與部署腳本，不處理 Foundation legacy 化、DatouNMS 隔離、WorldBorder/Packet/custom-ore-generator 選配化，也不以修完所有 1.21.11 API 編譯錯誤作為本步驟目標。
 
 優先修改：
 
@@ -305,10 +306,8 @@ org.mcwonderland.uhc
 - `Update-WonderlandUHC/settings.gradle`
 - `Update-WonderlandUHC/gradle.properties`
 - `Update-WonderlandUHC/gradle/wrapper/gradle-wrapper.properties`
-- `lib-foundation/pom.xml`
 - `scripts/deploy-to-windows-server.sh`
 - `scripts/package-plugin.sh`
-- `scripts/bootstrap-foundation-deps.sh`
 - `scripts/clean-workspace.sh`
 - `Update-WonderlandUHC/.github/workflows/build-and-publish-release.yml`
 
@@ -320,19 +319,31 @@ org.mcwonderland.uhc
 4. `spigot-api:1.16.5` 改成 Paper `1.21.11` API 或 Paper userdev。
 5. Lombok 升級到支援 Java 21 的版本。
 6. 測試依賴升級；MockBukkit 若不支援 1.21.11，拆成純單元測試與真 Paper smoke test。
-7. `lib-foundation/pom.xml` 同步改 Java/API 基準，至少先能 compile。
+7. 腳本與 CI 改成 Java 21 / Paper `1.21.11` 的建置與部署入口；封裝仍必須透過 `scripts/package-plugin.sh`，部署仍必須透過 `scripts/deploy-to-windows-server.sh`。
+8. 第一輪 `compileJava` / `compileTestJava` 只用來分流錯誤：build/toolchain 問題在本步驟修正；Foundation、DatouNMS、WorldBorder、Packet、自訂礦物與 runtime 行為錯誤記錄到後續步驟，不在本步驟擴張處理。
+
+本步驟不要做：
+
+- 不修改 `lib-foundation` source，也不要求 `lib-foundation` 在本步驟完成 Java 21 / Paper `1.21.11` 全量相容；Foundation 編譯與 legacy 收斂留到 Step 5。
+- 不移除或改寫 `DaTouNMS` 呼叫；隔離與降級策略留到 Step 6。
+- 不解除 `WorldBorder`、`PacketListenerAPI`、`custom-ore-generator` 的 hard dependency，也不新增 optional adapter；外部整合選配化留到 Step 7。
+- 不把編譯錯誤散修在 command、menu、listener、scenario 或 util 裡；本步驟只能修 build 設定、依賴座標、測試入口與腳本入口。
 
 完成條件：
 
 - 依賴解析與 toolchain 正常。
-- 編譯錯誤集中在 API 相容或耦合點，不是 build tool 問題。
+- Gradle Wrapper、Shadow plugin、Java 21、Paper `1.21.11` API、Lombok 與測試入口的版本組合不再互相阻塞。
+- 編譯錯誤已集中並分類成 API 相容或耦合點，不再是 build tool 問題。
+- 若 `compileJava` / `compileTestJava` 仍因 Foundation、DatouNMS、WorldBorder、Packet 或 custom-ore-generator 耦合失敗，必須在本步驟輸出收斂清單，不能提前把後續步驟做掉。
 
 ## 5. 把 Foundation 降級成 Legacy 相容層
 
 不要再讓 Foundation 成為新架構的中心。短期可以保留它，長期應逐步退出核心。
+Step 4 只會把主插件建置平台切到 Java 21 / Paper `1.21.11`；若切換後 Foundation 本身無法在新 JDK 或新 API baseline 下編譯，從本步驟開始處理。
 
 優先修改：
 
+- `lib-foundation/pom.xml`
 - `lib-foundation/src/main/java/org/mineacademy/fo/MinecraftVersion.java`
 - `lib-foundation/src/main/java/org/mineacademy/fo/plugin/SimplePlugin.java`
 - `lib-foundation/src/main/java/org/mineacademy/fo/ReflectionUtil.java`
@@ -347,14 +358,16 @@ org.mcwonderland.uhc
 
 要做的事：
 
-1. `MinecraftVersion` 加上 1.21 或改成可處理未知未來版本的比較。
-2. `Remain`、NBT、Reflection 只修到足以支撐現有功能啟動，不要再新增新業務到 Foundation。
-3. 建立 `LegacyFoundationAdapter`，集中使用 `Common`、`YamlConfig`、`SimpleCommand`、`Menu`。
-4. 新設定、新 command、新 menu 不再直接繼承 Foundation 類別；先走自己的 service/adapter。
-5. `CompMaterial`、`CompSound` 可暫時保留為 legacy alias parser，但資料應逐步轉成 Bukkit/Paper 原生 key。
+1. `lib-foundation/pom.xml` 同步到 Java 21 / Paper `1.21.11` 可用的編譯基準；只修建置與必要 provided dependency，不把 Foundation 重新升格成新架構中心。
+2. `MinecraftVersion` 加上 1.21 或改成可處理未知未來版本的比較。
+3. `Remain`、NBT、Reflection 只修到足以支撐現有功能啟動，不要再新增新業務到 Foundation。
+4. 建立 `LegacyFoundationAdapter`，集中使用 `Common`、`YamlConfig`、`SimpleCommand`、`Menu`。
+5. 新設定、新 command、新 menu 不再直接繼承 Foundation 類別；先走自己的 service/adapter。
+6. `CompMaterial`、`CompSound` 可暫時保留為 legacy alias parser，但資料應逐步轉成 Bukkit/Paper 原生 key。
 
 完成條件：
 
+- `lib-foundation` 至少能在 Step 4 建立的 Java 21 / Paper `1.21.11` build baseline 下 compile。
 - Foundation 問題不會阻止 core/application 單元測試。
 - 新程式碼不再擴散 Foundation import。
 
