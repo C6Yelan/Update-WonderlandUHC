@@ -1,6 +1,7 @@
 package org.mineacademy.fo.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +48,11 @@ public class SimpleReplacer implements Cloneable {
             }
         }
         return replace(key, joiner.toString());
+    }
+
+    /** Legacy bytecode compatibility: older callers link to Collection specifically. */
+    public SimpleReplacer replace(final String key, final Collection<?> values, final String delimiter) {
+        return replace(key, (Iterable<?>) values, delimiter);
     }
 
     /** Legacy helper used by multiple scenarios. */
