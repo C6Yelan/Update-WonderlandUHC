@@ -242,21 +242,25 @@ org.mcwonderland.uhc
 ## 3. 建立 Port/Adapter 隔離 Bukkit 與 Paper
 
 這一步是升級與維護性的共同基礎。所有跨版本 API 都應集中在 adapter。
+本步驟的定位是「鋪設邊界」，不是「改變 runtime 行為」。除非是低風險呼叫點，否則只先新增 port、adapter 骨架與必要的 legacy wrapper，不提前解除 hard dependency，也不提前重寫世界、邊界、設定、scenario、scoreboard 或 presentation 流程。
 
-建議新增：
+本步驟建議優先新增並可少量接線：
 
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/WorldPort.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/WorldBorderPort.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/PacketPort.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/OreGenerationPort.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/ChunkPregenerationPort.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/PlayerPort.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/SchedulerPort.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/ScoreboardPort.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/StoragePort.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/EventPublisher.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/platform/paper/*.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/legacy/*.java`
+
+本步驟可以先定義但暫不接入 runtime，實際行為改造留給後續步驟：
+
+- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/PacketPort.java`：Step 7 才處理 packet 功能選配、`PacketRegister`、`SoundController`、`ScenarioArmorVsHealth`。
+- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/OreGenerationPort.java`：Step 7 / Step 8 / Step 9 才處理 COG 選配、`populators.yml`、新版礦物模型與世界初始化流程。
+- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/ChunkPregenerationPort.java`：Step 7 / Step 9 才處理 `ChunkFiller`、`WorldFillListener`、`NoopChunkPregenerationService` 或 Paper pregenerator。
+- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/StoragePort.java`：Step 8 才處理設定、cache/db、migration 與 static config 重整。
+- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/port/ScoreboardPort.java`：Step 12 才處理 scoreboard projection/view model 與 presentation 瘦身。
 
 優先被 adapter 包住的舊檔案：
 
@@ -269,15 +273,27 @@ org.mcwonderland.uhc
 
 要做的事：
 
-1. 把 `WorldUtils.spawnOrb()`、`GenerateUtil.setBlockSuperFast()`、`BorderUtil`、`PlayerUtils.breakBlockNms()` 包到 port。
-2. 把 scheduler 包起來，不讓 core/application 直接呼叫 `Common.runLater` 或 Bukkit scheduler。
-3. 把訊息與音效輸出包起來，不讓 core 直接碰 Foundation `Common`、`SimpleSound`。
-4. 把 storage/config 存取包起來，降低 static config 對核心流程的耦合。
-5. 每次新增跨版本 API，都必須先進 port 或 platform adapter。
+1. 建立 `port/`、`platform/paper/`、`legacy/` 的最小結構，先讓新邊界可被後續 application service 使用。
+2. 把 scheduler 包起來，不讓新的 core/application 直接呼叫 `Common.runLater` 或 Bukkit scheduler；既有大量 listener/scenario 呼叫不在本步驟一次替換。
+3. 把 `WorldUtils.spawnOrb()`、`GenerateUtil.setBlockSuperFast()`、`PlayerUtils.breakBlockNms()` 這類跨版本或 NMS 呼叫先包到 port/adapter 或 legacy wrapper；底層可以暫時仍呼叫舊實作，不在本步驟移除 DatouNMS。
+4. `WorldBorderPort` 只先定義核心需要的邊界操作語意，並可包住 Paper/Bukkit `WorldBorder` API；`BorderUtil` 的外部 `wb` 指令與 hard dependency 行為不得在本步驟移除。
+5. 訊息與音效輸出若有新 application service 需要，先定義輸出邊界；不要在本步驟大規模改寫 Foundation `Common`、`SimpleSound`、menu 或 command。
+6. 每次新增跨版本 API，都必須先進 port 或 platform adapter，不得讓新的 application service 直接 import Bukkit、Foundation、NMS 或外部插件 API。
+
+本步驟不要做：
+
+- 不移除 `Dependency.WORLD_BORDER.check()`、`Dependency.PACKET_LISTENER_API.check()` 或 `checkWorldBorderVer()`；這是 Step 7。
+- 不讓缺少 WorldBorder、PacketListenerAPI、custom-ore-generator 時的啟動行為改變；optional integration 的行為收斂是 Step 7。
+- 不建立完整 `BorderService`、`WorldLifecycleService`、`TeleportService`、`CenterValidationService`；這是 Step 9。
+- 不重整 static `Settings.*`、config migration、cache/db 或 `populators.yml`；這是 Step 8。
+- 不重整 command、menu、tools、scoreboard 或 practice 的責任邊界；這是 Step 12。
+- 不把 runtime 權威來源切到新的 application use case；這是 Step 10。
 
 完成條件：
 
-- 新的 application service 不需要 import `org.bukkit.*`、`org.mineacademy.fo.*` 或外部插件 API。
+- 新增的 port/adapter 骨架可編譯，且已示範至少一個低風險呼叫點如何透過 port/adapter 使用。
+- 新的 application service 不需要 import `org.bukkit.*`、`org.mineacademy.fo.*`、DatouNMS 或外部插件 API。
+- 既有 runtime 行為沒有因本步驟改變；缺少外部插件時是否能啟動，不作為 Step 3 驗收項。
 
 ## 4. 升級建置平台到 Java 21 / Paper 1.21.11
 
