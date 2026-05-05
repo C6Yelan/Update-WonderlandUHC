@@ -1,8 +1,13 @@
 package org.mcwonderland.uhc.game;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.mcwonderland.uhc.api.event.GameChangeSettingsEvent;
+import org.mcwonderland.uhc.core.match.LegacyMatchSettingsMapper;
+import org.mcwonderland.uhc.core.match.MatchRepository;
+import org.mcwonderland.uhc.core.match.MatchSettings;
+import org.mcwonderland.uhc.core.match.UhcMatch;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.state.GameState;
 import org.mcwonderland.uhc.game.state.playing.PlayingState;
@@ -27,6 +32,8 @@ public class Game {
     @Getter
     private static Game game = new Game();
 
+    @Getter(AccessLevel.NONE)
+    private final MatchRepository matchRepository = new MatchRepository();
     private UHCGameSettings settings = UHCGameSettings.defaultSettings();
     private String host = "";
     private int allPlayers;
@@ -49,6 +56,7 @@ public class Game {
 
         this.currentState = this.states.remove();
         this.currentState.init();
+        this.matchRepository.setActiveMatch(UhcMatch.create(LegacyMatchSettingsMapper.fromGameSettings(this.settings)));
     }
 
     public static UHCGameSettings getSettings() {
@@ -56,15 +64,23 @@ public class Game {
     }
 
     public static void changeSettings(UHCGameSettings newSettings) {
+        MatchSettings matchSettings = LegacyMatchSettingsMapper.fromGameSettings(newSettings);
+
         game.settings = newSettings;
+        game.getActiveMatch().updateSettings(matchSettings);
 
         Common.callEvent(new GameChangeSettingsEvent(newSettings));
+    }
+
+    public UhcMatch getActiveMatch() {
+        return this.matchRepository.getActiveMatch();
     }
 
     public void nextState() {
         this.currentState.end();
         this.currentState = states.remove();
         this.currentState.init();
+        this.getActiveMatch().advanceState();
 
         GameTimerRunnable.totalSecond = 0;
         GameTimerRunnable.tick = 0;
