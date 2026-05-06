@@ -2,10 +2,10 @@ package org.mcwonderland.uhc.command.uhc;
 
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.Bukkit;
 import org.mineacademy.fo.command.SimpleSubCommand;
-import org.mineacademy.fo.remain.Remain;
 
 /**
  * 2019-11-24 下午 12:50
@@ -22,7 +22,7 @@ public class StopCommand extends SimpleSubCommand {
     @Override
     protected void onCommand() {
         CacheSaver.deleteCache();
-        Remain.getOnlinePlayers().forEach(Extra::sendToFallbackServer);
+        LegacyFoundationAdapter.getOnlinePlayers().forEach(Extra::sendToFallbackServer);
         Bukkit.shutdown();
     }
 

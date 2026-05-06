@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.practice;
 
 import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.Teleporter;
 import org.mcwonderland.uhc.settings.Settings;
@@ -12,7 +13,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -50,7 +50,7 @@ public class SimplePractice extends AbstractPractice {
 
 
     private void cleanWorld() {
-        Common.logFramed("&e正在優化練習模式的世界...");
+        LegacyFoundationAdapter.logFramed("&e正在優化練習模式的世界...");
 
         int radius = (Settings.Practice.WORLD_SIZE + 10) / 2;
 
@@ -69,7 +69,7 @@ public class SimplePractice extends AbstractPractice {
                 .filter(entity -> !(entity instanceof Player))
                 .forEach(Entity::remove);
 
-        Common.logFramed("&e優化完畢！");
+        LegacyFoundationAdapter.logFramed("&e優化完畢！");
     }
 
     private void checkBlock(Block block) {

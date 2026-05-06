@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.model.freeze;
 
 import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.Bukkit;
@@ -14,7 +15,6 @@ import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.mineacademy.fo.Common;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ public class SitFreeze implements FreezeMode, Listener {
 
     @Override
     public void freeze(Player player) {
-        Common.runLater(5, () -> {
+        LegacyFoundationAdapter.runLater(5, () -> {
             Pig pig = player.getWorld().spawn(player.getLocation(), Pig.class);
             pig.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999, 1), false);
             pig.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 99999, 255), false);

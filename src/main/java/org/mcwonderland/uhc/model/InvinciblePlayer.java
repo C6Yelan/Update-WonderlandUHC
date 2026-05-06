@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.model;
 
 import com.google.common.collect.Maps;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -9,9 +10,6 @@ import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.TimeUtil;
-import org.mineacademy.fo.remain.Remain;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +18,7 @@ public class InvinciblePlayer {
     private static final Map<UHCPlayer, InvinciblePlayer> invinciblePlayers = new HashMap<>();
 
     public static void startTask() {
-        Common.runTimerAsync(20 * 1, new InvinciblePlayerTask());
+        LegacyFoundationAdapter.runTimerAsync(20 * 1, new InvinciblePlayerTask());
     }
 
     private int time;
@@ -33,7 +31,7 @@ public class InvinciblePlayer {
         if (isNeedToAdd(uhcPlayer, time)) {
             invinciblePlayers.put(uhcPlayer, new InvinciblePlayer(time));
 
-            Chat.send(uhcPlayer.getPlayer(), TimeUtil.replacePlaceholders(Messages.Game.NoClean.OBTAINED, time));
+            Chat.send(uhcPlayer.getPlayer(), LegacyFoundationAdapter.replaceTimePlaceholders(Messages.Game.NoClean.OBTAINED, time));
         }
     }
 
@@ -81,11 +79,9 @@ public class InvinciblePlayer {
             Player player = uhcPlayer.getPlayer();
 
             if (time > 0)
-                Remain.sendActionBar(player, TimeUtil.replacePlaceholders(Messages.Game.NoClean.ACTION_BAR, time));
+                LegacyFoundationAdapter.sendActionBar(player, LegacyFoundationAdapter.replaceTimePlaceholders(Messages.Game.NoClean.ACTION_BAR, time));
             else
-                Remain.sendActionBar(player, Messages.Game.NoClean.ACTION_BAR_END);
+                LegacyFoundationAdapter.sendActionBar(player, Messages.Game.NoClean.ACTION_BAR_END);
         }
     }
 }
-
-

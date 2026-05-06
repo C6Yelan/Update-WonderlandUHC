@@ -6,10 +6,10 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.MathUtil;
 
 @UtilityClass
 public class GameUtils {
@@ -57,7 +57,7 @@ public class GameUtils {
     }
 
     public int getCurrentNetherBorder() {
-        return MathUtil.range(BorderUtil.getMoveBorder(UHCWorldUtils.getNether()), 0, Game.getSettings().getBorderSettings().getInitialNetherBorder());
+        return LegacyFoundationAdapter.range(BorderUtil.getMoveBorder(UHCWorldUtils.getNether()), 0, Game.getSettings().getBorderSettings().getInitialNetherBorder());
     }
 
     public void spectateTeleport(Player spectator, Player target) {

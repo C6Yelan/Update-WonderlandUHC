@@ -4,6 +4,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -15,7 +16,6 @@ import org.mineacademy.fo.menu.model.InventoryDrawer;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.model.ConfigItem;
 import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.remain.Remain;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -34,7 +34,7 @@ public class TeamSelectorMenu extends ConfigMenuPagged<UHCTeam> {
         TeamSelectorMenu newMenu = new TeamSelectorMenu();
 
         viewing = viewing.stream().filter(uuid -> {
-            Player player = Remain.getPlayerByUUID(uuid);
+            Player player = LegacyFoundationAdapter.getPlayerByUUID(uuid);
             if (player == null)
                 return false;
             Menu menu = Menu.getMenu(player);

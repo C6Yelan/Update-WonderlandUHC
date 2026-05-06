@@ -2,8 +2,8 @@ package org.mcwonderland.uhc.scoreboard.line;
 
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.remain.Remain;
 
 import java.util.List;
 
@@ -22,7 +22,7 @@ public abstract class UHCLines extends ScoreLines {
     @Override
     protected SimpleReplacer replaceGlobal(SimpleReplacer simpleReplacer) {
         return simpleReplacer
-                .replace("{online_players}", Remain.getOnlinePlayers().size())
+                .replace("{online_players}", LegacyFoundationAdapter.getOnlinePlayers().size())
                 .replace("{host}", Game.getGame().getHost());
     }
 }

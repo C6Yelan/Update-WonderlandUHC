@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -15,8 +16,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
-import org.mineacademy.fo.MinecraftVersion;
-import org.mineacademy.fo.ReflectionUtil;
 
 import java.lang.reflect.Method;
 
@@ -48,7 +47,7 @@ public class PortalListener implements Listener {
         to.getChunk().load();
         e.setTo(to);
 
-        if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_14)) {
+        if (LegacyFoundationAdapter.isOlderThanMinecraft1_14()) {
             openPortalAgent(e);
             findOrCreate(e);
         }
@@ -62,15 +61,15 @@ public class PortalListener implements Listener {
     }
 
     private void openPortalAgent(PlayerPortalEvent e) {
-        Method method = ReflectionUtil.getMethod(e.getClass(), "useTravelAgent", boolean.class);
+        Method method = LegacyFoundationAdapter.getMethod(e.getClass(), "useTravelAgent", boolean.class);
 
-        ReflectionUtil.invoke(method, e, true);
+        LegacyFoundationAdapter.invoke(method, e, true);
     }
 
     private void findOrCreate(PlayerPortalEvent e) {
-        Object portalAgent = ReflectionUtil.invoke("getPortalTravelAgent", e);
+        Object portalAgent = LegacyFoundationAdapter.invoke("getPortalTravelAgent", e);
 
-        ReflectionUtil.invoke("findOrCreate", portalAgent, e.getTo());
+        LegacyFoundationAdapter.invoke("findOrCreate", portalAgent, e.getTo());
     }
 
     private Location getSameCoordsLocation(PlayerPortalEvent e) {

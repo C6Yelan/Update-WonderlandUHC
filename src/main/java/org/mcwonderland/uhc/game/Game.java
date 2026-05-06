@@ -14,13 +14,13 @@ import org.mcwonderland.uhc.game.state.playing.PlayingState;
 import org.mcwonderland.uhc.game.state.preparing.PreparingState;
 import org.mcwonderland.uhc.game.state.starting.PreStartState;
 import org.mcwonderland.uhc.game.state.starting.TeleportingState;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.command.CommandSender;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.collection.PlayerCollection;
 
 import java.util.*;
@@ -69,7 +69,7 @@ public class Game {
         game.settings = newSettings;
         game.getActiveMatch().updateSettings(matchSettings);
 
-        Common.callEvent(new GameChangeSettingsEvent(newSettings));
+        LegacyFoundationAdapter.callEvent(new GameChangeSettingsEvent(newSettings));
     }
 
     public UhcMatch getActiveMatch() {

@@ -6,18 +6,18 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.timer.Countdown;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.LivingEntity;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.remain.CompAttribute;
 
 public class FinalHealCountdown extends Countdown {
 
     @Override
     public void execute() {
-        Common.callEvent(new FinalHealEvent());
+        LegacyFoundationAdapter.callEvent(new FinalHealEvent());
         Game.getGame().setFinalHealEnabled(true);
 
         for (UHCPlayer uhcPlayer : UHCPlayers.getStatusIs(RoleName.PLAYER)) {

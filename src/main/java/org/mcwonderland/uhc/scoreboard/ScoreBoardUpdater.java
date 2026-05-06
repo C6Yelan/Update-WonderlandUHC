@@ -3,21 +3,21 @@ package org.mcwonderland.uhc.scoreboard;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.Common;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScoreBoardUpdater {
 
     public static void start() {
-        Common.runTimerAsync(1, new SidebarUpdater());
+        LegacyFoundationAdapter.runTimerAsync(1, new SidebarUpdater());
         addNewUpdate(1, SimpleScores::updateHeals);
         addNewUpdate(5, SimpleScores::updateNameTagColors);
     }
 
 
     public static void addNewUpdate(int tick, ScoreUpdateCallback scoreUpdateCallback) {
-        Common.runTimerAsync(tick, () -> {
+        LegacyFoundationAdapter.runTimerAsync(tick, () -> {
             for (SimpleScores score : SimpleScores.getAllScores())
                 scoreUpdateCallback.update(score);
         });

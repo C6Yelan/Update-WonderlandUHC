@@ -4,8 +4,8 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.mcwonderland.uhc.Dependency;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.broadcast.AbstractBroadcastSender;
-import org.mineacademy.fo.exception.FoException;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
             TextChannel textChannel = DiscordUtil.getTextChannelById(channel);
 
             if (textChannel == null)
-                throw new FoException(invalidChannel);
+                throw LegacyFoundationAdapter.failure(invalidChannel);
 
             textChannel.sendMessage(msg).complete();
         });

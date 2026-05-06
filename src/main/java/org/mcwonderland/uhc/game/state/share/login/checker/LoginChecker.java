@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.game.state.share.login.checker;
 
 import org.mcwonderland.uhc.game.state.share.login.UHCLoginEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.mineacademy.fo.Common;
 
 public abstract class LoginChecker {
 
@@ -16,6 +16,6 @@ public abstract class LoginChecker {
     protected abstract void checkLogin(UHCLoginEvent e);
 
     protected void disallow(String message) {
-        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, Common.colorize(message));
+        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, LegacyFoundationAdapter.colorize(message));
     }
 }

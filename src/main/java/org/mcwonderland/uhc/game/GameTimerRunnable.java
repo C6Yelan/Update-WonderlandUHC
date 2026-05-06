@@ -3,7 +3,7 @@ package org.mcwonderland.uhc.game;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.mcwonderland.uhc.game.timer.Timer;
-import org.mineacademy.fo.Common;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameTimerRunnable implements Runnable {
@@ -12,7 +12,7 @@ public class GameTimerRunnable implements Runnable {
     public static boolean RUN = false;
 
     public static void start() {
-        Common.runTimer(1, new GameTimerRunnable());
+        LegacyFoundationAdapter.runTimer(1, new GameTimerRunnable());
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerDamageByEntityEvent;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerDamageEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
@@ -17,7 +18,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.mineacademy.fo.Common;
 
 /**
  * 2019-12-08 下午 07:33
@@ -65,8 +65,8 @@ public class DamageListener implements Listener {
 
     private void handleCustomDamageEvents(UHCPlayer uhcPlayer, EntityDamageEvent e) {
         if (e instanceof EntityDamageByEntityEvent)
-            Common.callEvent(new UHCPlayerDamageByEntityEvent(uhcPlayer, ( EntityDamageByEntityEvent ) e));
+            LegacyFoundationAdapter.callEvent(new UHCPlayerDamageByEntityEvent(uhcPlayer, ( EntityDamageByEntityEvent ) e));
         else
-            Common.callEvent(new UHCPlayerDamageEvent(uhcPlayer, e));
+            LegacyFoundationAdapter.callEvent(new UHCPlayerDamageEvent(uhcPlayer, e));
     }
 }

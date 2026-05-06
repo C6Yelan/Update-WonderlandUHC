@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.mcwonderland.uhc.util.PlayerUtils;
 import org.mcwonderland.uhc.util.WorldUtils;
@@ -17,8 +18,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.RandomUtil;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.List;
@@ -67,13 +66,13 @@ public class BlockListener implements Listener {
     private void replaceAppleDrops(List<ItemStack> drops) {
         WorldUtils.replaceDrop(drops, CompMaterial.APPLE, CompMaterial.AIR);
 
-        if (RandomUtil.chance(Game.getSettings().getAppleRate()))
+        if (LegacyFoundationAdapter.chance(Game.getSettings().getAppleRate()))
             drops.add(CompMaterial.APPLE.toItem());
     }
 
     private void handleCustomEvents(BlockBreakEvent e) {
         UHCBlockBreakEvent event = new UHCBlockBreakEvent(e);
-        Common.callEvent(event);
+        LegacyFoundationAdapter.callEvent(event);
 
         if (event.isDropsModified())
             handleCustomBlockDrops(event);

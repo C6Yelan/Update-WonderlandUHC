@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.scenario.impl;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.settings.UHCFiles;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.settings.YamlConfig;
@@ -50,7 +50,7 @@ public class ScenarioConfig extends YamlConfig {
             field.setAccessible(true);
             setValueByType(field, filePath.name());
         } catch (IllegalAccessException e) {
-            Common.error(e, "Could't set the field value '" + field.getName() + "' in " + scenario.getName());
+            LegacyFoundationAdapter.error(e, "Could't set the field value '" + field.getName() + "' in " + scenario.getName());
         }
     }
 

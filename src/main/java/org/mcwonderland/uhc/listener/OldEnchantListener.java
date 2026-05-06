@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.mineacademy.fo.Common;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mineacademy.fo.remain.CompMaterial;
 
 public class OldEnchantListener implements Listener {
@@ -56,7 +56,7 @@ public class OldEnchantListener implements Listener {
             int levelCost = e.getExpLevelCost();
 
 
-            Common.runLater(1, () -> {
+            LegacyFoundationAdapter.runLater(1, () -> {
                 if (Settings.OldEnchant.OLD_ENCHANT_COST) {
                     try {
                         enchanter.setLevel(Math.max(tempLevel - levelCost, 0));

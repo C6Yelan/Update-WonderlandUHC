@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.consume;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.event.EventHandler;
@@ -8,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.mineacademy.fo.MinecraftVersion;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Collection;
@@ -42,10 +42,10 @@ public class ScenarioPotionLess extends ConfigBasedScenario implements Listener 
     protected Collection<Listener> initListeners() {
         Collection<Listener> listeners = super.initListeners();
 
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_14))
+        if (LegacyFoundationAdapter.isAtLeastMinecraft1_14())
             listeners.add(new Listener_1_14());
 
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_9))
+        if (LegacyFoundationAdapter.isAtLeastMinecraft1_9())
             listeners.add(new Listener_1_9());
 
         return listeners;

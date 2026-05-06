@@ -8,8 +8,8 @@ import org.mcwonderland.uhc.game.state.share.login.LoginListener;
 import org.mcwonderland.uhc.game.state.share.login.UHCLoginEvent;
 import org.mcwonderland.uhc.game.state.share.login.checker.LoginChecker;
 import org.mcwonderland.uhc.game.state.share.login.checker.WhitelistChecker;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
-import org.mineacademy.fo.remain.Remain;
 
 public class PreparingLoginListener extends LoginListener {
 
@@ -48,7 +48,7 @@ public class PreparingLoginListener extends LoginListener {
         protected void checkLogin(UHCLoginEvent e) {
 
             if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE) {
-                boolean full = Remain.getOnlinePlayers().size() >= Game.getSettings().getMaxPlayers();
+                boolean full = LegacyFoundationAdapter.getOnlinePlayers().size() >= Game.getSettings().getMaxPlayers();
 
                 if (full && !UHCPermission.BYPASS_JOIN_CONFIGURING.hasPerm(e.getPlayer()))
                     disallow(Messages.Kick.FULL);

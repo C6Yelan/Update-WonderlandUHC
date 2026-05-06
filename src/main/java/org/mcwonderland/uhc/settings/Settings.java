@@ -2,9 +2,9 @@ package org.mcwonderland.uhc.settings;
 
 import org.mcwonderland.uhc.game.SpectateMode;
 import org.mcwonderland.uhc.game.teleport.TeleportType;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.freeze.FreezeType;
 import org.mcwonderland.uhc.scoreboard.TabHealthType;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.settings.SimpleSettings;
 import org.mineacademy.fo.settings.YamlConfigLoader;
 
@@ -108,7 +108,7 @@ public class Settings extends SimpleSettings {
             setPathPrefix("Misc");
 
             TAB_HEALTH_TYPE = get("Tab_Health_Type", TabHealthType.class);
-            GOLDEN_HEAD_NAME = Common.colorize(getString("Golden_Head_Name")); //方便是否為head的判斷
+            GOLDEN_HEAD_NAME = LegacyFoundationAdapter.colorize(getString("Golden_Head_Name")); //方便是否為head的判斷
         }
     }
 

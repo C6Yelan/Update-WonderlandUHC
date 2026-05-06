@@ -2,10 +2,10 @@ package org.mcwonderland.uhc.model.deathmsg;
 
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.mineacademy.fo.RandomUtil;
 import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
@@ -66,7 +66,7 @@ public class DeathMessageHandler {
         if (messages.isEmpty())
             return "";
 
-        return RandomUtil.nextItem(messages);
+        return LegacyFoundationAdapter.nextItem(messages);
     }
 
     private List<String> getMessages(EntityDamageEvent damageEvent) {

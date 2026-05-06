@@ -6,13 +6,12 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
 import org.mcwonderland.uhc.game.settings.sub.UHCTimerSettings;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
 import org.mcwonderland.uhc.settings.Messages;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.mineacademy.fo.ItemUtil;
-import org.mineacademy.fo.TimeUtil;
 import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.ArrayList;
@@ -110,7 +109,7 @@ public class GamePlaceholderReplacer extends SimpleReplacer {
     }
 
     private String formatTime(Integer time) {
-        return TimeUtil.formatTime(time);
+        return LegacyFoundationAdapter.formatTime(time);
     }
 
     private String formatItems(ItemStack[]... itemStacks) {
@@ -136,7 +135,7 @@ public class GamePlaceholderReplacer extends SimpleReplacer {
         String name = meta.getDisplayName();
         Material type = itemStack.getType();
 
-        String finalName = (name == null || name.isEmpty()) ? ItemUtil.bountifyCapitalized(type) : name;
+        String finalName = (name == null || name.isEmpty()) ? LegacyFoundationAdapter.bountifyCapitalized(type) : name;
 
         return finalName + " x" + itemStack.getAmount();
     }

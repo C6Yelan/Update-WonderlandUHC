@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.role.models.RoleEventHandler;
 import org.mcwonderland.uhc.game.state.share.join.UHCJoinEvent;
 import org.mcwonderland.uhc.game.timer.Timers;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
@@ -17,7 +18,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.mineacademy.fo.Common;
 
 public class RolePlayerEvents implements RoleEventHandler {
 
@@ -84,7 +84,7 @@ public class RolePlayerEvents implements RoleEventHandler {
         player.setExp(z.getXp());
         player.addPotionEffects(z.getEntity().getActivePotionEffects());
 
-        Common.runLater(1, () -> {
+        LegacyFoundationAdapter.runLater(1, () -> {
             if (!uhcPlayer.isOnline())
                 return;
 

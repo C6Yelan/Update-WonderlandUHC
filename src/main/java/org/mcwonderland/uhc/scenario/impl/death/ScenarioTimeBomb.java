@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import me.lulu.datounms.model.NewerSpigotAPI;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -25,8 +26,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.MinecraftVersion;
 import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompMaterial;
@@ -63,7 +62,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
 
     @Override
     protected void onConfigReload() {
-        Common.runTimer(20, new ChestExplodeTicker());
+        LegacyFoundationAdapter.runTimer(20, new ChestExplodeTicker());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -103,7 +102,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             RightSideChest = leftSideChest.getRelative(BlockFace.NORTH);
             leftSideChest.setType(CompMaterial.CHEST.getMaterial());
             RightSideChest.setType(CompMaterial.CHEST.getMaterial());
-            if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
+            if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
                 NewerSpigotAPI.mergeChest(leftSideChest, RightSideChest);
         }
 

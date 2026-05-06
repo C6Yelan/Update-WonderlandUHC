@@ -2,12 +2,12 @@ package org.mcwonderland.uhc.util;
 
 import lombok.experimental.UtilityClass;
 import me.lulu.datounms.DaTouNMS;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.MinecraftVersion;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Collection;
@@ -32,7 +32,7 @@ public class WorldUtils {
     public Location centerOfBlock(Location location) {
         Location newLocation = location.clone();
 
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13)) {
+        if (LegacyFoundationAdapter.isAtLeastMinecraft1_13()) {
             return newLocation;
         }
 
@@ -72,7 +72,7 @@ public class WorldUtils {
         if (value == 0)
             return;
 
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13))
+        if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
             DaTouNMS.getWorldNMS().spawnOrb(l, amount, value);
         else
             DaTouNMS.getWorldNMS().spawnOrb(l.add(0.5, 0.5, 0.5), amount, value);

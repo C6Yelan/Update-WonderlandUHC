@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
@@ -14,8 +15,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
-import org.mineacademy.fo.model.ChunkKeeper;
-import org.mineacademy.fo.remain.CompMetadata;
 
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +65,7 @@ public class CombatRelog {
     }
 
     public static CombatRelog getByRelogEntity(Entity entity) {
-        MetadataValue metadata = CompMetadata.getTempMetadata(entity, COMBAT_RELOG_TAG);
+        MetadataValue metadata = LegacyFoundationAdapter.getTempMetadata(entity, COMBAT_RELOG_TAG);
         return metadata == null ? null : ( CombatRelog ) metadata.value();
     }
 
@@ -79,7 +78,7 @@ public class CombatRelog {
         Player player = uhcPlayer.getPlayer();
         Location location = player.getLocation();
 
-        ChunkKeeper.setForceLoaded(location.getChunk(), true);
+        LegacyFoundationAdapter.setChunkForceLoaded(location.getChunk(), true);
 
         Villager villager = (( Villager ) player.getWorld().spawnEntity(location, EntityType.VILLAGER));
         Extra.noAIAndSilent(villager);
@@ -94,8 +93,8 @@ public class CombatRelog {
         villager.setFireTicks(player.getFireTicks());
 
         relog = new CombatRelog(uhcPlayer, villager);
-        CompMetadata.setTempMetadata(villager, COMBAT_RELOG_TAG, relog);
-        CompMetadata.setTempMetadata(villager, UHCPlayer.UHCPLAYER_TAG, uhcPlayer);
+        LegacyFoundationAdapter.setTempMetadata(villager, COMBAT_RELOG_TAG, relog);
+        LegacyFoundationAdapter.setTempMetadata(villager, UHCPlayer.UHCPLAYER_TAG, uhcPlayer);
         relogPlayer.put(uhcPlayer, relog);
 
         return relog;
@@ -118,7 +117,7 @@ public class CombatRelog {
     }
 
     public void remove() {
-        ChunkKeeper.setForceLoaded(getEntity().getLocation().getChunk(), false);
+        LegacyFoundationAdapter.setChunkForceLoaded(getEntity().getLocation().getChunk(), false);
         relogPlayer.remove(uhcPlayer);
     }
 }

@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -20,8 +21,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.PlayerUtil;
 import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class PlayingDeathListener implements Listener {
         UHCPlayer uhcPlayer = UHCPlayer.getFromEntity(entity);
 
         if (uhcPlayer != null) {
-            Common.callEvent(new UHCGamingDeathEvent(uhcPlayer, e));
+            LegacyFoundationAdapter.callEvent(new UHCGamingDeathEvent(uhcPlayer, e));
         }
     }
 
@@ -73,8 +72,8 @@ public class PlayingDeathListener implements Listener {
         Chat.send(player, Messages.Spectator.NO_PERM_TO_SPEC
                 .replace("{time}", "" + seconds));
 
-        Common.runLater(seconds * 20, () -> {
-            PlayerUtil.kick(player, new SimpleReplacer(Messages.Spectator.DEATH_KICK_MESSAGE)
+        LegacyFoundationAdapter.runLater(seconds * 20, () -> {
+            LegacyFoundationAdapter.kickPlayer(player, new SimpleReplacer(Messages.Spectator.DEATH_KICK_MESSAGE)
                     .replace("{player}", player.getName())
                     .getMessages());
         });

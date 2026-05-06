@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.scenario.impl.rush;
 
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
@@ -10,7 +11,6 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
     }
 
     private void increaseFurnaceSpeed(Block block, BlockVector blockVector) {
-        Common.runTimer(0, 1, new BukkitRunnable() {
+        LegacyFoundationAdapter.runTimer(0, 1, new BukkitRunnable() {
             @Override
             public void run() {
                 if (block.getType() != CompMaterial.FURNACE.getMaterial()) {

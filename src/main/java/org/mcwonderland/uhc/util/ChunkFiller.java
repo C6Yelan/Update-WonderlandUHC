@@ -3,7 +3,7 @@ package org.mcwonderland.uhc.util;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.World;
-import org.mineacademy.fo.Common;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +21,13 @@ public class ChunkFiller {
                 "wb " + worldName + " fill confirm"
         };
 
-        Common.log(Messages.Console.CHUNK_LOAD_STARTED.replace("{world}", worldName));
+        LegacyFoundationAdapter.log(Messages.Console.CHUNK_LOAD_STARTED.replace("{world}", worldName));
 
         for (int i = 0; i < commands.length; i++) {
             String command = commands[i];
 
-            Common.runLater(10 * i, () -> {
-                Common.dispatchCommand(null, command);
+            LegacyFoundationAdapter.runLater(10 * i, () -> {
+                LegacyFoundationAdapter.dispatchCommand(null, command);
             });
         }
     }

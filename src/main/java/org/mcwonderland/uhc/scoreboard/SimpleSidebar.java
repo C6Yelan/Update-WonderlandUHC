@@ -7,7 +7,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import org.mineacademy.fo.Common;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class SimpleSidebar {
     }
 
     public final void setTitle(String title) {
-        title = Common.colorize(title);
+        title = LegacyFoundationAdapter.colorize(title);
         sidebar.setDisplayName(StringUtils.left(title, 32));
     }
 
@@ -46,7 +46,7 @@ public class SimpleSidebar {
         if (!scoreboard.getEntries().contains(entry)) {
             sidebar.getScore(entry).setScore(slot);
         }
-        text = Common.colorize(text);
+        text = LegacyFoundationAdapter.colorize(text);
         String pre = getFirstSplit(text);
         String suf = getFirstSplit(ChatColor.getLastColors(pre) + getSecondSplit(text));
         team.setPrefix(pre);

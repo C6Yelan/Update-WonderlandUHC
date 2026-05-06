@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.api.event.team.TeamJoinedEvent;
 import org.mcwonderland.uhc.api.event.team.TeamQuitedEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.impl.game.TeamSelectorMenu;
 import org.mcwonderland.uhc.scoreboard.SimpleScores;
 import org.mcwonderland.uhc.settings.Messages;
@@ -22,8 +23,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.RandomUtil;
 import org.mineacademy.fo.remain.CompColor;
 
 import java.util.Collection;
@@ -61,7 +60,7 @@ public class UHCTeam {
             team = new UHCTeam(uhcPlayer);
             teams.add(team);
             updateLobbyItems(uhcPlayer);
-            Common.callEvent(new TeamCreatedEvent(team, uhcPlayer));
+            LegacyFoundationAdapter.callEvent(new TeamCreatedEvent(team, uhcPlayer));
         }
 
         return team;
@@ -118,7 +117,7 @@ public class UHCTeam {
 
     private void createBackpack() {
         Integer size = 27;//(( ScenarioBackPack ) Scenarios.BACKPACK.getData()).getSize();
-        String name = Common.colorize(this.name);
+        String name = LegacyFoundationAdapter.colorize(this.name);
         backpack = Bukkit.createInventory(null, size, name);
     }
 
@@ -149,7 +148,7 @@ public class UHCTeam {
                 .replace("{players}", players.size() + "")
                 .replace("{max}", GameUtils.getTeamSize() + ""));
 
-        Common.callEvent(new TeamJoinedEvent(this, uhcPlayer));
+        LegacyFoundationAdapter.callEvent(new TeamJoinedEvent(this, uhcPlayer));
     }
 
     private void quitPreviousTeam(UHCPlayer uhcPlayer) {
@@ -174,7 +173,7 @@ public class UHCTeam {
         if (owner == uhcPlayer)
             tryToGiveOwnerToOthers();
 
-        Common.callEvent(new TeamQuitedEvent(this, uhcPlayer));
+        LegacyFoundationAdapter.callEvent(new TeamQuitedEvent(this, uhcPlayer));
     }
 
     private void remove(UHCPlayer uhcPlayer) {
@@ -187,7 +186,7 @@ public class UHCTeam {
 
     private void tryToGiveOwnerToOthers() {
         if (!isEmpty())
-            promote(RandomUtil.nextItem(players));
+            promote(LegacyFoundationAdapter.nextItem(players));
         else
             disband();
     }
@@ -214,7 +213,7 @@ public class UHCTeam {
         TeamSelectorMenu.updateMenu();
         SimpleScores.unregisterTeam(this);
 
-        Common.callEvent(new TeamDisbandedEvent(this));
+        LegacyFoundationAdapter.callEvent(new TeamDisbandedEvent(this));
     }
 
     public void sendMessage(String... msg) {

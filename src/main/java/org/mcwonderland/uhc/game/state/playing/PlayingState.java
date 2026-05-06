@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.game.state.playing;
 
 import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.game.StateName;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.state.SimpleGameState;
 import org.mcwonderland.uhc.game.state.playing.listener.*;
@@ -12,8 +13,6 @@ import org.mcwonderland.uhc.game.timer.Timers;
 import org.mcwonderland.uhc.scoreboard.SidebarTheme;
 import org.mcwonderland.uhc.scoreboard.line.ScoreLines;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.MinecraftVersion;
-import org.mineacademy.fo.remain.Remain;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,7 +51,7 @@ public class PlayingState extends SimpleGameState {
                 new StatsListener()
         );
 
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_11) && Remain.isPaper())
+        if (LegacyFoundationAdapter.isAtLeastMinecraft1_11() && LegacyFoundationAdapter.isPaperServer())
             listeners.add(new PaperListener());
 
         return listeners;

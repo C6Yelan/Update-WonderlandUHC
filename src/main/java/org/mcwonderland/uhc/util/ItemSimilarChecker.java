@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.util;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
-import org.mineacademy.fo.ItemUtil;
 
 public class ItemSimilarChecker {
     private static ItemStack item;
@@ -25,7 +25,7 @@ public class ItemSimilarChecker {
     }
 
     private static boolean checkSimilar() {
-        if (ItemUtil.isSimilar(item, comparision))
+        if (LegacyFoundationAdapter.isSimilar(item, comparision))
             return checkOther();
 
         return false;

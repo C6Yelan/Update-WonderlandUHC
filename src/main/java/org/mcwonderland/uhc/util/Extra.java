@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.util;
 
 import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -17,7 +18,6 @@ import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompAttribute;
 import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.remain.CompProperty;
-import org.mineacademy.fo.remain.Remain;
 
 import java.io.File;
 import java.util.*;
@@ -83,7 +83,7 @@ public class Extra {
     }
 
     public static void sound(SimpleSound sound) {
-        sound.play(( Collection ) Remain.getOnlinePlayers());
+        sound.play(( Collection ) LegacyFoundationAdapter.getOnlinePlayers());
     }
 
     public static void potion(Player p, PotionEffectType type, int duration, int amplifier, boolean displayEffect) {
@@ -113,7 +113,7 @@ public class Extra {
     }
 
     public static Integer getOnlinePlayers() {
-        return Remain.getOnlinePlayers().size();
+        return LegacyFoundationAdapter.getOnlinePlayers().size();
     }
 
     public static void sendToFallbackServer(Player p) {

@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
 import org.mcwonderland.uhc.menu.UHCMenuSection;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.broadcast.AbstractBroadcastSender;
 import org.mcwonderland.uhc.model.broadcast.GameStartTimeConversation;
 import org.mcwonderland.uhc.model.broadcast.GameStartTimeInfo;
@@ -8,7 +9,6 @@ import org.mcwonderland.uhc.model.broadcast.impl.DiscordBroadcastSender;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.mineacademy.fo.exception.FoException;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.config.ConfigClickableButton;
 import org.mineacademy.fo.menu.config.ConfigMenu;
@@ -44,7 +44,10 @@ public class BroadcastSettingsMenu extends ConfigMenu {
                 protected void onStartTimeInfoBuilt(GameStartTimeInfo info) {
                     try {
                         sender.sendBroadcast(info);
-                    } catch (FoException e) {
+                    } catch (RuntimeException e) {
+                        if (!LegacyFoundationAdapter.isFailure(e))
+                            throw e;
+
                         Chat.send(player, e.getMessage());
                     }
                 }

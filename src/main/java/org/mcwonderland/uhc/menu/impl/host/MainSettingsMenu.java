@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.menu.model.InventoryEditButton;
 import org.mcwonderland.uhc.menu.model.UHCNumberEditButton;
@@ -14,7 +15,6 @@ import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.InventorySaver;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.button.config.ConfigClickableButton;
 import org.mineacademy.fo.menu.button.config.ConfigMenuButton;
@@ -202,7 +202,7 @@ public class MainSettingsMenu extends ConfigMenu {
 
             @Override
             protected void onEdit(String s) {
-                String newTitle = Common.colorize(s);
+                String newTitle = LegacyFoundationAdapter.colorize(s);
                 settings.setTitle(newTitle);
 
                 String broadcastMessage = Messages.Editor.Text.Title.SAVED.replace("{title}", newTitle);

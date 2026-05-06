@@ -3,12 +3,12 @@ package org.mcwonderland.uhc.command.team;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.Common;
 
 class ChatCommand extends TeamSubCommand {
 
@@ -54,7 +54,7 @@ class ChatCommand extends TeamSubCommand {
     }
 
     private void sendTeamChat(UHCTeam team, UHCPlayer uhcPlayer) {
-        String msg = Common.colorize(joinArgs(0, args.length));
+        String msg = LegacyFoundationAdapter.colorize(joinArgs(0, args.length));
 
         team.sendMessage(Messages.ChatFormat.TEAM_CHAT
                 .replace("{teamname}", team.getName())

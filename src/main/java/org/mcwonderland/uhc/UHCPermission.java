@@ -1,8 +1,7 @@
 package org.mcwonderland.uhc;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.PlayerUtil;
-import org.mineacademy.fo.Valid;
 
 public enum UHCPermission {
     BYPASS_JOIN_CONFIGURING,
@@ -68,11 +67,11 @@ public enum UHCPermission {
     }
 
     public boolean hasPerm(Player player) {
-        return PlayerUtil.hasPerm(player, permission);
+        return LegacyFoundationAdapter.hasPermission(player, permission);
     }
 
     public boolean checkPerms(Player player) {
-        return Valid.checkPermission(player, permission);
+        return LegacyFoundationAdapter.checkPermission(player, permission);
     }
 
     public String toString() {

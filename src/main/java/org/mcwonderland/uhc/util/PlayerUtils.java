@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import me.lulu.datounms.DaTouNMS;
 import me.lulu.datounms.model.ArmorInfo;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -11,12 +12,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.MinecraftVersion;
-import org.mineacademy.fo.ReflectionUtil;
 import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.remain.CompSound;
-import org.mineacademy.fo.remain.Remain;
-import org.mineacademy.fo.remain.nbt.ObjectCreator;
 
 /**
  * 2019-12-08 上午 09:16
@@ -75,12 +72,12 @@ public class PlayerUtils {
     }
 
     public void breakBlockNms(Player player, Block toBreak) {
-        Object entityPlayer = Remain.getHandleEntity(player);
-        Object playerInteractManager = ReflectionUtil.getFieldContent(entityPlayer, "playerInteractManager");
-        Object blockPosition = ObjectCreator.NMS_BLOCKPOSITION.getInstance(toBreak.getX(), toBreak.getY(), toBreak.getZ());
+        Object entityPlayer = LegacyFoundationAdapter.getHandleEntity(player);
+        Object playerInteractManager = LegacyFoundationAdapter.getFieldContent(entityPlayer, "playerInteractManager");
+        Object blockPosition = LegacyFoundationAdapter.newBlockPosition(toBreak.getX(), toBreak.getY(), toBreak.getZ());
 
         Extra.playBlockBreakEffect(toBreak.getLocation(), toBreak.getType());
-        ReflectionUtil.invoke("breakBlock", playerInteractManager, blockPosition);
+        LegacyFoundationAdapter.invoke("breakBlock", playerInteractManager, blockPosition);
     }
 
     public double getArmorPoints(LivingEntity livingEntity) {
@@ -106,6 +103,6 @@ public class PlayerUtils {
     }
 
     public boolean isShieldBlocked(EntityDamageEvent e) {
-        return MinecraftVersion.atLeast(MinecraftVersion.V.v1_9) && e.getOriginalDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
+        return LegacyFoundationAdapter.isAtLeastMinecraft1_9() && e.getOriginalDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
     }
 }

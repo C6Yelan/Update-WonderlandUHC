@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.util;
 
-import org.mineacademy.fo.MinecraftVersion;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -16,7 +16,7 @@ public class RuntimeUtil {
 
     static {
         try {
-            clazz = Class.forName("net.minecraft.server." + MinecraftVersion.getServerVersion() + "." + "MinecraftServer");
+            clazz = Class.forName("net.minecraft.server." + LegacyFoundationAdapter.getServerVersion() + "." + "MinecraftServer");
             si = clazz.getMethod("getServer").invoke(null);
             tpsField = si.getClass().getField("recentTps");
         } catch (Exception e) {

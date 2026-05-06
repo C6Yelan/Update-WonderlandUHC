@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.update;
 
-import org.mineacademy.fo.FileUtil;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.io.File;
 
@@ -14,10 +14,10 @@ public class OldMenusCheck implements Updater {
     }
 
     private void moveOldMenuYaml() {
-        File file = FileUtil.getFile("menus.yml");
+        File file = LegacyFoundationAdapter.getFile("menus.yml");
 
         if (file.exists())
-            file.renameTo(FileUtil.getOrMakeFile("舊版文件備份/menus.yml"));
+            file.renameTo(LegacyFoundationAdapter.getOrMakeFile("舊版文件備份/menus.yml"));
     }
 
 }

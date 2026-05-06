@@ -3,8 +3,8 @@ package org.mcwonderland.uhc.game.settings;
 import lombok.Getter;
 import lombok.Setter;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.UHCFiles;
-import org.mineacademy.fo.FileUtil;
 import org.mineacademy.fo.settings.YamlConfig;
 
 import java.io.File;
@@ -34,7 +34,7 @@ public class CacheSaver extends YamlConfig {
     }
 
     public static void deleteCache() {
-        File file = FileUtil.getFile(saver.getFileName());
+        File file = LegacyFoundationAdapter.getFile(saver.getFileName());
 
         if (file.exists()) {
             YamlConfig.clearLoadedSections();

@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -8,7 +9,6 @@ import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.RandomUtil;
 import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.model.SimpleSound;
 
@@ -37,7 +37,7 @@ public class ScenarioDoubleOrNothing extends ConfigBasedScenario implements List
     }
 
     private void doubleOrNothing(UHCBlockBreakEvent e) {
-        if (RandomUtil.nextBoolean())
+        if (LegacyFoundationAdapter.nextBoolean())
             e.getDrops().forEach(drop -> drop.setAmount(drop.getAmount() * 2));
         else {
             e.getDrops().clear();

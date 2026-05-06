@@ -8,6 +8,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.VoiceChannel;
 import lombok.Getter;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.listener.VoiceListener;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -15,7 +16,6 @@ import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.Common;
 
 public class DiscordVoiceHook {
     private static DiscordSRV discordSRV = DiscordSRV.getPlugin();
@@ -44,7 +44,7 @@ public class DiscordVoiceHook {
                 voiceCategory = guild.getCategoryById(Settings.DiscordVoice.VOICE_CATEGORY);
                 lobbyVoice = guild.getVoiceChannelById(Settings.DiscordVoice.LOBBY_VOICE);
                 clearChannels();
-                Common.registerEvents(voiceListener);
+                LegacyFoundationAdapter.registerEvents(voiceListener);
             }).start();
     }
 

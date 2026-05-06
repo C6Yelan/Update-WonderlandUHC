@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.game;
 
 import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.populator.Populator;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -15,7 +16,6 @@ import org.bukkit.WorldCreator;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.MinecraftVersion;
 
 import javax.annotation.Nullable;
 
@@ -126,7 +126,7 @@ public class CenterCleaner {
     }
 
     private static BIOME_THRESHOLD isValidBiome(Biome biome, int i, int j) {
-        if (MinecraftVersion.olderThan(MinecraftVersion.V.v1_9)) {
+        if (LegacyFoundationAdapter.isOlderThanMinecraft1_9()) {
             return isValidBiome1_8(biome, i, j);
         } else {
             return isValidBiome1_9(biome, i, j);

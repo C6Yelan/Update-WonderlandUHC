@@ -16,9 +16,8 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
-import org.mineacademy.fo.MinecraftVersion;
-import org.mineacademy.fo.remain.Remain;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -153,7 +152,7 @@ public final class SimpleScores {
     }
 
     private synchronized void fixNameColors(Team t, UHCTeam u) {
-        if (MinecraftVersion.atLeast(MinecraftVersion.V.v1_13) && t.getColor() != u.getColor())
+        if (LegacyFoundationAdapter.isAtLeastMinecraft1_13() && t.getColor() != u.getColor())
             t.setColor(u.getColor());
     }
 
@@ -182,7 +181,7 @@ public final class SimpleScores {
                 tabHeal.setDisplaySlot(DisplaySlot.PLAYER_LIST);
             }
 
-            for (Player o : Remain.getOnlinePlayers())
+            for (Player o : LegacyFoundationAdapter.getOnlinePlayers())
                 tabHeal.getScore(o.getName()).setScore(( int ) (o.getHealth() + DaTouNMS.getCommonNMS().getAbsorptionHeart(o)));
         }
     }

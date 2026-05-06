@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.game.timer.impl.countdown;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.timer.Countdown;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -10,7 +11,6 @@ import org.mcwonderland.uhc.util.*;
 import org.bukkit.Difficulty;
 import org.bukkit.entity.Player;
 import org.mcwonderland.uhc.util.*;
-import org.mineacademy.fo.remain.Remain;
 
 public class LobbyCountdown extends Countdown {
 
@@ -24,7 +24,7 @@ public class LobbyCountdown extends Countdown {
         UHCWorldUtils.getWorld().setDifficulty(Difficulty.PEACEFUL);
         TeamModifier.splitTeams();
 
-        for (Player p : Remain.getOnlinePlayers()) {
+        for (Player p : LegacyFoundationAdapter.getOnlinePlayers()) {
             p.closeInventory();
 
             if (GameUtils.isStaff(p))

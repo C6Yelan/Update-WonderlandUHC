@@ -9,13 +9,13 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.hook.voice.DiscordVoiceHook;
 import org.mcwonderland.uhc.hook.voice.TeamVoices;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.mineacademy.fo.Common;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,7 +27,7 @@ public class VoiceListener implements Listener {
     public void onTeamCreated(TeamCreatedEvent e) {
         UHCTeam team = e.getTeam();
 
-        Common.runAsync(() -> {
+        LegacyFoundationAdapter.runAsync(() -> {
             VoiceChannel channel = DiscordVoiceHook.createHiddenChannel(team.getName());
 
             teamVoices.add(team, channel);

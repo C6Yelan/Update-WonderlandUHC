@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.scenario.impl.special;
 
 import org.mcwonderland.uhc.api.event.player.UHCPlayerRespawnedEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -16,7 +17,6 @@ import org.inventivetalent.packetlistener.PacketListenerAPI;
 import org.inventivetalent.packetlistener.handler.PacketHandler;
 import org.inventivetalent.packetlistener.handler.ReceivedPacket;
 import org.inventivetalent.packetlistener.handler.SentPacket;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
 
         Chat.send(player, new SimpleReplacer(Warn_Msg).replaceTime(Apply_Within_Seconds).toArray());
 
-        Common.runLater(Apply_Within_Seconds * 20, () -> {
+        LegacyFoundationAdapter.runLater(Apply_Within_Seconds * 20, () -> {
             if (!uhcPlayer.isDead()) {
                 costs.remove(uhcPlayer);
                 updateHealth(uhcPlayer);
@@ -93,7 +93,7 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
         double cost = getCost(uhcPlayer);
 
         if (armorPoints > cost)
-            Common.runLater(0, () -> {
+            LegacyFoundationAdapter.runLater(0, () -> {
                 double difference = armorPoints - cost;
                 costs.put(uhcPlayer, armorPoints);
 

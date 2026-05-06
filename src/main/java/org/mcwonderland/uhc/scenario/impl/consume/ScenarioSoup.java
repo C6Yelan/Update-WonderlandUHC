@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.consume;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -9,10 +10,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.MathUtil;
 import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.remain.CompMaterial;
-import org.mineacademy.fo.remain.Remain;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class ScenarioSoup extends ConfigBasedScenario implements Listener {
     }
 
     private boolean needRegen(Player player) {
-        return player.getHealth() < Remain.getMaxHealth(player);
+        return player.getHealth() < LegacyFoundationAdapter.getMaxHealth(player);
     }
 
     private boolean isSoup(ItemStack itemInHand) {
@@ -47,7 +46,7 @@ public class ScenarioSoup extends ConfigBasedScenario implements Listener {
 
     private void soupRegen(Player player, ItemStack soupItem) {
         soupItem.setType(CompMaterial.BOWL.getMaterial());
-        player.setHealth(MathUtil.range(player.getHealth() + soupRegenHealth, 0, Remain.getMaxHealth(player)));
+        player.setHealth(LegacyFoundationAdapter.range(player.getHealth() + soupRegenHealth, 0, LegacyFoundationAdapter.getMaxHealth(player)));
     }
 
     @Override

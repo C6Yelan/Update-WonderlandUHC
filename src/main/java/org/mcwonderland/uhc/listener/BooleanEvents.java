@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
-import org.mineacademy.fo.Common;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 public class BooleanEvents implements Listener {
 
@@ -22,7 +22,7 @@ public class BooleanEvents implements Listener {
 
         
 
-        Common.runLater(1, () -> {
+        LegacyFoundationAdapter.runLater(1, () -> {
             if (player.isOnline())
                 player.checkHide();
         });

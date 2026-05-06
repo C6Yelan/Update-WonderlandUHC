@@ -6,7 +6,7 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.timer.Timers;
-import org.mineacademy.fo.TimeUtil;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class GameLines extends UHCLines {
                 .replace("{spectators}", UHCPlayers.countOf(UHCPlayer::isDead))
                 .replace("{border_size}", Game.getGame().getCurrentBorder())
                 .replace("{border_size/2}", Game.getGame().getCurrentBorder() / 2)
-                .replace("{shrink_in}", TimeUtil.formatTime(Timers.getSecondsUntilEnable(Timers.BORDER)))
-                .replace("{game_time}", TimeUtil.formatTime(GameTimerRunnable.totalSecond));
+                .replace("{shrink_in}", LegacyFoundationAdapter.formatTime(Timers.getSecondsUntilEnable(Timers.BORDER)))
+                .replace("{game_time}", LegacyFoundationAdapter.formatTime(GameTimerRunnable.totalSecond));
     }
 }

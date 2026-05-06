@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -10,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.LeavesDecayEvent;
-import org.mineacademy.fo.RandomUtil;
 import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -40,7 +40,7 @@ public class ScenarioLuckyLeaves extends ConfigBasedScenario implements Listener
     }
 
     private void randomDropGoldenApple(Block block) {
-        if (RandomUtil.chance(goldenApplePercent))
+        if (LegacyFoundationAdapter.chance(goldenApplePercent))
             WorldUtils.dropItems(block.getLocation(), CompMaterial.GOLDEN_APPLE.toItem());
     }
 

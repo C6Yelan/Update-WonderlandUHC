@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.model.Teleporter;
@@ -19,7 +20,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.mcwonderland.uhc.util.*;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.command.SimpleCommand;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class RespawnCommand extends SimpleCommand {
     @Override
     protected List<String> tabComplete() {
         if (args.length == 1)
-            return completeLastWord(Common.getPlayerNames());
+            return completeLastWord(LegacyFoundationAdapter.getPlayerNames());
 
         return super.tabComplete();
     }
@@ -79,7 +79,7 @@ public class RespawnCommand extends SimpleCommand {
                     .replace("{player}", target.getName()));
             Extra.sound(target, Sounds.Commands.RESPAWN);
 
-            Common.callEvent(new UHCPlayerRespawnedEvent(targetUHCPlayer));
+            LegacyFoundationAdapter.callEvent(new UHCPlayerRespawnedEvent(targetUHCPlayer));
         }
 
         private void restoreAndTeleport() {

@@ -2,12 +2,12 @@ package org.mcwonderland.uhc.game.player.role.spectator;
 
 import me.lulu.datounms.DaTouNMS;
 import org.mcwonderland.uhc.game.player.role.models.RoleApplier;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.tools.Hotbars;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.Common;
 
 public class RoleSpectatorApplier implements RoleApplier {
 
@@ -23,7 +23,7 @@ public class RoleSpectatorApplier implements RoleApplier {
                 break;
             case DEFAULT:
                 player.setGameMode(GameMode.CREATIVE);
-                Common.runLater(() -> Hotbars.giveSpecItems(player));
+                LegacyFoundationAdapter.runLater(0, () -> Hotbars.giveSpecItems(player));
                 break;
         }
     }

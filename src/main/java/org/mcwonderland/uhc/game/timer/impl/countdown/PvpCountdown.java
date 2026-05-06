@@ -3,16 +3,16 @@ package org.mcwonderland.uhc.game.timer.impl.countdown;
 import org.mcwonderland.uhc.api.event.timer.PvPEnableEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.timer.Countdown;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
-import org.mineacademy.fo.Common;
 
 public class PvpCountdown extends Countdown {
 
     @Override
     public void execute() {
-        Common.callEvent(new PvPEnableEvent());
+        LegacyFoundationAdapter.callEvent(new PvPEnableEvent());
         Game.getGame().setPvpEnabled(true);
     }
 

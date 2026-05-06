@@ -5,6 +5,7 @@ import org.mcwonderland.uhc.api.event.timer.GameEndEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.freeze.FreezeMode;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -14,7 +15,6 @@ import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -67,7 +67,7 @@ public class GameManager {
 
 
         broadcastWinning(team);
-        Common.callEvent(new GameEndEvent());
+        LegacyFoundationAdapter.callEvent(new GameEndEvent());
 
         if (!WonderlandUHC.TEST_MODE)
             CacheSaver.deleteCache();

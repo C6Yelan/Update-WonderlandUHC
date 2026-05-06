@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.mineacademy.fo.Common;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 public class CommonPracticeListener implements Listener {
 
@@ -33,7 +33,7 @@ public class CommonPracticeListener implements Listener {
             e.getDrops().clear();
             player.setHealth(player.getMaxHealth());
 
-            Common.runLater(3, () -> practice.stuff(player));
+            LegacyFoundationAdapter.runLater(3, () -> practice.stuff(player));
 
             if (killer != null)
                 killer.setHealth(killer.getMaxHealth());

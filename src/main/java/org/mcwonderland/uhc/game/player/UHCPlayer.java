@@ -13,13 +13,12 @@ import org.mcwonderland.uhc.game.player.role.SimpleRoleFactory;
 import org.mcwonderland.uhc.game.player.role.models.RoleBoard;
 import org.mcwonderland.uhc.game.player.role.models.RoleEventHandler;
 import org.mcwonderland.uhc.game.player.staff.StaffOptions;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.stats.UHCStats;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.remain.CompMetadata;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -48,15 +47,15 @@ public class UHCPlayer {
     }
 
     public static UHCPlayer getUHCPlayer(Player player) {
-        if (!CompMetadata.hasTempMetadata(player, UHCPLAYER_TAG))
-            CompMetadata.setTempMetadata(player, UHCPLAYER_TAG, new UHCPlayer(player));
+        if (!LegacyFoundationAdapter.hasTempMetadata(player, UHCPLAYER_TAG))
+            LegacyFoundationAdapter.setTempMetadata(player, UHCPLAYER_TAG, new UHCPlayer(player));
 
         return getFromEntity(player);
     }
 
     public static UHCPlayer getFromEntity(Entity entity) {
         try {
-            UHCPlayer uhcPlayer = ( UHCPlayer ) CompMetadata.getTempMetadata(entity, UHCPLAYER_TAG).value();
+            UHCPlayer uhcPlayer = ( UHCPlayer ) LegacyFoundationAdapter.getTempMetadata(entity, UHCPLAYER_TAG).value();
 
             if (entity instanceof Player)
                 uhcPlayer.setEntityPlayer(( Player ) entity);
@@ -86,7 +85,7 @@ public class UHCPlayer {
 
     private void loadStats() {
         this.stats = new UHCStats();
-        Common.runLaterAsync(() -> this.stats = WonderlandUHC.getStatsStorage().loadOrCreate(this));
+        LegacyFoundationAdapter.runLaterAsync(() -> this.stats = WonderlandUHC.getStatsStorage().loadOrCreate(this));
     }
 
 

@@ -2,11 +2,10 @@ package org.mcwonderland.uhc.settings.spawn;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.exception.FoException;
 import org.mineacademy.fo.settings.YamlConfig;
 
 @Getter
@@ -25,17 +24,15 @@ public class UHCSpawn extends YamlConfig {
     }
 
     private Location getLocationSafe(String path) {
-        try {
+        return LegacyFoundationAdapter.getLocationOrDefault(() -> {
             Location location = getLocation(path);
             set = true;
             return location;
-        } catch (FoException | NullPointerException e) {
-            return defaultLocation();
-        }
+        }, this::defaultLocation);
     }
 
     private Location defaultLocation(String... msg) {
-        Common.log(msg);
+        LegacyFoundationAdapter.log(msg);
         return Bukkit.getWorlds().get(0).getSpawnLocation();
     }
 

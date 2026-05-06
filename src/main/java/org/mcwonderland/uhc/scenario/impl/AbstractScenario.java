@@ -6,11 +6,11 @@ import lombok.Setter;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioDisabledEvent;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioEnabledEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.Common;
 
 import java.util.Collection;
 
@@ -49,9 +49,9 @@ public abstract class AbstractScenario implements Scenario {
         this.enabled = true;
 
         if (GameUtils.isGameStarted())
-            this.listeners.forEach(Common::registerEvents);
+            this.listeners.forEach(LegacyFoundationAdapter::registerEvents);
 
-        Common.callEvent(new ScenarioEnabledEvent(this));
+        LegacyFoundationAdapter.callEvent(new ScenarioEnabledEvent(this));
     }
 
     @Override
@@ -59,7 +59,7 @@ public abstract class AbstractScenario implements Scenario {
         onDisable();
         this.enabled = false;
         this.listeners.forEach(HandlerList::unregisterAll);
-        Common.callEvent(new ScenarioDisabledEvent(this));
+        LegacyFoundationAdapter.callEvent(new ScenarioDisabledEvent(this));
     }
 
     @Override

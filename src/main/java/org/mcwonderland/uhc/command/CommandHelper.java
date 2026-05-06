@@ -2,11 +2,11 @@ package org.mcwonderland.uhc.command;
 
 import lombok.experimental.UtilityClass;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.PlayerUtil;
 import org.mineacademy.fo.exception.CommandException;
 import org.mineacademy.fo.settings.SimpleLocalization;
 
@@ -14,7 +14,7 @@ import org.mineacademy.fo.settings.SimpleLocalization;
 public class CommandHelper {
 
     public UHCPlayer findUHCPlayer(String name) {
-        Player player = PlayerUtil.getPlayerByNick(name, false);
+        Player player = LegacyFoundationAdapter.getPlayerByNick(name, false);
 
         if (player == null)
             throw new CommandException(SimpleLocalization.Player.NOT_ONLINE.replace("{player}", name));

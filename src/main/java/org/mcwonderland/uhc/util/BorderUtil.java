@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,8 +15,6 @@ import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.MathUtil;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.ArrayList;
@@ -197,7 +196,7 @@ public class BorderUtil {
     }
 
     public static double getShrinkSpeedPerSecond(int from, int to, int seconds) {
-        return MathUtil.formatFiveDigitsD((from - to) / (seconds * 2D));
+        return LegacyFoundationAdapter.formatFiveDigits((from - to) / (seconds * 2D));
     }
 
     public static int getShrinkSecondsCost() {
@@ -221,7 +220,7 @@ public class BorderUtil {
     }
 
     public static void removeWBBorder(String worldName) {
-        Common.dispatchCommand(null, "wb " + worldName + " clear");
+        LegacyFoundationAdapter.dispatchCommand(null, "wb " + worldName + " clear");
     }
 
     public static void setInitialBorders() {
@@ -244,12 +243,12 @@ public class BorderUtil {
         int radius = getRadius(size) + 1;
 
         String worldName = world.getName();
-        Common.dispatchCommand(null, "wb " + worldName + " set " + radius + " " + radius + " 0 0");
-        Common.dispatchCommand(null, "wb wshape " + worldName + " square");
+        LegacyFoundationAdapter.dispatchCommand(null, "wb " + worldName + " set " + radius + " " + radius + " 0 0");
+        LegacyFoundationAdapter.dispatchCommand(null, "wb wshape " + worldName + " square");
     }
 
     public static int getRadius(int size) {
-        return (int) MathUtil.ceiling(size / 2);
+        return (int) LegacyFoundationAdapter.ceiling(size / 2);
     }
 
 

@@ -2,9 +2,9 @@ package org.mcwonderland.uhc.model.broadcast;
 
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.settings.UHCFiles;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.settings.YamlConfig;
 
@@ -46,7 +46,7 @@ public abstract class AbstractBroadcastSender extends YamlConfig {
 
     private void cleanColorCodes(List<String> list) {
         for (int i = 0; i < list.size(); i++)
-            list.set(i, Common.stripColors(list.get(i)));
+            list.set(i, LegacyFoundationAdapter.stripColors(list.get(i)));
     }
 
     protected abstract void send(List<String> messages);

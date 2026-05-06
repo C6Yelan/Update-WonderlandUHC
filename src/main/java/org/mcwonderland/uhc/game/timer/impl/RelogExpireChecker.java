@@ -5,6 +5,7 @@ import org.mcwonderland.uhc.game.CombatRelog;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.timer.SecondTimer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.BorderUtil;
@@ -14,7 +15,6 @@ import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.mineacademy.fo.Common;
 
 public class RelogExpireChecker extends SecondTimer {
 
@@ -40,7 +40,7 @@ public class RelogExpireChecker extends SecondTimer {
 
     private static void killAndRemove(CombatRelog relog) {
         DamageSource damageSource = DamageSource.builder(DamageType.GENERIC_KILL).build();
-        Common.callEvent(new EntityDeathEvent(relog.getEntity(), damageSource, Lists.newArrayList()));
+        LegacyFoundationAdapter.callEvent(new EntityDeathEvent(relog.getEntity(), damageSource, Lists.newArrayList()));
         relog.getEntity().remove();
         relog.remove();
     }

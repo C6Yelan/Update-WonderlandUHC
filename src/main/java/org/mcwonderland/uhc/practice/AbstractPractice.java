@@ -4,10 +4,9 @@ import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.mcwonderland.uhc.util.Lobby;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.remain.Remain;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,7 +18,7 @@ public abstract class AbstractPractice implements Practice {
 
     @Override
     public final void setup() {
-        getListeners().forEach(Common::registerEvents);
+        getListeners().forEach(LegacyFoundationAdapter::registerEvents);
         onSetup();
     }
 
@@ -58,7 +57,7 @@ public abstract class AbstractPractice implements Practice {
     @Override
     public Iterable<Player> getPlayers() {
         return practicePlayers.stream()
-                .map(Remain::getPlayerByUUID)
+                .map(LegacyFoundationAdapter::getPlayerByUUID)
                 .filter(player -> player != null)
                 .collect(Collectors.toSet());
     }

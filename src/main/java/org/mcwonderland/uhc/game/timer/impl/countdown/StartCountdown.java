@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.timer.Countdown;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -16,8 +17,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.mcwonderland.uhc.util.*;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.model.SimpleReplacer;
 
 public class StartCountdown extends Countdown {
@@ -48,7 +47,7 @@ public class StartCountdown extends Countdown {
             }
         }
 
-        Common.callEvent(new UHCStartedEvent());
+        LegacyFoundationAdapter.callEvent(new UHCStartedEvent());
     }
 
     private static void setupWorlds() {

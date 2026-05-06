@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.settings;
 
-import org.mineacademy.fo.TimeUtil;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.util.List;
 
@@ -239,10 +239,7 @@ public class Messages extends AutoLoadStaticConfig {
         public static String MINUTE, MINUTES;
 
         private static void init() {
-            TimeUtil.SECOND_SYMBOL = SECOND;
-            TimeUtil.SECONDS_SYMBOL = SECONDS;
-            TimeUtil.MINUTE_SYMBOL = MINUTE;
-            TimeUtil.MINUTES_SYMBOL = MINUTES;
+            LegacyFoundationAdapter.configureTimeSymbols(SECOND, SECONDS, MINUTE, MINUTES);
         }
     }
 
