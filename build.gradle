@@ -65,6 +65,9 @@ dependencies {
             transitive = false
         }
     }
+    // Legacy-only transitional dependency.
+    // New code must not import DatouNMS directly; use legacy/LegacyDatouNmsAdapter.
+    // Keep as implementation while the legacy adapter still provides runtime fallbacks.
     implementation 'com.github.lulu2002:DatouNms:1.2.2'
 
     compileOnly 'com.discordsrv:discordsrv:1.25.1'
