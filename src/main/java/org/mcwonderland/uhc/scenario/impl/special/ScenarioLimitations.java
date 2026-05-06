@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.collection.StrictMap;
 import org.mineacademy.fo.model.SimpleSound;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Collection;
 import java.util.List;
@@ -52,9 +51,9 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     @Override
     protected void onConfigReload() {
         limitedBlocks.clear();
-        limitedBlocks.put(CompMaterial.DIAMOND_ORE.getMaterial(), diomandMax);
-        limitedBlocks.put(CompMaterial.GOLD_ORE.getMaterial(), goldMax);
-        limitedBlocks.put(CompMaterial.IRON_ORE.getMaterial(), ironMax);
+        limitedBlocks.put(Material.DIAMOND_ORE, diomandMax);
+        limitedBlocks.put(Material.GOLD_ORE, goldMax);
+        limitedBlocks.put(Material.IRON_ORE, ironMax);
     }
 
     @EventHandler
@@ -78,7 +77,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
 
     private void dropNothing(UHCBlockBreakEvent e) {
         final Collection<ItemStack> blockDrops = e.getBlock().getDrops();
-        blockDrops.forEach(itemStack -> e.replaceDrop(itemStack.getType(), CompMaterial.AIR.getMaterial()));
+        blockDrops.forEach(itemStack -> e.replaceDrop(itemStack.getType(), Material.AIR));
 
         tellCantMine(e.getPlayer(), e.getBlockType());
     }
@@ -120,13 +119,13 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     @Override
     protected List<String> replaceLore(List<String> list) {
         return replaceLore(list,
-                "{diamond-limit}", getLimit(CompMaterial.DIAMOND_ORE),
-                "{gold-limit}", getLimit(CompMaterial.GOLD_ORE),
-                "{iron-limit}", getLimit(CompMaterial.IRON_ORE));
+                "{diamond-limit}", getLimit(Material.DIAMOND_ORE),
+                "{gold-limit}", getLimit(Material.GOLD_ORE),
+                "{iron-limit}", getLimit(Material.IRON_ORE));
     }
 
-    private int getLimit(CompMaterial compMaterial) {
-        return limitedBlocks.get(compMaterial.getMaterial());
+    private int getLimit(Material material) {
+        return limitedBlocks.get(material);
     }
 
     private class OreMined {

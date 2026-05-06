@@ -27,7 +27,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mineacademy.fo.model.SimpleSound;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.HashSet;
 import java.util.List;
@@ -98,15 +97,15 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             Location chestSpawnLoc = entity.getLocation().clone().add(0, 1, 0);
             leftSideChest = chestSpawnLoc.getBlock().getRelative(BlockFace.DOWN);
             RightSideChest = leftSideChest.getRelative(BlockFace.NORTH);
-            leftSideChest.setType(CompMaterial.CHEST.getMaterial());
-            RightSideChest.setType(CompMaterial.CHEST.getMaterial());
+            leftSideChest.setType(Material.CHEST);
+            RightSideChest.setType(Material.CHEST);
             if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
                 NewerSpigotAPI.mergeChest(leftSideChest, RightSideChest);
         }
 
         private void clearUpperBlocks() {
-            leftSideChest.getRelative(BlockFace.UP).setType(CompMaterial.AIR.getMaterial());
-            RightSideChest.getRelative(BlockFace.UP).setType(CompMaterial.AIR.getMaterial());
+            leftSideChest.getRelative(BlockFace.UP).setType(Material.AIR);
+            RightSideChest.getRelative(BlockFace.UP).setType(Material.AIR);
         }
 
         private void addToTimebombs() {
@@ -159,9 +158,8 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             createExplosion(location);
             world.strikeLightning(location);
 
-            Material air = CompMaterial.AIR.getMaterial();
-            block.setType(air);
-            block.getRelative(BlockFace.NORTH).setType(air);
+            block.setType(Material.AIR);
+            block.getRelative(BlockFace.NORTH).setType(Material.AIR);
 
             Chat.broadcast(explodedMessage.replace("{player}", owner.getName()));
             timeBombs.remove(this);

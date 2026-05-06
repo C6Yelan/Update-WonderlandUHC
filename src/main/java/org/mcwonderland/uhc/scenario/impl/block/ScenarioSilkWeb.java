@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.remain.CompMaterial;
 
 /**
  * 2019-12-07 下午 03:12
@@ -25,9 +24,9 @@ public class ScenarioSilkWeb extends ConfigBasedScenario implements Listener {
 
         if (blockType == LegacyFoundationAdapter.materialOf("COBWEB")) {
             if (usingShears(e.getPlayer()))
-                e.replaceDrop(CompMaterial.STRING, CompMaterial.COBWEB);
+                e.replaceDrop(Material.STRING, Material.COBWEB);
             else {
-                e.replaceDrop(CompMaterial.COBWEB, CompMaterial.STRING);
+                e.replaceDrop(Material.COBWEB, Material.STRING);
                 e.setHandleCustom(true);
             }
         }

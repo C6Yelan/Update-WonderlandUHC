@@ -4,13 +4,13 @@ import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.mcwonderland.uhc.util.WorldUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.List;
 
@@ -40,28 +40,28 @@ public class ScenarioCutClean extends ConfigBasedScenario implements Listener {
     }
 
     private void replaceOreDrops(UHCBlockBreakEvent e) {
-        e.replaceDrop(CompMaterial.IRON_ORE, CompMaterial.IRON_INGOT);
-        e.replaceDrop(CompMaterial.GOLD_ORE, CompMaterial.GOLD_INGOT);
-        e.replaceDrop(CompMaterial.GRAVEL, CompMaterial.FLINT);
-        e.replaceDrop(CompMaterial.FLINT, CompMaterial.FLINT);
+        e.replaceDrop(Material.IRON_ORE, Material.IRON_INGOT);
+        e.replaceDrop(Material.GOLD_ORE, Material.GOLD_INGOT);
+        e.replaceDrop(Material.GRAVEL, Material.FLINT);
+        e.replaceDrop(Material.FLINT, Material.FLINT);
     }
 
     private void replaceEntityDrops(EntityType entityType, List<ItemStack> drops) {
         switch (entityType) {
             case CHICKEN:
-                WorldUtils.replaceDrop(drops, CompMaterial.CHICKEN, CompMaterial.COOKED_CHICKEN);
+                WorldUtils.replaceDrop(drops, Material.CHICKEN, Material.COOKED_CHICKEN);
                 break;
             case COW:
-                WorldUtils.replaceDrop(drops, CompMaterial.BEEF, CompMaterial.COOKED_BEEF);
+                WorldUtils.replaceDrop(drops, Material.BEEF, Material.COOKED_BEEF);
                 break;
             case PIG:
-                WorldUtils.replaceDrop(drops, CompMaterial.PORKCHOP, CompMaterial.COOKED_PORKCHOP);
+                WorldUtils.replaceDrop(drops, Material.PORKCHOP, Material.COOKED_PORKCHOP);
                 break;
             case SHEEP:
-                WorldUtils.replaceDrop(drops, CompMaterial.MUTTON, CompMaterial.COOKED_MUTTON);
+                WorldUtils.replaceDrop(drops, Material.MUTTON, Material.COOKED_MUTTON);
                 break;
             case RABBIT:
-                WorldUtils.replaceDrop(drops, CompMaterial.RABBIT, CompMaterial.COOKED_RABBIT);
+                WorldUtils.replaceDrop(drops, Material.RABBIT, Material.COOKED_RABBIT);
                 break;
         }
     }

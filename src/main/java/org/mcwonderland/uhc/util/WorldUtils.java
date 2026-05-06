@@ -8,7 +8,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,10 +38,6 @@ public class WorldUtils {
         return newLocation.add(0.5, 0.5, 0.5);
     }
 
-    public void replaceDrop(List<ItemStack> drops, CompMaterial from, CompMaterial to) {
-        replaceDrop(drops, from.getMaterial(), to.getMaterial());
-    }
-
     public void replaceDrop(List<ItemStack> drops, Material from, Material to) {
         for (int i = 0; i < drops.size(); i++) {
             ItemStack original = drops.get(i);
@@ -52,10 +47,6 @@ public class WorldUtils {
                 drops.set(i, newOne);
             }
         }
-    }
-
-    public int getDropsAmount(List<ItemStack> drops, CompMaterial item) {
-        return getDropsAmount(drops, item.getMaterial());
     }
 
     public int getDropsAmount(List<ItemStack> drops, Material item) {
@@ -79,18 +70,18 @@ public class WorldUtils {
     }
 
     public int getBlockEXP(Material blockType) {
-        if (blockType.toString().contains("REDSTONE_ORE"))
+        String materialName = blockType.name();
+
+        if (materialName.contains("REDSTONE_ORE"))
             return Extra.randomizar(1, 5);
 
-        CompMaterial oreType = CompMaterial.fromMaterial(blockType);
-
-        if (CompMaterial.COAL_ORE == oreType)
+        if (materialName.contains("COAL_ORE"))
             return Extra.randomizar(0, 2);
-        if (CompMaterial.DIAMOND_ORE == oreType || CompMaterial.EMERALD_ORE == oreType)
+        if (materialName.contains("DIAMOND_ORE") || materialName.contains("EMERALD_ORE"))
             return Extra.randomizar(3, 7);
-        if (CompMaterial.LAPIS_ORE == oreType || CompMaterial.NETHER_QUARTZ_ORE == oreType)
+        if (materialName.contains("LAPIS_ORE") || materialName.contains("NETHER_QUARTZ_ORE"))
             return Extra.randomizar(2, 5);
-        if (CompMaterial.IRON_ORE == oreType || CompMaterial.GOLD_ORE == oreType)
+        if (materialName.contains("IRON_ORE") || materialName.contains("GOLD_ORE"))
             return 1;
 
         return 0;

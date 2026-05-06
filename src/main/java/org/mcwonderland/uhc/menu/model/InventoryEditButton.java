@@ -8,12 +8,12 @@ import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.InventorySaver;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mineacademy.fo.menu.button.config.conversation.ConfigInventoryEditorButton;
 import org.mineacademy.fo.menu.config.ItemPath;
-import org.mineacademy.fo.remain.CompMaterial;
 
 public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
     private final String TO_HEAD_INPUT = "tohead";
@@ -81,7 +81,7 @@ public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
         }
 
         private void change() {
-            if (player.getItemInHand().getType() == CompMaterial.GOLDEN_APPLE.getMaterial())
+            if (player.getItemInHand().getType() == Material.GOLDEN_APPLE)
                 changeGoldenAppleToGoldenHead();
             else
                 Chat.sendConversing(player, Messages.Editor.Inventory.TO_HEAD_FAILED);

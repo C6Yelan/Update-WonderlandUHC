@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,18 +57,9 @@ public class UHCBlockBreakEvent extends UHCPlayerEvent {
         return blockBreakEvent.getBlock().getType();
     }
 
-    public void removeDrop(CompMaterial... materials) {
-        for (CompMaterial material : materials)
-            removeDrop(material.getMaterial());
-    }
-
     public void removeDrop(Material... materials) {
         for (Material material : materials)
-            replaceDrop(material, CompMaterial.AIR.getMaterial());
-    }
-
-    public void replaceDrop(CompMaterial from, CompMaterial to) {
-        replaceDrop(from.getMaterial(), to.getMaterial());
+            replaceDrop(material, Material.AIR);
     }
 
     public void replaceDrop(Material from, Material to) {
