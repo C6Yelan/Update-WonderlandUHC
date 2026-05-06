@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.util;
 
-import me.lulu.datounms.model.RecipeHelper;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -62,7 +62,7 @@ public class Extra {
         gMeta.setDisplayName(Settings.Misc.GOLDEN_HEAD_NAME);
         goldenHead.setItemMeta(gMeta);
 
-        ShapedRecipe goldenHeadRecipe = RecipeHelper.getNewShapedRecipe(goldenHead);
+        ShapedRecipe goldenHeadRecipe = new ShapedRecipe(new NamespacedKey(WonderlandUHC.getInstance(), "golden_head"), goldenHead);
         goldenHeadRecipe.shape("@@@", "@#@", "@@@");
 
         goldenHeadRecipe.setIngredient('@', CompMaterial.GOLD_INGOT.getMaterial());

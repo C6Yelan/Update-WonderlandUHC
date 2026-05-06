@@ -8,12 +8,12 @@ import org.mcwonderland.uhc.bootstrap.DependencyReport;
 import org.mcwonderland.uhc.bootstrap.FeatureRegistry;
 import org.mcwonderland.uhc.bootstrap.PluginBootstrap;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.practice.Practice;
 import org.mcwonderland.uhc.practice.SimplePractice;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
 import org.mcwonderland.uhc.settings.spawn.Spawns;
 import org.mcwonderland.uhc.stats.storages.StatsStorage;
-import org.mineacademy.fo.Common;
 import org.mineacademy.fo.plugin.SimplePlugin;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public class WonderlandUHC extends SimplePlugin {
         bootstrap.loadFiles();
         bootstrap.setupNms();
         featureRegistry.registerListeners(this::registerEvents);
-        featureRegistry.registerCommandGroups(this::registerCommands);
+        featureRegistry.registerCommandGroups(LegacyFoundationAdapter.commandGroupRegistrar(this::registerCommands));
         featureRegistry.registerCommands(this::registerCommand);
         bootstrap.createPluginAssets();
         featureRegistry.setupPractice(practice);
@@ -61,12 +61,12 @@ public class WonderlandUHC extends SimplePlugin {
 
         bootstrap.scheduleDelayedStartupTasks(featureRegistry);
 
-        Common.setTellPrefix("");
+        LegacyFoundationAdapter.setTellPrefix("");
     }
 
     @Override
     protected void onPluginReload() {
-        new FeatureRegistry(this).registerCommandGroups(this::registerCommands);
+        new FeatureRegistry(this).registerCommandGroups(LegacyFoundationAdapter.commandGroupRegistrar(this::registerCommands));
         scenarioManager.reloadAll();
         UHCGameSettingsSaver.reloadFromFile();
     }

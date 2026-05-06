@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario;
 
 import com.google.common.collect.Lists;
+import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.scenario.impl.block.*;
 import org.mcwonderland.uhc.scenario.impl.block.*;
@@ -71,8 +72,7 @@ public class ScenarioManager {
     }
 
     public void registerDefaults() {
-        Lists.newArrayList(
-                new ScenarioArmorVsHealth(ScenarioName.ARMOR_VS_HEALTH),
+        List<Scenario> defaults = Lists.newArrayList(
                 new ScenarioAbsorptionLess(ScenarioName.ABSORPTION_LESS),
                 new ScenarioBackPack(ScenarioName.BACKPACK),
                 new ScenarioBenchBlitz(ScenarioName.BENCH_BLITZ),
@@ -110,6 +110,11 @@ public class ScenarioManager {
                 new ScenarioTripleOres(ScenarioName.TRIPLE_ORES),
                 new ScenarioVanillaPlus(ScenarioName.VANILLA_PLUS),
                 new ScenarioVeinMiners(ScenarioName.VEIN_MINERS)
-        ).forEach(this::register);
+        );
+
+        if (Dependency.PACKET_LISTENER_API.isHooked())
+            defaults.add(new ScenarioArmorVsHealth(ScenarioName.ARMOR_VS_HEALTH));
+
+        defaults.forEach(this::register);
     }
 }

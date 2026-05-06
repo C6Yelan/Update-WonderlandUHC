@@ -39,6 +39,8 @@ import org.mcwonderland.uhc.listener.StatsListener;
 import org.mcwonderland.uhc.listener.ToolListener;
 import org.mcwonderland.uhc.listener.WorldFillListener;
 import org.mcwonderland.uhc.listener.WorldInitListener;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter.CommandGroupRegistrar;
 import org.mcwonderland.uhc.model.tutorial.model.TutorialListener;
 import org.mcwonderland.uhc.populator.Populator;
 import org.mcwonderland.uhc.practice.Practice;
@@ -46,8 +48,6 @@ import org.mcwonderland.uhc.scenario.ScenarioListener;
 import org.mcwonderland.uhc.scoreboard.ScoreBoardUpdater;
 import org.mcwonderland.uhc.scoreboard.ScoreListener;
 import org.mcwonderland.uhc.scoreboard.SidebarTheme;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.command.SimpleCommandGroup;
 
 import java.util.function.Consumer;
 
@@ -102,17 +102,17 @@ public final class FeatureRegistry {
             registerCommand.accept(new TestCommand("test"));
     }
 
-    public void registerCommandGroups(Consumer<SimpleCommandGroup> registerCommandGroup) {
+    public void registerCommandGroups(CommandGroupRegistrar registerCommandGroup) {
         Lists.newArrayList(
                 new UHCMainCommandGroup("uhc"),
                 new TeamCommandGroup("team"),
                 new WhitelistCommandGroup("whitelist|wl")
-        ).forEach(registerCommandGroup);
+        ).forEach(registerCommandGroup::register);
     }
 
     public void registerDefaultScenarios() {
         plugin.getScenarioManager().registerDefaults();
-        Common.callEvent(new ScenarioInitEvent());
+        LegacyFoundationAdapter.callEvent(new ScenarioInitEvent());
     }
 
     public void loadScoreboardThemes() {
@@ -129,7 +129,8 @@ public final class FeatureRegistry {
     }
 
     public void registerPacketListeners() {
-        PacketRegister.registerPacketListeners();
+        if (Dependency.PACKET_LISTENER_API.isHooked())
+            PacketRegister.registerPacketListeners();
     }
 
     public void setupPractice(Practice practice) {

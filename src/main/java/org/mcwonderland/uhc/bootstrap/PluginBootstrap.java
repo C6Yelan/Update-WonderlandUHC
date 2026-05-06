@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.game.GameTimerRunnable;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.ButtonLocalization;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
@@ -31,14 +32,6 @@ import org.mcwonderland.uhc.util.ChunkFiller;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.mcwonderland.uhc.util.VersionComparator;
-import org.mineacademy.fo.Common;
-import org.mineacademy.fo.FileUtil;
-import org.mineacademy.fo.MinecraftVersion;
-import org.mineacademy.fo.exception.FoException;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.model.SimpleSound;
-import org.mineacademy.fo.remain.CompSound;
 
 public final class PluginBootstrap {
 
@@ -61,15 +54,15 @@ public final class PluginBootstrap {
     }
 
     public void loadFiles() {
-        UHCFiles.getFileNames().forEach(FileUtil::extract);
-        FileUtil.extract(UHCFiles.PERMISSIONS, UHCFiles.PERMISSIONS);
+        UHCFiles.getFileNames().forEach(LegacyFoundationAdapter::extractFile);
+        LegacyFoundationAdapter.extractFile(UHCFiles.PERMISSIONS, UHCFiles.PERMISSIONS);
     }
 
     public void setupNms() {
         try {
             DaTouNMS.setup(plugin);
         } catch (UnSupportedNmsException e) {
-            throw new FoException("&cUnsupported version, this plugin only support 1.8 ~ 1.16");
+            LegacyFoundationAdapter.log("&eDaTouNMS does not support this Minecraft version; legacy NMS-backed features will be unavailable.");
         }
     }
 
@@ -77,7 +70,7 @@ public final class PluginBootstrap {
         DependencyReport report = new DependencyReport();
 
         checkRequiredDependency(report, Dependency.WORLD_BORDER);
-        checkRequiredDependency(report, Dependency.PACKET_LISTENER_API);
+        checkOptionalDependency(report, Dependency.PACKET_LISTENER_API);
         checkWorldBorderVer();
 
         if (Dependency.CUSTOM_ORE_GENERATOR.isHooked())
@@ -91,13 +84,13 @@ public final class PluginBootstrap {
     }
 
     private void logDependencyReport(DependencyReport report) {
-        Common.log("&7Dependency status:");
+        LegacyFoundationAdapter.log("&7Dependency status:");
 
         for (DependencyReport.Entry entry : report.getEntries()) {
             String status = entry.isAvailable() ? "&aAvailable" : entry.isDisabled() ? "&eDisabled" : "&cUnavailable";
             String reason = entry.getReason().isEmpty() ? "" : " &7(" + entry.getReason() + ")";
 
-            Common.log("&7- &f" + entry.getDependency().getPluginName() + "&7: " + status + reason);
+            LegacyFoundationAdapter.log("&7- &f" + entry.getDependency().getPluginName() + "&7: " + status + reason);
         }
     }
 
@@ -110,13 +103,20 @@ public final class PluginBootstrap {
         dependency.check();
     }
 
+    private void checkOptionalDependency(DependencyReport report, Dependency dependency) {
+        if (dependency.isHooked())
+            report.markAvailable(dependency);
+        else
+            report.markDisabled(dependency, "Plugin is not hooked.");
+    }
+
     private void checkCustomOreGenerator(DependencyReport report) {
         try {
             Class.forName("de.derfrzocker.custom.ore.generator.api.OreSettingContainer");
             report.markAvailable(Dependency.CUSTOM_ORE_GENERATOR);
         } catch (ClassNotFoundException e) {
             report.markUnavailable(Dependency.CUSTOM_ORE_GENERATOR, "Installed plugin version is too old.");
-            throw new FoException("&cCustomOreGenerator 版本過舊，請至 &f"
+            throw LegacyFoundationAdapter.failure("&cCustomOreGenerator 版本過舊，請至 &f"
                     + Dependency.CUSTOM_ORE_GENERATOR.getDownloadUrl() +
                     " &c下載最新版本！");
         }
@@ -125,20 +125,18 @@ public final class PluginBootstrap {
     @SneakyThrows
     private void checkWorldBorderVer() {
         Dependency worldBorder = Dependency.WORLD_BORDER;
-        boolean newer = MinecraftVersion.atLeast(MinecraftVersion.V.v1_13);
+        boolean newer = LegacyFoundationAdapter.isAtLeastMinecraft1_13();
         boolean usingNewerWb = VersionComparator.isNewerThan(worldBorder.getVersion(), "1.8.7");
 
         if (newer && !usingNewerWb) {
-            Common.log(new SimpleReplacer(Messages.Dependency.USING_OLD_WORLD_BORDER_IN_NEW_VERSION)
-                    .replace("{link}", worldBorder.getDownloadUrl())
-                    .toArray());
+            LegacyFoundationAdapter.logReplacing(Messages.Dependency.USING_OLD_WORLD_BORDER_IN_NEW_VERSION, "{link}", worldBorder.getDownloadUrl());
             Thread.sleep(3 * 1000);
             return;
         }
 
         if (!newer && usingNewerWb) {
             Thread.sleep(3 * 1000);
-            throw new FoException(Messages.Dependency.CHANGE_TO_OLDER_WORLD_BORDER_VERSION
+            throw LegacyFoundationAdapter.failure(Messages.Dependency.CHANGE_TO_OLDER_WORLD_BORDER_VERSION
                     .replace("{link}", worldBorder.getDownloadUrl()));
         }
     }
@@ -152,7 +150,7 @@ public final class PluginBootstrap {
 
     public void configureFoundationLibrary() {
         ButtonLocalization.load();
-        Menu.setSound(new SimpleSound(CompSound.NOTE_STICKS.getSound(), 0, 0));
+        LegacyFoundationAdapter.configureMenuClickSound();
     }
 
     public void registerPluginChannels() {
@@ -221,8 +219,8 @@ public final class PluginBootstrap {
     }
 
     public void logPluginEnabledMessage() {
-        Common.logNoPrefix(
-                Common.consoleLineSmooth(),
+        LegacyFoundationAdapter.logNoPrefix(
+                LegacyFoundationAdapter.consoleLineSmooth(),
                 " _    _                 _           _                 _   _   _ _   _ _____",
                 "| |  | |               | |         | |               | | | | | | | | /  __ \\",
                 "| |  | | ___  _ __   __| | ___ _ __| | __ _ _ __   __| | | | | | |_| | /  \\/",
@@ -234,6 +232,6 @@ public final class PluginBootstrap {
                 "&3Version: &f" + plugin.getDescription().getVersion(),
                 "",
                 "&3Enjoy your own UHC time!",
-                Common.consoleLineSmooth());
+                LegacyFoundationAdapter.consoleLineSmooth());
     }
 }
