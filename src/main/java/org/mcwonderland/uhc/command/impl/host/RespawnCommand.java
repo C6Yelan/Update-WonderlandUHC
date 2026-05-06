@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.command.impl.host;
 
-import me.lulu.datounms.DaTouNMS;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerRespawnedEvent;
 import org.mcwonderland.uhc.command.CommandHelper;
@@ -8,6 +7,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
@@ -88,7 +88,7 @@ public class RespawnCommand extends SimpleCommand {
             inv.setContents(target);
             target.setLevel(level);
             target.setExp(exp);
-            DaTouNMS.getCommonNMS().setCanPickupExp(target, true);
+            LegacyDatouNmsAdapter.current().setCanPickupExp(target, true);
             target.setCollidable(true);
             target.teleport(toTeleport);
         }

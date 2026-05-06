@@ -1,9 +1,8 @@
 package org.mcwonderland.uhc.util;
 
 import lombok.experimental.UtilityClass;
-import me.lulu.datounms.DaTouNMS;
-import me.lulu.datounms.model.ArmorInfo;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -12,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.CompMaterial;
 
 /**
  * 2019-12-08 上午 09:16
@@ -49,7 +47,7 @@ public class PlayerUtils {
         double absorption = 0;
 
         if (entity instanceof Player)
-            absorption = DaTouNMS.getCommonNMS().getAbsorptionHeart(( Player ) entity);
+            absorption = LegacyDatouNmsAdapter.current().getAbsorptionHearts(( Player ) entity);
 
         return health + absorption;
     }
@@ -92,13 +90,7 @@ public class PlayerUtils {
     }
 
     private double getArmorPoints(ItemStack itemStack) {
-        try {
-            CompMaterial material = CompMaterial.fromMaterial(itemStack.getType());
-            ArmorInfo info = ArmorInfo.fromMaterial(material.getMaterial());
-            return DaTouNMS.getCommonNMS().getArmorPoint(info);
-        } catch (RuntimeException ex) {
-            return 0;
-        }
+        return LegacyDatouNmsAdapter.current().getArmorPoints(itemStack.getType());
     }
 
     public boolean isShieldBlocked(EntityDamageEvent e) {

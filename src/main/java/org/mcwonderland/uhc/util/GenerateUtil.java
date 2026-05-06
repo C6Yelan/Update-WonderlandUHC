@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.util;
 
-import me.lulu.datounms.DaTouNMS;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Random;
@@ -63,7 +63,7 @@ public class GenerateUtil {
                                 for (int i5 = m; i5 <= i2; i5++) {
                                     double d15 = (i5 + 0.5D - d9) / (d11 / 2.0D);
                                     if ((d13 * d13 + d14 * d14 + d15 * d15 < 1.0D) && isStoneOrRack(world.getBlockAt(i3, i4, i5))) {
-                                        DaTouNMS.getWorldNMS().setBlockSuperFast(world, i3, i4, i5, type.getMaterial(), (byte) type.getData(), false);
+                                        LegacyDatouNmsAdapter.current().setBlockFast(world, i3, i4, i5, type.getMaterial(), (byte) type.getData(), false);
                                     }
                                 }
                             }

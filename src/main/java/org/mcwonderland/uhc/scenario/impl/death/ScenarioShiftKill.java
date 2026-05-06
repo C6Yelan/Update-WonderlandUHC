@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.death;
 
-import me.lulu.datounms.DaTouNMS;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.entity.LivingEntity;
@@ -31,7 +31,7 @@ public class ScenarioShiftKill extends ConfigBasedScenario implements Listener {
     }
 
     private void costHalfHealth(Player killer) {
-        double fullHeath = killer.getHealth() + DaTouNMS.getCommonNMS().getAbsorptionHeart(killer);
-        killer.damage(fullHeath / 2);
+        double fullHealth = killer.getHealth() + LegacyDatouNmsAdapter.current().getAbsorptionHearts(killer);
+        killer.damage(fullHealth / 2);
     }
 }

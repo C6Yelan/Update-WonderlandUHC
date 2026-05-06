@@ -1,8 +1,6 @@
 package org.mcwonderland.uhc.bootstrap;
 
 import lombok.SneakyThrows;
-import me.lulu.datounms.DaTouNMS;
-import me.lulu.datounms.UnSupportedNmsException;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
@@ -11,6 +9,7 @@ import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.menu.ButtonLocalization;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
@@ -59,11 +58,7 @@ public final class PluginBootstrap {
     }
 
     public void setupNms() {
-        try {
-            DaTouNMS.setup(plugin);
-        } catch (UnSupportedNmsException e) {
-            LegacyFoundationAdapter.log("&eDaTouNMS does not support this Minecraft version; legacy NMS-backed features will be unavailable.");
-        }
+        LegacyDatouNmsAdapter.initialize(plugin);
     }
 
     public DependencyReport checkDependencies() {

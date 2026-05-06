@@ -3,9 +3,9 @@ package org.mcwonderland.uhc.scenario.impl.death;
 import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import me.lulu.datounms.model.NewerSpigotAPI;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
@@ -100,7 +100,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             leftSideChest.setType(Material.CHEST);
             RightSideChest.setType(Material.CHEST);
             if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
-                NewerSpigotAPI.mergeChest(leftSideChest, RightSideChest);
+                LegacyDatouNmsAdapter.current().mergeLargeChest(leftSideChest, RightSideChest);
         }
 
         private void clearUpperBlocks() {

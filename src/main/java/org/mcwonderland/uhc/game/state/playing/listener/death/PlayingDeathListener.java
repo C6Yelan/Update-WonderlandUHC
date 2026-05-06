@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.game.state.playing.listener.death;
 
-import me.lulu.datounms.DaTouNMS;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.CombatRelog;
@@ -8,6 +7,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.settings.Messages;
@@ -60,7 +60,7 @@ public class PlayingDeathListener implements Listener {
         uhcPlayer.changeSpectatorRole();
         checkDeathKick(player);
         if (Settings.Misc.DEATH_ANIMATION)
-            DaTouNMS.getCommonNMS().playDeathAnimation(player);
+            LegacyDatouNmsAdapter.current().playDeathAnimation(player);
     }
 
     private void checkDeathKick(Player player) {

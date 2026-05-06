@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.scoreboard;
 
 import com.google.common.collect.Sets;
 import lombok.Getter;
-import me.lulu.datounms.DaTouNMS;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -16,6 +15,7 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 
@@ -182,7 +182,7 @@ public final class SimpleScores {
             }
 
             for (Player o : LegacyFoundationAdapter.getOnlinePlayers())
-                tabHeal.getScore(o.getName()).setScore(( int ) (o.getHealth() + DaTouNMS.getCommonNMS().getAbsorptionHeart(o)));
+                tabHeal.getScore(o.getName()).setScore(( int ) (o.getHealth() + LegacyDatouNmsAdapter.current().getAbsorptionHearts(o)));
         }
     }
 

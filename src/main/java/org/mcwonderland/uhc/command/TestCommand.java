@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.command;
 
-import me.lulu.datounms.DaTouNMS;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.practice.SimplePractice;
 import org.mcwonderland.uhc.tools.spectator.OverworldPlayersItem;
@@ -48,7 +48,7 @@ public class TestCommand extends SimpleCommand {
         } else if ("perm".equalsIgnoreCase(param)) {
             System.out.println(UHCPermission.BYPASS_KICK_DEATH.hasPerm(findPlayer("LU__LU")));
         } else if ("ani".equalsIgnoreCase(param)) {
-            DaTouNMS.getCommonNMS().playDeathAnimation(getPlayer());
+            LegacyDatouNmsAdapter.current().playDeathAnimation(getPlayer());
         } else if ("menu".equalsIgnoreCase(param)) {
             OverworldPlayersItem.getInstance().give(getPlayer());
         } else if ("bb".equalsIgnoreCase(param)) {

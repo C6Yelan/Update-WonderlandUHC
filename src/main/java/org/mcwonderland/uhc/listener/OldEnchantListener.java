@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.listener;
 
-import me.lulu.datounms.DaTouNMS;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,11 +19,11 @@ public class OldEnchantListener implements Listener {
     @EventHandler
     public void prepareItemEnchant(PrepareItemEnchantEvent e) {
         if (Settings.OldEnchant.RANDOM_ENCHANT)
-            DaTouNMS.getEnchantHandler().randomizeSeed(e);
+            LegacyDatouNmsAdapter.current().randomizeEnchantSeed(e);
         if (Settings.OldEnchant.OLD_ENCHANT_COST)
-            DaTouNMS.getEnchantHandler().oldEnchantCosts(e);
+            LegacyDatouNmsAdapter.current().applyOldEnchantCosts(e);
         if (Settings.OldEnchant.HIDE_ENCHANT)
-            DaTouNMS.getEnchantHandler().hideEnchants(e);
+            LegacyDatouNmsAdapter.current().hideEnchants(e);
     }
 
     @EventHandler

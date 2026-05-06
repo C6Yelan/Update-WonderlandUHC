@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.util;
 
 import lombok.experimental.UtilityClass;
-import me.lulu.datounms.DaTouNMS;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
@@ -63,10 +63,8 @@ public class WorldUtils {
         if (value == 0)
             return;
 
-        if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
-            DaTouNMS.getWorldNMS().spawnOrb(l, amount, value);
-        else
-            DaTouNMS.getWorldNMS().spawnOrb(l.add(0.5, 0.5, 0.5), amount, value);
+        Location location = LegacyFoundationAdapter.isAtLeastMinecraft1_13() ? l : l.clone().add(0.5, 0.5, 0.5);
+        LegacyDatouNmsAdapter.current().spawnExpOrb(location, amount, value);
     }
 
     public int getBlockEXP(Material blockType) {

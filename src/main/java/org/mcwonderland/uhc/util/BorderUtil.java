@@ -1,11 +1,11 @@
 package org.mcwonderland.uhc.util;
 
 import lombok.AllArgsConstructor;
-import me.lulu.datounms.DaTouNMS;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
+import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
@@ -100,7 +100,7 @@ public class BorderUtil {
                                     break;
                             }
                             block = block.getRelative(BlockFace.UP);
-                            DaTouNMS.getWorldNMS().setBlockSuperFast(block.getLocation(), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
+                            LegacyDatouNmsAdapter.current().setBlockFast(block.getLocation(), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
                             preBorderBlocks.add(block.getLocation());
                         }
                     }
@@ -138,7 +138,7 @@ public class BorderUtil {
         } else {
             preBlocksNumber.put(world, preBlocksNumber.get(world) + 1);
             for (Location loc : preBorderBlocks) {
-                DaTouNMS.getWorldNMS().setBlockSuperFast(loc.clone().add(0, preBlocksNumber.get(world), 0), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
+                LegacyDatouNmsAdapter.current().setBlockFast(loc.clone().add(0, preBlocksNumber.get(world), 0), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
             }
         }
     }
