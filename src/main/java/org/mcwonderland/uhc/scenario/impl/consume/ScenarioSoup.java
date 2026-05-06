@@ -10,8 +10,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.List;
 
@@ -41,17 +39,16 @@ public class ScenarioSoup extends ConfigBasedScenario implements Listener {
     }
 
     private boolean isSoup(ItemStack itemInHand) {
-        return itemInHand != null && itemInHand.getType() == CompMaterial.MUSHROOM_STEW.getMaterial();
+        return itemInHand != null && itemInHand.getType() == LegacyFoundationAdapter.materialOf("MUSHROOM_STEW");
     }
 
     private void soupRegen(Player player, ItemStack soupItem) {
-        soupItem.setType(CompMaterial.BOWL.getMaterial());
+        soupItem.setType(LegacyFoundationAdapter.materialOf("BOWL"));
         player.setHealth(LegacyFoundationAdapter.range(player.getHealth() + soupRegenHealth, 0, LegacyFoundationAdapter.getMaxHealth(player)));
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replace("{heal}", soupRegenHealth);
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLore(list, "{heal}", soupRegenHealth);
     }
 }

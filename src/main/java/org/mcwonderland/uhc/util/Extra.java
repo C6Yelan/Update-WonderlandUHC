@@ -14,9 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.mineacademy.fo.BungeeUtil;
-import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompAttribute;
-import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.remain.CompProperty;
 
 import java.io.File;
@@ -57,7 +55,7 @@ public class Extra {
     }
 
     public static void createHead() {
-        ItemStack goldenHead = CompMaterial.GOLDEN_APPLE.toItem();
+        ItemStack goldenHead = LegacyFoundationAdapter.itemOf("GOLDEN_APPLE");
         ItemMeta gMeta = goldenHead.getItemMeta();
         gMeta.setDisplayName(Settings.Misc.GOLDEN_HEAD_NAME);
         goldenHead.setItemMeta(gMeta);
@@ -65,25 +63,25 @@ public class Extra {
         ShapedRecipe goldenHeadRecipe = new ShapedRecipe(new NamespacedKey(WonderlandUHC.getInstance(), "golden_head"), goldenHead);
         goldenHeadRecipe.shape("@@@", "@#@", "@@@");
 
-        goldenHeadRecipe.setIngredient('@', CompMaterial.GOLD_INGOT.getMaterial());
-        goldenHeadRecipe.setIngredient('#', CompMaterial.PLAYER_HEAD.getMaterial());
+        goldenHeadRecipe.setIngredient('@', LegacyFoundationAdapter.materialOf("GOLD_INGOT"));
+        goldenHeadRecipe.setIngredient('#', LegacyFoundationAdapter.materialOf("PLAYER_HEAD"));
         Bukkit.getServer().addRecipe(goldenHeadRecipe);
     }
 
-    public static void sound(Player player, SimpleSound sound) {
-        sound.play(player);
+    public static void sound(Player player, Object sound) {
+        LegacyFoundationAdapter.playSound(player, sound);
     }
 
-    public static void sound(Collection<Player> players, SimpleSound sound) {
-        sound.play(players);
+    public static void sound(Collection<Player> players, Object sound) {
+        LegacyFoundationAdapter.playSound(players, sound);
     }
 
-    public static void sound(Location location, SimpleSound sound) {
-        sound.play(location);
+    public static void sound(Location location, Object sound) {
+        LegacyFoundationAdapter.playSound(location, sound);
     }
 
-    public static void sound(SimpleSound sound) {
-        sound.play(( Collection ) LegacyFoundationAdapter.getOnlinePlayers());
+    public static void sound(Object sound) {
+        LegacyFoundationAdapter.playGlobalSound(sound);
     }
 
     public static void potion(Player p, PotionEffectType type, int duration, int amplifier, boolean displayEffect) {
@@ -173,7 +171,7 @@ public class Extra {
             final Block block = w.getBlockAt(x, y, z);
             final Block above = block.getRelative(BlockFace.UP);
             final Block down = block.getRelative(BlockFace.DOWN);
-            if (y != -1 && CompMaterial.isAir(block) && CompMaterial.isAir(above)
+            if (y != -1 && LegacyFoundationAdapter.isAir(block) && LegacyFoundationAdapter.isAir(above)
                     && down.getType().isSolid())
                 return new Location(w, x, y, z);
         }
@@ -182,7 +180,7 @@ public class Extra {
 
     public static final int getHighestPoint(World w, int x, int z) {
         for (int y = w.getMaxHeight(); y >= 0; y--) {
-            if (!CompMaterial.isAir(w.getBlockAt(x, y, z)))
+            if (!LegacyFoundationAdapter.isAir(w.getBlockAt(x, y, z)))
                 return y + 1;
         }
         return -1;

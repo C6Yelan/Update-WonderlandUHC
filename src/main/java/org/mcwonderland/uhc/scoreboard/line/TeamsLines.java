@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.scoreboard.line;
 
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
 
@@ -13,17 +12,17 @@ public class TeamsLines extends SoloLines {
     }
 
     @Override
-    protected SimpleReplacer replace(UHCPlayer uhcPlayer, SimpleReplacer simpleReplacer) {
-        SimpleReplacer replace = super.replace(uhcPlayer, simpleReplacer);
+    protected List<String> replace(UHCPlayer uhcPlayer, List<String> lines) {
+        List<String> replacedLines = super.replace(uhcPlayer, lines);
         UHCTeam team = uhcPlayer.getTeam();
 
         if (team == null)
-            return replace;
+            return replacedLines;
 
-        return replace
-                .replace("{team_name}", team.getName())
-                .replace("{team_color}", team.getColor())
-                .replace("{team_kills}", team.getKills());
+        return replaceLines(replacedLines,
+                "{team_name}", team.getName(),
+                "{team_color}", team.getColor(),
+                "{team_kills}", team.getKills());
 
     }
 }

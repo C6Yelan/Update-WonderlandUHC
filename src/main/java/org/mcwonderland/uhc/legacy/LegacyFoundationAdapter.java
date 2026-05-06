@@ -3,6 +3,8 @@ package org.mcwonderland.uhc.legacy;
 import org.bukkit.command.CommandSender;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -24,11 +26,14 @@ import org.mineacademy.fo.Valid;
 import org.mineacademy.fo.command.SimpleCommandGroup;
 import org.mineacademy.fo.exception.FoException;
 import org.mineacademy.fo.menu.Menu;
+import org.mineacademy.fo.model.BoxedMessage;
 import org.mineacademy.fo.model.ChunkKeeper;
+import org.mineacademy.fo.model.SimpleComponent;
 import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompSound;
 import org.mineacademy.fo.remain.CompMetadata;
+import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.remain.Remain;
 import org.mineacademy.fo.remain.nbt.ObjectCreator;
 
@@ -69,6 +74,46 @@ public final class LegacyFoundationAdapter {
 
     public static void logReplacing(List<String> messages, String placeholder, Object value) {
         Common.log(new SimpleReplacer(messages).replace(placeholder, value).toArray());
+    }
+
+    public static String[] replaceToArray(String message, Object... replacements) {
+        return new SimpleReplacer(message).replaceArray(replacements).toArray();
+    }
+
+    public static String[] replaceToArray(List<String> messages, Object... replacements) {
+        return new SimpleReplacer(messages).replaceArray(replacements).toArray();
+    }
+
+    public static String replaceToString(String message, Object... replacements) {
+        return new SimpleReplacer(message).replaceArray(replacements).getMessages();
+    }
+
+    public static String replaceToString(List<String> messages, Object... replacements) {
+        return new SimpleReplacer(messages).replaceArray(replacements).getMessages();
+    }
+
+    public static List<String> replaceToList(String message, Object... replacements) {
+        return new SimpleReplacer(message).replaceArray(replacements).buildList();
+    }
+
+    public static List<String> replaceToList(List<String> messages, Object... replacements) {
+        return new SimpleReplacer(messages).replaceArray(replacements).buildList();
+    }
+
+    public static List<String> replaceJoinedToList(List<String> messages, String placeholder, Collection<?> values, String delimiter) {
+        return new SimpleReplacer(messages).replace(placeholder, values, delimiter).buildList();
+    }
+
+    public static String[] replaceTimeToArray(List<String> messages, Number seconds) {
+        return new SimpleReplacer(messages).replaceTime(seconds).toArray();
+    }
+
+    public static String replaceTimeToString(String message, Number seconds) {
+        return new SimpleReplacer(message).replaceTime(seconds).getMessages();
+    }
+
+    public static List<String> replaceTimeToList(List<String> messages, Number seconds) {
+        return new SimpleReplacer(messages).replaceTime(seconds).buildList();
     }
 
     public static void error(Throwable throwable, String... messages) {
@@ -143,6 +188,27 @@ public final class LegacyFoundationAdapter {
         Remain.sendActionBar(player, message);
     }
 
+    public static void tellBoxed(Player player, String... messages) {
+        BoxedMessage.tell(player, messages);
+    }
+
+    public static void broadcastBoxed(String... messages) {
+        BoxedMessage.broadcast(messages);
+    }
+
+    public static void sendRunCommandComponent(Player player, String message, String command) {
+        SimpleComponent.of(message)
+                .onClickRunCmd(command)
+                .send(player);
+    }
+
+    public static void sendRunCommandComponent(Player player, String message, String command, String hover) {
+        SimpleComponent.of(message)
+                .onClickRunCmd(command)
+                .onHover(hover)
+                .send(player);
+    }
+
     public static String colorize(String message) {
         return Common.colorize(message);
     }
@@ -208,6 +274,62 @@ public final class LegacyFoundationAdapter {
 
     public static boolean isSimilar(ItemStack first, ItemStack second) {
         return ItemUtil.isSimilar(first, second);
+    }
+
+    public static Material materialOf(String materialName) {
+        return CompMaterial.fromStringStrict(materialName).getMaterial();
+    }
+
+    public static ItemStack itemOf(String materialName) {
+        return CompMaterial.fromStringStrict(materialName).toItem();
+    }
+
+    public static ItemStack itemOf(String materialName, int amount) {
+        return CompMaterial.fromStringStrict(materialName).toItem(amount);
+    }
+
+    public static boolean isAir(Block block) {
+        return CompMaterial.isAir(block);
+    }
+
+    public static boolean isAir(Material material) {
+        return CompMaterial.isAir(material);
+    }
+
+    public static boolean isLeaves(Material material) {
+        return CompMaterial.isLeaves(material);
+    }
+
+    public static boolean isLog(Material material) {
+        return CompMaterial.isLog(material);
+    }
+
+    public static boolean isLongGrass(Material material) {
+        return CompMaterial.isLongGrass(material);
+    }
+
+    public static boolean isDoublePlant(Material material) {
+        return CompMaterial.isDoublePlant(material);
+    }
+
+    public static void playSound(Player player, Object sound) {
+        ((SimpleSound) sound).play(player);
+    }
+
+    public static void playSound(Collection<Player> players, Object sound) {
+        ((SimpleSound) sound).play(players);
+    }
+
+    public static void playSound(Location location, Object sound) {
+        ((SimpleSound) sound).play(location);
+    }
+
+    public static void playGlobalSound(Object sound) {
+        ((SimpleSound) sound).play((Collection) getOnlinePlayers());
+    }
+
+    public static void playItemBreakSound(Player player) {
+        CompSound.ITEM_BREAK.play(player, 0.5F, 1F);
     }
 
     public static String bountifyCapitalized(Enum<?> value) {

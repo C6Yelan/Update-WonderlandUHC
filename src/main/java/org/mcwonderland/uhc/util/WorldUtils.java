@@ -22,7 +22,7 @@ public class WorldUtils {
 
     public void dropItems(Location l, ItemStack... items) {
         for (ItemStack i : items) {
-            if (CompMaterial.isAir(i.getType()))
+            if (LegacyFoundationAdapter.isAir(i.getType()))
                 return;
 
             l.getWorld().dropItemNaturally(centerOfBlock(l), i);

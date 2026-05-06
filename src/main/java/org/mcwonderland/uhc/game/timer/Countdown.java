@@ -3,10 +3,10 @@ package org.mcwonderland.uhc.game.timer;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameTimerRunnable;
 import org.mcwonderland.uhc.game.settings.sub.UHCTimerSettings;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
 import org.jetbrains.annotations.Nullable;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 public abstract class Countdown extends SecondTimer {
 
@@ -46,9 +46,7 @@ public abstract class Countdown extends SecondTimer {
             String broadcast = getCountdownBroadcast();
 
             if (broadcast != null)
-                Chat.broadcast(new SimpleReplacer(broadcast)
-                        .replaceTime(untilEnable)
-                        .getMessages());
+                Chat.broadcast(LegacyFoundationAdapter.replaceTimeToString(broadcast, untilEnable));
         }
     }
 

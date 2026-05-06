@@ -3,11 +3,11 @@ package org.mcwonderland.uhc.game.state.share.join;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 public class DefaultJoinMessage implements JoinBehavior {
 
@@ -18,19 +18,19 @@ public class DefaultJoinMessage implements JoinBehavior {
         Game game = e.getGame();
 
         if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE) {
-            Chat.send(player, new SimpleReplacer(Messages.Lobby.WELCOME_MSG)
-                    .replace("{player}", player.getName())
-                    .replace("{host}", game.getHost())
-                    .replace("{title}", game.getSettings().getTitle())
-                    .toArray());
+            Chat.send(player, LegacyFoundationAdapter.replaceToArray(
+                    Messages.Lobby.WELCOME_MSG,
+                    "{player}", player.getName(),
+                    "{host}", game.getHost(),
+                    "{title}", game.getSettings().getTitle()));
 
             Chat.broadcast(Messages.Lobby.PLAYER_JOIN_MSG
                     .replace("{player}", player.getName())
                     .replace("{online}", "" + Extra.getOnlinePlayers())
                     .replace("{max}", "" + Game.getSettings().getMaxPlayers()));
         } else
-            Chat.send(player, new SimpleReplacer(Messages.Lobby.WELCOME_MSG_CONFIGURING)
-                    .replace("{cmd}", "uhc tutorial config")
-                    .getMessages());
+            Chat.send(player, LegacyFoundationAdapter.replaceToString(
+                    Messages.Lobby.WELCOME_MSG_CONFIGURING,
+                    "{cmd}", "uhc tutorial config"));
     }
 }

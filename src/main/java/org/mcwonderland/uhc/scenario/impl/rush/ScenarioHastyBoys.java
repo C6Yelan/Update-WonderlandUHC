@@ -2,13 +2,13 @@ package org.mcwonderland.uhc.scenario.impl.rush;
 
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.CompMaterial;
 
 /**
  * 2019-12-07 下午 03:12
@@ -26,9 +26,7 @@ public class ScenarioHastyBoys extends ConfigBasedScenario implements Listener {
         if (result == null)
             return;
 
-        CompMaterial craftItemType = CompMaterial.fromMaterial(result.getType());
-
-        if (isTool(craftItemType))
+        if (isTool(result.getType()))
             e.getInventory().setResult(applyHastyEnchants(result));
     }
 
@@ -37,8 +35,8 @@ public class ScenarioHastyBoys extends ConfigBasedScenario implements Listener {
         return result;
     }
 
-    private boolean isTool(CompMaterial type) {
-        String typeName = type.toString();
+    private boolean isTool(Material type) {
+        String typeName = type.name();
 
         return typeName.contains("AXE")
                 || typeName.contains("SHOVEL")

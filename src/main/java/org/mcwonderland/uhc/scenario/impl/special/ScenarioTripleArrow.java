@@ -12,7 +12,6 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.mineacademy.fo.remain.CompMaterial;
 
 /**
  * 2019-12-07 下午 03:12
@@ -70,6 +69,6 @@ public class ScenarioTripleArrow extends ConfigBasedScenario implements Listener
     }
 
     private ItemStack getArrowsInInventory(Player shooter) {
-        return LegacyFoundationAdapter.getFirstItem(shooter, CompMaterial.ARROW.toItem());
+        return LegacyFoundationAdapter.getFirstItem(shooter, LegacyFoundationAdapter.itemOf("ARROW"));
     }
 }

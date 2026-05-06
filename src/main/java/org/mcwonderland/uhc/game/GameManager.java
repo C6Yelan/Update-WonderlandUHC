@@ -15,8 +15,6 @@ import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.List;
 
@@ -35,7 +33,9 @@ public class GameManager {
     public static Block getHighestBlock(World world, int x, int z) {
         for (int runY = world.getMaxHeight(); runY > 0; runY--) { // get highest block
             Block temp = world.getBlockAt(x, runY, z);
-            if (!CompMaterial.isAir(temp) && !CompMaterial.isLongGrass(temp.getType()) && !CompMaterial.isDoublePlant(temp.getType())) {
+            if (!LegacyFoundationAdapter.isAir(temp)
+                    && !LegacyFoundationAdapter.isLongGrass(temp.getType())
+                    && !LegacyFoundationAdapter.isDoublePlant(temp.getType())) {
                 return temp;
             }
         }
@@ -82,12 +82,11 @@ public class GameManager {
 
     private static List<String> getWinningMsg(UHCTeam winner) {
 
-        SimpleReplacer simpleReplacer = new SimpleReplacer(Messages.Game.VICTORY_BROADCAST)
-                .replace("{winner}", winner.getName())
-                .replace("{kills}", "" + winner.getKills())
-                .replace("{host}", Game.getGame().getHost());
-
-        List<String> list = simpleReplacer.buildList();
+        List<String> list = LegacyFoundationAdapter.replaceToList(
+                Messages.Game.VICTORY_BROADCAST,
+                "{winner}", winner.getName(),
+                "{kills}", "" + winner.getKills(),
+                "{host}", Game.getGame().getHost());
 
         //todo 優化code
         for (int i = 0; i < list.size(); i++) {

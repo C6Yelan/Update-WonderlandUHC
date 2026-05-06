@@ -2,28 +2,36 @@ package org.mcwonderland.uhc.scoreboard.line;
 
 
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mineacademy.fo.model.SimpleReplacer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.util.List;
 
 public abstract class ScoreLines {
 
     private final List<String> lines;
-    private SimpleReplacer currentGlobalReplacedLines;
+    private List<String> currentGlobalReplacedLines;
 
     public ScoreLines(List<String> lines) {
         this.lines = lines;
     }
 
     public List<String> getFor(UHCPlayer uhcPlayer) {
-        return replace(uhcPlayer, currentGlobalReplacedLines.clone()).buildList();
+        return replace(uhcPlayer, currentGlobalReplacedLines);
     }
 
     public void updateGlobalVariables() {
-        currentGlobalReplacedLines = replaceGlobal(new SimpleReplacer(lines));
+        currentGlobalReplacedLines = replaceGlobal(lines);
     }
 
-    protected abstract SimpleReplacer replace(UHCPlayer uhcPlayer, SimpleReplacer simpleReplacer);
+    protected List<String> replace(UHCPlayer uhcPlayer, List<String> lines) {
+        return lines;
+    }
 
-    protected abstract SimpleReplacer replaceGlobal(SimpleReplacer simpleReplacer);
+    protected List<String> replaceGlobal(List<String> lines) {
+        return lines;
+    }
+
+    protected final List<String> replaceLines(List<String> lines, Object... replacements) {
+        return LegacyFoundationAdapter.replaceToList(lines, replacements);
+    }
 }

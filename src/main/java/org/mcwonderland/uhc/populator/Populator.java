@@ -8,10 +8,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.hook.CustomOreGeneratorHook;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.bukkit.World;
 import org.mineacademy.fo.collection.SerializedMap;
-import org.mineacademy.fo.model.BoxedMessage;
 import org.mineacademy.fo.model.ConfigSerializable;
 import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.settings.YamlConfig;
@@ -36,7 +36,7 @@ public class Populator extends YamlConfig implements ConfigSerializable {
             if (populator.getPathPrefix().equalsIgnoreCase(name))
                 return populator;
 
-        BoxedMessage.broadcast("&cCan't find any populator that named '" + name + "', using default one");
+        LegacyFoundationAdapter.broadcastBoxed("&cCan't find any populator that named '" + name + "', using default one");
         return defaultPopulator();
     }
 

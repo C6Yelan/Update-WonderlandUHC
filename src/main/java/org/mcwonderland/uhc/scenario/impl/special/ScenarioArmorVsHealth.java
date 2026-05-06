@@ -17,7 +17,6 @@ import org.inventivetalent.packetlistener.PacketListenerAPI;
 import org.inventivetalent.packetlistener.handler.PacketHandler;
 import org.inventivetalent.packetlistener.handler.ReceivedPacket;
 import org.inventivetalent.packetlistener.handler.SentPacket;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +47,7 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
         UHCPlayer uhcPlayer = e.getUhcPlayer();
         Player player = uhcPlayer.getPlayer();
 
-        Chat.send(player, new SimpleReplacer(Warn_Msg).replaceTime(Apply_Within_Seconds).toArray());
+        Chat.send(player, LegacyFoundationAdapter.replaceTimeToArray(Warn_Msg, Apply_Within_Seconds));
 
         LegacyFoundationAdapter.runLater(Apply_Within_Seconds * 20, () -> {
             if (!uhcPlayer.isDead()) {

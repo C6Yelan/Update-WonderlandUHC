@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.consume;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -12,7 +13,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.mineacademy.fo.model.SimpleSound;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,11 +74,9 @@ public class ScenarioFoodNeophobia extends ConfigBasedScenario implements Listen
     }
 
     private boolean isIgnoredItem(Material material) {
-        CompMaterial type = CompMaterial.fromMaterial(material);
-
-        return type == CompMaterial.MILK_BUCKET
-                || type == CompMaterial.GOLDEN_APPLE
-                || type == CompMaterial.ENCHANTED_GOLDEN_APPLE
-                || type == CompMaterial.POTION;
+        return material == LegacyFoundationAdapter.materialOf("MILK_BUCKET")
+                || material == LegacyFoundationAdapter.materialOf("GOLDEN_APPLE")
+                || material == LegacyFoundationAdapter.materialOf("ENCHANTED_GOLDEN_APPLE")
+                || material == LegacyFoundationAdapter.materialOf("POTION");
     }
 }

@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,7 @@ public class ScenarioDiamondLess extends ConfigBasedScenario implements Listener
 
     @EventHandler
     public void onBlockBreak(UHCBlockBreakEvent e) {
-        if (e.getBlockType() == CompMaterial.DIAMOND_ORE.getMaterial())
+        if (e.getBlockType() == LegacyFoundationAdapter.materialOf("DIAMOND_ORE"))
             e.removeDrop(CompMaterial.DIAMOND, CompMaterial.DIAMOND_ORE);
     }
 }

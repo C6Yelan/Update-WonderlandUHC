@@ -8,7 +8,6 @@ import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.Player;
 import org.mineacademy.fo.command.SimpleSubCommand;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 /**
  * 2019-11-24 下午 12:50
@@ -43,7 +42,7 @@ public class ChooseWorldCommand extends SimpleSubCommand {
     }
 
     private void kickPlayers() {
-        String msg = new SimpleReplacer(CommandSettings.Uhc.Choose.KICK_INIT_MSG).getMessages();
+        String msg = LegacyFoundationAdapter.replaceToString(CommandSettings.Uhc.Choose.KICK_INIT_MSG);
 
         for (Player player : LegacyFoundationAdapter.getOnlinePlayers())
             LegacyFoundationAdapter.kickPlayer(player, msg);

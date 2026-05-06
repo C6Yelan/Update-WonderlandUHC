@@ -3,9 +3,7 @@ package org.mcwonderland.uhc.scoreboard.line;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.StateName;
 import org.mcwonderland.uhc.game.UHCTeam;
-import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.timer.Timers;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
 
@@ -16,18 +14,13 @@ public class StartingLines extends LobbyLines {
     }
 
     @Override
-    protected SimpleReplacer replace(UHCPlayer uhcPlayer, SimpleReplacer simpleReplacer) {
-        return super.replace(uhcPlayer, simpleReplacer);
-    }
-
-    @Override
-    protected SimpleReplacer replaceGlobal(SimpleReplacer simpleReplacer) {
+    protected List<String> replaceGlobal(List<String> lines) {
         int teleported = Timers.SCATTER.getTeleportedNumbers();
         int teleporting = UHCTeam.getTeams().size() - teleported;
 
-        return super.replaceGlobal(simpleReplacer)
-                .replace("{start_in}", Game.getGame().getCurrentStateName() == StateName.TELEPORTING ? "--:--" : Timers.getUntilEnableFormat(Timers.START))
-                .replace("{teleporting}", teleporting)
-                .replace("{teleported}", teleported);
+        return replaceLines(super.replaceGlobal(lines),
+                "{start_in}", Game.getGame().getCurrentStateName() == StateName.TELEPORTING ? "--:--" : Timers.getUntilEnableFormat(Timers.START),
+                "{teleporting}", teleporting,
+                "{teleported}", teleported);
     }
 }

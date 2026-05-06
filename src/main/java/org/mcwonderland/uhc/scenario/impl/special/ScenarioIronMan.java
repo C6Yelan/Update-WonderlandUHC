@@ -17,7 +17,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.HashSet;
 import java.util.List;
@@ -93,7 +92,7 @@ public class ScenarioIronMan extends ConfigBasedScenario implements Listener {
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list).replace("{heal}", extraHeal);
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLore(list, "{heal}", extraHeal);
     }
 }

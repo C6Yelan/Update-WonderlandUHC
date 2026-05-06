@@ -11,7 +11,6 @@ import org.bukkit.event.inventory.FurnaceBurnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.BlockVector;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
         LegacyFoundationAdapter.runTimer(0, 1, new BukkitRunnable() {
             @Override
             public void run() {
-                if (block.getType() != CompMaterial.FURNACE.getMaterial()) {
+                if (block.getType() != LegacyFoundationAdapter.materialOf("FURNACE")) {
                     this.cancel();
                     return;
                 }
@@ -65,7 +64,7 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
 
     private boolean needUpdate(Furnace furnace) {
         ItemStack smelting = furnace.getInventory().getSmelting();
-        boolean hasItemToSmelt = smelting != null && smelting.getType() != CompMaterial.AIR.getMaterial();
+        boolean hasItemToSmelt = smelting != null && smelting.getType() != LegacyFoundationAdapter.materialOf("AIR");
         boolean isFueling = furnace.getInventory().getFuel() != null || furnace.getBurnTime() > 0;
 
 

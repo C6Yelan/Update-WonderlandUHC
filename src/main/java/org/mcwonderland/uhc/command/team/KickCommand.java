@@ -4,8 +4,8 @@ import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 class KickCommand extends TeamOwnerCommand {
 
@@ -28,9 +28,9 @@ class KickCommand extends TeamOwnerCommand {
         checkExecuteSelf(target);
         checkInTeam(target);
 
-        team.sendMessage(new SimpleReplacer(CommandSettings.Team.Kick.KICKED)
-                .replace("{player}", target.getName())
-                .toArray());
+        team.sendMessage(LegacyFoundationAdapter.replaceToArray(
+                CommandSettings.Team.Kick.KICKED,
+                "{player}", target.getName()));
 
         team.leave(target);
     }

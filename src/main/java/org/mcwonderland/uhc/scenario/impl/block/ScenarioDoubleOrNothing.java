@@ -9,7 +9,6 @@ import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.model.SimpleSound;
 
 import java.util.List;
@@ -46,8 +45,7 @@ public class ScenarioDoubleOrNothing extends ConfigBasedScenario implements List
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replace("{materials}", triggerBlocks, " - ");
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLoreJoined(list, "{materials}", triggerBlocks, " - ");
     }
 }

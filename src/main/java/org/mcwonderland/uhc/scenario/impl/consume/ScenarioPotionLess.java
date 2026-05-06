@@ -9,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Collection;
 
@@ -29,7 +28,7 @@ public class ScenarioPotionLess extends ConfigBasedScenario implements Listener 
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDrinkPotion(PlayerItemConsumeEvent e) {
-        if (e.getItem().getType() == CompMaterial.POTION.getMaterial())
+        if (e.getItem().getType() == LegacyFoundationAdapter.materialOf("POTION"))
             e.setCancelled(true);
     }
 

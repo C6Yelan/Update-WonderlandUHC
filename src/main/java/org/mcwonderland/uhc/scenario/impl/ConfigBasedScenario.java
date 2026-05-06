@@ -1,17 +1,17 @@
 package org.mcwonderland.uhc.scenario.impl;
 
 import com.google.common.collect.Lists;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mineacademy.fo.menu.model.ItemCreator;
-import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.remain.CompMaterial;
 
+import java.util.Collection;
 import java.util.List;
 
 public abstract class ConfigBasedScenario extends AbstractScenario {
 
     public ConfigBasedScenario(ScenarioName name) {
-        super(name.capitalize(), CompMaterial.AIR.toItem());
+        super(name.capitalize(), LegacyFoundationAdapter.itemOf("AIR"));
     }
 
     @Override
@@ -30,7 +30,7 @@ public abstract class ConfigBasedScenario extends AbstractScenario {
 
     private List<String> getDesc(List<String> description) {
         try {
-            return replaceLore(description).buildList();
+            return replaceLore(description);
         } catch (Exception ex) {
             ex.printStackTrace();
             return Lists.newArrayList();
@@ -42,8 +42,20 @@ public abstract class ConfigBasedScenario extends AbstractScenario {
 
     }
 
-    protected SimpleReplacer replaceLore(List<String> description) {
-        return new SimpleReplacer(description);
+    protected List<String> replaceLore(List<String> description) {
+        return LegacyFoundationAdapter.replaceToList(description);
+    }
+
+    protected final List<String> replaceLore(List<String> description, Object... replacements) {
+        return LegacyFoundationAdapter.replaceToList(description, replacements);
+    }
+
+    protected final List<String> replaceLoreJoined(List<String> description, String placeholder, Collection<?> values, String delimiter) {
+        return LegacyFoundationAdapter.replaceJoinedToList(description, placeholder, values, delimiter);
+    }
+
+    protected final List<String> replaceLoreTime(List<String> description, Number seconds) {
+        return LegacyFoundationAdapter.replaceTimeToList(description, seconds);
     }
 
     private ScenarioConfig getNewConfig() {

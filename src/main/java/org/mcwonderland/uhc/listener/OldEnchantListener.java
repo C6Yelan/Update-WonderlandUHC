@@ -13,7 +13,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mineacademy.fo.remain.CompMaterial;
 
 public class OldEnchantListener implements Listener {
 
@@ -76,7 +75,7 @@ public class OldEnchantListener implements Listener {
 
     public void fillLapis(Inventory inventory) {
         if (Settings.OldEnchant.LAPIS && inventory.getType() == InventoryType.ENCHANTING) {
-            inventory.setItem(1, CompMaterial.LAPIS_LAZULI.toItem(64));
+            inventory.setItem(1, LegacyFoundationAdapter.itemOf("LAPIS_LAZULI", 64));
         }
     }
 }

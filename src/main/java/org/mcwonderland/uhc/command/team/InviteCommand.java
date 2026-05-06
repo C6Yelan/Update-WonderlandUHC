@@ -4,11 +4,10 @@ import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.model.SimpleComponent;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 class InviteCommand extends TeamOwnerCommand {
 
@@ -32,10 +31,10 @@ class InviteCommand extends TeamOwnerCommand {
         checkInvitationValid(team, target);
 
         team.addInvited(target);
-        team.sendMessage(new SimpleReplacer(CommandSettings.Team.Invite.INVITED)
-                .replace("{player}", player.getName())
-                .replace("{target}", target.getName())
-                .toArray());
+        team.sendMessage(LegacyFoundationAdapter.replaceToArray(
+                CommandSettings.Team.Invite.INVITED,
+                "{player}", player.getName(),
+                "{target}", target.getName()));
 
         sendInvitation(target);
     }
@@ -55,10 +54,11 @@ class InviteCommand extends TeamOwnerCommand {
         for (String s : CommandSettings.Team.Invite.INVITATION_MESSAGES) {
             if (s.contains("{click-join}")) {
                 String clickHere = CommandSettings.Team.Invite.CLICK_HERE;
-                SimpleComponent.of(s.replace("{click-join}", clickHere))
-                        .onClickRunCmd("/team join " + getPlayer().getName())
-                        .onHover(clickHere)
-                        .send(target);
+                LegacyFoundationAdapter.sendRunCommandComponent(
+                        target,
+                        s.replace("{click-join}", clickHere),
+                        "/team join " + getPlayer().getName(),
+                        clickHere);
             } else
                 Chat.send(target, s.replace("{player}", getPlayer().getName()));
         }

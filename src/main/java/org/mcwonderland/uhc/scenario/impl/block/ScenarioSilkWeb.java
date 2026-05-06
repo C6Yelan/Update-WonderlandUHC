@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.Material;
@@ -22,7 +23,7 @@ public class ScenarioSilkWeb extends ConfigBasedScenario implements Listener {
     public void onBreakCobweb(UHCBlockBreakEvent e) {
         Material blockType = e.getBlockType();
 
-        if (blockType == CompMaterial.COBWEB.getMaterial()) {
+        if (blockType == LegacyFoundationAdapter.materialOf("COBWEB")) {
             if (usingShears(e.getPlayer()))
                 e.replaceDrop(CompMaterial.STRING, CompMaterial.COBWEB);
             else {
@@ -33,6 +34,6 @@ public class ScenarioSilkWeb extends ConfigBasedScenario implements Listener {
     }
 
     private boolean usingShears(Player player) {
-        return player.getEquipment().getItemInHand().getType() == CompMaterial.SHEARS.getMaterial();
+        return player.getEquipment().getItemInHand().getType() == LegacyFoundationAdapter.materialOf("SHEARS");
     }
 }

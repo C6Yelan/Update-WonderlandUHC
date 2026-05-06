@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.menu.impl.host;
 
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.scoreboard.SidebarTheme;
 import org.mcwonderland.uhc.scoreboard.line.ScoreLines;
@@ -12,7 +13,6 @@ import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.config.ConfigMenuPagged;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.model.ConfigItem;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
 
@@ -40,9 +40,7 @@ public class SidebarThemeSettingsMenu extends ConfigMenuPagged<SidebarTheme> {
 
     private List<String> getPreview(SidebarTheme theme, List<String> lore) {
 
-        return new SimpleReplacer(lore)
-                .replace("{theme_preview}", getTestLinesIn(theme).getFor(uhcPlayer))
-                .buildList();
+        return LegacyFoundationAdapter.replaceToList(lore, "{theme_preview}", getTestLinesIn(theme).getFor(uhcPlayer));
     }
 
     private ScoreLines getTestLinesIn(SidebarTheme theme) {

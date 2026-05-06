@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.mcwonderland.uhc.util.Extra;
@@ -10,7 +11,6 @@ import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerAnimationEvent;
 import org.bukkit.event.player.PlayerAnimationType;
 import org.bukkit.potion.PotionEffectType;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,7 +43,7 @@ public class ScenarioFastObsidian extends ConfigBasedScenario implements Listene
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if (e.getBlock().getType() == CompMaterial.OBSIDIAN.getMaterial())
+        if (e.getBlock().getType() == LegacyFoundationAdapter.materialOf("OBSIDIAN"))
             miningPlayers.add(uuid);
         else
             miningPlayers.remove(uuid);

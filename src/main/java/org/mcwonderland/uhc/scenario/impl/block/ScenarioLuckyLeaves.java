@@ -11,8 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.LeavesDecayEvent;
-import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.List;
 
@@ -35,18 +33,17 @@ public class ScenarioLuckyLeaves extends ConfigBasedScenario implements Listener
 
     @EventHandler
     protected void onBlockBreak(UHCBlockBreakEvent e) {
-        if (CompMaterial.isLeaves(e.getBlockType()))
+        if (LegacyFoundationAdapter.isLeaves(e.getBlockType()))
             randomDropGoldenApple(e.getBlock());
     }
 
     private void randomDropGoldenApple(Block block) {
         if (LegacyFoundationAdapter.chance(goldenApplePercent))
-            WorldUtils.dropItems(block.getLocation(), CompMaterial.GOLDEN_APPLE.toItem());
+            WorldUtils.dropItems(block.getLocation(), LegacyFoundationAdapter.itemOf("GOLDEN_APPLE"));
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replace("{percent}", goldenApplePercent);
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLore(list, "{percent}", goldenApplePercent);
     }
 }

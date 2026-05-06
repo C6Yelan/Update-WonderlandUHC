@@ -17,7 +17,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 public class StartCountdown extends Countdown {
 
@@ -76,9 +75,9 @@ public class StartCountdown extends Countdown {
 
     @Override
     public String getToggledBroadcast() {
-        Chat.broadcast(new SimpleReplacer(Messages.CountDown.GAME_STARTED)
-                .replace("{host}", Game.getGame().getHost())
-                .toArray());
+        Chat.broadcast(LegacyFoundationAdapter.replaceToArray(
+                Messages.CountDown.GAME_STARTED,
+                "{host}", Game.getGame().getHost()));
         Extra.sound(Sounds.Countdown.Start.RUN);
         return null;
     }

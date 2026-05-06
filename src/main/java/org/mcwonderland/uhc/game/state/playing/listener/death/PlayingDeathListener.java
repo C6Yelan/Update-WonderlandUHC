@@ -21,7 +21,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,9 +72,11 @@ public class PlayingDeathListener implements Listener {
                 .replace("{time}", "" + seconds));
 
         LegacyFoundationAdapter.runLater(seconds * 20, () -> {
-            LegacyFoundationAdapter.kickPlayer(player, new SimpleReplacer(Messages.Spectator.DEATH_KICK_MESSAGE)
-                    .replace("{player}", player.getName())
-                    .getMessages());
+            LegacyFoundationAdapter.kickPlayer(
+                    player,
+                    LegacyFoundationAdapter.replaceToString(
+                            Messages.Spectator.DEATH_KICK_MESSAGE,
+                            "{player}", player.getName()));
         });
     }
 

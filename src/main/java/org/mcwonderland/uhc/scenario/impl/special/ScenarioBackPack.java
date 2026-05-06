@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,9 +45,8 @@ public class ScenarioBackPack extends ConfigBasedScenario implements Listener {
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replace("{cmd}", "backpack");
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLore(list, "{cmd}", "backpack");
     }
 
     private void dropBackpackItems(Inventory backpack, List<ItemStack> drops) {

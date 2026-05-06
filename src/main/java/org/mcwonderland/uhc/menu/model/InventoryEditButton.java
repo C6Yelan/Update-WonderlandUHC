@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.menu.model;
 
 import lombok.RequiredArgsConstructor;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -12,7 +13,6 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mineacademy.fo.menu.button.config.conversation.ConfigInventoryEditorButton;
 import org.mineacademy.fo.menu.config.ItemPath;
-import org.mineacademy.fo.model.SimpleComponent;
 import org.mineacademy.fo.remain.CompMaterial;
 
 public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
@@ -45,15 +45,8 @@ public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
     protected abstract String getMessage();
 
     protected void tellComponents(Player player) {
-        SimpleComponent
-                .of(Messages.Editor.Inventory.CLICK_TO_HEAD)
-                .onClickRunCmd(TO_HEAD_INPUT)
-                .send(player);
-
-        SimpleComponent
-                .of(Messages.Editor.CLICK_FINISH)
-                .onClickRunCmd(FINISH_INPUT)
-                .send(player);
+        LegacyFoundationAdapter.sendRunCommandComponent(player, Messages.Editor.Inventory.CLICK_TO_HEAD, TO_HEAD_INPUT);
+        LegacyFoundationAdapter.sendRunCommandComponent(player, Messages.Editor.CLICK_FINISH, FINISH_INPUT);
     }
 
     @Override

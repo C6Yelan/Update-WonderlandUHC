@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.game.border.blockborder;
 
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.mcwonderland.uhc.util.UniqueQueue;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
@@ -9,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -39,13 +39,13 @@ public class BlockBorder implements Listener {
 
         if (distanceToBorder(nextLocation) > TRIGGER_RANGE) {
             for (Location location : recent)
-                player.sendBlockChange(location, CompMaterial.AIR.getMaterial(), (byte) 0);
+                player.sendBlockChange(location, LegacyFoundationAdapter.materialOf("AIR"), (byte) 0);
             return;
         }
 
         Set<Location> sphere = Cuboid.selectLocations(nextLocation, TRIGGER_RANGE)
                 .stream()
-                .filter(loc -> isBorderLocation(loc) && CompMaterial.isAir(loc.getBlock()))
+                .filter(loc -> isBorderLocation(loc) && LegacyFoundationAdapter.isAir(loc.getBlock()))
                 .collect(Collectors.toSet());
 
         UniqueQueue<Location> noChangeLocations = new UniqueQueue<>();
@@ -56,13 +56,13 @@ public class BlockBorder implements Listener {
             if (sphere.remove(location))
                 noChangeLocations.add(location);
             else
-                player.sendBlockChange(location, CompMaterial.AIR.getMaterial(), (byte) 0);
+                player.sendBlockChange(location, LegacyFoundationAdapter.materialOf("AIR"), (byte) 0);
         }
 
         recent.addAll(noChangeLocations);
 
         for (Location location : sphere) {
-            player.sendBlockChange(location, CompMaterial.BEDROCK.getMaterial(), (byte) 0);
+            player.sendBlockChange(location, LegacyFoundationAdapter.materialOf("BEDROCK"), (byte) 0);
             recent.add(location);
         }
     }

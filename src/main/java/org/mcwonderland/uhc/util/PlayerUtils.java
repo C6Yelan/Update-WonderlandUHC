@@ -13,7 +13,6 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.remain.CompMaterial;
-import org.mineacademy.fo.remain.CompSound;
 
 /**
  * 2019-12-08 上午 09:16
@@ -62,7 +61,7 @@ public class PlayerUtils {
             if (isItemReachedMaxDurability(itemInHand)) {
                 itemInHand.setAmount(0);
                 p.updateInventory();
-                CompSound.ITEM_BREAK.play(p, 0.5F, 1F);
+                LegacyFoundationAdapter.playItemBreakSound(p);
             }
         }
     }

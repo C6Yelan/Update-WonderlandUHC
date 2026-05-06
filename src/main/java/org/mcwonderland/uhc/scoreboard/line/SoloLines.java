@@ -1,7 +1,6 @@
 package org.mcwonderland.uhc.scoreboard.line;
 
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
 
@@ -12,8 +11,7 @@ public class SoloLines extends GameLines {
     }
 
     @Override
-    protected SimpleReplacer replace(UHCPlayer uhcPlayer, SimpleReplacer simpleReplacer) {
-        return super.replace(uhcPlayer, simpleReplacer)
-                .replace("{kills}", uhcPlayer.getStats().kills);
+    protected List<String> replace(UHCPlayer uhcPlayer, List<String> lines) {
+        return replaceLines(super.replace(uhcPlayer, lines), "{kills}", uhcPlayer.getStats().kills);
     }
 }

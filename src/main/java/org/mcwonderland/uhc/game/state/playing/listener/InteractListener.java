@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.game.state.playing.listener;
 import lombok.val;
 import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
 import org.mcwonderland.uhc.util.cuboid.SelectMode;
 import org.bukkit.Bukkit;
@@ -16,7 +17,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
-import org.mineacademy.fo.remain.CompMaterial;
 
 public class InteractListener implements Listener {
 
@@ -38,8 +38,8 @@ public class InteractListener implements Listener {
 
         if (action == Action.PHYSICAL) {
             if (uhcPlayer.isDead()) {
-                if (type == CompMaterial.FARMLAND.getMaterial()
-                        || type == CompMaterial.TRIPWIRE.getMaterial()
+                if (type == LegacyFoundationAdapter.materialOf("FARMLAND")
+                        || type == LegacyFoundationAdapter.materialOf("TRIPWIRE")
                         || type.toString().contains("PLATE")) {
                     e.setCancelled(true);
                 }
@@ -60,7 +60,7 @@ public class InteractListener implements Listener {
             }
         } else if (action == Action.LEFT_CLICK_BLOCK) {
             if (uhcPlayer.isDead()) {
-                Material fire = CompMaterial.FIRE.getMaterial();
+                Material fire = LegacyFoundationAdapter.materialOf("FIRE");
                 e.setCancelled(Cuboid.getBlocksNearBy(clickedBlock, SelectMode.CUBE)
                         .anyMatch(block -> block.getType() == fire));
             }

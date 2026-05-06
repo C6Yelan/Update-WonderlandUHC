@@ -12,7 +12,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.collection.StrictMap;
-import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -119,11 +118,11 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replace("{diamond-limit}", getLimit(CompMaterial.DIAMOND_ORE))
-                .replace("{gold-limit}", getLimit(CompMaterial.GOLD_ORE))
-                .replace("{iron-limit}", getLimit(CompMaterial.IRON_ORE));
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLore(list,
+                "{diamond-limit}", getLimit(CompMaterial.DIAMOND_ORE),
+                "{gold-limit}", getLimit(CompMaterial.GOLD_ORE),
+                "{iron-limit}", getLimit(CompMaterial.IRON_ORE));
     }
 
     private int getLimit(CompMaterial compMaterial) {

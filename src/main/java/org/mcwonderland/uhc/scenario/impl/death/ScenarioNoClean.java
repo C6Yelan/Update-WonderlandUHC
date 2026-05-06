@@ -9,7 +9,6 @@ import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
 
@@ -26,9 +25,8 @@ public class ScenarioNoClean extends ConfigBasedScenario implements Listener {
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replaceTime(invincibleSeconds);
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLoreTime(list, invincibleSeconds);
     }
 
     @EventHandler

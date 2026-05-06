@@ -8,7 +8,6 @@ import org.mcwonderland.uhc.util.PlayerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.List;
 
@@ -36,8 +35,7 @@ public class ScenarioLessBowDamage extends ConfigBasedScenario implements Listen
 
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replace("{percent}", decreasePercent);
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLore(list, "{percent}", decreasePercent);
     }
 }

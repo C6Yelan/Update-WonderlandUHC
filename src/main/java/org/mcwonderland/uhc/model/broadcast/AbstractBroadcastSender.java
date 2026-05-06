@@ -5,7 +5,6 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.settings.UHCFiles;
-import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.settings.YamlConfig;
 
 import java.util.List;
@@ -32,12 +31,12 @@ public abstract class AbstractBroadcastSender extends YamlConfig {
     private List<String> getPlaceholderReplacedNewList(GameStartTimeInfo info) {
         List<String> list = GamePlaceholderReplacer.replace(broadCastMessageModel);
 
-        list = new SimpleReplacer(list)
-                .replace("{host}", Game.getGame().getHost())
-                .replace("{ip}", info.getIp())
-                .replace("{join_time}", info.getJoinTime())
-                .replace("{start_time}", info.getStartTime())
-                .buildList();
+        list = LegacyFoundationAdapter.replaceToList(
+                list,
+                "{host}", Game.getGame().getHost(),
+                "{ip}", info.getIp(),
+                "{join_time}", info.getJoinTime(),
+                "{start_time}", info.getStartTime());
 
         cleanColorCodes(list);
 

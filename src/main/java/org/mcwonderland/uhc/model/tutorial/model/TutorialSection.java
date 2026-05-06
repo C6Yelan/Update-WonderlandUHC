@@ -1,14 +1,14 @@
 package org.mcwonderland.uhc.model.tutorial.model;
 
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.model.BoxedMessage;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 public abstract class TutorialSection {
 
     public static final TutorialSection END_TUTORIAL = null;
 
     protected void show(Player player) {
-        BoxedMessage.tell(player, getMessages());
+        LegacyFoundationAdapter.tellBoxed(player, getMessages());
     }
 
     public boolean isLastOne() {

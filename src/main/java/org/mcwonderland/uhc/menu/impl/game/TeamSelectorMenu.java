@@ -15,7 +15,6 @@ import org.mineacademy.fo.menu.config.ConfigMenuPagged;
 import org.mineacademy.fo.menu.model.InventoryDrawer;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.model.ConfigItem;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -75,14 +74,14 @@ public class TeamSelectorMenu extends ConfigMenuPagged<UHCTeam> {
         return ItemCreator.of(
                 item.getMaterial(),
                 item.getName(),
-                new SimpleReplacer(item.getLore())
-                        .replace("{slots}", team.getPlayersAmount())
-                        .replace("{max}", Game.getSettings().getTeamSettings().getTeamSize())
-                        .replace("{name}", team.getName())
-                        .replace("{color}", team.getColor())
-                        .replace("{character}", team.getSymbol())
-                        .replace("{players}", UHCPlayers.toNames(team.getPlayers()))
-                        .buildList())
+                LegacyFoundationAdapter.replaceToList(
+                        item.getLore(),
+                        "{slots}", team.getPlayersAmount(),
+                        "{max}", Game.getSettings().getTeamSettings().getTeamSize(),
+                        "{name}", team.getName(),
+                        "{color}", team.getColor(),
+                        "{character}", team.getSymbol(),
+                        "{players}", UHCPlayers.toNames(team.getPlayers())))
                 .make();
     }
 

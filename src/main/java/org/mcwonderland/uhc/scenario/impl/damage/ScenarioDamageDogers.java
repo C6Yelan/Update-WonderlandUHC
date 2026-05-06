@@ -11,7 +11,6 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.model.SimpleSound;
 
 import java.util.List;
@@ -34,9 +33,8 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replace("{amount}", amount);
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLore(list, "{amount}", amount);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -26,7 +26,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.model.SimpleReplacer;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompMaterial;
 
@@ -72,9 +71,8 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
     }
 
     @Override
-    protected SimpleReplacer replaceLore(List<String> list) {
-        return super.replaceLore(list)
-                .replaceTime(explodeAfterSeconds);
+    protected List<String> replaceLore(List<String> list) {
+        return replaceLoreTime(list, explodeAfterSeconds);
     }
 
     class TimeBombRunner {
@@ -149,9 +147,9 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             if (secondUntilExplode <= 0)
                 explode();
             else if (Extra.isBetween(secondUntilExplode, 3, 5))
-                warnSound.play(location);
+                Extra.sound(location, warnSound);
             else if (Extra.isBetween(secondUntilExplode, 1, 2))
-                warnSoundDanger.play(location);
+                Extra.sound(location, warnSoundDanger);
         }
 
         public void explode() {

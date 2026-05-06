@@ -6,8 +6,8 @@ import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.mineacademy.fo.model.SimpleReplacer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DeathMessageHandler {
@@ -41,25 +41,31 @@ public class DeathMessageHandler {
     }
 
     private String format(String msg) {
-        SimpleReplacer replacer = new SimpleReplacer(msg);
-
+        List<Object> replacements = new ArrayList<>();
         UHCTeam playerTeam = uhcPlayer.getTeam();
 
-        replacer.replace("{player}", playerTeam.getChatFormat() + uhcPlayer.getName())
-                .replace("{playerKills}", playerTeam.getKills() + "");
+        replacements.add("{player}");
+        replacements.add(playerTeam.getChatFormat() + uhcPlayer.getName());
+        replacements.add("{playerKills}");
+        replacements.add(playerTeam.getKills() + "");
 
         if (damageEvent instanceof EntityDamageByEntityEvent)
-            replacer.replace("{entity}", (( EntityDamageByEntityEvent ) damageEvent).getDamager().getName());
+            addReplacement(replacements, "{entity}", (( EntityDamageByEntityEvent ) damageEvent).getDamager().getName());
 
         Player killer = uhcPlayer.getPlayer().getKiller();
         if (killer != null) {
             UHCPlayer uhcKiller = UHCPlayer.getUHCPlayer(killer);
             UHCTeam killerTeam = uhcKiller.getTeam();
-            replacer.replace("{killer}", killerTeam.getChatFormat() + uhcKiller.getName())
-                    .replace("{killerKills}", killerTeam.getKills() + "");
+            addReplacement(replacements, "{killer}", killerTeam.getChatFormat() + uhcKiller.getName());
+            addReplacement(replacements, "{killerKills}", killerTeam.getKills() + "");
         }
 
-        return replacer.getMessages();
+        return LegacyFoundationAdapter.replaceToString(msg, replacements.toArray());
+    }
+
+    private void addReplacement(List<Object> replacements, String placeholder, Object value) {
+        replacements.add(placeholder);
+        replacements.add(value);
     }
 
     private String pickOne(List<String> messages) {

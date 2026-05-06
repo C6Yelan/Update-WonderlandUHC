@@ -18,7 +18,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.List;
 
@@ -45,7 +44,7 @@ public class BlockListener implements Listener {
 
     @EventHandler
     public void onBreakBlock(UHCBlockBreakEvent e) {
-        if (CompMaterial.isLeaves(e.getBlockType()))
+        if (LegacyFoundationAdapter.isLeaves(e.getBlockType()))
             replaceAppleDrops(e.getDrops());
     }
 
@@ -59,15 +58,15 @@ public class BlockListener implements Listener {
 
     private void appleDrops(Block block, List<ItemStack> drops) {
         replaceAppleDrops(drops);
-        block.setType(CompMaterial.AIR.getMaterial());
+        block.setType(LegacyFoundationAdapter.materialOf("AIR"));
         WorldUtils.dropItems(block.getLocation(), drops);
     }
 
     private void replaceAppleDrops(List<ItemStack> drops) {
-        WorldUtils.replaceDrop(drops, CompMaterial.APPLE, CompMaterial.AIR);
+        WorldUtils.replaceDrop(drops, LegacyFoundationAdapter.materialOf("APPLE"), LegacyFoundationAdapter.materialOf("AIR"));
 
         if (LegacyFoundationAdapter.chance(Game.getSettings().getAppleRate()))
-            drops.add(CompMaterial.APPLE.toItem());
+            drops.add(LegacyFoundationAdapter.itemOf("APPLE"));
     }
 
     private void handleCustomEvents(BlockBreakEvent e) {
@@ -85,7 +84,7 @@ public class BlockListener implements Listener {
         dropItems(e, blockLocation);
         PlayerUtils.costPlayerToolDurability(e.getPlayer());
 
-        block.setType(CompMaterial.AIR.getMaterial());
+        block.setType(LegacyFoundationAdapter.materialOf("AIR"));
     }
 
     private void dropItems(UHCBlockBreakEvent e, Location location) {

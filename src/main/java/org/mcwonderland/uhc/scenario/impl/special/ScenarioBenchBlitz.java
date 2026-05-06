@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.special;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -14,7 +15,6 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.model.SimpleSound;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +39,7 @@ public class ScenarioBenchBlitz extends ConfigBasedScenario implements Listener 
     public void onCraftItem(CraftItemEvent e) {
         Player player = ( Player ) e.getWhoClicked();
 
-        if (e.getCurrentItem().getType() != CompMaterial.CRAFTING_TABLE.getMaterial())
+        if (e.getCurrentItem().getType() != LegacyFoundationAdapter.materialOf("CRAFTING_TABLE"))
             return;
 
         if (isBenchCrafted(player))
@@ -52,12 +52,12 @@ public class ScenarioBenchBlitz extends ConfigBasedScenario implements Listener 
     public void onPrepareItemCraft(PrepareItemCraftEvent e) {
         ItemStack result = e.getInventory().getResult();
 
-        if (result == null || result.getType() != CompMaterial.CRAFTING_TABLE.getMaterial())
+        if (result == null || result.getType() != LegacyFoundationAdapter.materialOf("CRAFTING_TABLE"))
             return;
 
         for (HumanEntity viewer : e.getViewers()) {
             if (isBenchCrafted(viewer))
-                e.getInventory().setResult(CompMaterial.AIR.toItem());
+                e.getInventory().setResult(LegacyFoundationAdapter.itemOf("AIR"));
         }
     }
 

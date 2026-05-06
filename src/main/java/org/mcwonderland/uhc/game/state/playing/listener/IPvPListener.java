@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Entity;
@@ -9,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class IPvPListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent e) {
         Player player = e.getPlayer();
 
-        if (!game.isPvpEnabled() && e.getBlock().getType() == CompMaterial.FIRE.getMaterial()) {
+        if (!game.isPvpEnabled() && e.getBlock().getType() == LegacyFoundationAdapter.materialOf("FIRE")) {
             boolean iPvPDetected = player.getNearbyEntities(5, 5, 5).stream()
                     .anyMatch(entity -> entity instanceof Player && entity != player);
 
