@@ -156,16 +156,6 @@ public class Settings extends SimpleSettings {
         public static Boolean FORCE_LOADING_NETHER_CHUNK;
     }
 
-    public static class Mysql {
-        public static Boolean USE;
-        public static String IP;
-        public static Integer PORT;
-        public static String DATABASE;
-        public static String USERNAME;
-        public static String PASSWORD;
-        public static String TABLE;
-    }
-
     public static class DiscordVoice {
         public static Boolean USE;
         public static String GUILD_ID;

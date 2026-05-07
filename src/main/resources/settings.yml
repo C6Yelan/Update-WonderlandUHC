@@ -220,18 +220,6 @@ Practice:
   World: "uhc_practice"
   World_Size: 150
 
-#MySQL資料庫
-#此選項是給伺服器有使用MySQL雲端資料庫儲存資料使用的
-#如果你只是要開UHC，直接無視此選項也可以！
-Mysql:
-  Use: false
-  Ip: "localhost"
-  Port: 3306
-  Database: "database"
-  Username: "root"
-  Password: "password"
-  Table: "wonderlanduhc_stats"
-
 DiscordVoice:
   Use: false
   Guild_Id: "000000000000000000"

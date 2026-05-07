@@ -22,7 +22,6 @@ import org.mcwonderland.uhc.port.WorldPort;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.stats.storages.StatsStorage;
-import org.mcwonderland.uhc.stats.storages.StatsStorageSql;
 import org.mcwonderland.uhc.stats.storages.StatsStorageYaml;
 import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.ChunkFiller;
@@ -88,9 +87,6 @@ public final class PluginBootstrap {
     }
 
     public StatsStorage loadStatsStorage() {
-        if (Settings.Mysql.USE)
-            return new StatsStorageSql();
-
         return new StatsStorageYaml();
     }
 

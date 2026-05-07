@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl;
 
 import com.google.common.collect.Lists;
+import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mineacademy.fo.menu.model.ItemCreator;
@@ -21,11 +22,11 @@ public abstract class ConfigBasedScenario extends AbstractScenario {
         config.loadFieldValues();
         onConfigReload();
 
-        setIcon(ItemCreator.of(
-                config.getMaterial(),
-                config.getFancyName(),
-                getDesc(config.getDescription())
-        ).make());
+        setIcon(ItemCreator.of(new ItemStack(config.getMaterial()))
+                .name(config.getFancyName())
+                .lore(getDesc(config.getDescription()))
+                .hideTags(true)
+                .make());
     }
 
     private List<String> getDesc(List<String> description) {

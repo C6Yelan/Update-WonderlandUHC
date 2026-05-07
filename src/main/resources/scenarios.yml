@@ -26,7 +26,7 @@ Backpack:
   #隊伍背包的大小 (必須為 9 的倍數)
   Size: 27
 Bench_Blitz:
-  Type: WORKBENCH
+  Type: CRAFTING_TABLE
   Name: "&2匠魂之心&7(BenchBlitz)"
   Description:
     - "整場遊戲，玩家只能製作一個工作台。"
@@ -90,7 +90,7 @@ Fire_Less:
   Description:
     - "岩漿及任何火焰不會對玩家產生任何傷害。"
 Food_Neophobia:
-  Type: COOKED_FISH
+  Type: COOKED_COD
   Name: "&2貫徹始終&7(Foodneophobia)"
   Description:
     - "玩家整場遊戲，只能食用第一次吃下的東西。"
@@ -158,7 +158,7 @@ No_Clean:
   #無敵時間
   Invincible_Seconds: 15
 No_Enchant:
-  Type: ENCHANTMENT_TABLE
+  Type: ENCHANTING_TABLE
   Name: "&c符文殺手&7(NoEnchant)"
   Description:
     - "玩家將無法附魔。"
@@ -184,13 +184,13 @@ Shift_Kill:
     - "玩家若沒有在蹲下的狀態擊殺他人"
     - "將會扣除當時血量一半的生命值。"
 Silk_Web:
-  Type: WEB
+  Type: COBWEB
   Name: "&e絲綢之網&7(SilkWeb)"
   Description:
     - "使用剪刀破壞蜘蛛網將會直接掉落蜘蛛網。"
     - "(如果關閉，使用任何工具挖掘都只會掉落線)"
 Soup:
-  Type: MUSHROOM_SOUP
+  Type: MUSHROOM_STEW
   Name: "&b濃湯&7(Soup)"
   Description:
     - "右鍵點擊蘑菇湯，將會立即回復 {heal} 滴血。"
