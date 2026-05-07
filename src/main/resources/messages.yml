@@ -17,7 +17,7 @@ Host:
   Team_Fire_Enabled_Player: "&7[&b隊伍&7] &a{player} &a開啟&7了同隊傷害。"
   Team_Fire_Disabled_Player: "&7[&b隊伍&7] &a{player} &c關閉&7了同隊傷害。"
   Border_Type_Changed: "&7[&2邊界&7] &a{player} &7將邊界模式切換為 &a{type}&7。"
-  World_Created: "&7[&a遊戲世界&7] &a地圖載入完成。&7(目前生成模式為: {generator} &7)"
+  World_Created: "&7[&a遊戲世界&7] &a地圖載入完成。"
   World_Deleted: "&7[&a遊戲世界&7] &c地圖已刪除。"
   World_Doesnt_Exist: "&7[&a遊戲世界&7] &c世界尚未載入，請先使用 &f/uhc regen &c來載入世界。"
   Not_Generating: "&7[&a遊戲世界&7] &c抱歉，由於地圖已經載入完畢，因此本功能無法使用。"

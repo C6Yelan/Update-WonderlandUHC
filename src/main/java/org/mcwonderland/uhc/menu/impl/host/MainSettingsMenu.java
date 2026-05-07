@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
-import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
@@ -36,7 +35,6 @@ public class MainSettingsMenu extends ConfigMenu {
     private final ConfigMenuButton disableItemsButton;
     private final ConfigMenuButton editTitleButton;
     private final ConfigMenuButton enderPearlDamageButton;
-    private final ConfigMenuButton generatorButton;
     private final ConfigMenuButton netherButton;
     private final ConfigMenuButton playersButton;
     private final ConfigMenuButton savesButton;
@@ -101,15 +99,6 @@ public class MainSettingsMenu extends ConfigMenu {
             @Override
             protected String getSavedMessage(String input) {
                 return Messages.Editor.Number.MaxPlayers.SAVED;
-            }
-        };
-
-        generatorButton = new ConfigClickableButton(getButtonPath("Generator")) {
-            @Override
-            protected void onClicked(Player player, Menu menu, ClickType click) {
-                Dependency.CUSTOM_ORE_GENERATOR.checkSoft();
-
-                new GeneratorSettingsMenu(menu).displayTo(player);
             }
         };
 

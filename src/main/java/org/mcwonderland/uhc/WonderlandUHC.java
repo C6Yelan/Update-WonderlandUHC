@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
-import org.mcwonderland.uhc.bootstrap.DependencyReport;
 import org.mcwonderland.uhc.bootstrap.FeatureRegistry;
 import org.mcwonderland.uhc.bootstrap.PluginBootstrap;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
@@ -76,7 +75,7 @@ public class WonderlandUHC extends SimplePlugin {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
 
-        DependencyReport dependencyReport = bootstrap.checkDependencies();
+        bootstrap.checkDependencies();
 
         bootstrap.registerPluginChannels();
         bootstrap.configureFoundationLibrary();
@@ -85,8 +84,6 @@ public class WonderlandUHC extends SimplePlugin {
         Spawns.reload();
 
         statsStorage = bootstrap.loadStatsStorage();
-
-        featureRegistry.loadOrePopulators(dependencyReport);
 
         if (bootstrap.isWorldLoadingDone()) {
             featureRegistry.startScoreboardUpdater();

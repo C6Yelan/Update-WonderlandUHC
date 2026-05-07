@@ -81,12 +81,6 @@ Main:
       Name: "&6時機點"
       Lore:
         - "&7無敵時間、最終回血時間...等。"
-    Generator:
-      Slot: 16
-      Type: GRASS
-      Name: "&6世界生成模式"
-      Lore:
-        - "&7設定遊戲世界生成地圖的方式。"
     Custom_Inventory:
       Slot: 21
       Type: MINECART
@@ -184,9 +178,6 @@ Main:
         - "&7讓玩家得知遊戲相關資訊。"
         - " "
         - "&e點擊來公告"
-Generator:
-  Title: "&2&l世界生成方式"
-  Rows: 1
 Teams:
   Title: "&2&l隊伍設定"
   Rows: 3

@@ -72,7 +72,6 @@ dependencies {
 
     compileOnly 'com.discordsrv:discordsrv:1.25.1'
 
-    compileOnly name: 'custom-ore-generator-2022.06.11'
     compileOnly name: 'Chunky-Bukkit-1.4.40'
     compileOnly 'com.github.Brettflan:WorldBorder:44f388f3ba'
 

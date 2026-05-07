@@ -16,7 +16,6 @@ public class UHCFiles {
     public static final String ITEMS = addSettingsFile("items.yml");
     public static final String MENUS = addSettingsFile("gui.yml");
     public static final String MESSAGES = addSettingsFile("messages.yml");
-    public static final String POPULATORS = addSettingsFile("populators.yml");
     public static final String SCENARIOS = addSettingsFile("scenarios.yml");
     public static final String SCOREBOARDS = addSettingsFile("scoreboards.yml");
     public static final String SETTINGS = addSettingsFile("settings.yml");

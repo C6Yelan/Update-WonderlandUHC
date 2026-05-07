@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.game;
 
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.populator.Populator;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -99,7 +98,7 @@ public class CenterCleaner {
                     }
                 }
 
-                Chat.send(p, Messages.Host.WORLD_CREATED.replace("{generator}", Populator.getPopulatorName(Game.getSettings().getGenerator())));
+                Chat.send(p, Messages.Host.WORLD_CREATED.replace("{generator}", "停用"));
                 p.teleport(UHCWorldUtils.getZeroZero());
                 p.setGameMode(GameMode.CREATIVE);
                 Extra.sound(p, Sounds.Host.WORLD_CREATED);

@@ -64,11 +64,6 @@ public final class PluginBootstrap {
         checkOptionalDependency(report, Dependency.CHUNKY);
         checkOptionalDependency(report, Dependency.WORLD_BORDER);
 
-        if (Dependency.CUSTOM_ORE_GENERATOR.isHooked())
-            checkCustomOreGenerator(report);
-        else
-            report.markDisabled(Dependency.CUSTOM_ORE_GENERATOR, "Plugin is not hooked.");
-
         logDependencyReport(report);
 
         return report;
@@ -90,18 +85,6 @@ public final class PluginBootstrap {
             report.markAvailable(dependency);
         else
             report.markDisabled(dependency, "Plugin is not hooked.");
-    }
-
-    private void checkCustomOreGenerator(DependencyReport report) {
-        try {
-            Class.forName("de.derfrzocker.custom.ore.generator.api.OreSettingContainer");
-            report.markAvailable(Dependency.CUSTOM_ORE_GENERATOR);
-        } catch (ClassNotFoundException e) {
-            report.markDisabled(Dependency.CUSTOM_ORE_GENERATOR, "Installed plugin version is too old.");
-            LegacyFoundationAdapter.log("&eCustomOreGenerator 版本過舊，自訂礦物功能已停用。請至 &f"
-                    + Dependency.CUSTOM_ORE_GENERATOR.getDownloadUrl()
-                    + " &e確認新版相容性。");
-        }
     }
 
     public StatsStorage loadStatsStorage() {
