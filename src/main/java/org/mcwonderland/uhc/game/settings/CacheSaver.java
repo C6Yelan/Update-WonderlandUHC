@@ -1,51 +1,62 @@
 package org.mcwonderland.uhc.game.settings;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.settings.UHCFiles;
-import org.mineacademy.fo.settings.YamlConfig;
+import org.mcwonderland.uhc.storage.WorldLoadingCache;
+import org.mcwonderland.uhc.storage.WorldLoadingCacheStore;
 
-import java.io.File;
+/**
+ * Legacy static facade kept for existing call sites.
+ */
+public final class CacheSaver {
 
-public class CacheSaver extends YamlConfig {
-    private static final CacheSaver saver = new CacheSaver();
-    @Getter
-    @Setter
+    private static final WorldLoadingCacheStore store = new WorldLoadingCacheStore();
     private static UHCGameSettings settings;
-    @Getter
-    @Setter
     private static LoadingStatus loadingStatus;
-    @Getter
-    @Setter
     private static String host;
 
-    public CacheSaver() {
-        loadConfiguration(null, UHCFiles.CACHE);
+    static {
+        loadCache(store.load());
+    }
 
-        loadingStatus = get("Loading_Status", LoadingStatus.class, LoadingStatus.CONFIGURING);
-        host = getString("Host", "");
-        settings = get("Settings", UHCGameSettings.class);
+    private CacheSaver() {
+    }
+
+    public static UHCGameSettings getSettings() {
+        return settings;
+    }
+
+    public static void setSettings(UHCGameSettings settings) {
+        CacheSaver.settings = settings;
+    }
+
+    public static LoadingStatus getLoadingStatus() {
+        return loadingStatus;
+    }
+
+    public static void setLoadingStatus(LoadingStatus loadingStatus) {
+        CacheSaver.loadingStatus = loadingStatus;
+    }
+
+    public static String getHost() {
+        return host;
+    }
+
+    public static void setHost(String host) {
+        CacheSaver.host = host;
     }
 
     public static void saveCache() {
-        saver.saveCache(Game.getSettings());
+        UHCGameSettings currentSettings = Game.getSettings();
+        store.save(new WorldLoadingCache(loadingStatus, host, currentSettings));
     }
 
     public static void deleteCache() {
-        File file = LegacyFoundationAdapter.getFile(saver.getFileName());
-
-        if (file.exists()) {
-            YamlConfig.clearLoadedSections();
-            file.delete();
-        }
+        store.delete();
     }
 
-    private void saveCache(UHCGameSettings settings) {
-        set("Host", host);
-        set("Loading_Status", loadingStatus);
-        set("Settings", settings);
-        save();
+    private static void loadCache(WorldLoadingCache cache) {
+        loadingStatus = cache.getLoadingStatus();
+        host = cache.getHost();
+        settings = cache.getSettings();
     }
 }

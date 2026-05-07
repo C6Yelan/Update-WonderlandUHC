@@ -1,51 +1,52 @@
 package org.mcwonderland.uhc.game.settings;
 
-import org.mcwonderland.uhc.settings.UHCFiles;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.settings.YamlConfig;
+import org.mcwonderland.uhc.storage.SavedGameSettingsStore;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
-public class UHCGameSettingsSaver extends YamlConfig {
-    private static UHCGameSettingsSaver saver = new UHCGameSettingsSaver();
+/**
+ * Legacy static facade kept for existing call sites.
+ */
+public final class UHCGameSettingsSaver {
+
+    private static SavedGameSettingsStore store = new SavedGameSettingsStore();
     private static final Map<UUID, List<UHCGameSettings>> savedSettings = new HashMap<>();
 
     private UHCGameSettingsSaver() {
-        loadConfiguration(UHCFiles.SAVED_GAMES);
     }
 
     public static void reloadFromFile() {
         savedSettings.clear();
-        saver = new UHCGameSettingsSaver();
+        store = new SavedGameSettingsStore();
     }
 
     public static List<UHCGameSettings> getSavedSettings(Player player) {
-        List<UHCGameSettings> settings = savedSettings.get(player.getUniqueId());
+        UUID playerId = player.getUniqueId();
+        List<UHCGameSettings> settings = savedSettings.get(playerId);
 
         if (settings == null)
-            settings = saver.loadPlayerSavedGames(player);
+            settings = loadPlayerSavedGames(playerId);
 
         return settings;
     }
 
     public static void saveGameSettings(Player player) {
-        List<UHCGameSettings> settings = savedSettings.get(player.getUniqueId());
+        UUID playerId = player.getUniqueId();
+        List<UHCGameSettings> settings = savedSettings.get(playerId);
 
         if (settings != null)
-            saver.saveGameSettings(player.getUniqueId().toString(), settings);
+            store.save(playerId, settings);
     }
 
-    private List<UHCGameSettings> loadPlayerSavedGames(Player player) {
-        String path = player.getUniqueId().toString();
-        List<UHCGameSettings> settings = isSet(path) ? getList(path, UHCGameSettings.class) : new ArrayList<>();
+    private static List<UHCGameSettings> loadPlayerSavedGames(UUID playerId) {
+        List<UHCGameSettings> settings = store.load(playerId);
 
-        savedSettings.put(player.getUniqueId(), settings);
+        savedSettings.put(playerId, settings);
 
         return settings;
-    }
-
-    private void saveGameSettings(String path, Collection<UHCGameSettings> settings) {
-        set(path, settings);
-        save();
     }
 }
