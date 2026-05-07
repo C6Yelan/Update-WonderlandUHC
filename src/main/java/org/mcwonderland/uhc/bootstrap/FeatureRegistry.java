@@ -27,7 +27,6 @@ import org.mcwonderland.uhc.command.impl.info.ViewHealCommand;
 import org.mcwonderland.uhc.command.impl.host.whitelist.WhitelistCommandGroup;
 import org.mcwonderland.uhc.command.team.TeamCommandGroup;
 import org.mcwonderland.uhc.command.uhc.UHCMainCommandGroup;
-import org.mcwonderland.uhc.hook.packet.PacketRegister;
 import org.mcwonderland.uhc.hook.voice.DiscordVoiceHook;
 import org.mcwonderland.uhc.listener.BooleanEvents;
 import org.mcwonderland.uhc.listener.ChatListener;
@@ -70,11 +69,13 @@ public final class FeatureRegistry {
                 new OldEnchantListener(),
                 new StatsListener(),
                 new ToolListener(),
-                new WorldFillListener(),
                 new WorldInitListener(),
                 new ScoreListener(),
                 new ScenarioListener(plugin)
         ).forEach(registerListener);
+
+        if (Dependency.WORLD_BORDER.isHooked())
+            registerListener.accept(new WorldFillListener());
     }
 
     public void registerCommands(Consumer<Command> registerCommand) {
@@ -126,11 +127,6 @@ public final class FeatureRegistry {
     public void loadOrePopulators(DependencyReport dependencyReport) {
         if (dependencyReport.isAvailable(Dependency.CUSTOM_ORE_GENERATOR))
             Populator.loadPopulators();
-    }
-
-    public void registerPacketListeners() {
-        if (Dependency.PACKET_LISTENER_API.isHooked())
-            PacketRegister.registerPacketListeners();
     }
 
     public void setupPractice(Practice practice) {

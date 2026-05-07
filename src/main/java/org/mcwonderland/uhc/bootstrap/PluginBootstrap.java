@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.bootstrap;
 
-import lombok.SneakyThrows;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
@@ -20,7 +19,6 @@ import org.mcwonderland.uhc.port.PluginAssetPort;
 import org.mcwonderland.uhc.port.PluginMessagingPort;
 import org.mcwonderland.uhc.port.SchedulerPort;
 import org.mcwonderland.uhc.port.WorldPort;
-import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.stats.storages.StatsStorage;
@@ -30,7 +28,6 @@ import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.ChunkFiller;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
-import org.mcwonderland.uhc.util.VersionComparator;
 
 public final class PluginBootstrap {
 
@@ -64,9 +61,7 @@ public final class PluginBootstrap {
     public DependencyReport checkDependencies() {
         DependencyReport report = new DependencyReport();
 
-        checkRequiredDependency(report, Dependency.WORLD_BORDER);
-        checkOptionalDependency(report, Dependency.PACKET_LISTENER_API);
-        checkWorldBorderVer();
+        checkOptionalDependency(report, Dependency.WORLD_BORDER);
 
         if (Dependency.CUSTOM_ORE_GENERATOR.isHooked())
             checkCustomOreGenerator(report);
@@ -89,15 +84,6 @@ public final class PluginBootstrap {
         }
     }
 
-    private void checkRequiredDependency(DependencyReport report, Dependency dependency) {
-        if (dependency.isHooked())
-            report.markAvailable(dependency);
-        else
-            report.markUnavailable(dependency, "Required plugin is missing.");
-
-        dependency.check();
-    }
-
     private void checkOptionalDependency(DependencyReport report, Dependency dependency) {
         if (dependency.isHooked())
             report.markAvailable(dependency);
@@ -110,29 +96,10 @@ public final class PluginBootstrap {
             Class.forName("de.derfrzocker.custom.ore.generator.api.OreSettingContainer");
             report.markAvailable(Dependency.CUSTOM_ORE_GENERATOR);
         } catch (ClassNotFoundException e) {
-            report.markUnavailable(Dependency.CUSTOM_ORE_GENERATOR, "Installed plugin version is too old.");
-            throw LegacyFoundationAdapter.failure("&cCustomOreGenerator 版本過舊，請至 &f"
-                    + Dependency.CUSTOM_ORE_GENERATOR.getDownloadUrl() +
-                    " &c下載最新版本！");
-        }
-    }
-
-    @SneakyThrows
-    private void checkWorldBorderVer() {
-        Dependency worldBorder = Dependency.WORLD_BORDER;
-        boolean newer = LegacyFoundationAdapter.isAtLeastMinecraft1_13();
-        boolean usingNewerWb = VersionComparator.isNewerThan(worldBorder.getVersion(), "1.8.7");
-
-        if (newer && !usingNewerWb) {
-            LegacyFoundationAdapter.logReplacing(Messages.Dependency.USING_OLD_WORLD_BORDER_IN_NEW_VERSION, "{link}", worldBorder.getDownloadUrl());
-            Thread.sleep(3 * 1000);
-            return;
-        }
-
-        if (!newer && usingNewerWb) {
-            Thread.sleep(3 * 1000);
-            throw LegacyFoundationAdapter.failure(Messages.Dependency.CHANGE_TO_OLDER_WORLD_BORDER_VERSION
-                    .replace("{link}", worldBorder.getDownloadUrl()));
+            report.markDisabled(Dependency.CUSTOM_ORE_GENERATOR, "Installed plugin version is too old.");
+            LegacyFoundationAdapter.log("&eCustomOreGenerator 版本過舊，自訂礦物功能已停用。請至 &f"
+                    + Dependency.CUSTOM_ORE_GENERATOR.getDownloadUrl()
+                    + " &e確認新版相容性。");
         }
     }
 

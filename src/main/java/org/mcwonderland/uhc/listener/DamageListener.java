@@ -47,6 +47,9 @@ public class DamageListener implements Listener {
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent e) {
+        if (cancelDeadAttacker(e))
+            return;
+
         if (!(e.getEntity() instanceof LivingEntity))
             return;
 
@@ -56,6 +59,33 @@ public class DamageListener implements Listener {
             handleCustomDamageEvents(uhcPlayer, e);
         else
             cancelIfIsPlayer(e);
+    }
+
+    private boolean cancelDeadAttacker(EntityDamageEvent e) {
+        if (!Settings.Misc.DISABLE_SPECTATOR_HIT_SOUNDS || !(e instanceof EntityDamageByEntityEvent))
+            return false;
+
+        EntityDamageByEntityEvent damageEvent = ( EntityDamageByEntityEvent ) e;
+        Player attacker = getAttackingPlayer(damageEvent);
+        if (attacker == null)
+            return false;
+
+        UHCPlayer uhcAttacker = UHCPlayer.getUHCPlayer(attacker);
+        if (!uhcAttacker.isDead())
+            return false;
+
+        e.setCancelled(true);
+        return true;
+    }
+
+    private Player getAttackingPlayer(EntityDamageByEntityEvent event) {
+        if (event.getDamager() instanceof Player)
+            return ( Player ) event.getDamager();
+
+        if (event.getDamager() instanceof Projectile)
+            return PlayerUtils.getShooter(( Projectile ) event.getDamager());
+
+        return null;
     }
 
     private void cancelIfIsPlayer(EntityDamageEvent e) {

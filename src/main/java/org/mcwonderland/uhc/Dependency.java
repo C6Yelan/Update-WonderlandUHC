@@ -10,7 +10,6 @@ import org.mcwonderland.uhc.settings.Messages;
 public enum Dependency {
     DISCORD_SRV("DiscordSRV", "https://www.spigotmc.org/resources/discordsrv.18494/"),
     WORLD_BORDER("WorldBorder", LegacyFoundationAdapter.isAtLeastMinecraft1_13() ? "https://www.spigotmc.org/resources/worldborder.60905" : "https://dev.bukkit.org/projects/worldborder"),
-    PACKET_LISTENER_API("PacketListenerApi", "https://www.spigotmc.org/resources/api-packetlistenerapi.2930/"),
     CUSTOM_ORE_GENERATOR("custom-ore-generator", "https://www.spigotmc.org/resources/custom-ore-generator-%E3%80%8E1-8-1-15-2%E3%80%8F.64339/");
 
     private final String pluginName;
@@ -32,7 +31,7 @@ public enum Dependency {
     public String getVersion() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
 
-        return plugin.getDescription().getVersion();
+        return plugin == null ? "" : plugin.getDescription().getVersion();
     }
 
     private void checkExist(String falseMsg) {

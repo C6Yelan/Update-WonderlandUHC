@@ -89,8 +89,6 @@ public class WonderlandUHC extends SimplePlugin {
         featureRegistry.loadOrePopulators(dependencyReport);
 
         if (bootstrap.isWorldLoadingDone()) {
-            featureRegistry.registerPacketListeners();
-
             featureRegistry.startScoreboardUpdater();
             bootstrap.startRuntimeTasks();
         }

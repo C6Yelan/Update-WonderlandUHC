@@ -1,7 +1,6 @@
 package org.mcwonderland.uhc.scenario;
 
 import com.google.common.collect.Lists;
-import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.scenario.impl.block.*;
 import org.mcwonderland.uhc.scenario.impl.block.*;
@@ -112,8 +111,7 @@ public class ScenarioManager {
                 new ScenarioVeinMiners(ScenarioName.VEIN_MINERS)
         );
 
-        if (Dependency.PACKET_LISTENER_API.isHooked())
-            defaults.add(new ScenarioArmorVsHealth(ScenarioName.ARMOR_VS_HEALTH));
+        defaults.add(new ScenarioArmorVsHealth(ScenarioName.ARMOR_VS_HEALTH));
 
         defaults.forEach(this::register);
     }

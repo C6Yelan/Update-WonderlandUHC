@@ -13,10 +13,10 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.inventivetalent.packetlistener.PacketListenerAPI;
-import org.inventivetalent.packetlistener.handler.PacketHandler;
-import org.inventivetalent.packetlistener.handler.ReceivedPacket;
-import org.inventivetalent.packetlistener.handler.SentPacket;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemBreakEvent;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +25,6 @@ import java.util.Map;
 //todo open && close
 public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listener {
     private static Map<UHCPlayer, Double> costs = new HashMap<>();
-    private static PacketHandler attributeHandler;
 
     @FilePath(name = "Apply_Within_Seconds_After_Respawned")
     private Integer Apply_Within_Seconds;
@@ -34,12 +33,6 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
 
     public ScenarioArmorVsHealth(ScenarioName name) {
         super(name);
-    }
-
-    @Override
-    protected void onConfigReload() {
-        if (attributeHandler == null)
-            attributeHandler = new AttributeHandler();
     }
 
     @EventHandler
@@ -57,33 +50,35 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
         });
     }
 
-    @Override
-    public void onEnable() {
-        PacketListenerAPI.addPacketHandler(attributeHandler);
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (event.getWhoClicked() instanceof Player)
+            scheduleHealthUpdate(( Player ) event.getWhoClicked());
+    }
+
+    @EventHandler
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (event.getWhoClicked() instanceof Player)
+            scheduleHealthUpdate(( Player ) event.getWhoClicked());
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        scheduleHealthUpdate(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onItemBreak(PlayerItemBreakEvent event) {
+        scheduleHealthUpdate(event.getPlayer());
+    }
+
+    private void scheduleHealthUpdate(Player player) {
+        LegacyFoundationAdapter.runLater(0, () -> updateHealth(UHCPlayer.getUHCPlayer(player)));
     }
 
     @Override
     public void onDisable() {
-        PacketListenerAPI.removePacketHandler(attributeHandler);
-    }
-
-    private class AttributeHandler extends PacketHandler {
-
-        @Override
-        public void onSend(SentPacket sentPacket) {
-            if (!sentPacket.getPacketName().equalsIgnoreCase("PacketPlayOutUpdateAttributes"))
-                return;
-
-            Player player = sentPacket.getPlayer();
-
-            if (player != null)
-                updateHealth(UHCPlayer.getUHCPlayer(player));
-        }
-
-        @Override
-        public void onReceive(ReceivedPacket receivedPacket) {
-
-        }
+        costs.clear();
     }
 
     private void updateHealth(UHCPlayer uhcPlayer) {
