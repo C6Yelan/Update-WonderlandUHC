@@ -1,30 +1,49 @@
-package org.mcwonderland.uhc.listener;
+package org.mcwonderland.uhc.application.world;
 
-import com.wimbli.WorldBorder.Events.WorldBorderFillFinishedEvent;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.port.ChunkPregenerationPort;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
-import org.mcwonderland.uhc.util.*;
-import org.bukkit.World;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
+import org.mcwonderland.uhc.util.BorderUtil;
+import org.mcwonderland.uhc.util.Extra;
+import org.mcwonderland.uhc.util.UHCWorldUtils;
+import org.mcwonderland.uhc.util.WorldUtils;
 
-public class WorldFillListener implements Listener {
+public final class ChunkPregenerationService {
 
-    @EventHandler
-    public void worldFinish(WorldBorderFillFinishedEvent e) {
-        World world = e.getWorld();
+    private final ChunkPregenerationPort pregeneration;
 
+    public ChunkPregenerationService(ChunkPregenerationPort pregeneration) {
+        this.pregeneration = pregeneration;
+        this.pregeneration.onComplete((worldName, totalChunks) ->
+                LegacyFoundationAdapter.runLater(0, () -> finish(worldName, totalChunks))
+        );
+    }
+
+    public void start(World world) {
+        String worldName = world.getName();
+        LegacyFoundationAdapter.log(Messages.Console.CHUNK_LOAD_STARTED.replace("{world}", worldName));
+        pregeneration.startSquarePregeneration(
+                worldName,
+                pregenerationRadius(world),
+                Settings.ChunkLoading.FREQUENCY,
+                Settings.ChunkLoading.PADDING
+        );
+    }
+
+    public void finish(World world, long totalChunks) {
         if (!WorldUtils.isUHCWorld(world))
             return;
 
         LegacyFoundationAdapter.logNoPrefix(Messages.Console.CHUNK_LOAD_FINISHED
                 .replace("{world}", world.getName())
-                .replace("{number}", "" + e.getTotalChunks())
+                .replace("{number}", "" + totalChunks)
         );
 
         UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
@@ -33,6 +52,25 @@ public class WorldFillListener implements Listener {
             buildBorders(world, borderSettings.getInitialBorder());
         else if (world == UHCWorldUtils.getNether())
             buildBorders(world, borderSettings.getInitialNetherBorder());
+    }
+
+    private void finish(String worldName, long totalChunks) {
+        World world = Bukkit.getWorld(worldName);
+
+        if (world == null) {
+            LegacyFoundationAdapter.log("&cChunk pregeneration finished for unloaded world: " + worldName);
+            return;
+        }
+
+        finish(world, totalChunks);
+    }
+
+    private int pregenerationRadius(World world) {
+        UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
+        if (world == UHCWorldUtils.getNether())
+            return BorderUtil.getRadius(borderSettings.getInitialNetherBorder()) + 1;
+
+        return BorderUtil.getRadius(borderSettings.getInitialBorder()) + 1;
     }
 
     private void buildBorders(World world, int size) {
@@ -64,22 +102,17 @@ public class WorldFillListener implements Listener {
     private void checkNether() {
         if (Game.getSettings().isUsingNether()) {
             LegacyFoundationAdapter.logNoPrefix(Messages.Console.CHUNK_LOAD_NETHER_DETECTED);
-            startLoadingNetherChunks();
+            start(UHCWorldUtils.getNether());
         } else
             checkForceChunk();
-
     }
 
     private void checkForceChunk() {
         if (Settings.ChunkLoading.FORCE_LOADING_NETHER_CHUNK) {
             LegacyFoundationAdapter.logNoPrefix(Messages.Console.FORCE_NETHER_CHUNK_ON);
-            startLoadingNetherChunks();
+            start(UHCWorldUtils.getNether());
         } else
             saveAndRestart();
-    }
-
-    private void startLoadingNetherChunks() {
-        ChunkFiller.fill(UHCWorldUtils.getNether());
     }
 
     private void saveAndRestart() {

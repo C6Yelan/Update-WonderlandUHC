@@ -28,6 +28,10 @@ import org.mcwonderland.uhc.command.impl.host.whitelist.WhitelistCommandGroup;
 import org.mcwonderland.uhc.command.team.TeamCommandGroup;
 import org.mcwonderland.uhc.command.uhc.UHCMainCommandGroup;
 import org.mcwonderland.uhc.hook.voice.DiscordVoiceHook;
+import org.mcwonderland.uhc.application.world.ChunkPregenerationService;
+import org.mcwonderland.uhc.integration.ChunkPregenerationAdapters;
+import org.mcwonderland.uhc.integration.worldborder.LegacyWorldBorderFillListener;
+import org.mcwonderland.uhc.integration.worldborder.LegacyWorldBorderPregenerationAdapter;
 import org.mcwonderland.uhc.listener.BooleanEvents;
 import org.mcwonderland.uhc.listener.ChatListener;
 import org.mcwonderland.uhc.listener.DamageListener;
@@ -36,7 +40,6 @@ import org.mcwonderland.uhc.listener.InvViewListener;
 import org.mcwonderland.uhc.listener.OldEnchantListener;
 import org.mcwonderland.uhc.listener.StatsListener;
 import org.mcwonderland.uhc.listener.ToolListener;
-import org.mcwonderland.uhc.listener.WorldFillListener;
 import org.mcwonderland.uhc.listener.WorldInitListener;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter.CommandGroupRegistrar;
@@ -74,8 +77,10 @@ public final class FeatureRegistry {
                 new ScenarioListener(plugin)
         ).forEach(registerListener);
 
-        if (Dependency.WORLD_BORDER.isHooked())
-            registerListener.accept(new WorldFillListener());
+        if (ChunkPregenerationAdapters.usesLegacyWorldBorder())
+            registerListener.accept(new LegacyWorldBorderFillListener(
+                    new ChunkPregenerationService(new LegacyWorldBorderPregenerationAdapter())
+            ));
     }
 
     public void registerCommands(Consumer<Command> registerCommand) {

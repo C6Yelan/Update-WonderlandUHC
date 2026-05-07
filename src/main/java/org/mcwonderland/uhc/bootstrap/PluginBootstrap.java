@@ -61,6 +61,7 @@ public final class PluginBootstrap {
     public DependencyReport checkDependencies() {
         DependencyReport report = new DependencyReport();
 
+        checkOptionalDependency(report, Dependency.CHUNKY);
         checkOptionalDependency(report, Dependency.WORLD_BORDER);
 
         if (Dependency.CUSTOM_ORE_GENERATOR.isHooked())

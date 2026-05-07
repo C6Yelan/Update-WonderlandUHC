@@ -2,16 +2,17 @@ package org.mcwonderland.uhc.util;
 
 import lombok.AllArgsConstructor;
 import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.application.border.BorderService;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
 import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.paper.PaperWorldBorderAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.WorldBorder;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -20,15 +21,17 @@ import org.mineacademy.fo.remain.CompMaterial;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
  * 2019-12-11 下午 07:37
  */
 public class BorderUtil {
+    private static final BorderService BORDER_SERVICE = new BorderService(new PaperWorldBorderAdapter());
     public static HashMap<World, Boolean> preBlocksPlaced = new HashMap<>();
     public static HashMap<World, Integer> preBlocksNumber = new HashMap<>();
-    public static List<Location> preBorderBlocks = new ArrayList<>();
+    public static Map<World, List<Location>> preBorderBlocks = new HashMap<>();
 
     public static void generateBorder(World world, int size) {
         int radius = getRadius(size);
@@ -37,11 +40,11 @@ public class BorderUtil {
             preBlocksPlaced.put(world, false);
         if (!preBlocksNumber.containsKey(world))
             preBlocksNumber.put(world, 0);
-
-        preBlocksPlaced.put(world, false);
-        preBlocksNumber.put(world, 0);
+        if (!preBorderBlocks.containsKey(world))
+            preBorderBlocks.put(world, new ArrayList<>());
 
         if (preBlocksPlaced.get(world) == false) {
+            preBorderBlocks.get(world).clear();
 
             /**
              * Minecraft的邊界系統頗奇怪
@@ -101,7 +104,7 @@ public class BorderUtil {
                             }
                             block = block.getRelative(BlockFace.UP);
                             LegacyDatouNmsAdapter.current().setBlockFast(block.getLocation(), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
-                            preBorderBlocks.add(block.getLocation());
+                            preBorderBlocks.get(world).add(block.getLocation());
                         }
                     }
                 }
@@ -137,7 +140,7 @@ public class BorderUtil {
             }.runTaskTimer(WonderlandUHC.getInstance(), 0, 5L);
         } else {
             preBlocksNumber.put(world, preBlocksNumber.get(world) + 1);
-            for (Location loc : preBorderBlocks) {
+            for (Location loc : preBorderBlocks.get(world)) {
                 LegacyDatouNmsAdapter.current().setBlockFast(loc.clone().add(0, preBlocksNumber.get(world), 0), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
             }
         }
@@ -167,27 +170,22 @@ public class BorderUtil {
         return Math.abs(loc.getX()) < radius && Math.abs(loc.getZ()) < radius;
     }
 
-    private static void set1_8Border(World world, double size) {
-        if (Game.getSettings().getBorderSettings().getBorderType() == BorderType.TIMER
-                && !Settings.Border.INCLUDE_18_BORDER)
+    private static void setNativeBorder(World world, int size) {
+        if (!shouldApplyNativeBorder())
             return;
 
-        if (Game.getSettings().isUsingNether() && world.equals(UHCWorldUtils.getNether())) {
-            WorldBorder wb = UHCWorldUtils.getNether().getWorldBorder();
-            wb.setCenter(0, 0);
-            wb.setSize((int) size + 2);
-        } else {
-            WorldBorder wb = world.getWorldBorder();
-            wb.setCenter(0, 0);
-            wb.setSize((int) size + 2);
-        }
+        BORDER_SERVICE.setFixedBorder(world.getName(), size);
+    }
+
+    private static boolean shouldApplyNativeBorder() {
+        return Game.getSettings().getBorderSettings().getBorderType() != BorderType.TIMER
+                || Settings.Border.INCLUDE_18_BORDER;
     }
 
     public static void moverBorder18(double time) {
-        WorldBorder wb = UHCWorldUtils.getWorld().getWorldBorder();
-        wb.setCenter(0, 0);
-        wb.setWarningDistance(-2);
-        wb.setSize((int) Game.getSettings().getBorderSettings().getFinalSizeOfShrinkModeBorder(), (int) time);
+        String worldName = UHCWorldUtils.getWorld().getName();
+        BORDER_SERVICE.setWarningDistance(worldName, -2);
+        BORDER_SERVICE.shrinkBorder(worldName, Game.getSettings().getBorderSettings().getFinalSizeOfShrinkModeBorder(), ( long ) time);
     }
 
     public static double getShrinkSpeedPerSecond(int time) {
@@ -220,13 +218,12 @@ public class BorderUtil {
     }
 
     public static void removeWBBorder(String worldName) {
-        LegacyFoundationAdapter.dispatchCommand(null, "wb " + worldName + " clear");
+        BORDER_SERVICE.reset(worldName);
     }
 
     public static void setInitialBorders() {
         for (World uhcWorld : UHCWorldUtils.getUhcWorlds()) {
-            uhcWorld.getWorldBorder().setWarningTime(5);
-            uhcWorld.getWorldBorder().setWarningDistance(5);
+            BORDER_SERVICE.setWarning(uhcWorld.getName(), 5, 5);
         }
 
         UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
@@ -235,16 +232,7 @@ public class BorderUtil {
     }
 
     public static void setBorders(World world, int size) {
-        set1_8Border(world, size);
-        setWBBorder(world, size);
-    }
-
-    private static void setWBBorder(World world, int size) {
-        int radius = getRadius(size) + 1;
-
-        String worldName = world.getName();
-        LegacyFoundationAdapter.dispatchCommand(null, "wb " + worldName + " set " + radius + " " + radius + " 0 0");
-        LegacyFoundationAdapter.dispatchCommand(null, "wb wshape " + worldName + " square");
+        setNativeBorder(world, size);
     }
 
     public static int getRadius(int size) {
@@ -253,6 +241,6 @@ public class BorderUtil {
 
 
     public static int getMoveBorder(World world) {
-        return (int) world.getWorldBorder().getSize();
+        return BORDER_SERVICE.getSize(world.getName());
     }
 }

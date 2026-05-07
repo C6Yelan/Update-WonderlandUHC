@@ -1,10 +1,12 @@
 package org.mcwonderland.uhc.practice;
 
 import com.google.common.collect.Lists;
+import org.mcwonderland.uhc.application.border.BorderService;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.Teleporter;
+import org.mcwonderland.uhc.platform.paper.PaperWorldBorderAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.*;
@@ -19,6 +21,8 @@ import org.mineacademy.fo.remain.CompMaterial;
 import java.util.Collection;
 
 public class SimplePractice extends AbstractPractice {
+    private static final BorderService BORDER_SERVICE = new BorderService(new PaperWorldBorderAdapter());
+
     private World world;
     private boolean cleaned = false;
 
@@ -34,10 +38,7 @@ public class SimplePractice extends AbstractPractice {
         Extra.deleteWorld(Settings.Practice.WORLD);
 
         world = Bukkit.createWorld(new WorldCreator(Settings.Practice.WORLD));
-
-        WorldBorder worldBorder = world.getWorldBorder();
-        worldBorder.setCenter(0, 0);
-        worldBorder.setSize(Settings.Practice.WORLD_SIZE);
+        BORDER_SERVICE.setExactFixedBorder(world.getName(), Settings.Practice.WORLD_SIZE);
     }
 
     @Override

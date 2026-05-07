@@ -9,6 +9,7 @@ import org.mcwonderland.uhc.settings.Messages;
 @Getter
 public enum Dependency {
     DISCORD_SRV("DiscordSRV", "https://www.spigotmc.org/resources/discordsrv.18494/"),
+    CHUNKY("Chunky", "https://modrinth.com/plugin/chunky"),
     WORLD_BORDER("WorldBorder", LegacyFoundationAdapter.isAtLeastMinecraft1_13() ? "https://www.spigotmc.org/resources/worldborder.60905" : "https://dev.bukkit.org/projects/worldborder"),
     CUSTOM_ORE_GENERATOR("custom-ore-generator", "https://www.spigotmc.org/resources/custom-ore-generator-%E3%80%8E1-8-1-15-2%E3%80%8F.64339/");
 
