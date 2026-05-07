@@ -16,6 +16,7 @@ permissions:
       wonderland.uhc.bypass.join.configuring: true
       wonderland.uhc.item.settings: true
       wonderland.uhc.moderator: true
+      wonderland.uhc.command.uhc.announce: true
       wonderland.uhc.command.border: true
       wonderland.uhc.command.mlg: true
       wonderland.uhc.command.uhc.choose: true
@@ -67,6 +68,8 @@ permissions:
   wonderland.uhc.command.viewheal:
     default: true
   wonderland.uhc.command.practice:
+    default: true
+  wonderland.uhc.command.reconnect:
     default: true
 
   wonderland.uhc.command.uhc.spectoggle:

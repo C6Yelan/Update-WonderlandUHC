@@ -257,6 +257,7 @@ public class Messages extends AutoLoadStaticConfig {
     public static class DiscordVoice {
         public static String MOVED;
         public static String RECONNECTING;
+        public static String MOVE_FAILED;
         public static String NOT_IN_VOICE;
         public static String REQUIRES_LINKED_ACCOUNT;
     }

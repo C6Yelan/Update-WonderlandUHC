@@ -70,7 +70,7 @@ dependencies {
     // Keep as implementation while the legacy adapter still provides runtime fallbacks.
     implementation 'com.github.lulu2002:DatouNms:1.2.2'
 
-    compileOnly 'com.discordsrv:discordsrv:1.25.1'
+    compileOnly 'com.discordsrv:discordsrv:1.30.5'
 
     compileOnly name: 'Chunky-Bukkit-1.4.40'
     compileOnly 'com.github.Brettflan:WorldBorder:44f388f3ba'

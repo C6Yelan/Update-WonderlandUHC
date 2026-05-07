@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.command.TestCommand;
 import org.mcwonderland.uhc.command.impl.LeaveCommand;
 import org.mcwonderland.uhc.command.impl.game.BackPackCommand;
 import org.mcwonderland.uhc.command.impl.game.PracticeCommand;
+import org.mcwonderland.uhc.command.impl.game.ReconnectCommand;
 import org.mcwonderland.uhc.command.impl.game.SendCoordsCommand;
 import org.mcwonderland.uhc.command.impl.game.SpecToggleCommand;
 import org.mcwonderland.uhc.command.impl.host.BorderCommand;
@@ -98,7 +99,8 @@ public final class FeatureRegistry {
                 new StatsCommand("stats"),
                 new TopKillsCommand("topkills|killtop|kt"),
                 new ViewHealCommand("viewheal|h"),
-                new PracticeCommand("practice")
+                new PracticeCommand("practice"),
+                new ReconnectCommand("reconnect")
         ).forEach(registerCommand);
 
         if (WonderlandUHC.TEST_MODE)

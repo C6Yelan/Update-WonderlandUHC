@@ -14,6 +14,7 @@ public class UHCMainCommandGroup extends SimpleCommandGroup {
     protected void registerSubcommands() {
         registerSubcommand(new ReloadCommand(this, "reload|rl"));
 
+        registerSubcommand(new AnnounceCommand(this, "announce|broadcastdiscord|discordbroadcast"));
         registerSubcommand(new ChooseWorldCommand(this, "choose"));
         registerSubcommand(new EditCommand(this, "edit"));
         registerSubcommand(new RegenWorldCommand(this, "regen"));

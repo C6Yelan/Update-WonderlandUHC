@@ -7,6 +7,7 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.VoiceChannel;
 import lombok.Getter;
+import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.listener.VoiceListener;
@@ -36,13 +37,30 @@ public class DiscordVoiceHook {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
-                        continue;
+                        Thread.currentThread().interrupt();
+                        return;
                     }
                 }
 
+                discordSRV = DiscordSRV.getPlugin();
                 guild = discordSRV.getJda().getGuildById(Settings.DiscordVoice.GUILD_ID);
+                if (guild == null) {
+                    LegacyFoundationAdapter.log("&cDiscord voice setup failed: guild not found: " + Settings.DiscordVoice.GUILD_ID);
+                    return;
+                }
+
                 voiceCategory = guild.getCategoryById(Settings.DiscordVoice.VOICE_CATEGORY);
+                if (voiceCategory == null) {
+                    LegacyFoundationAdapter.log("&cDiscord voice setup failed: voice category not found: " + Settings.DiscordVoice.VOICE_CATEGORY);
+                    return;
+                }
+
                 lobbyVoice = guild.getVoiceChannelById(Settings.DiscordVoice.LOBBY_VOICE);
+                if (lobbyVoice == null) {
+                    LegacyFoundationAdapter.log("&cDiscord voice setup failed: lobby voice channel not found: " + Settings.DiscordVoice.LOBBY_VOICE);
+                    return;
+                }
+
                 clearChannels();
                 LegacyFoundationAdapter.registerEvents(voiceListener);
             }).start();
@@ -67,6 +85,12 @@ public class DiscordVoiceHook {
 
     public static void moveVoiceChannel(UHCPlayer uhcPlayer, VoiceChannel channel) {
         Player player = uhcPlayer.getPlayer();
+        if (channel == null) {
+            Chat.send(player, Messages.DiscordVoice.MOVE_FAILED);
+            LegacyFoundationAdapter.log("&cDiscord voice move failed for " + player.getName() + ": target channel is not available.");
+            return;
+        }
+
         Member member = getMember(player);
 
         if (member == null) {
@@ -80,7 +104,25 @@ public class DiscordVoiceHook {
         }
 
         String movedMsg = Messages.DiscordVoice.MOVED.replace("{channel}", channel.getName());
-        guild.moveVoiceMember(member, channel).queue(aVoid -> Chat.send(player, movedMsg));
+        guild.moveVoiceMember(member, channel).queue(
+                aVoid -> Chat.send(player, movedMsg),
+                error -> {
+                    Chat.send(player, Messages.DiscordVoice.MOVE_FAILED);
+                    LegacyFoundationAdapter.log("&cDiscord voice move failed for " + player.getName() + ": " + error.getMessage());
+                });
+    }
+
+    public static void reconnect(UHCPlayer uhcPlayer) {
+        if (uhcPlayer.isDead())
+            moveToLobby(uhcPlayer);
+        else if (uhcPlayer.getTeam() != null)
+            moveToTeamVoice(uhcPlayer, uhcPlayer.getTeam());
+        else
+            moveToLobby(uhcPlayer);
+    }
+
+    public static void moveToTeamVoice(UHCPlayer uhcPlayer, UHCTeam team) {
+        moveVoiceChannel(uhcPlayer, teamVoices.getChannel(team));
     }
 
     private static Member getMember(Player player) {
@@ -93,7 +135,10 @@ public class DiscordVoiceHook {
     }
 
     public static void moveToLobby(Member member) {
-        guild.moveVoiceMember(member, lobbyVoice).queue();
+        guild.moveVoiceMember(member, lobbyVoice).queue(
+                ignored -> {
+                },
+                error -> LegacyFoundationAdapter.log("&cDiscord voice lobby move failed for " + member.getEffectiveName() + ": " + error.getMessage()));
     }
 
 }

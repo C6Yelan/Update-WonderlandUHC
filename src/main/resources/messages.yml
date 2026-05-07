@@ -302,6 +302,7 @@ DiscordVoice:
   Not_In_Voice: "&7[&b&lDiscord語音&7] &c語音連線失敗！請先隨意加入一個語音房，再使用 /reconnect 指令重新連結。"
   Moved: "&7[&b&lDiscord語音&7] &e你已被移動至 {channel}。"
   Reconnecting: "&7[&b&lDiscord語音&7] &7語音連線中..."
+  Move_Failed: "&7[&b&lDiscord語音&7] &c語音移動失敗，請聯絡主持人檢查 Discord bot 權限與頻道設定。"
 
 Updater:
   Checking_Updates: "&7檢查更新中..."

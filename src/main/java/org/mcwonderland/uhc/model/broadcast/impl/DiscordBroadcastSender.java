@@ -1,12 +1,14 @@
 package org.mcwonderland.uhc.model.broadcast.impl;
 
 import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.broadcast.AbstractBroadcastSender;
 
+import java.util.EnumSet;
 import java.util.List;
 
 /**
@@ -25,7 +27,8 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
 
     @Override
     protected void send(List<String> messages) {
-        String msg = getFormatterMessage(messages);
+        if (!DiscordSRV.isReady)
+            throw LegacyFoundationAdapter.failure("&cDiscordSRV 尚未完成啟動，請稍後再試。");
 
         channelIds.forEach(channel -> {
             TextChannel textChannel = DiscordUtil.getTextChannelById(channel);
@@ -33,13 +36,25 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
             if (textChannel == null)
                 throw LegacyFoundationAdapter.failure(invalidChannel);
 
-            textChannel.sendMessage(msg).complete();
+            String msg = getFormatterMessage(messages, textChannel);
+
+            try {
+                textChannel.sendMessage(msg)
+                        .allowedMentions(EnumSet.of(
+                                Message.MentionType.USER,
+                                Message.MentionType.ROLE,
+                                Message.MentionType.HERE,
+                                Message.MentionType.EVERYONE))
+                        .complete();
+            } catch (RuntimeException e) {
+                throw LegacyFoundationAdapter.failure("&cDiscord公告發送失敗: " + e.getMessage());
+            }
         });
     }
 
-    private String getFormatterMessage(List<String> messages) {
+    private String getFormatterMessage(List<String> messages, TextChannel textChannel) {
         String result = String.join("\n", messages);
-        result = DiscordUtil.convertMentionsFromNames(result, DiscordSRV.getPlugin().getMainGuild());
+        result = DiscordUtil.convertMentionsFromNames(result, textChannel.getGuild());
 
         return result;
     }
