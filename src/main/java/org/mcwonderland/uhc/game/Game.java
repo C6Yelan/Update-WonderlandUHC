@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.mcwonderland.uhc.api.event.GameChangeSettingsEvent;
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.core.match.LegacyMatchSettingsMapper;
 import org.mcwonderland.uhc.core.match.MatchRepository;
 import org.mcwonderland.uhc.core.match.MatchSettings;
@@ -38,6 +39,7 @@ public class Game {
     private String host = "";
     private int allPlayers;
     private int currentBorder = 0;
+    private MatchCenter matchCenter = createDefaultMatchCenter();
     private boolean centerCleaner;
     private boolean damageEnabled, finalHealEnabled, pvpEnabled;
 
@@ -67,9 +69,37 @@ public class Game {
         MatchSettings matchSettings = LegacyMatchSettingsMapper.fromGameSettings(newSettings);
 
         game.settings = newSettings;
+        game.matchCenter = game.withCurrentBorderSize(game.matchCenter);
         game.getActiveMatch().updateSettings(matchSettings);
 
         LegacyFoundationAdapter.callEvent(new GameChangeSettingsEvent(newSettings));
+    }
+
+    public MatchCenter getMatchCenter() {
+        if (matchCenter == null)
+            matchCenter = createDefaultMatchCenter();
+
+        return matchCenter;
+    }
+
+    public void setMatchCenter(MatchCenter matchCenter) {
+        this.matchCenter = matchCenter == null ? createDefaultMatchCenter() : matchCenter;
+    }
+
+    private MatchCenter withCurrentBorderSize(MatchCenter center) {
+        MatchCenter current = center == null ? createDefaultMatchCenter() : center;
+        return new MatchCenter(current.getX(), current.getZ(), currentInitialBorderSize());
+    }
+
+    private MatchCenter createDefaultMatchCenter() {
+        return new MatchCenter(0, 0, currentInitialBorderSize());
+    }
+
+    private int currentInitialBorderSize() {
+        if (settings == null || settings.getBorderSettings() == null || settings.getBorderSettings().getInitialBorder() == null)
+            return 2000;
+
+        return settings.getBorderSettings().getInitialBorder();
     }
 
     public UhcMatch getActiveMatch() {

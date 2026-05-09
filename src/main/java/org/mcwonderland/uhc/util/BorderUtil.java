@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.util;
 import lombok.AllArgsConstructor;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.application.border.BorderService;
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
@@ -35,6 +36,7 @@ public class BorderUtil {
 
     public static void generateBorder(World world, int size) {
         int radius = getRadius(size);
+        MatchCenter center = UHCWorldUtils.getBorderCenter(world, size);
 
         if (!preBlocksPlaced.containsKey(world))
             preBlocksPlaced.put(world, false);
@@ -95,7 +97,7 @@ public class BorderUtil {
                 private void setFirstBedrocks(CoordsData coordsData) {
                     for (int x = coordsData.xFrom; x <= coordsData.xTo; x++) {
                         for (int z = coordsData.zFrom; z <= coordsData.zTo; z++) {
-                            Block block = world.getHighestBlockAt(x, z);
+                            Block block = world.getHighestBlockAt(center.getX() + x, center.getZ() + z);
                             for (int a = 0; a < 30; a++) {//debug 最多嘗試30次
                                 if (isNeedToGoDown(block))
                                     block = block.getRelative(BlockFace.DOWN);
@@ -165,16 +167,20 @@ public class BorderUtil {
     }
 
     public static boolean isInBorder(Location loc, int borderSize) {
+        return isInBorder(loc, borderSize, UHCWorldUtils.getBorderCenter(loc.getWorld(), borderSize));
+    }
+
+    public static boolean isInBorder(Location loc, int borderSize, MatchCenter center) {
         int radius = getRadius(borderSize) + 1;
 
-        return Math.abs(loc.getX()) < radius && Math.abs(loc.getZ()) < radius;
+        return Math.abs(loc.getX() - center.getX()) < radius && Math.abs(loc.getZ() - center.getZ()) < radius;
     }
 
     private static void setNativeBorder(World world, int size) {
         if (!shouldApplyNativeBorder())
             return;
 
-        BORDER_SERVICE.setFixedBorder(world.getName(), size);
+        BORDER_SERVICE.setFixedBorder(world.getName(), size, UHCWorldUtils.getBorderCenter(world, size));
     }
 
     private static boolean shouldApplyNativeBorder() {
@@ -184,8 +190,9 @@ public class BorderUtil {
 
     public static void moverBorder18(double time) {
         String worldName = UHCWorldUtils.getWorld().getName();
+        int finalSize = Game.getSettings().getBorderSettings().getFinalSizeOfShrinkModeBorder();
         BORDER_SERVICE.setWarningDistance(worldName, -2);
-        BORDER_SERVICE.shrinkBorder(worldName, Game.getSettings().getBorderSettings().getFinalSizeOfShrinkModeBorder(), ( long ) time);
+        BORDER_SERVICE.shrinkBorder(worldName, finalSize, ( long ) time, UHCWorldUtils.getBorderCenter(UHCWorldUtils.getWorld(), finalSize));
     }
 
     public static double getShrinkSpeedPerSecond(int time) {

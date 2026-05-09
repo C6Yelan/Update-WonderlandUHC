@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
@@ -20,6 +21,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import java.lang.reflect.Method;
 
 public class PortalListener implements Listener {
+    private static final double NETHER_COORDINATE_SCALE = 8D;
 
     @EventHandler
     public void onPortal(PlayerPortalEvent e) {
@@ -75,16 +77,16 @@ public class PortalListener implements Listener {
     private Location getSameCoordsLocation(PlayerPortalEvent e) {
         Location to = getToLocation(e);
 
-        double borderMultiple = ( double ) Game.getGame().getCurrentBorder() / ( double ) GameUtils.getCurrentNetherBorder();
-
         World.Environment environment = to.getWorld().getEnvironment();
+        MatchCenter overworldCenter = UHCWorldUtils.getBorderCenter(UHCWorldUtils.getWorld(), Game.getGame().getCurrentBorder());
+        MatchCenter netherCenter = UHCWorldUtils.getBorderCenter(UHCWorldUtils.getNether(), GameUtils.getCurrentNetherBorder());
 
         if (environment == World.Environment.NETHER) {
-            to.setX(to.getX() / borderMultiple);
-            to.setZ(to.getZ() / borderMultiple);
+            to.setX((to.getX() - overworldCenter.getX()) / NETHER_COORDINATE_SCALE + netherCenter.getX());
+            to.setZ((to.getZ() - overworldCenter.getZ()) / NETHER_COORDINATE_SCALE + netherCenter.getZ());
         } else if (environment == World.Environment.NORMAL) {
-            to.setX(to.getX() * borderMultiple);
-            to.setZ(to.getZ() * borderMultiple);
+            to.setX((to.getX() - netherCenter.getX()) * NETHER_COORDINATE_SCALE + overworldCenter.getX());
+            to.setZ((to.getZ() - netherCenter.getZ()) * NETHER_COORDINATE_SCALE + overworldCenter.getZ());
         }
 
         return to;

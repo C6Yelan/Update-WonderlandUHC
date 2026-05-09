@@ -1,9 +1,11 @@
 package org.mcwonderland.uhc.model;
 
 import lombok.experimental.UtilityClass;
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.game.UHCTeam;
+import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -43,16 +45,13 @@ public class Teleporter {
         int x = 0;
         int y = 50;
         int z = 0;
+        MatchCenter center = UHCWorldUtils.getBorderCenter(world, border * 2);
         for (int run = 0; run < 20; run++) { //最多嘗試20次
-            x = r.nextInt(b);
+            int offsetX = r.nextInt(b);
+            int offsetZ = r.nextInt(b);
+            x = center.getX() + (r.nextBoolean() ? -offsetX : offsetX);
             y = 70;
-            z = r.nextInt(b);
-            if (r.nextBoolean()) {
-                x = -1 * x;
-            }
-            if (r.nextBoolean()) {
-                z = -1 * z;
-            }
+            z = center.getZ() + (r.nextBoolean() ? -offsetZ : offsetZ);
             Block block = GameManager.getHighestBlock(world, x, z);
 
             if (block != null && !block.getType().toString().contains("LAVA") && !block.getType().toString().contains("WATER")) {

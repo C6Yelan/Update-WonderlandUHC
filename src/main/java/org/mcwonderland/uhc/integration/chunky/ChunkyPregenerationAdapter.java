@@ -2,8 +2,8 @@ package org.mcwonderland.uhc.integration.chunky;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.WorldBorder;
 import org.bukkit.plugin.RegisteredServiceProvider;
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.port.ChunkPregenerationPort;
 import org.popcraft.chunky.api.ChunkyAPI;
@@ -34,18 +34,17 @@ public final class ChunkyPregenerationAdapter implements ChunkPregenerationPort 
     }
 
     @Override
-    public void startSquarePregeneration(String worldName, int radius, int frequency, int padding) {
+    public void startSquarePregeneration(String worldName, MatchCenter center, int radius, int frequency, int padding) {
         World world = Bukkit.getWorld(worldName);
 
         if (world == null)
             throw new IllegalArgumentException("World is not loaded: " + worldName);
 
-        WorldBorder border = world.getWorldBorder();
         boolean started = chunky.startTask(
                 worldName,
                 SHAPE,
-                border.getCenter().getX(),
-                border.getCenter().getZ(),
+                center.getX(),
+                center.getZ(),
                 radius,
                 radius,
                 PATTERN

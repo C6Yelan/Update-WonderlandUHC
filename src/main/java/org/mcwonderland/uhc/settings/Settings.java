@@ -142,11 +142,9 @@ public class Settings extends SimpleSettings {
     }
 
     public static class CenterCleaner {
-        public static Boolean ALLOW_BAD_BIOME;
-        public static Integer RANGE;
-        public static Integer CHECK_RIVER_IN;
-        public static Integer MAX_HIGH;
-        public static Integer BAD_BIOME_LIMIT;
+        public static Boolean PREVIEW_DURING_SEARCH;
+        public static Boolean DEBUG_SEARCH_OUTPUT;
+        public static Integer SEARCH_CANDIDATE_COUNT;
         public static String GENERATOR_SETTINGS;
     }
 

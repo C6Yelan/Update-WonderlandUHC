@@ -28,10 +28,13 @@ public final class ChunkPregenerationService {
 
     public void start(World world) {
         String worldName = world.getName();
+        int radius = pregenerationRadius(world);
+        int borderSize = pregenerationBorderSize(world);
         LegacyFoundationAdapter.log(Messages.Console.CHUNK_LOAD_STARTED.replace("{world}", worldName));
         pregeneration.startSquarePregeneration(
                 worldName,
-                pregenerationRadius(world),
+                UHCWorldUtils.getBorderCenter(world, borderSize),
+                radius,
                 Settings.ChunkLoading.FREQUENCY,
                 Settings.ChunkLoading.PADDING
         );
@@ -66,11 +69,15 @@ public final class ChunkPregenerationService {
     }
 
     private int pregenerationRadius(World world) {
+        return BorderUtil.getRadius(pregenerationBorderSize(world)) + 1;
+    }
+
+    private int pregenerationBorderSize(World world) {
         UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
         if (world == UHCWorldUtils.getNether())
-            return BorderUtil.getRadius(borderSettings.getInitialNetherBorder()) + 1;
+            return borderSettings.getInitialNetherBorder();
 
-        return BorderUtil.getRadius(borderSettings.getInitialBorder()) + 1;
+        return borderSettings.getInitialBorder();
     }
 
     private void buildBorders(World world, int size) {

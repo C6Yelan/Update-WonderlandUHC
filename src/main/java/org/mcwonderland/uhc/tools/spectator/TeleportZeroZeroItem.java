@@ -19,6 +19,6 @@ public final class TeleportZeroZeroItem extends UHCTool {
     protected void onRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        player.teleport(UHCWorldUtils.getZeroZero());
+        player.teleport(UHCWorldUtils.getMatchCenterLocation());
     }
 }

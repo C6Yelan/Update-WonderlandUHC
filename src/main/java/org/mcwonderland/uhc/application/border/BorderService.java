@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.application.border;
 
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.port.WorldBorderPort;
 
 public final class BorderService {
@@ -22,17 +23,22 @@ public final class BorderService {
         worldBorders.setWarningTimeTicks(worldName, seconds * TICKS_PER_SECOND);
     }
 
-    public void setFixedBorder(String worldName, int size) {
-        setExactFixedBorder(worldName, size + BORDER_SIZE_OFFSET);
+    public void setFixedBorder(String worldName, int size, MatchCenter center) {
+        setExactFixedBorder(worldName, size + BORDER_SIZE_OFFSET, center);
     }
 
-    public void setExactFixedBorder(String worldName, double size) {
+    public void setExactFixedBorderAtOrigin(String worldName, double size) {
         worldBorders.setCenter(worldName, 0, 0);
         worldBorders.setSize(worldName, size);
     }
 
-    public void shrinkBorder(String worldName, int finalSize, long seconds) {
-        worldBorders.setCenter(worldName, 0, 0);
+    public void setExactFixedBorder(String worldName, double size, MatchCenter center) {
+        worldBorders.setCenter(worldName, center.getX(), center.getZ());
+        worldBorders.setSize(worldName, size);
+    }
+
+    public void shrinkBorder(String worldName, int finalSize, long seconds, MatchCenter center) {
+        worldBorders.setCenter(worldName, center.getX(), center.getZ());
         worldBorders.changeSize(worldName, finalSize, seconds);
     }
 

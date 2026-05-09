@@ -124,10 +124,15 @@ Kick:
   Thanks_For_Playing: "&7謝謝你的遊玩 &f{player}。"
 
 CenterCleaner:
-  River_Center: "&c中心點出現河流，因此重新生成..."
-  Bad_Biome: "&c中心點太多差勁地形，因此重新生成... &7(&4{amount} 格差勁方塊&7)"
-  Too_Much_Wood: "&c中心點太多樹木，因此重新生成... &7(&4{amount} 個木頭&7)"
-  Too_High: "&c地形高度過&e高&c，恐怕不平整，因此重新生成... &7(&4{height} 格&7)"
+  Search_Started: "&7[&a中心搜尋&7] &f正在評估同一張世界中的候選中心..."
+  Search_Progress: "&7中心搜尋: &f{current}&7/&f{total} &8- &a{stage}"
+  Search_Preview: "&7[&a中心搜尋&7] &f已傳送到候選中心 &a{current}&7/&a{total}&7: &fX {x}, Z {z}"
+  Search_Result: "&7[&a中心搜尋&7] &f結果: &a{status} &7分數: &f{score} &7中心: &fX {x}, Z {z} &7原因: &f{reasons}"
+  Search_Recommended: "&7[&a中心搜尋&7] &a此中心可作為目前預覽地圖。"
+  Search_Not_Recommended: "&7[&a中心搜尋&7] &e此中心不建議直接跑圖，但已保留目前最佳結果供主持人預覽。"
+  Search_Time_Limited: "&7[&a中心搜尋&7] &e搜尋達到時間限制，已使用目前最佳結果。"
+  Search_Cancelled: "&7[&a中心搜尋&7] &c搜尋已取消，沒有可用結果。"
+  Search_Regen_Hint: "&7如果不滿意目前預覽世界，可使用 &6/uhc regen &7重新搜尋，或使用 &6/uhc regen <seed> &7手動指定 seed。"
 
 Team:
   Full_Msg: "&c此隊伍已滿。"

@@ -11,13 +11,13 @@ public class RoleSpectatorEvents implements RoleEventHandler {
     @Override
     public void onGamingJoin(UHCJoinEvent e) {
         Player player = e.getPlayer();
-        player.teleport(UHCWorldUtils.getZeroZero());
+        player.teleport(UHCWorldUtils.getMatchCenterLocation());
     }
 
     @Override
     public void onStartingJoin(UHCJoinEvent e) {
         Player player = e.getPlayer();
-        player.teleport(UHCWorldUtils.getZeroZero());
+        player.teleport(UHCWorldUtils.getMatchCenterLocation());
     }
 
     @Override

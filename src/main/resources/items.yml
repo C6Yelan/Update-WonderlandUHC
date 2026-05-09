@@ -59,7 +59,7 @@ Spectator:
     Slot: 4
     Name: "&b傳送至中心點"
     Lore:
-      - "&7傳送至遊戲主世界 (0, 0) 的位置。"
+      - "&7傳送至遊戲主世界的目前比賽中心。"
 Staff_Addon:
   Staff_Options:
     Type: COMPARATOR

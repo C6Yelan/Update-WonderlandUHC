@@ -27,7 +27,7 @@ public class TpUHCWorldCommand extends SimpleSubCommand {
         World world = UHCWorldUtils.getWorld();
 
         if (world != null) {
-            player.teleport(UHCWorldUtils.getZeroZero());
+            player.teleport(UHCWorldUtils.getMatchCenterLocation());
             player.setGameMode(GameMode.CREATIVE);
         } else
             tell(Messages.Host.WORLD_DOESNT_EXIST);

@@ -162,9 +162,15 @@ public class Messages extends AutoLoadStaticConfig {
     }
 
     public static class CenterCleaner {
-        public static String RIVER_CENTER;
-        public static String BAD_BIOME;
-        public static String TOO_HIGH;
+        public static String SEARCH_STARTED;
+        public static String SEARCH_PROGRESS;
+        public static String SEARCH_PREVIEW;
+        public static String SEARCH_RESULT;
+        public static String SEARCH_RECOMMENDED;
+        public static String SEARCH_NOT_RECOMMENDED;
+        public static String SEARCH_TIME_LIMITED;
+        public static String SEARCH_CANCELLED;
+        public static String SEARCH_REGEN_HINT;
     }
 
     public static class Team {

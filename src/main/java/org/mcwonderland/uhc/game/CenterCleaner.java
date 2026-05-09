@@ -1,206 +1,569 @@
 package org.mcwonderland.uhc.game;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.application.world.CenterBiomeClassifier;
+import org.mcwonderland.uhc.application.world.CenterCandidateGenerator;
+import org.mcwonderland.uhc.application.world.CenterCandidateScore;
+import org.mcwonderland.uhc.application.world.CenterSamplePlanner;
+import org.mcwonderland.uhc.application.world.CenterSamplePoint;
+import org.mcwonderland.uhc.application.world.CenterScoreReason;
+import org.mcwonderland.uhc.application.world.CenterSearchResult;
+import org.mcwonderland.uhc.application.world.CenterSearchStatus;
+import org.mcwonderland.uhc.application.world.CenterTerrainSample;
+import org.mcwonderland.uhc.application.world.CenterValidationService;
+import org.mcwonderland.uhc.application.world.CenterWorldSampleReader;
+import org.mcwonderland.uhc.application.world.MatchCenter;
+import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
+import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
-import org.bukkit.block.Biome;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import javax.annotation.Nullable;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Queue;
+import java.util.Set;
 
 public class CenterCleaner {
-    public static void createWorld(String worldName, Player p, @Nullable String seed) {
-        int range = Settings.CenterCleaner.RANGE;
-        int riverRange = Settings.CenterCleaner.CHECK_RIVER_IN;
-        boolean allowBadBiomes = Settings.CenterCleaner.ALLOW_BAD_BIOME;
-        String generatorSettings = Settings.CenterCleaner.GENERATOR_SETTINGS;
 
+    public static void createWorld(String worldName, Player player, @Nullable String seed) {
         new BukkitRunnable() {
-
-            World uhcWorld = null;
-            Boolean bad = false;
-            Integer limited = 0;
-            Integer high = 0;
-
-
             @Override
             public void run() {
                 if (Bukkit.getWorlds().contains(Bukkit.getWorld(worldName))) {
-                    p.teleport(UHCWorldUtils.getLobbySpawn());
+                    player.teleport(UHCWorldUtils.getLobbySpawn());
                     Bukkit.unloadWorld(worldName, false);
-                    Chat.send(p, Messages.Host.WORLD_DELETED);
+                    Chat.send(player, Messages.Host.WORLD_DELETED);
                 }
 
                 Extra.deleteWorld(worldName);
 
                 WorldCreator creator = new WorldCreator(worldName);
+                applySeed(creator, seed);
+                applyLegacyGeneratorSettings(creator);
 
-                if (seed != null) {
-                    try {
-                        creator.seed(Long.parseLong(seed));
-                    } catch (Exception ex) {
-                        creator.seed(seed.hashCode());
-                    }
-                }
+                World uhcWorld = creator.createWorld();
+                uhcWorld.setKeepSpawnInMemory(false);
 
-                if (!generatorSettings.isEmpty())
-                    creator.generatorSettings(generatorSettings);
-
-                uhcWorld = creator.createWorld();
                 if (Game.getGame().isCenterCleaner()) {
-                    limited = 0;
-                    high = 0;
-                    bad = false;
-
-                    for (int x = -range; x < range; x++) {
-                        for (int z = -range; z < range; z++) {
-                            Biome b = uhcWorld.getBiome(x, z);
-
-                            if (isInRiverRange(x, z) && (b == Biome.RIVER || b == Biome.FROZEN_RIVER)) {
-                                Chat.broadcast(Messages.CenterCleaner.RIVER_CENTER);
-                                return;
-                            }
-
-                            BIOME_THRESHOLD t = isValidBiome(b, x, z);
-
-                            if (t == BIOME_THRESHOLD.LIMITED)
-                                limited++;
-                            if (t == BIOME_THRESHOLD.DISALLOWED)
-                                bad = true;
-
-                            if (checkBad())
-                                return;
-                        }
-                    }
-
-                    for (int x = -range; x <= range; ++x) {
-                        for (int z = -range; z <= range; z++) {
-
-                            if (uhcWorld.getHighestBlockYAt(x, z) > Settings.CenterCleaner.MAX_HIGH)
-                                high = uhcWorld.getHighestBlockYAt(x, z);
-
-                            if (high >= Settings.CenterCleaner.MAX_HIGH) {
-                                Chat.broadcast(Messages.CenterCleaner.TOO_HIGH
-                                        .replace("{height}", high + ""));
-                                return;
-                            }
-                        }
-                    }
+                    startCenterSearch(player, uhcWorld);
+                    return;
                 }
 
-                Chat.send(p, Messages.Host.WORLD_CREATED.replace("{generator}", "停用"));
-                p.teleport(UHCWorldUtils.getZeroZero());
-                p.setGameMode(GameMode.CREATIVE);
-                Extra.sound(p, Sounds.Host.WORLD_CREATED);
+                Chat.send(player, Messages.Host.WORLD_CREATED.replace("{generator}", "停用"));
+                MatchCenter matchCenter = spawnCenter(uhcWorld, initialBorderSize());
+                Game.getGame().setMatchCenter(matchCenter);
+                BorderUtil.setBorders(uhcWorld, matchCenter.getBorderSize());
+                player.teleport(previewLocation(uhcWorld, matchCenter));
+                player.setGameMode(GameMode.CREATIVE);
+                Extra.sound(player, Sounds.Host.WORLD_CREATED);
+            }
+        }.runTask(WonderlandUHC.getInstance());
+    }
+
+    private static void applySeed(WorldCreator creator, @Nullable String seed) {
+        if (seed == null)
+            return;
+
+        try {
+            creator.seed(Long.parseLong(seed));
+        } catch (Exception ex) {
+            creator.seed(seed.hashCode());
+        }
+    }
+
+    private static void applyLegacyGeneratorSettings(WorldCreator creator) {
+        String generatorSettings = Settings.CenterCleaner.GENERATOR_SETTINGS;
+
+        if ((!Game.getGame().isCenterCleaner() || LegacyFoundationAdapter.isOlderThanMinecraft1_14())
+                && generatorSettings != null
+                && !generatorSettings.isEmpty())
+            creator.generatorSettings(generatorSettings);
+    }
+
+    private static void startCenterSearch(Player player, World world) {
+        Chat.send(player, message(Messages.CenterCleaner.SEARCH_STARTED,
+                "&7[&a中心搜尋&7] &f正在評估同一張世界中的候選中心..."));
+        Location spawn = world.getSpawnLocation();
+        Chat.send(player, "&7[&a中心搜尋&7] &f搜尋基準: 世界重生點 X &a" + spawn.getBlockX() + " &fZ &a" + spawn.getBlockZ()
+                + " &7候選數 &a" + searchCandidateCount());
+
+        new CenterSearchTask(player, world, initialBorderSize()).runTaskTimer(WonderlandUHC.getInstance(), 1L, 1L);
+    }
+
+    private static int initialBorderSize() {
+        UHCGameSettings settings = Game.getSettings();
+
+        if (settings == null || settings.getBorderSettings() == null || settings.getBorderSettings().getInitialBorder() == null)
+            return 2000;
+
+        return settings.getBorderSettings().getInitialBorder();
+    }
+
+    private static MatchCenter spawnCenter(World world, int initialBorderSize) {
+        Location spawn = world.getSpawnLocation();
+        return new MatchCenter(spawn.getBlockX(), spawn.getBlockZ(), initialBorderSize);
+    }
+
+    private static Location previewLocation(World world, MatchCenter center) {
+        int y = world.getHighestBlockYAt(center.getX(), center.getZ()) + 2;
+        return new Location(world, center.getX() + 0.5D, y, center.getZ() + 0.5D);
+    }
+
+    private static boolean previewDuringSearch() {
+        return !Boolean.FALSE.equals(Settings.CenterCleaner.PREVIEW_DURING_SEARCH);
+    }
+
+    private static boolean debugSearchOutput() {
+        return !Boolean.FALSE.equals(Settings.CenterCleaner.DEBUG_SEARCH_OUTPUT);
+    }
+
+    private static int searchCandidateCount() {
+        Integer candidateCount = Settings.CenterCleaner.SEARCH_CANDIDATE_COUNT;
+        return candidateCount == null || candidateCount <= 0 ? 25 : candidateCount;
+    }
+
+    private static void sendSearchResult(Player player, CenterSearchResult result) {
+        CenterCandidateScore score = result.getBestCandidate();
+
+        if (score == null) {
+            Chat.send(player, message(Messages.CenterCleaner.SEARCH_CANCELLED,
+                    "&7[&a中心搜尋&7] &c搜尋已取消，沒有可用結果。"));
+            return;
+        }
+
+        MatchCenter center = score.getCenter();
+        Chat.send(player, message(Messages.CenterCleaner.SEARCH_RESULT,
+                "&7[&a中心搜尋&7] &f結果: &a{status} &7分數: &f{score} &7中心: &fX {x}, Z {z} &7原因: &f{reasons}")
+                .replace("{status}", result.getStatus().name())
+                .replace("{score}", formatScore(score.getTotalScore()))
+                .replace("{x}", center.getX() + "")
+                .replace("{z}", center.getZ() + "")
+                .replace("{reasons}", formatReasons(score.getReasons())));
+
+        if (result.getStatus() == CenterSearchStatus.TIME_LIMITED)
+            Chat.send(player, message(Messages.CenterCleaner.SEARCH_TIME_LIMITED,
+                    "&7[&a中心搜尋&7] &e搜尋達到時間限制，已使用目前最佳結果。"));
+
+        Chat.send(player, result.shouldPregenerate()
+                ? message(Messages.CenterCleaner.SEARCH_RECOMMENDED, "&7[&a中心搜尋&7] &a此中心可作為目前預覽地圖。")
+                : message(Messages.CenterCleaner.SEARCH_NOT_RECOMMENDED, "&7[&a中心搜尋&7] &e此中心不建議直接跑圖，但已保留目前最佳結果供主持人預覽。"));
+        Chat.send(player, message(Messages.CenterCleaner.SEARCH_REGEN_HINT,
+                "&7如果不滿意目前預覽世界，可使用 &6/uhc regen &7重新搜尋，或使用 &6/uhc regen <seed> &7手動指定 seed。"));
+    }
+
+    private static String formatScore(double score) {
+        return String.format(Locale.ROOT, "%.1f", score);
+    }
+
+    private static String formatPercent(double ratio) {
+        return String.format(Locale.ROOT, "%.1f%%", ratio * 100D);
+    }
+
+    private static String formatWeighted(double score, double weight) {
+        return formatScore(score) + "x" + formatPercent(weight) + "=" + formatScore(score * weight);
+    }
+
+    private static String message(String configuredMessage, String fallback) {
+        return configuredMessage == null || configuredMessage.isEmpty() ? fallback : configuredMessage;
+    }
+
+    private static String formatReasons(List<CenterScoreReason> reasons) {
+        if (reasons.isEmpty())
+            return "無";
+
+        StringBuilder builder = new StringBuilder();
+
+        for (CenterScoreReason reason : reasons) {
+            if (builder.length() > 0)
+                builder.append(", ");
+
+            builder.append(formatReason(reason));
+        }
+
+        return builder.toString();
+    }
+
+    private static String formatReason(CenterScoreReason reason) {
+        switch (reason) {
+            case OCEAN_RATIO_TOO_HIGH:
+                return "海洋比例過高";
+            case WATER_RATIO_TOO_HIGH:
+                return "水域比例過高";
+            case SECTION_WATER_TOO_HIGH:
+                return "局部大片水域過高";
+            case ADJACENT_SECTION_WATER_TOO_HIGH:
+                return "相鄰區塊大片水域過高";
+            case CENTER_WATER_TOO_HIGH:
+                return "中心大片水域過高";
+            case CENTER_STANDABLE_RATIO_TOO_LOW:
+                return "中心可站立比例過低";
+            case CENTER_HEIGHT_SPREAD_TOO_HIGH:
+                return "中心高度差過大";
+            case CENTER_CLIFF_RATIO_TOO_HIGH:
+                return "中心斷崖比例過高";
+            case TOO_MANY_LOW_SECTIONS:
+                return "低品質區塊過多";
+            case FOREST_RATIO_TOO_HIGH:
+                return "森林比例過高";
+            case DENSE_FOREST_RATIO_TOO_HIGH:
+                return "密林比例過高";
+            case HIGHLAND_RATIO_TOO_HIGH:
+                return "高地比例過高";
+            case EXTREME_HIGHLAND_RATIO_TOO_HIGH:
+                return "極端高地比例過高";
+            default:
+                return reason.name();
+        }
+    }
+
+    private static final class CenterCleanerProgress implements CenterValidationService.ProgressListener {
+        private final Player player;
+        private long lastActionBarMillis;
+
+        private CenterCleanerProgress(Player player) {
+            this.player = player;
+        }
+
+        @Override
+        public void onStage(MatchCenter center, CenterValidationService.CenterValidationStage stage, int candidateIndex, int candidateCount) {
+            String progressMessage = progressMessage(candidateIndex, candidateCount, formatStage(stage));
+            LegacyFoundationAdapter.sendActionBar(player, progressMessage);
+            Chat.send(player, progressMessage);
+        }
+
+        private void onStageProgress(CenterValidationService.CenterValidationStage stage, int candidateIndex, int candidateCount, int sampledPoints, int totalPoints) {
+            long now = System.currentTimeMillis();
+
+            if (now - lastActionBarMillis < 1000L)
+                return;
+
+            lastActionBarMillis = now;
+            LegacyFoundationAdapter.sendActionBar(player, progressMessage(candidateIndex, candidateCount,
+                    formatStage(stage) + " " + sampledPoints + "/" + totalPoints));
+        }
+
+        private static String progressMessage(int candidateIndex, int candidateCount, String stageText) {
+            return message(Messages.CenterCleaner.SEARCH_PROGRESS,
+                    "&7中心搜尋: &f{current}&7/&f{total} &8- &a{stage}")
+                    .replace("{current}", candidateIndex + "")
+                    .replace("{total}", candidateCount + "")
+                    .replace("{stage}", stageText);
+        }
+
+        @Override
+        public void onCandidateScored(CenterCandidateScore score, CenterCandidateScore bestScore, int candidateIndex, int candidateCount) {
+            String progressMessage = progressMessage(candidateIndex, candidateCount, "目前最佳 " + formatScore(bestScore.getTotalScore()));
+            LegacyFoundationAdapter.sendActionBar(player, progressMessage);
+            Chat.send(player, progressMessage);
+        }
+
+        private static String formatStage(CenterValidationService.CenterValidationStage stage) {
+            switch (stage) {
+                case COARSE_SCAN:
+                    return "粗掃";
+                case DETAILED_SCAN:
+                    return "詳掃";
+                case CENTER_SCAN:
+                    return "中心精掃";
+                default:
+                    return stage.name();
+            }
+        }
+    }
+
+    private static final class CenterSearchTask extends BukkitRunnable {
+        private static final int SAMPLES_PER_TICK = 2;
+
+        private final Player player;
+        private final World world;
+        private final List<MatchCenter> candidates;
+        private final CenterWorldSampleReader sampleReader;
+        private final CenterCleanerProgress progress;
+        private final long startMillis = System.currentTimeMillis();
+
+        private int candidateIndex;
+        private CenterValidationService.CenterValidationStage stage;
+        private Queue<CenterSamplePoint> stagePoints;
+        private int stageTotalPoints;
+        private int sampledStagePoints;
+        private boolean currentCenterOceanRejected;
+        private final List<CenterTerrainSample> detailedSamples = new ArrayList<>();
+        private final List<CenterTerrainSample> centerSamples = new ArrayList<>();
+        private final Set<Long> sampledChunks = new HashSet<>();
+        private final Set<Long> stageSampledChunks = new HashSet<>();
+        private CenterCandidateScore bestScore;
+
+        private CenterSearchTask(Player player, World world, int initialBorderSize) {
+            this.player = player;
+            this.world = world;
+            this.candidates = CenterCandidateGenerator.expandingLandSearch(spawnCenter(world, initialBorderSize), searchCandidateCount());
+            this.sampleReader = new CenterWorldSampleReader(world);
+            this.progress = new CenterCleanerProgress(player);
+            startStage(CenterValidationService.CenterValidationStage.CENTER_SCAN);
+        }
+
+        private static MatchCenter spawnCenter(World world, int initialBorderSize) {
+            return CenterCleaner.spawnCenter(world, initialBorderSize);
+        }
+
+        @Override
+        public void run() {
+            if (!player.isOnline()) {
                 cancel();
+                return;
             }
 
-            private boolean isInRiverRange(int x, int z) {
-                return Math.abs(x) >= riverRange || Math.abs(z) >= riverRange;
-            }
+            for (int i = 0; i < SAMPLES_PER_TICK; i++) {
+                if (stagePoints.isEmpty()) {
+                    advanceStage();
 
-            private boolean checkBad() {
-
-                if (allowBadBiomes && (limited >= Settings.CenterCleaner.BAD_BIOME_LIMIT || bad == true)) {
-                    Chat.broadcast(Messages.CenterCleaner.BAD_BIOME
-                            .replace("{amount}", limited + ""));
-                    return true;
+                    if (isCancelled())
+                        return;
                 }
 
-                return false;
+                if (!stagePoints.isEmpty())
+                    sample(stagePoints.poll());
+            }
+        }
+
+        private void startStage(CenterValidationService.CenterValidationStage nextStage) {
+            stage = nextStage;
+            currentCenterOceanRejected = false;
+            stagePoints = new ArrayDeque<>(pointsForCurrentStage());
+
+            if (stage == CenterValidationService.CenterValidationStage.CENTER_SCAN && currentCenterIsOceanBiome()) {
+                currentCenterOceanRejected = true;
+                stagePoints.clear();
             }
 
-        }.runTaskTimer(WonderlandUHC.getInstance(), 0L, 5L);
-
-    }
-
-    private static BIOME_THRESHOLD isValidBiome(Biome biome, int i, int j) {
-        if (LegacyFoundationAdapter.isOlderThanMinecraft1_9()) {
-            return isValidBiome1_8(biome, i, j);
-        } else {
-            return isValidBiome1_9(biome, i, j);
-        }
-    }
-
-    private static BIOME_THRESHOLD isValidBiome1_8(Biome biome, int i, int j) {
-        // flag = is this in 100x100
-        final boolean flag = i <= 100 && i >= -100 && j <= 100 && j >= -100;
-        if (biome == Biome.DESERT || biome == Biome.valueOf("DESERT_HILLS") || biome == Biome.valueOf("DESERT_MOUNTAINS")
-                || biome == Biome.valueOf("PLAINS") || biome == Biome.valueOf("SUNFLOWER_PLAINS") || biome == Biome.valueOf("SWAMPLAND")
-                || biome == Biome.valueOf("SWAMPLAND_MOUNTAINS") || biome == Biome.valueOf("SMALL_MOUNTAINS") || biome == Biome.SAVANNA
-                || biome == Biome.valueOf("SAVANNA_MOUNTAINS") || biome == Biome.valueOf("SAVANNA_PLATEAU")
-                || biome == Biome.valueOf("SAVANNA_PLATEAU_MOUNTAINS") || biome == Biome.valueOf("ICE_PLAINS")) {
-            return BIOME_THRESHOLD.ALLOWED;
-        } else if (flag && (biome == Biome.valueOf("FOREST") || biome == Biome.valueOf("RIVER") || biome == Biome.valueOf("FROZEN_RIVER")
-                || biome == Biome.valueOf("FOREST_HILLS") | biome == Biome.valueOf("BIRCH_FOREST") || biome == Biome.valueOf("BIRCH_FOREST_HILLS")
-                || biome == Biome.valueOf("BIRCH_FOREST_HILLS_MOUNTAINS") || biome == Biome.valueOf("BIRCH_FOREST_MOUNTAINS")
-                || biome == Biome.valueOf("TAIGA_HILLS") || biome == Biome.valueOf("TAIGA_MOUNTAINS") || biome == Biome.valueOf("ICE_PLAINS_SPIKES")
-                || biome == Biome.valueOf("MEGA_SPRUCE_TAIGA") || biome == Biome.valueOf("MEGA_SPRUCE_TAIGA_HILLS")
-                || biome == Biome.valueOf("MEGA_TAIGA") || biome == Biome.valueOf("MEGA_TAIGA_HILLS") || biome == Biome.valueOf("FLOWER_FOREST")
-                || biome == Biome.valueOf("COLD_BEACH") || biome == Biome.valueOf("COLD_TAIGA_HILLS")
-                || biome == Biome.valueOf("COLD_TAIGA_MOUNTAINS"))) {
-            return BIOME_THRESHOLD.LIMITED;
-        } else if (flag && (biome == Biome.valueOf("ROOFED_FOREST") || biome == Biome.valueOf("ROOFED_FOREST_MOUNTAINS")
-                || biome == Biome.valueOf("MESA") || biome == Biome.valueOf("MESA_PLATEAU") || biome == Biome.valueOf("MESA_BRYCE")
-                || biome == Biome.valueOf("MESA_PLATEAU_FOREST") || biome == Biome.valueOf("MESA_PLATEAU_FOREST_MOUNTAINS")
-                || biome == Biome.valueOf("MESA_PLATEAU_MOUNTAINS") || biome == Biome.valueOf("EXTREME_HILLS") || biome == Biome.valueOf("COLD_TAIGA")
-                || biome == Biome.valueOf("EXTREME_HILLS_MOUNTAINS") || biome == Biome.valueOf("TAIGA") || biome == Biome.valueOf("EXTREME_HILLS_PLUS")
-                || biome == Biome.valueOf("EXTREME_HILLS_PLUS_MOUNTAINS") || biome == Biome.valueOf("FROZEN_OCEAN")
-                || biome == Biome.valueOf("COLD_TAIGA_HILLS") || biome == Biome.valueOf("ICE_MOUNTAINS"))) {
-            return BIOME_THRESHOLD.DISALLOWED;
+            stageTotalPoints = stagePoints.size();
+            sampledStagePoints = 0;
+            progress.onStage(currentCenter(), stage, candidateIndex + 1, candidates.size());
+            previewCurrentCandidate();
         }
 
-        // We are only picky at 0,0 otherwise stuff is allowed
-        return flag ? BIOME_THRESHOLD.DISALLOWED : BIOME_THRESHOLD.ALLOWED;
-    }
-
-
-    private static BIOME_THRESHOLD isValidBiome1_9(Biome biome, int i, int j) {
-        // flag = is this in 100x100
-        final boolean flag = i <= 100 && i >= -100 && j <= 100 && j >= -100;
-        String biomeName = biome.name();
-        if (biomeName.equals("DESERT") || biomeName.equals("DESERT_HILLS") || biomeName.equals("MUTATED_DESERT")
-                || biomeName.equals("PLAINS") || biomeName.equals("MUTATED_PLAINS") || biomeName.equals("SWAMPLAND")
-                || biomeName.equals("MUTATED_SWAMPLAND") || biomeName.equals("SAVANNA")
-                || biomeName.equals("MUTATED_SAVANNA") || biomeName.equals("SAVANNA_ROCK")
-                || biomeName.equals("SAVANNA_ROCK") || biomeName.equals("ICE_FLATS")) {
-            return BIOME_THRESHOLD.ALLOWED;
-        } else if (flag && (biomeName.equals("FOREST") || biomeName.equals("RIVER") || biomeName.equals("FROZEN_RIVER")
-                || biomeName.equals("FOREST_HILLS") || biomeName.equals("BIRCH_FOREST") || biomeName.equals("BIRCH_FOREST_HILLS")
-                || biomeName.equals("MUTATED_BIRCH_FOREST_HILLS")
-                || biomeName.equals("MUTATED_BIRCH_FOREST") || biomeName.equals("TAIGA_HILLS")
-                || biomeName.equals("MUTATED_TAIGA") || biomeName.equals("ICE_FLATS")
-                || biomeName.equals("MUTATED_REDWOOD_TAIGA")
-                || biomeName.equals("MUTATED_REDWOOD_TAIGA_HILLS") || biomeName.equals("REDWOOD_TAIGA")
-                || biomeName.equals("TAIGA_COLD_HILLS") || biomeName.equals("COLD_BEACH")
-                || biomeName.equals("TAIGA_COLD_HILLS") || biomeName.equals("MUTATED_TAIGA_COLD"))) {
-            return BIOME_THRESHOLD.LIMITED;
-        } else if (flag && (biomeName.equals("ROOFED_FOREST") || biomeName.equals("MUTATED_ROOFED_FOREST")
-                || biomeName.equals("MESA") || biomeName.equals("MESA_ROCK")
-                || biomeName.equals("MUTATED_SAVANNA") || biomeName.equals("MUTATED_MESA")
-                || biomeName.equals("EXTREME_HILLS") || biomeName.equals("TAIGA_COLD")
-                || biomeName.equals("EXTREME_HILLS_WITH_TREES") || biomeName.equals("TAIGA")
-                || biomeName.equals("EXTREME_HILLS") || biomeName.equals("MUTATED_EXTREME_HILLS")
-                || biomeName.equals("FROZEN_OCEAN") || biomeName.equals("TAIGA_COLD_HILLS")
-                || biomeName.equals("ICE_MOUNTAINS"))) {
-            return BIOME_THRESHOLD.DISALLOWED;
+        private List<CenterSamplePoint> pointsForCurrentStage() {
+            switch (stage) {
+                case COARSE_SCAN:
+                    return CenterSamplePlanner.runtimeCoarseSamples(currentCenter());
+                case DETAILED_SCAN:
+                    return CenterSamplePlanner.runtimeDetailedSamples(currentCenter());
+                case CENTER_SCAN:
+                    return CenterSamplePlanner.runtimeCenterRefinementSamples(currentCenter());
+                default:
+                    throw new IllegalStateException("Unsupported center validation stage: " + stage);
+            }
         }
 
-        // We are only picky at 0,0 otherwise stuff is allowed
-        return flag ? BIOME_THRESHOLD.DISALLOWED : BIOME_THRESHOLD.ALLOWED;
-    }
+        private void sample(CenterSamplePoint point) {
+            rememberChunk(point);
+            CenterTerrainSample sample = sampleReader.sample(point);
 
-    public enum BIOME_THRESHOLD {
-        DISALLOWED, LIMITED, ALLOWED
+            if (stage == CenterValidationService.CenterValidationStage.COARSE_SCAN
+                    || stage == CenterValidationService.CenterValidationStage.DETAILED_SCAN)
+                detailedSamples.add(sample);
+            else if (stage == CenterValidationService.CenterValidationStage.CENTER_SCAN)
+                centerSamples.add(sample);
+
+            sampledStagePoints++;
+            progress.onStageProgress(stage, candidateIndex + 1, candidates.size(), sampledStagePoints, stageTotalPoints);
+        }
+
+        private void previewCurrentCandidate() {
+            if (stage != CenterValidationService.CenterValidationStage.CENTER_SCAN
+                    || currentCenterOceanRejected
+                    || !previewDuringSearch())
+                return;
+
+            MatchCenter center = currentCenter();
+            player.teleport(previewLocation(world, center));
+            player.setGameMode(GameMode.CREATIVE);
+            Chat.send(player, message(Messages.CenterCleaner.SEARCH_PREVIEW,
+                    "&7[&a中心搜尋&7] &f已傳送到候選中心 &a{current}&7/&a{total}&7: &fX {x}, Z {z}")
+                    .replace("{current}", (candidateIndex + 1) + "")
+                    .replace("{total}", candidates.size() + "")
+                    .replace("{x}", center.getX() + "")
+                    .replace("{z}", center.getZ() + ""));
+        }
+
+        private void advanceStage() {
+            if (stage == CenterValidationService.CenterValidationStage.CENTER_SCAN) {
+                if (quickCenterRejected()) {
+                    scoreCurrentCandidate(true);
+                    nextCandidate();
+                    return;
+                }
+
+                releaseStageResources();
+                startStage(CenterValidationService.CenterValidationStage.COARSE_SCAN);
+                return;
+            }
+
+            if (stage == CenterValidationService.CenterValidationStage.COARSE_SCAN) {
+                releaseStageResources();
+                startStage(CenterValidationService.CenterValidationStage.DETAILED_SCAN);
+                return;
+            }
+
+            scoreCurrentCandidate(false);
+            releaseStageResources();
+            nextCandidate();
+        }
+
+        private void nextCandidate() {
+            List<Long> chunksToRelease = new ArrayList<>(sampledChunks);
+            candidateIndex++;
+
+            if (candidateIndex >= candidates.size()) {
+                sampleReader.clearCache();
+                sampledChunks.clear();
+                stageSampledChunks.clear();
+                finish(CenterSearchResult.completed(bestScore, elapsedMillis()));
+                releaseChunks(chunksToRelease);
+                return;
+            }
+
+            detailedSamples.clear();
+            centerSamples.clear();
+            sampleReader.clearCache();
+            sampledChunks.clear();
+            stageSampledChunks.clear();
+            startStage(CenterValidationService.CenterValidationStage.CENTER_SCAN);
+            releaseChunks(chunksToRelease);
+        }
+
+        private boolean quickCenterRejected() {
+            return currentCenterOceanRejected;
+        }
+
+        private boolean currentCenterIsOceanBiome() {
+            CenterSamplePoint centerPoint = new CenterSamplePoint(currentCenter().getX(), currentCenter().getZ());
+            rememberChunk(centerPoint);
+            CenterTerrainSample sample = sampleReader.sample(centerPoint);
+
+            if (!CenterBiomeClassifier.isOcean(sample.getBiomeKey()))
+                return false;
+
+            centerSamples.add(sample);
+            return true;
+        }
+
+        private void rememberChunk(CenterSamplePoint point) {
+            long chunkKey = chunkKey(point.getX() >> 4, point.getZ() >> 4);
+            sampledChunks.add(chunkKey);
+            stageSampledChunks.add(chunkKey);
+        }
+
+        private void releaseStageResources() {
+            List<Long> chunksToRelease = new ArrayList<>(stageSampledChunks);
+            sampledChunks.removeAll(stageSampledChunks);
+            stageSampledChunks.clear();
+            sampleReader.clearCache();
+            releaseChunks(chunksToRelease);
+        }
+
+        private void releaseChunks(List<Long> chunkKeys) {
+            for (Long chunkKey : chunkKeys)
+                world.unloadChunk(chunkX(chunkKey), chunkZ(chunkKey), false);
+        }
+
+        private static long chunkKey(int chunkX, int chunkZ) {
+            return ((long) chunkX << 32) ^ (chunkZ & 0xffffffffL);
+        }
+
+        private static int chunkX(long chunkKey) {
+            return (int) (chunkKey >> 32);
+        }
+
+        private static int chunkZ(long chunkKey) {
+            return (int) chunkKey;
+        }
+
+        private void scoreCurrentCandidate(boolean quickRejected) {
+            List<CenterTerrainSample> scoreSamples = detailedSamples.isEmpty() ? centerSamples : detailedSamples;
+            CenterCandidateScore score = CenterValidationService.scoreCandidate(currentCenter(), scoreSamples, centerSamples);
+
+            if (bestScore == null || score.getTotalScore() > bestScore.getTotalScore())
+                bestScore = score;
+
+            progress.onCandidateScored(score, bestScore, candidateIndex + 1, candidates.size());
+            sendCandidateDebug(score, quickRejected);
+        }
+
+        private void sendCandidateDebug(CenterCandidateScore score, boolean quickRejected) {
+            if (!debugSearchOutput())
+                return;
+
+            MatchCenter center = score.getCenter();
+            Chat.send(player, "&8&m--------------------------------------------------");
+            Chat.send(player, "&7[&a中心計算&7] &f候選 &a" + (candidateIndex + 1) + "&7/&a" + candidates.size()
+                    + " &7X &f" + center.getX() + " &7Z &f" + center.getZ()
+                    + " &7狀態 &f" + score.getStatus().name()
+                    + " &7總分 &f" + formatScore(score.getTotalScore()));
+            if (quickRejected)
+                Chat.send(player, "&7[&a中心計算&7] &e正中心點為海洋生態域，已略過外圍詳掃。");
+            Chat.send(player, "&7[&a中心計算&7] &f加權1 &7水域 &b" + formatWeighted(score.getWaterScore(), CenterCandidateScore.waterWeight())
+                    + " &7地形 &6" + formatWeighted(score.getTerrainScore(), CenterCandidateScore.terrainWeight())
+                    + " &7區塊 &e" + formatWeighted(score.getSectionBalanceScore(), CenterCandidateScore.sectionBalanceWeight()));
+            Chat.send(player, "&7[&a中心計算&7] &f加權2 &7中心 &a" + formatWeighted(score.getCenterScore(), CenterCandidateScore.centerWeight())
+                    + " &7森林 &2" + formatWeighted(score.getForestScore(), CenterCandidateScore.forestWeight()));
+            Chat.send(player, "&7[&a中心計算&7] &f水域 &7海洋 &f" + formatPercent(score.getOceanRatio())
+                    + " &7河流/沼澤 &f" + formatPercent(score.getRiverRatio())
+                    + " &7總水域 &f" + formatPercent(score.getWaterRatio())
+                    + " &7中心水域 &f" + formatPercent(score.getCenterWaterRatio())
+                    + " &7中心大片水域 &f" + formatPercent(score.getCenterLargeWaterRatio()));
+            Chat.send(player, "&7[&a中心計算&7] &f水域分布 &7單區總水最高 &f" + formatPercent(score.getMaxSectionWaterRatio())
+                    + " &7相鄰總水最高 &f" + formatPercent(score.getMaxAdjacentSectionWaterRatio())
+                    + " &7單區大片水域 &f" + formatPercent(score.getMaxSectionLargeWaterRatio())
+                    + " &7相鄰大片水域 &f" + formatPercent(score.getMaxAdjacentSectionLargeWaterRatio()));
+            Chat.send(player, "&7[&a中心計算&7] &f地形 &7森林 &f" + formatPercent(score.getForestRatio())
+                    + " &7密林 &f" + formatPercent(score.getDenseForestRatio())
+                    + " &7高地 &f" + formatPercent(score.getHighlandRatio())
+                    + " &7極端高地 &f" + formatPercent(score.getExtremeHighlandRatio()));
+            Chat.send(player, "&7[&a中心計算&7] &f中心 &7可站立 &f" + formatPercent(score.getStandableRatio())
+                    + " &7斷崖 &f" + formatPercent(score.getCliffRatio())
+                    + " &7高度差 &f" + score.getCenterHeightSpread()
+                    + " &7低品質區塊 &f" + score.getLowSectionCount());
+            Chat.send(player, "&7[&a中心計算&7] &f扣分原因 &7" + formatReasons(score.getReasons()));
+        }
+
+        private MatchCenter currentCenter() {
+            return candidates.get(candidateIndex);
+        }
+
+        private void finish(CenterSearchResult result) {
+            MatchCenter previewCenter = result.getBestCandidate() == null
+                    ? CenterCleaner.spawnCenter(world, initialBorderSize())
+                    : result.getBestCandidate().getCenter();
+
+            Game.getGame().setMatchCenter(previewCenter);
+            BorderUtil.setBorders(world, previewCenter.getBorderSize());
+            Chat.send(player, Messages.Host.WORLD_CREATED.replace("{generator}", "停用"));
+            player.teleport(previewLocation(world, previewCenter));
+            player.setGameMode(GameMode.CREATIVE);
+            Extra.sound(player, Sounds.Host.WORLD_CREATED);
+            sendSearchResult(player, result);
+            cancel();
+        }
+
+        private long elapsedMillis() {
+            return Math.max(0L, System.currentTimeMillis() - startMillis);
+        }
     }
 }

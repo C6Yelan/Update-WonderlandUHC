@@ -28,7 +28,7 @@ public class LobbyCountdown extends Countdown {
             p.closeInventory();
 
             if (GameUtils.isStaff(p))
-                p.teleport(UHCWorldUtils.getZeroZero());
+                p.teleport(UHCWorldUtils.getMatchCenterLocation());
             else
                 Extra.comepleteClear(p);
         }

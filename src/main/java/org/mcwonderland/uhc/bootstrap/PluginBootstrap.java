@@ -139,6 +139,7 @@ public final class PluginBootstrap {
             Extra.deleteWorld(UHCWorldUtils.getNetherName());
         } else {
             Game.changeSettings(CacheSaver.getSettings());
+            Game.getGame().setMatchCenter(CacheSaver.getMatchCenter());
             createUhcWorldIfNotExist();
             checkNetherWorld();
             BorderUtil.setInitialBorders();

@@ -120,13 +120,13 @@ public class TimerBorder implements Border {
 
     private void teleportSpectatorAndStaffs() {
         Collection<UHCPlayer> toTeleport = UHCPlayers.getOnline(UHCPlayer::isDead);
-        Location zeroZero = UHCWorldUtils.getZeroZero();
+        Location matchCenter = UHCWorldUtils.getMatchCenterLocation();
 
         for (UHCPlayer uhcPlayer : toTeleport) {
             Player player = uhcPlayer.getPlayer();
 
             if (!BorderUtil.isInBorder(player.getLocation()))
-                player.teleport(zeroZero);
+                player.teleport(matchCenter);
         }
     }
 
@@ -160,7 +160,7 @@ public class TimerBorder implements Border {
             }
 
             if (team.isEliminate()) {
-                team.getAliveEntities().forEach(entity -> entity.teleport(UHCWorldUtils.getZeroZero()));
+                team.getAliveEntities().forEach(entity -> entity.teleport(UHCWorldUtils.getMatchCenterLocation()));
                 return;
             }
 

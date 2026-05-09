@@ -38,7 +38,7 @@ public class SimplePractice extends AbstractPractice {
         Extra.deleteWorld(Settings.Practice.WORLD);
 
         world = Bukkit.createWorld(new WorldCreator(Settings.Practice.WORLD));
-        BORDER_SERVICE.setExactFixedBorder(world.getName(), Settings.Practice.WORLD_SIZE);
+        BORDER_SERVICE.setExactFixedBorderAtOrigin(world.getName(), Settings.Practice.WORLD_SIZE);
     }
 
     @Override

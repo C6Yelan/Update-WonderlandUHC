@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.game.settings;
 
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.storage.WorldLoadingCache;
 import org.mcwonderland.uhc.storage.WorldLoadingCacheStore;
@@ -13,6 +14,7 @@ public final class CacheSaver {
     private static UHCGameSettings settings;
     private static LoadingStatus loadingStatus;
     private static String host;
+    private static MatchCenter matchCenter;
 
     static {
         loadCache(store.load());
@@ -45,9 +47,19 @@ public final class CacheSaver {
         CacheSaver.host = host;
     }
 
+    public static MatchCenter getMatchCenter() {
+        return matchCenter;
+    }
+
+    public static void setMatchCenter(MatchCenter matchCenter) {
+        CacheSaver.matchCenter = matchCenter;
+    }
+
     public static void saveCache() {
         UHCGameSettings currentSettings = Game.getSettings();
-        store.save(new WorldLoadingCache(loadingStatus, host, currentSettings));
+        MatchCenter currentMatchCenter = Game.getGame().getMatchCenter();
+        store.save(new WorldLoadingCache(loadingStatus, host, currentSettings, currentMatchCenter));
+        matchCenter = currentMatchCenter;
     }
 
     public static void deleteCache() {
@@ -58,5 +70,6 @@ public final class CacheSaver {
         loadingStatus = cache.getLoadingStatus();
         host = cache.getHost();
         settings = cache.getSettings();
+        matchCenter = cache.getMatchCenter();
     }
 }

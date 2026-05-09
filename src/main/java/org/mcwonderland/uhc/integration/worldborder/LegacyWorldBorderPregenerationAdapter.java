@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.integration.worldborder;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.port.ChunkPregenerationPort;
 
@@ -11,7 +12,7 @@ import java.io.IOException;
 public final class LegacyWorldBorderPregenerationAdapter implements ChunkPregenerationPort {
 
     @Override
-    public void startSquarePregeneration(String worldName, int radius, int frequency, int padding) {
+    public void startSquarePregeneration(String worldName, MatchCenter center, int radius, int frequency, int padding) {
         World world = Bukkit.getWorld(worldName);
 
         if (world == null)
@@ -20,7 +21,7 @@ public final class LegacyWorldBorderPregenerationAdapter implements ChunkPregene
         makeFirstRegionFileIfEmpty(world);
 
         String[] commands = {
-                "wb " + worldName + " set " + radius + " " + radius + " 0 0",
+                "wb " + worldName + " set " + radius + " " + radius + " " + center.getX() + " " + center.getZ(),
                 "wb wshape " + worldName + " square",
                 "wb shape square",
                 "wb " + worldName + " fill " + frequency + " " + padding + " false",
