@@ -31,6 +31,15 @@ public class MatchStateTest {
         assertFalse(MatchState.PLAYING.isLobby());
         assertFalse(MatchState.PLAYING.isTeleport());
         assertTrue(MatchState.PLAYING.isStarted());
+        assertFalse(MatchState.PLAYING.isEnded());
+    }
+
+    @Test
+    public void endingIsEndedOnly() {
+        assertFalse(MatchState.ENDING.isLobby());
+        assertFalse(MatchState.ENDING.isTeleport());
+        assertFalse(MatchState.ENDING.isStarted());
+        assertTrue(MatchState.ENDING.isEnded());
     }
 
     @Test
@@ -38,10 +47,11 @@ public class MatchStateTest {
         assertSame(MatchState.TELEPORTING, MatchState.WAITING.nextState());
         assertSame(MatchState.PRE_START, MatchState.TELEPORTING.nextState());
         assertSame(MatchState.PLAYING, MatchState.PRE_START.nextState());
+        assertSame(MatchState.ENDING, MatchState.PLAYING.nextState());
     }
 
     @Test(expected = IllegalStateException.class)
-    public void playingDoesNotHaveNextState() {
-        MatchState.PLAYING.nextState();
+    public void endingDoesNotHaveNextState() {
+        MatchState.ENDING.nextState();
     }
 }

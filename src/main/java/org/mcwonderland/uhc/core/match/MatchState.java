@@ -4,7 +4,8 @@ public enum MatchState {
     WAITING,
     TELEPORTING,
     PRE_START,
-    PLAYING;
+    PLAYING,
+    ENDING;
 
     public boolean isLobby() {
         return this == WAITING;
@@ -16,6 +17,10 @@ public enum MatchState {
 
     public boolean isStarted() {
         return this == PLAYING;
+    }
+
+    public boolean isEnded() {
+        return this == ENDING;
     }
 
     public MatchState nextState() {

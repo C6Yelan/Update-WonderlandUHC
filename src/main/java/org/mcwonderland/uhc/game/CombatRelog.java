@@ -120,4 +120,5 @@ public class CombatRelog {
         LegacyFoundationAdapter.setChunkForceLoaded(getEntity().getLocation().getChunk(), false);
         relogPlayer.remove(uhcPlayer);
     }
+
 }

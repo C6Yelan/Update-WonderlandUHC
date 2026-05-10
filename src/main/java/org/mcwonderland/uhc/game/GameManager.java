@@ -1,7 +1,9 @@
 package org.mcwonderland.uhc.game;
 
-import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.application.match.HandleDeathResult;
+import org.mcwonderland.uhc.application.match.HandleDeathUseCase;
 import org.mcwonderland.uhc.api.event.timer.GameEndEvent;
+import org.mcwonderland.uhc.core.match.MatchState;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
@@ -16,9 +18,11 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameManager {
+    private static final HandleDeathUseCase HANDLE_DEATH = new HandleDeathUseCase();
 
     public static void freeze(Player player) {
         FreezeMode freezeMode = Settings.Game.FREEZE_TYPE.getFreezeMode();
@@ -45,18 +49,14 @@ public class GameManager {
 
 
     public static UHCTeam getWinner() {
-        UHCTeam winningTeam = null;
+        List<HandleDeathUseCase.TeamStatus<UHCTeam>> teams = new ArrayList<>();
 
         for (UHCTeam team : UHCTeam.getTeams()) {
-            if (!team.isEliminate()) {
-                if (winningTeam != null)
-                    return null;
-                else
-                    winningTeam = team;
-            }
+            teams.add(HandleDeathUseCase.TeamStatus.of(team, team.isEliminate()));
         }
 
-        return winningTeam;
+        HandleDeathResult<UHCTeam> result = HANDLE_DEATH.evaluate(teams);
+        return result.getWinner();
     }
 
     public static void checkWin() {
@@ -65,12 +65,13 @@ public class GameManager {
         if (team == null)
             return;
 
+        if (Game.getGame().getActiveMatch().getState() == MatchState.ENDING)
+            return;
 
+        Game.getGame().endMatch();
         broadcastWinning(team);
         LegacyFoundationAdapter.callEvent(new GameEndEvent());
-
-        if (!WonderlandUHC.TEST_MODE)
-            CacheSaver.deleteCache();
+        CacheSaver.deleteCache();
     }
 
     private static void broadcastWinning(UHCTeam winner) {
@@ -88,18 +89,20 @@ public class GameManager {
                 "{kills}", "" + winner.getKills(),
                 "{host}", Game.getGame().getHost());
 
+        List<String> winningMessage = new ArrayList<>();
+
         //todo 優化code
-        for (int i = 0; i < list.size(); i++) {
-            String s = list.get(i);
+        for (String s : list) {
             if (s.contains("{players}")) {
-                list.remove(s);
                 for (String name : UHCPlayers.toNames(winner.getPlayers())) {
-                    list.add(i, s.replace("{players}", name));
+                    winningMessage.add(s.replace("{players}", name));
                 }
+            } else {
+                winningMessage.add(s);
             }
         }
 
-        return list;
+        return winningMessage;
     }
 
 

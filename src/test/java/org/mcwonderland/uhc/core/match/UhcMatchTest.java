@@ -69,12 +69,16 @@ public class UhcMatchTest {
 
         assertSame(MatchState.PLAYING, match.advanceState());
         assertSame(MatchState.PLAYING, match.getState());
+
+        assertSame(MatchState.ENDING, match.advanceState());
+        assertSame(MatchState.ENDING, match.getState());
     }
 
     @Test(expected = IllegalStateException.class)
-    public void playingCannotAdvancePastKnownLifecycle() {
+    public void endingCannotAdvancePastKnownLifecycle() {
         UhcMatch match = UhcMatch.create();
 
+        match.advanceState();
         match.advanceState();
         match.advanceState();
         match.advanceState();

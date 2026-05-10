@@ -4,6 +4,10 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import org.mcwonderland.uhc.api.event.GameChangeSettingsEvent;
+import org.mcwonderland.uhc.application.match.EndMatchUseCase;
+import org.mcwonderland.uhc.application.match.MatchTransition;
+import org.mcwonderland.uhc.application.match.MatchTransitionResult;
+import org.mcwonderland.uhc.application.match.MatchTransitionUseCase;
 import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.core.match.LegacyMatchSettingsMapper;
 import org.mcwonderland.uhc.core.match.MatchRepository;
@@ -35,6 +39,10 @@ public class Game {
 
     @Getter(AccessLevel.NONE)
     private final MatchRepository matchRepository = new MatchRepository();
+    @Getter(AccessLevel.NONE)
+    private final MatchTransitionUseCase matchTransitionUseCase = new MatchTransitionUseCase();
+    @Getter(AccessLevel.NONE)
+    private final EndMatchUseCase endMatchUseCase = new EndMatchUseCase();
     private UHCGameSettings settings = UHCGameSettings.defaultSettings();
     private String host = "";
     private int allPlayers;
@@ -107,15 +115,28 @@ public class Game {
     }
 
     public void nextState() {
+        MatchTransition transition = LegacyGameStateTransitions.transitionFor(this.currentState.getName());
+
         this.currentState.end();
         this.currentState = states.remove();
         this.currentState.init();
-        this.getActiveMatch().advanceState();
+
+        MatchTransitionResult transitionResult = this.matchTransitionUseCase.apply(this.getActiveMatch(), transition);
+
+        if (!transitionResult.isSuccess())
+            throw new IllegalStateException(transitionResult.getFailureReason());
 
         GameTimerRunnable.totalSecond = 0;
         GameTimerRunnable.tick = 0;
 
         this.currentState.start();
+    }
+
+    public void endMatch() {
+        MatchTransitionResult transitionResult = this.endMatchUseCase.end(this.getActiveMatch());
+
+        if (!transitionResult.isSuccess())
+            throw new IllegalStateException(transitionResult.getFailureReason());
     }
 
     public void tryToStart(CommandSender sender) {
