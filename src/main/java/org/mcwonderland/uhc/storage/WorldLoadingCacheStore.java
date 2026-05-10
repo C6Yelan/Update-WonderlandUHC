@@ -49,8 +49,12 @@ public final class WorldLoadingCacheStore extends YamlConfig {
     }
 
     private void saveMatchCenter(MatchCenter matchCenter) {
-        if (matchCenter == null)
+        if (matchCenter == null) {
+            set(MATCH_CENTER_X, null);
+            set(MATCH_CENTER_Z, null);
+            set(MATCH_CENTER_BORDER_SIZE, null);
             return;
+        }
 
         set(MATCH_CENTER_X, matchCenter.getX());
         set(MATCH_CENTER_Z, matchCenter.getZ());

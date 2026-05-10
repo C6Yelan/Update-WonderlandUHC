@@ -36,7 +36,7 @@ public class PreparingLoginListener extends LoginListener {
         protected void checkLogin(UHCLoginEvent e) {
             LoadingStatus loadingStatus = CacheSaver.getLoadingStatus();
 
-            if (loadingStatus == LoadingStatus.CONFIGURING
+            if (loadingStatus.isWaitingForHost()
                     && !UHCPermission.BYPASS_JOIN_CONFIGURING.hasPerm(e.getPlayer()))
                 disallow(Messages.Kick.WAITING_HOST);
         }

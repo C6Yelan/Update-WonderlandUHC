@@ -20,6 +20,8 @@ import org.mcwonderland.uhc.application.world.CenterTerrainSample;
 import org.mcwonderland.uhc.application.world.CenterValidationService;
 import org.mcwonderland.uhc.application.world.CenterWorldSampleReader;
 import org.mcwonderland.uhc.application.world.MatchCenter;
+import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
@@ -68,6 +70,7 @@ public class CenterCleaner {
                 Chat.send(player, Messages.Host.WORLD_CREATED.replace("{generator}", "停用"));
                 MatchCenter matchCenter = spawnCenter(uhcWorld, initialBorderSize());
                 Game.getGame().setMatchCenter(matchCenter);
+                saveWorldReadyCache(player);
                 BorderUtil.setBorders(uhcWorld, matchCenter.getBorderSize());
                 player.teleport(previewLocation(uhcWorld, matchCenter));
                 player.setGameMode(GameMode.CREATIVE);
@@ -123,6 +126,12 @@ public class CenterCleaner {
     private static Location previewLocation(World world, MatchCenter center) {
         int y = world.getHighestBlockYAt(center.getX(), center.getZ()) + 2;
         return new Location(world, center.getX() + 0.5D, y, center.getZ() + 0.5D);
+    }
+
+    private static void saveWorldReadyCache(Player player) {
+        CacheSaver.setLoadingStatus(LoadingStatus.WORLD_READY);
+        CacheSaver.setHost(player.getName());
+        CacheSaver.saveCache();
     }
 
     private static boolean previewDuringSearch() {
@@ -553,6 +562,7 @@ public class CenterCleaner {
                     : result.getBestCandidate().getCenter();
 
             Game.getGame().setMatchCenter(previewCenter);
+            saveWorldReadyCache(player);
             BorderUtil.setBorders(world, previewCenter.getBorderSize());
             Chat.send(player, Messages.Host.WORLD_CREATED.replace("{generator}", "停用"));
             player.teleport(previewLocation(world, previewCenter));

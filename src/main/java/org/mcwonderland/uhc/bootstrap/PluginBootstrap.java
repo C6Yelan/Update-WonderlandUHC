@@ -133,7 +133,7 @@ public final class PluginBootstrap {
         LoadingStatus loadingStatus = CacheSaver.getLoadingStatus();
         Game.getGame().setHost(CacheSaver.getHost());
 
-        if (loadingStatus == LoadingStatus.CONFIGURING) {
+        if (!loadingStatus.shouldKeepGeneratedWorlds()) {
             BorderUtil.removeUHCWorldWBBorders();
             Extra.deleteWorld(UHCWorldUtils.getWorldName());
             Extra.deleteWorld(UHCWorldUtils.getNetherName());
@@ -144,7 +144,7 @@ public final class PluginBootstrap {
             checkNetherWorld();
             BorderUtil.setInitialBorders();
 
-            if (loadingStatus == LoadingStatus.GENERATING)
+            if (loadingStatus.shouldResumePregeneration())
                 ChunkFiller.fill(UHCWorldUtils.getWorld());
         }
     }
