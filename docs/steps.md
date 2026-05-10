@@ -697,6 +697,7 @@ GUI 原本被放在 presentation cleanup，但目前它已經阻擋 Step 9 與 S
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/menu/impl/host/MainSettingsMenu.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/menu/impl/host/TimeSettingsMenu.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/menu/impl/host/BorderSettingsMenu.java`
+- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/menu/model/InventoryEditButton.java`
 - `Update-WonderlandUHC/src/main/resources/gui.yml`
 - `Update-WonderlandUHC/src/main/resources/items.yml`
 
@@ -706,7 +707,8 @@ GUI 原本被放在 presentation cleanup，但目前它已經阻擋 Step 9 與 S
 2. 修復會阻擋核心主持流程的 menu 入口：settings book 能開、主設定 GUI 能操作、核心按鈕不因 material alias 或 Foundation menu 差異失效。
 3. `TimeSettingsMenu` 必須能寫入並保存 `Damage_Time`、PvP、border shrink、disable nether 等核心 timer，避免測試只能靠手動改 config。
 4. `MainSettingsMenu` 的 Nether toggle 必須能正確寫入 `UHCGameSettings`，讓 Step 12 可以回測 Nether portal / border center。
-5. 只修會阻擋上述入口的 Bukkit/Paper API、Foundation menu 行為或 `gui.yml` / `items.yml` material alias；完整 API 清理仍留到 Step 18，presentation 架構整理分別留到 Step 16 / Step 17。
+5. `MainSettingsMenu` 的開始物品 `Custom_Inventory` editor 必須能完成保存；`finish` / `tohead` 這類 inventory editor conversation 輸入不得被 Paper `1.21.11` 當成未知指令而中斷。此處只驗收開始物品與開局需要的金頭顱轉換，practice inventory、禁用物品清單、死亡掉落物等完整非核心 editor 驗收留到 Step 17。
+6. 只修會阻擋上述入口的 Bukkit/Paper API、Foundation menu 行為或 `gui.yml` / `items.yml` material alias；完整 API 清理仍留到 Step 18，presentation 架構整理分別留到 Step 16 / Step 17。
 
 不做的事：
 
@@ -715,12 +717,14 @@ GUI 原本被放在 presentation cleanup，但目前它已經阻擋 Step 9 與 S
 - 不修 Discord 公告 GUI / Conversation 入口；這是 Step 13。
 - 不全面瘦身 command / menu / tools / scoreboard；核心入口是 Step 16，scoreboard 與非核心 presentation 是 Step 17。
 - 不整理 practice mode；這是 Step 17。
+- 不完整驗收 `Practice_Inventory`、`Disable_Items`、`Custom_Drops` 等非開局必要 inventory editor；若共用修正順手恢復功能，只能視為附帶效果，正式驗收仍留到 Step 17。
 - 不全面重做 scenario GUI；scenario 盤點 / rule 化是 Step 14 / Step 15，scenario menu presentation 收斂是 Step 17。
 - 不一次清完所有 Bukkit/Paper API；非核心入口 API 清理由 Step 18 處理。
 
 完成條件：
 
 - 不手動改 config，也能透過主持入口設定核心 timer、Nether 開關並開始比賽。
+- 不手動改 config，也能透過主持入口設定開始物品，並且 inventory editor 的完成與金頭顱轉換入口不再落到未知指令。
 - Step 9 / Step 10 不再因核心主持設定 GUI 無法操作而卡住。
 - 修復只限核心主持設定入口與必要 Paper API；hotbar、Discord 與未觸及的 presentation cleanup 明確留在 Step 12、Step 13、Step 16 / Step 17。
 
@@ -902,6 +906,7 @@ Step 11 到 Step 13 只修「能不能用」與解除核心驗收阻塞；本步
 3. Practice mode 保留 `/practice` 舊功能，但可用更原生、更簡潔的實作方式重做；指令、練習世界、邊界、物品、隨機傳送與死亡補裝要維持同等行為。
 4. Team / info / stats 類 command 與 menu 只保留輸入輸出與 presentation 行為，不直接混入核心規則。
 5. `PlayersMenu`、`ButtonLocalization`、player head / skull / page button 等 Foundation menu 高風險點在此收斂或留下明確替代計畫。
+6. 回測 Step 11 共用 `InventoryEditButton` 修正對非核心 editor 的附帶影響：`Practice_Inventory`、`Disable_Items`、`Custom_Drops` 必須各自能完成保存，若仍有差異則在本步驟處理。
 
 完成條件：
 

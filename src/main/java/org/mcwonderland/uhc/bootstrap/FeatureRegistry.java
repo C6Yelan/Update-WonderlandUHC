@@ -15,6 +15,7 @@ import org.mcwonderland.uhc.command.impl.game.SendCoordsCommand;
 import org.mcwonderland.uhc.command.impl.game.SpecToggleCommand;
 import org.mcwonderland.uhc.command.impl.host.BorderCommand;
 import org.mcwonderland.uhc.command.impl.host.GiveAllCommand;
+import org.mcwonderland.uhc.command.impl.host.InventoryEditorInputCommand;
 import org.mcwonderland.uhc.command.impl.host.MLGCommand;
 import org.mcwonderland.uhc.command.impl.host.RespawnCommand;
 import org.mcwonderland.uhc.command.impl.host.SetSpawnCommand;
@@ -87,6 +88,8 @@ public final class FeatureRegistry {
                 new ConfigCommand("config|cfg"),
                 new DisableItemsCommand("disableitems"),
                 new GiveAllCommand("giveall"),
+                new InventoryEditorInputCommand("finish", "finish"),
+                new InventoryEditorInputCommand("tohead", "tohead"),
                 new LeaveCommand("leave"),
                 new MLGCommand("mlg"),
                 new RespawnCommand("respawn"),
