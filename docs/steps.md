@@ -770,7 +770,7 @@ Step 7 已驗證 Discord 公告底層 sender、頻道設定、提及轉換與 `@
 
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/command/uhc/EditCommand.java`
 - `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/menu/impl/host/BroadcastSettingsMenu.java`
-- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/discord/**/*.java`
+- `Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/model/broadcast/**/*.java`
 - `Update-WonderlandUHC/src/main/resources/gui.yml`
 
 要做的事：
@@ -778,6 +778,12 @@ Step 7 已驗證 Discord 公告底層 sender、頻道設定、提及轉換與 `@
 1. 修復 Step 7 留下的正式 Discord 公告 GUI / Conversation 入口。
 2. 確認 `/uhc edit` 的公告流程能使用既有 Discord sender、錯誤回報與 mention 行為。
 3. GUI 修復後移除臨時 `/uhc announce` 測試入口；不得把臨時指令視為新版正式功能。
+
+目前狀態：
+
+- `/uhc edit` 的 Discord 公告 GUI / Conversation 入口已可送出公告，並已驗證錯誤頻道 ID 會回報玩家可讀錯誤。
+- DiscordSRV 未安裝時，公告 GUI 會回報玩家可讀錯誤，不會建立 Discord sender，也不會因預期的缺依賴狀態寫入新的 exception。
+- 臨時 `/uhc announce`、`broadcastdiscord` 與 `discordbroadcast` 測試入口已移除，不列為新版正式功能。
 
 不做的事：
 
