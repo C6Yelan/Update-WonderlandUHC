@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.menu.impl.host;
 
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
+import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.menu.model.UHCNumberEditButton;
@@ -52,6 +53,7 @@ public class BorderSettingsMenu extends ConfigMenu {
             @Override
             protected void handleNumber(Integer newValue) {
                 borderSettings.setInitialBorder(newValue);
+                saveCurrentSettings();
             }
         };
 
@@ -75,6 +77,7 @@ public class BorderSettingsMenu extends ConfigMenu {
             @Override
             protected void handleNumber(Integer newValue) {
                 borderSettings.setInitialNetherBorder(newValue);
+                saveCurrentSettings();
             }
         };
 
@@ -98,6 +101,7 @@ public class BorderSettingsMenu extends ConfigMenu {
             @Override
             protected void handleNumber(Integer newValue) {
                 borderSettings.setFinalSizeOfShrinkModeBorder(newValue);
+                saveCurrentSettings();
             }
         };
 
@@ -105,6 +109,7 @@ public class BorderSettingsMenu extends ConfigMenu {
             @Override
             protected void setBorderType(Player player, BorderType type) {
                 borderSettings.setBorderType(type);
+                saveCurrentSettings();
 
                 broadcast(Messages.Host.BORDER_TYPE_CHANGED, player);
             }
@@ -134,6 +139,7 @@ public class BorderSettingsMenu extends ConfigMenu {
             @Override
             protected void handleNumber(Double newValue) {
                 borderSettings.setBorderShrinkSpeed(newValue);
+                saveCurrentSettings();
             }
 
             @Override
@@ -151,6 +157,7 @@ public class BorderSettingsMenu extends ConfigMenu {
                 speedResult = getShrinkSpeed(time);
 
                 borderSettings.setBorderShrinkSpeed(speedResult);
+                saveCurrentSettings();
             }
 
             @Override
@@ -174,6 +181,10 @@ public class BorderSettingsMenu extends ConfigMenu {
                 return Messages.Editor.Time.ShrinkCalculator.SAVED.replace("{speed}", speedResult + "");
             }
         };
+    }
+
+    private void saveCurrentSettings() {
+        CacheSaver.saveCache();
     }
 
     private abstract class BorderTypeButtonConfig extends ConfigLeftOrRightButton {

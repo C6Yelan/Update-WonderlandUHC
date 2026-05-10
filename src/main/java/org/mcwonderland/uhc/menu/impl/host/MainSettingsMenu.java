@@ -210,6 +210,8 @@ public class MainSettingsMenu extends ConfigMenu {
             @Override
             protected void onStatusChange(Player player, Menu menu, ClickType click, boolean newStatus) {
                 settings.setUsingNether(newStatus);
+                Game.changeSettings(settings);
+                CacheSaver.saveCache();
 
                 broadcast(newStatus ? Messages.Host.NETHER_ENABLED_PLAYER : Messages.Host.NETHER_DISABLED_PLAYER, player);
             }

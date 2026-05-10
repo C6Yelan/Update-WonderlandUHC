@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.sub.UHCTimerSettings;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.settings.Messages;
@@ -26,6 +27,7 @@ public class TimeSettingsMenu extends ConfigMenu {
             @Override
             protected void onAcceptInput(int time) {
                 timer.setPvpTime(time);
+                saveCurrentSettings();
             }
 
             @Override
@@ -50,6 +52,7 @@ public class TimeSettingsMenu extends ConfigMenu {
             @Override
             protected void onAcceptInput(int time) {
                 timer.setDamageTime(time);
+                saveCurrentSettings();
             }
 
             @Override
@@ -72,6 +75,7 @@ public class TimeSettingsMenu extends ConfigMenu {
             @Override
             protected void onAcceptInput(int time) {
                 timer.setHealTime(time);
+                saveCurrentSettings();
             }
 
             @Override
@@ -95,6 +99,7 @@ public class TimeSettingsMenu extends ConfigMenu {
             @Override
             protected void onAcceptInput(int time) {
                 timer.setBorderShrinkTime(time);
+                saveCurrentSettings();
             }
 
             @Override
@@ -118,6 +123,7 @@ public class TimeSettingsMenu extends ConfigMenu {
             @Override
             protected void onAcceptInput(int time) {
                 timer.setDisableNetherTime(time);
+                saveCurrentSettings();
             }
 
             @Override
@@ -135,5 +141,9 @@ public class TimeSettingsMenu extends ConfigMenu {
                 return Messages.Editor.Time.DisableNether.SAVED;
             }
         };
+    }
+
+    private void saveCurrentSettings() {
+        CacheSaver.saveCache();
     }
 }
