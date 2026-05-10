@@ -752,12 +752,15 @@ Step 11 修好核心主持設定後，再處理 spectator / staff hotbar 與 Ste
 - 不修 Discord 公告 GUI / Conversation 入口；這是 Step 13。
 - 不全面整理 tools 架構；這是 Step 16。
 - 不處理 scoreboard、practice 或非核心 presentation；這是 Step 17。
+- `/staff` 開啟後再關閉時 staff hotbar 物品不會自動清除，已確認是舊版既有行為，不視為本輪升級造成的 regression；若之後要調整，歸到 Step 16 的 staff/tools lifecycle 收斂。
+- `邊界將於 {fancy-time} 後收縮...` 這類 border countdown placeholder 未替換問題屬於核心流程訊息輸出，歸到 Step 16 處理；不阻塞 Step 12 hotbar / spectator 驗收。
 
 完成條件：
 
 - spectator / staff hotbar 核心工具可用，且 center tool 以 `MatchCenter` 為準。
 - Step 9 Slice 7 被 GUI / hotbar 阻擋的 spectator center tool、Nether toggle、Nether portal `MatchCenter / 8` 驗收完成或留下具體不可測原因。
 - 修復只限 hotbar / spectator / Step 9 回測需要的必要範圍；未觸及的 presentation cleanup 明確留在 Step 16 / Step 17。
+- Paper `1.21.11` 實測除舊版 `/staff` 關閉不清物品外，其餘 spectator / staff hotbar、center tool、Nether toggle 與 Nether portal `MatchCenter / 8` 行為皆正常時，Step 12 可視為完成；上述 staff 物品殘留與 border countdown `{fancy-time}` 不列為 Step 12 blocker。
 
 ## 13. Discord 公告 GUI / Conversation 正式化
 
