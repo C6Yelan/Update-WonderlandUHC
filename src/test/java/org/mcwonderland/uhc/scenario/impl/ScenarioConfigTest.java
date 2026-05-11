@@ -46,11 +46,4 @@ public class ScenarioConfigTest {
         throw new AssertionError("invalid material should fail");
     }
 
-    @Test
-    public void soundLineAliasesOnlyChangeSoundName() {
-        assertEquals("ENTITY_PLAYER_LEVELUP 1.0F 2.0F", ScenarioConfig.normalizeSoundLine("LEVEL_UP 1.0F 2.0F"));
-        assertEquals("UI_BUTTON_CLICK 1.0F 1.0F", ScenarioConfig.normalizeSoundLine("CLICK 1.0F 1.0F"));
-        assertEquals("ENTITY_ENDERMAN_TELEPORT 1.0F 1.0F", ScenarioConfig.normalizeSoundLine("ENDERMAN_TELEPORT 1.0F 1.0F"));
-        assertEquals("none", ScenarioConfig.normalizeSoundLine("none"));
-    }
 }

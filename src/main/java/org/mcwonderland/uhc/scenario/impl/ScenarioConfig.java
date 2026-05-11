@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.scenario.impl;
 import org.bukkit.Material;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.settings.UHCFiles;
+import org.mcwonderland.uhc.util.SoundConfigParser;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.settings.YamlConfig;
 
@@ -22,14 +23,6 @@ public class ScenarioConfig extends YamlConfig {
             "MUSHROOM_SOUP", "MUSHROOM_STEW",
             "WEB", "COBWEB",
             "WORKBENCH", "CRAFTING_TABLE"
-    );
-
-    private static final Map<String, String> LEGACY_SOUND_ALIASES = Map.of(
-            "CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG",
-            "CLICK", "UI_BUTTON_CLICK",
-            "ENDERMAN_TELEPORT", "ENTITY_ENDERMAN_TELEPORT",
-            "LEVEL_UP", "ENTITY_PLAYER_LEVELUP",
-            "NOTE_BASS", "BLOCK_NOTE_BLOCK_BASS"
     );
 
     private ConfigBasedScenario scenario;
@@ -108,10 +101,9 @@ public class ScenarioConfig extends YamlConfig {
 
     private SimpleSound getScenarioSound(String path) {
         Object sound = getObject(path);
-        String soundLine = normalizeSoundLine(String.valueOf(sound));
 
         try {
-            return new SimpleSound(soundLine);
+            return SoundConfigParser.parse(String.valueOf(sound));
         } catch (RuntimeException | LinkageError ex) {
             throw new IllegalArgumentException("Invalid scenario sound '" + sound + "' in " + scenario.getName() + "." + path, ex);
         }
@@ -137,29 +129,13 @@ public class ScenarioConfig extends YamlConfig {
     }
 
     static String normalizeSoundLine(String soundLine) {
-        if ("none".equalsIgnoreCase(soundLine.trim()))
-            return "none";
-
-        String[] parts = soundLine.contains(", ") ? soundLine.split(", ") : soundLine.split(" ");
-
-        if (parts.length == 0)
-            return soundLine;
-
-        parts[0] = normalizeSoundName(parts[0]);
-
-        return String.join(soundLine.contains(", ") ? ", " : " ", parts);
+        return SoundConfigParser.normalizeSoundLine(soundLine);
     }
 
     static String normalizeMaterialName(String materialName) {
         String normalizedName = normalizeNamespacedValue(materialName);
 
         return LEGACY_MATERIAL_ALIASES.getOrDefault(normalizedName, normalizedName);
-    }
-
-    private static String normalizeSoundName(String soundName) {
-        String normalizedName = normalizeNamespacedValue(soundName);
-
-        return LEGACY_SOUND_ALIASES.getOrDefault(normalizedName, normalizedName);
     }
 
     private static String normalizeNamespacedValue(String value) {

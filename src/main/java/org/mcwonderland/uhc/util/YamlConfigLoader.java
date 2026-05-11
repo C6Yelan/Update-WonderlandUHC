@@ -75,12 +75,23 @@ public class YamlConfigLoader {
 
     private Object getFieldValueInYaml(Field field) throws Exception {
         String nameInYaml = getPathInYaml(field);
+
+        if (SimpleSound.class.isAssignableFrom(field.getType()))
+            return SoundConfigParser.parse(getStringValue(nameInYaml));
+
         String methodName = getGetterName(field);
 
         Method method = YamlStaticConfig.class.getDeclaredMethod(methodName, String.class);
         method.setAccessible(true);
 
         return method.invoke(null, nameInYaml);
+    }
+
+    private String getStringValue(String path) throws Exception {
+        Method method = YamlStaticConfig.class.getDeclaredMethod("getString", String.class);
+        method.setAccessible(true);
+
+        return ( String ) method.invoke(null, path);
     }
 
     private String getPathInYaml(Field field) {
@@ -105,10 +116,6 @@ public class YamlConfigLoader {
             ParameterizedType type = ( ParameterizedType ) field.getGenericType();
             Class<?> typeClass = ( Class<?> ) type.getActualTypeArguments()[0];
             return "get" + typeClass.getSimpleName() + "List";
-        }
-
-        if (fieldType.isAssignableFrom(SimpleSound.class)){
-            return "getSound";
         }
 
         return "get" + fieldType.getSimpleName();
