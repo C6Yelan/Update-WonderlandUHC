@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.util.WorldUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,7 +37,7 @@ public class UHCBlockBreakEvent extends UHCPlayerEvent {
     public UHCBlockBreakEvent(BlockBreakEvent blockBreakEvent) {
         super(UHCPlayer.getUHCPlayer(blockBreakEvent.getPlayer()));
         this.blockBreakEvent = blockBreakEvent;
-        this.drops = new ArrayList<>(blockBreakEvent.getBlock().getDrops(blockBreakEvent.getPlayer().getItemInHand()));
+        this.drops = new ArrayList<>(blockBreakEvent.getBlock().getDrops(PlayerHand.getMainHandItem(blockBreakEvent.getPlayer())));
         this.originalDrops = cloneItemStacks();
         this.expToDrop = blockBreakEvent.getExpToDrop();
     }

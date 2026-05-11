@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.scenario.impl.special;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.core.rule.OreRuleSupport;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -11,11 +12,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 import org.mineacademy.fo.collection.StrictMap;
 import org.mineacademy.fo.model.SimpleSound;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -60,7 +59,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     @EventHandler
     protected void onBlockBreak(UHCBlockBreakEvent e) {
         try {
-            Material blockType = e.getBlockType();
+            Material blockType = OreRuleSupport.canonicalLimitedOre(e.getBlockType());
 
             if (blockHasLimit(blockType)) {
                 int limit = limitedBlocks.get(blockType);
@@ -98,10 +97,10 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     }
 
     private void dropNothing(UHCBlockBreakEvent e) {
-        final Collection<ItemStack> blockDrops = e.getBlock().getDrops();
-        blockDrops.forEach(itemStack -> e.replaceDrop(itemStack.getType(), Material.AIR));
+        e.getDrops().clear();
+        e.setExpToDrop(0);
 
-        tellCantMine(e.getPlayer(), e.getBlockType());
+        tellCantMine(e.getPlayer(), OreRuleSupport.canonicalLimitedOre(e.getBlockType()));
     }
 
     private void tellCantMine(Player player, Material blockType) {

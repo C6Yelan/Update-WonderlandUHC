@@ -1,10 +1,9 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
+import org.mcwonderland.uhc.core.rule.OreRuleSupport;
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -19,7 +18,7 @@ public class ScenarioDiamondLess extends ConfigBasedScenario implements Listener
 
     @EventHandler
     public void onBlockBreak(UHCBlockBreakEvent e) {
-        if (e.getBlockType() == LegacyFoundationAdapter.materialOf("DIAMOND_ORE"))
-            e.removeDrop(Material.DIAMOND, Material.DIAMOND_ORE);
+        if (OreRuleSupport.isDiamondOre(e.getBlockType()))
+            e.getDrops().removeIf(drop -> OreRuleSupport.isDiamondDrop(drop.getType()));
     }
 }

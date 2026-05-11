@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.special;
 
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.enchantments.Enchantment;
@@ -65,7 +66,7 @@ public class ScenarioTripleArrow extends ConfigBasedScenario implements Listener
     }
 
     private boolean isBowInfinity(Player shooter) {
-        return shooter.getItemInHand().getEnchantmentLevel(Enchantment.INFINITY) > 0;
+        return PlayerHand.getMainHandItem(shooter).getEnchantmentLevel(Enchantment.INFINITY) > 0;
     }
 
     private ItemStack getArrowsInInventory(Player shooter) {

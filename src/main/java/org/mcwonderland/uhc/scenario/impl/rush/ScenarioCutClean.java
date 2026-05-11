@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.rush;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
+import org.mcwonderland.uhc.core.rule.OreRuleSupport;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.mcwonderland.uhc.util.WorldUtils;
@@ -40,8 +41,7 @@ public class ScenarioCutClean extends ConfigBasedScenario implements Listener {
     }
 
     private void replaceOreDrops(UHCBlockBreakEvent e) {
-        e.replaceDrop(Material.IRON_ORE, Material.IRON_INGOT);
-        e.replaceDrop(Material.GOLD_ORE, Material.GOLD_INGOT);
+        e.getDrops().forEach(drop -> drop.setType(OreRuleSupport.cookedOreDrop(drop.getType())));
         e.replaceDrop(Material.GRAVEL, Material.FLINT);
         e.replaceDrop(Material.FLINT, Material.FLINT);
     }

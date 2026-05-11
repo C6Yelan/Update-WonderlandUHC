@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.core.rule.OreRuleSupport;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -31,7 +32,7 @@ public class ScenarioDoubleOrNothing extends ConfigBasedScenario implements List
     protected void onBlockBreak(UHCBlockBreakEvent e) {
         Material blockType = e.getBlockType();
 
-        if (triggerBlocks.contains(blockType))
+        if (OreRuleSupport.matchesAnyBlock(triggerBlocks, blockType))
             doubleOrNothing(e);
     }
 

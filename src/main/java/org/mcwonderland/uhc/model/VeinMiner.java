@@ -35,6 +35,10 @@ public class VeinMiner {
         }
     }
 
+    public int countConnectedBlocks(Block block, SelectMode mode) {
+        return calculateConnectBlocks(block, mode).size();
+    }
+
     private void breakBlock(Player player, Block block) {
         try {
             PlayerUtils.breakBlockNms(player, block);
@@ -65,6 +69,7 @@ public class VeinMiner {
     private Set<Block> calculateConnectBlocks(Block startBlock, SelectMode mode) {
         Material type = getType(startBlock);
         Set<Block> allBlocks = new HashSet<>();
+        allBlocks.add(startBlock);
         UniqueQueue<Block> temp = new UniqueQueue<>();
         temp.addAll(getNearBlocks(startBlock, mode));
 
@@ -79,6 +84,7 @@ public class VeinMiner {
             }
         }
 
+        allBlocks.remove(startBlock);
         return allBlocks;
     }
 
@@ -97,7 +103,7 @@ public class VeinMiner {
         return Math.min(currentCount + 1, maxCount);
     }
 
-    private boolean isMining(Player player) {
+    public boolean isMining(Player player) {
         return mining.contains(player.getUniqueId());
     }
 }

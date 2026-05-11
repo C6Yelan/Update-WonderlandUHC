@@ -29,8 +29,10 @@ public class ScenarioVeinMiners extends ConfigBasedScenario implements Listener 
             Material blockType = block.getType();
             Player player = e.getPlayer();
 
-            if (WorldUtils.isOre(blockType) && player.isSneaking())
+            if (!VeinMiner.isMining(player) && WorldUtils.isOre(blockType) && player.isSneaking()) {
                 VeinMiner.mineVeins(block, player, SelectMode.CONNECT);
+                e.setHandleCustom(true);
+            }
         } catch (RuntimeException | LinkageError ex) {
             LegacyFoundationAdapter.error(
                     ex,
