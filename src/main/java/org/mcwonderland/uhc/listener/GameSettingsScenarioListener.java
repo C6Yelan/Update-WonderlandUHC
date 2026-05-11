@@ -11,6 +11,7 @@ import org.mcwonderland.uhc.scenario.ScenarioManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,12 +43,12 @@ public class GameSettingsScenarioListener implements Listener {
     private void reloadScenarios(UHCGameSettings newSettings) {
         Set<String> scenariosBackup = new HashSet<>(newSettings.getScenarios());
 
-        scenarioManager.getScenarios().forEach(scenarioData -> scenarioData.toggleEnabled(false));
+        new ArrayList<>(scenarioManager.getScenarios()).forEach(scenarioData -> scenarioManager.toggleScenario(scenarioData, false));
 
         scenariosBackup.forEach(name -> {
             Scenario scenario = scenarioManager.getScenario(name);
             if (scenario != null)
-                scenario.toggleEnabled(true);
+                scenarioManager.toggleScenario(scenario, true);
         });
     }
 

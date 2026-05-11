@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.scenario;
 
-import lombok.val;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.api.event.timer.UHCStartedEvent;
 import org.bukkit.event.EventHandler;
@@ -16,15 +15,7 @@ public class ScenarioListener implements Listener {
 
     @EventHandler
     public void onGameStarted(UHCStartedEvent e) {
-        reopenScenariosForEventReg();
-    }
-
-    private void reopenScenariosForEventReg() {
-        val scenarios = plugin.getScenarioManager().getEnabledScenarios();
-        scenarios.forEach(scenario -> {
-            scenario.disable();
-            scenario.enable();
-        });
+        plugin.getScenarioManager().reopenEnabledScenarios();
     }
 
 }
