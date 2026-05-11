@@ -39,6 +39,16 @@ public class ScenarioFoodNeophobia extends ConfigBasedScenario implements Listen
         super(name);
     }
 
+    @Override
+    protected void onEnable() {
+        clearEatenFoodTypes();
+    }
+
+    @Override
+    protected void onDisable() {
+        clearEatenFoodTypes();
+    }
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onItemConsume(PlayerItemConsumeEvent e) {
         Player player = e.getPlayer();
@@ -64,13 +74,13 @@ public class ScenarioFoodNeophobia extends ConfigBasedScenario implements Listen
     }
 
     private void putFoodData(Player player, Material itemEat) {
-        eatenFoodType.put(player.getUniqueId(), itemEat);
+        recordEatenFoodType(player.getUniqueId(), itemEat);
         Chat.send(player, firstEatMsg.replace("{foodtype}", itemEat.name()));
         Extra.sound(player, firstEatSound);
     }
 
     private Material getEatFoodType(Player player) {
-        return eatenFoodType.get(player.getUniqueId());
+        return getEatenFoodType(player.getUniqueId());
     }
 
     private boolean isIgnoredItem(Material material) {
@@ -78,5 +88,17 @@ public class ScenarioFoodNeophobia extends ConfigBasedScenario implements Listen
                 || material == LegacyFoundationAdapter.materialOf("GOLDEN_APPLE")
                 || material == LegacyFoundationAdapter.materialOf("ENCHANTED_GOLDEN_APPLE")
                 || material == LegacyFoundationAdapter.materialOf("POTION");
+    }
+
+    static void recordEatenFoodType(UUID playerId, Material material) {
+        eatenFoodType.put(playerId, material);
+    }
+
+    static Material getEatenFoodType(UUID playerId) {
+        return eatenFoodType.get(playerId);
+    }
+
+    static void clearEatenFoodTypes() {
+        eatenFoodType.clear();
     }
 }

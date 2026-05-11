@@ -16,11 +16,11 @@ import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.mineacademy.fo.menu.tool.Tool;
-import org.mineacademy.fo.model.BrewResultGetter;
+
+import java.util.List;
 
 public class DisableItemListener implements Listener {
 
@@ -42,18 +42,11 @@ public class DisableItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onBrew(BrewEvent e) {
-        BrewerInventory contents = e.getContents();
-        ItemStack ingredient = contents.getIngredient();
-        ItemStack[] items = contents.getContents();
+        DisabledChecker.check(e, null, toItemArray(e.getResults()));
+    }
 
-        for (ItemStack item : items) {
-            if (item != null) {
-                DisabledChecker.check(e, null, BrewResultGetter.getBrewResult(item, ingredient));
-
-                if (e.isCancelled())
-                    return;
-            }
-        }
+    static ItemStack[] toItemArray(List<ItemStack> items) {
+        return items.toArray(new ItemStack[0]);
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

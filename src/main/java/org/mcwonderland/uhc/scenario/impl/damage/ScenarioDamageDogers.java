@@ -34,6 +34,16 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
     }
 
     @Override
+    protected void onEnable() {
+        resetNumberOfDead();
+    }
+
+    @Override
+    protected void onDisable() {
+        resetNumberOfDead();
+    }
+
+    @Override
     protected List<String> replaceLore(List<String> list) {
         return replaceLore(list, "{amount}", amount);
     }
@@ -71,16 +81,29 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
     }
 
     private boolean dontNeedMoreToDie() {
-        return numberOfDead >= amount;
+        return getNumberOfDead() >= amount;
     }
 
     private void killGamingEntity(LivingEntity entity) {
-        numberOfDead++;
+        int remaining = recordDeathAndGetRemaining(amount);
         entity.setHealth(0);
         Chat.broadcast(deathCauseThis
                 .replace("{player}", entity.getName())
-                .replace("{amount}", (amount - numberOfDead) + "")
+                .replace("{amount}", remaining + "")
         );
         Extra.sound(deathCauseThisSound);
+    }
+
+    static int recordDeathAndGetRemaining(int amount) {
+        numberOfDead++;
+        return amount - numberOfDead;
+    }
+
+    static int getNumberOfDead() {
+        return numberOfDead;
+    }
+
+    static void resetNumberOfDead() {
+        numberOfDead = 0;
     }
 }

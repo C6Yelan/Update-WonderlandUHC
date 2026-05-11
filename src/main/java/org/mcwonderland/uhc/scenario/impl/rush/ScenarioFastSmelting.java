@@ -8,6 +8,7 @@ import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.FurnaceBurnEvent;
+import org.bukkit.event.inventory.FurnaceStartSmeltEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -29,15 +30,20 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
 
 
     @EventHandler
-    public void onFurnace(FurnaceBurnEvent event) {
+    public void onFurnaceBurn(FurnaceBurnEvent event) {
         try {
-            Block block = event.getBlock();
-            String blockKey = getBlockKey(block);
-
-            if (!(boosted.containsKey(blockKey)))
-                increaseFurnaceSpeed(block, blockKey);
+            ensureBoost(event.getBlock());
         } catch (RuntimeException | LinkageError ex) {
             handleRuntimeFailure(ex, "handling a furnace burn event");
+        }
+    }
+
+    @EventHandler
+    public void onFurnaceStartSmelt(FurnaceStartSmeltEvent event) {
+        try {
+            ensureBoost(event.getBlock());
+        } catch (RuntimeException | LinkageError ex) {
+            handleRuntimeFailure(ex, "handling a furnace start smelt event");
         }
     }
 
@@ -45,6 +51,13 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
     public void onDisable() {
         boosted.values().forEach(BukkitTask::cancel);
         boosted.clear();
+    }
+
+    private void ensureBoost(Block block) {
+        String blockKey = getBlockKey(block);
+
+        if (!(boosted.containsKey(blockKey)))
+            increaseFurnaceSpeed(block, blockKey);
     }
 
     private void increaseFurnaceSpeed(Block block, String blockKey) {

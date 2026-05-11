@@ -17,9 +17,11 @@ public class ScenarioSwapInventoryTest {
         List<String> swapped = ScenarioSwapInventory.buildSwappedDrops(
                 drops,
                 new String[] { "victim sword", "victim apple" },
-                new String[] { "killer bow" });
+                new String[] { "killer bow" },
+                ScenarioSwapInventoryTest::isDropItem);
 
-        assertEquals(Arrays.asList("killer bow"), swapped);
+        assertEquals(1, swapped.size());
+        assertEquals("killer bow", swapped.get(0));
     }
 
     @Test
@@ -29,8 +31,27 @@ public class ScenarioSwapInventoryTest {
         ScenarioSwapInventory.buildSwappedDrops(
                 drops,
                 new String[] { "victim sword" },
-                new String[] { "killer bow" });
+                new String[] { "killer bow" },
+                ScenarioSwapInventoryTest::isDropItem);
 
         assertEquals(Arrays.asList("victim sword"), drops);
+    }
+
+    @Test
+    public void swappedDropsIgnoreEmptyKillerInventorySlots() {
+        List<String> drops = new ArrayList<>(Arrays.asList("victim sword"));
+
+        List<String> swapped = ScenarioSwapInventory.buildSwappedDrops(
+                drops,
+                new String[] { "victim sword" },
+                new String[] { null, "AIR", "killer bow" },
+                ScenarioSwapInventoryTest::isDropItem);
+
+        assertEquals(1, swapped.size());
+        assertEquals("killer bow", swapped.get(0));
+    }
+
+    private static boolean isDropItem(String item) {
+        return item != null && !"AIR".equals(item);
     }
 }

@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,6 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * 2019-12-07 下午 03:12
@@ -77,11 +79,30 @@ public class ScenarioSwapInventory extends ConfigBasedScenario implements Listen
         }
     }
 
+    static List<ItemStack> buildSwappedDrops(List<ItemStack> currentDrops, ItemStack[] deathPlayerItems, ItemStack[] killerItems) {
+        return buildSwappedDrops(currentDrops, deathPlayerItems, killerItems, ScenarioSwapInventory::isDropItem);
+    }
+
     static <T> List<T> buildSwappedDrops(List<T> currentDrops, T[] deathPlayerItems, T[] killerItems) {
+        return buildSwappedDrops(currentDrops, deathPlayerItems, killerItems, item -> true);
+    }
+
+    static <T> List<T> buildSwappedDrops(List<T> currentDrops, T[] deathPlayerItems, T[] killerItems, Predicate<T> dropFilter) {
         List<T> swappedDrops = new ArrayList<>(currentDrops);
         swappedDrops.removeAll(Arrays.asList(deathPlayerItems));
-        swappedDrops.addAll(Arrays.asList(killerItems));
+        addDropItems(swappedDrops, killerItems, dropFilter);
         return swappedDrops;
+    }
+
+    private static <T> void addDropItems(List<T> drops, T[] items, Predicate<T> dropFilter) {
+        for (T item : items) {
+            if (dropFilter.test(item))
+                drops.add(item);
+        }
+    }
+
+    private static boolean isDropItem(ItemStack item) {
+        return item != null && item.getType() != Material.AIR;
     }
 
     private void rollbackSwap(
