@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.VeinMiner;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -23,11 +24,32 @@ public class ScenarioVeinMiners extends ConfigBasedScenario implements Listener 
 
     @EventHandler
     protected void onBlockBreak(UHCBlockBreakEvent e) {
-        Block block = e.getBlock();
-        Material blockType = block.getType();
-        Player player = e.getPlayer();
+        try {
+            Block block = e.getBlock();
+            Material blockType = block.getType();
+            Player player = e.getPlayer();
 
-        if ((WorldUtils.isOre(blockType)) && player.isSneaking())
-            VeinMiner.mineVeins(block, player, SelectMode.CONNECT);
+            if (WorldUtils.isOre(blockType) && player.isSneaking())
+                VeinMiner.mineVeins(block, player, SelectMode.CONNECT);
+        } catch (RuntimeException | LinkageError ex) {
+            LegacyFoundationAdapter.error(
+                    ex,
+                    "Scenario 'Vein_Miners' failed while handling a block break event.",
+                    "The scenario was disabled for this run, but the block break flow will continue."
+            );
+            disableAfterRuntimeFailure();
+        }
+    }
+
+    private void disableAfterRuntimeFailure() {
+        try {
+            if (isEnabled())
+                disable();
+        } catch (RuntimeException | LinkageError disableEx) {
+            LegacyFoundationAdapter.error(
+                    disableEx,
+                    "Scenario 'Vein_Miners' could not be disabled after a runtime failure."
+            );
+        }
     }
 }

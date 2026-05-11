@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.api.event.timer.FinalHealEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -26,6 +27,7 @@ import java.util.Set;
  * 2019-12-07 下午 03:12
  */
 public class ScenarioIronMan extends ConfigBasedScenario implements Listener {
+    private static final double MIN_MAX_HEALTH = 1.0;
     private static final Set<UHCPlayer> damaged = new HashSet<>();
     private static final Set<UHCPlayer> ironMen = new HashSet<>();
 
@@ -41,54 +43,102 @@ public class ScenarioIronMan extends ConfigBasedScenario implements Listener {
 
     @Override
     public void onDisable() {
-        ironMen.forEach(uhcPlayer -> {
-            Player player = uhcPlayer.getPlayer();
+        for (UHCPlayer uhcPlayer : new HashSet<>(ironMen)) {
+            try {
+                Player player = uhcPlayer.getPlayer();
 
-            if (player != null) {
-                Extra.setMaxHealth(player, Extra.getMaxHealth(player) - extraHeal);
+                if (player != null)
+                    changeMaxHealth(player, -extraHeal);
+            } catch (RuntimeException | LinkageError ex) {
+                logLifecycleFailure(ex, "restoring max health while disabling");
             }
-        });
+        }
     }
 
     @Override
     public void onEnable() {
-        ironMen.forEach(uhcPlayer -> {
+        for (UHCPlayer uhcPlayer : new HashSet<>(ironMen)) {
             Player player = uhcPlayer.getPlayer();
-            changeMaxHeath(player);
-        });
+            changeMaxHealth(player, extraHeal);
+        }
     }
 
     @EventHandler
     public void onFinalHeal(FinalHealEvent event) {
-        ironMen.addAll(UHCPlayers.getBy(uhcPlayer -> !uhcPlayer.isDead() && !damaged.contains(uhcPlayer)));
-        ironMen.forEach(uhcPlayer -> changeMaxHeath(uhcPlayer.getEntity()));
+        try {
+            for (UHCPlayer uhcPlayer : UHCPlayers.getBy(uhcPlayer -> !uhcPlayer.isDead() && !damaged.contains(uhcPlayer))) {
+                if (changeMaxHealth(uhcPlayer.getEntity(), extraHeal))
+                    ironMen.add(uhcPlayer);
+            }
+        } catch (RuntimeException | LinkageError ex) {
+            handleRuntimeFailure(ex, "handling final heal");
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
     protected void checkDamage(UHCPlayerDamageEvent e) {
-        if (!e.isCancelled()
-                && !PlayerUtils.isShieldBlocked(e.getEvent())
-                && !Game.getGame().isFinalHealEnabled()) {
-            UHCPlayer uhcPlayer = e.getUhcPlayer();
+        try {
+            if (!e.isCancelled()
+                    && !PlayerUtils.isShieldBlocked(e.getEvent())
+                    && !Game.getGame().isFinalHealEnabled()) {
+                UHCPlayer uhcPlayer = e.getUhcPlayer();
 
 
-            if (damaged.add(uhcPlayer))
-                Chat.send(uhcPlayer.getPlayer(), damageBeforeFinalHeal);
+                if (damaged.add(uhcPlayer))
+                    Chat.send(uhcPlayer.getPlayer(), damageBeforeFinalHeal);
+            }
+        } catch (RuntimeException | LinkageError ex) {
+            handleRuntimeFailure(ex, "handling player damage");
         }
     }
 
     @EventHandler
     public void onRespawn(UHCPlayerRespawnedEvent e) {
-        UHCPlayer uhcPlayer = e.getUhcPlayer();
+        try {
+            UHCPlayer uhcPlayer = e.getUhcPlayer();
 
-        if (ironMen.contains(uhcPlayer)) {
-            changeMaxHeath(uhcPlayer.getEntity());
+            if (ironMen.contains(uhcPlayer))
+                changeMaxHealth(uhcPlayer.getEntity(), extraHeal);
+        } catch (RuntimeException | LinkageError ex) {
+            handleRuntimeFailure(ex, "handling player respawn");
         }
     }
 
-    private void changeMaxHeath(LivingEntity entity) {
-        if (entity != null)
-            Extra.setMaxHealth(entity, Extra.getMaxHealth(entity) + extraHeal);
+    private boolean changeMaxHealth(LivingEntity entity, double delta) {
+        if (entity == null)
+            return false;
+
+        Extra.setMaxHealth(entity, calculateAdjustedMaxHealth(Extra.getMaxHealth(entity), delta));
+        return true;
+    }
+
+    static double calculateAdjustedMaxHealth(double currentMaxHealth, double delta) {
+        return Math.max(MIN_MAX_HEALTH, currentMaxHealth + delta);
+    }
+
+    private void handleRuntimeFailure(Throwable throwable, String action) {
+        LegacyFoundationAdapter.error(
+                throwable,
+                "Scenario 'Iron_Man' failed while " + action + ".",
+                "The scenario was disabled for this run, but the game flow will continue."
+        );
+        disableAfterRuntimeFailure();
+    }
+
+    private void disableAfterRuntimeFailure() {
+        try {
+            if (isEnabled())
+                disable();
+        } catch (RuntimeException | LinkageError disableEx) {
+            logLifecycleFailure(disableEx, "disabling after a runtime failure");
+        }
+    }
+
+    private void logLifecycleFailure(Throwable throwable, String action) {
+        LegacyFoundationAdapter.error(
+                throwable,
+                "Scenario 'Iron_Man' failed while " + action + "."
+        );
     }
 
     @Override

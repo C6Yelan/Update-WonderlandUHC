@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.special;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -58,16 +59,37 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
 
     @EventHandler
     protected void onBlockBreak(UHCBlockBreakEvent e) {
-        Material blockType = e.getBlockType();
+        try {
+            Material blockType = e.getBlockType();
 
-        if (blockHasLimit(blockType)) {
-            int limit = limitedBlocks.get(blockType);
-            int playerMined = getMineAmount(e.getPlayer(), blockType);
+            if (blockHasLimit(blockType)) {
+                int limit = limitedBlocks.get(blockType);
+                int playerMined = getMineAmount(e.getPlayer(), blockType);
 
-            if (playerMined >= limit)
-                dropNothing(e);
-            else
-                addBlockMines(e.getPlayer(), blockType);
+                if (playerMined >= limit)
+                    dropNothing(e);
+                else
+                    addBlockMines(e.getPlayer(), blockType);
+            }
+        } catch (RuntimeException | LinkageError ex) {
+            LegacyFoundationAdapter.error(
+                    ex,
+                    "Scenario 'Limitations' failed while handling a block break event.",
+                    "The scenario was disabled for this run, but the block break flow will continue."
+            );
+            disableAfterRuntimeFailure();
+        }
+    }
+
+    private void disableAfterRuntimeFailure() {
+        try {
+            if (isEnabled())
+                disable();
+        } catch (RuntimeException | LinkageError disableEx) {
+            LegacyFoundationAdapter.error(
+                    disableEx,
+                    "Scenario 'Limitations' could not be disabled after a runtime failure."
+            );
         }
     }
 

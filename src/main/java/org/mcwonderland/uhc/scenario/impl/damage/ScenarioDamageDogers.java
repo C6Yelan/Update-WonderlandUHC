@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.damage;
 
 import org.mcwonderland.uhc.api.event.player.UHCPlayerDamageEvent;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -39,13 +40,34 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onDamage(UHCPlayerDamageEvent e) {
-        if (dontNeedMoreToDie())
-            return;
+        try {
+            if (dontNeedMoreToDie())
+                return;
 
-        if (PlayerUtils.isShieldBlocked(e.getEvent()))
-            return;
+            if (PlayerUtils.isShieldBlocked(e.getEvent()))
+                return;
 
-        killGamingEntity(e.getUhcPlayer().getEntity());
+            killGamingEntity(e.getUhcPlayer().getEntity());
+        } catch (RuntimeException | LinkageError ex) {
+            LegacyFoundationAdapter.error(
+                    ex,
+                    "Scenario 'Damage_Dogers' failed while handling a damage event.",
+                    "The scenario was disabled for this run, but the damage flow will continue."
+            );
+            disableAfterRuntimeFailure();
+        }
+    }
+
+    private void disableAfterRuntimeFailure() {
+        try {
+            if (isEnabled())
+                disable();
+        } catch (RuntimeException | LinkageError disableEx) {
+            LegacyFoundationAdapter.error(
+                    disableEx,
+                    "Scenario 'Damage_Dogers' could not be disabled after a runtime failure."
+            );
+        }
     }
 
     private boolean dontNeedMoreToDie() {

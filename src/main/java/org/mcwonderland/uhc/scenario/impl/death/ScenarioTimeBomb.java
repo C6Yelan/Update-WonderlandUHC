@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.mineacademy.fo.model.SimpleSound;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -65,8 +66,20 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     protected void handleTimeBomb(UHCGamingDeathEvent e) {
-        new TimeBombRunner(e).run();
-        e.getDrops().clear();
+        int originalDropCount = e.getDrops().size();
+
+        try {
+            int storedDropCount = new TimeBombRunner(e).run();
+            removeStoredDrops(e.getDrops(), storedDropCount);
+            logOverflowDrops(originalDropCount, storedDropCount);
+        } catch (RuntimeException | LinkageError ex) {
+            LegacyFoundationAdapter.error(
+                    ex,
+                    "Scenario 'Time_Bomb' failed while creating a death chest.",
+                    "The scenario was disabled for this run, but regular death drops will continue."
+            );
+            disableAfterRuntimeFailure();
+        }
     }
 
     @Override
@@ -84,12 +97,13 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             this.drops = event.getDrops();
         }
 
-        private void run() {
+        private int run() {
             spawnLargeChest();
             clearUpperBlocks();
-            putItemsIn();
+            int storedDropCount = putItemsIn();
 
             addToTimebombs();
+            return storedDropCount;
         }
 
 
@@ -113,14 +127,63 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             timeBombs.add(chest);
         }
 
-        private void putItemsIn() {
+        private int putItemsIn() {
             Chest chestState = ( Chest ) leftSideChest.getState();
             Inventory inventory = chestState.getInventory();
-            for (int i = 0; i < 54; i++) {
-                if (i >= drops.size())
-                    break;
-                inventory.setItem(i, drops.get(i));
-            }
+            List<ItemStack> storedDrops = snapshotStorableDrops(drops, inventory.getSize());
+
+            for (int i = 0; i < storedDrops.size(); i++)
+                inventory.setItem(i, storedDrops.get(i));
+
+            return storedDrops.size();
+        }
+    }
+
+    static int countStoredDrops(int dropCount, int inventorySize) {
+        return Math.max(0, Math.min(dropCount, inventorySize));
+    }
+
+    static void removeStoredDrops(List<?> drops, int storedDropCount) {
+        int removableCount = Math.max(0, Math.min(storedDropCount, drops.size()));
+        drops.subList(0, removableCount).clear();
+    }
+
+    static List<ItemStack> snapshotStorableDrops(List<ItemStack> drops, int inventorySize) {
+        List<ItemStack> snapshot = new ArrayList<>();
+        int limit = Math.max(0, inventorySize);
+
+        if (drops == null || limit == 0)
+            return snapshot;
+
+        for (ItemStack drop : drops) {
+            if (snapshot.size() >= limit)
+                break;
+
+            if (isStorableDrop(drop))
+                snapshot.add(drop);
+        }
+
+        return snapshot;
+    }
+
+    static boolean isStorableDrop(ItemStack itemStack) {
+        return itemStack != null && isStorableMaterial(itemStack.getType());
+    }
+
+    static boolean isStorableMaterial(Material material) {
+        return material != null && material != Material.AIR;
+    }
+
+    private static void logOverflowDrops(int originalDropCount, int storedDropCount) {
+        if (storedDropCount >= originalDropCount)
+            return;
+
+        try {
+            LegacyFoundationAdapter.logNoPrefix(
+                    "&e[WonderlandUHC] Scenario 'Time_Bomb' stored " + storedDropCount + " of " + originalDropCount + " death drops.",
+                    "&e[WonderlandUHC] Overflow drops will stay in the regular death drop list."
+            );
+        } catch (RuntimeException | LinkageError ignored) {
         }
     }
 
@@ -129,7 +192,20 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
         @Override
         public void run() {
             Set<TimeBombChest> timeBombs = Sets.newHashSet(ScenarioTimeBomb.timeBombs);
-            timeBombs.forEach(TimeBombChest::tick);
+            timeBombs.forEach(this::tick);
+        }
+
+        private void tick(TimeBombChest chest) {
+            try {
+                chest.tick();
+            } catch (RuntimeException | LinkageError ex) {
+                ScenarioTimeBomb.timeBombs.remove(chest);
+                LegacyFoundationAdapter.error(
+                        ex,
+                        "Scenario 'Time_Bomb' failed while ticking a death chest.",
+                        "The failed chest was removed; other Time_Bomb chests will continue ticking."
+                );
+            }
         }
     }
 
@@ -155,14 +231,17 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             Block block = location.getBlock();
             World world = location.getWorld();
 
-            createExplosion(location);
-            world.strikeLightning(location);
+            try {
+                createExplosion(location);
+                world.strikeLightning(location);
 
-            block.setType(Material.AIR);
-            block.getRelative(BlockFace.NORTH).setType(Material.AIR);
+                block.setType(Material.AIR);
+                block.getRelative(BlockFace.NORTH).setType(Material.AIR);
 
-            Chat.broadcast(explodedMessage.replace("{player}", owner.getName()));
-            timeBombs.remove(this);
+                Chat.broadcast(explodedMessage.replace("{player}", owner.getName()));
+            } finally {
+                timeBombs.remove(this);
+            }
         }
 
         private void createExplosion(Location location) {
@@ -176,6 +255,18 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
                     explosionPower,
                     setFire,
                     explodedBlocks
+            );
+        }
+    }
+
+    private void disableAfterRuntimeFailure() {
+        try {
+            if (isEnabled())
+                disable();
+        } catch (RuntimeException | LinkageError disableEx) {
+            LegacyFoundationAdapter.error(
+                    disableEx,
+                    "Scenario 'Time_Bomb' could not be disabled after a runtime failure."
             );
         }
     }

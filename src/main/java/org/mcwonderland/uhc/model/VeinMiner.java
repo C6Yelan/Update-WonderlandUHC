@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.model;
 
 import lombok.experimental.UtilityClass;
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.PlayerUtils;
 import org.mcwonderland.uhc.util.UniqueQueue;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
@@ -26,10 +27,39 @@ public class VeinMiner {
 
         mining.add(player.getUniqueId());
 
-        Set<Block> blocks = calculateConnectBlocks(block, mode);
-        blocks.forEach(b -> PlayerUtils.breakBlockNms(player, b));
+        try {
+            Set<Block> blocks = calculateConnectBlocks(block, mode);
+            blocks.forEach(b -> breakBlock(player, b));
+        } finally {
+            mining.remove(player.getUniqueId());
+        }
+    }
 
-        mining.remove(player.getUniqueId());
+    private void breakBlock(Player player, Block block) {
+        try {
+            PlayerUtils.breakBlockNms(player, block);
+        } catch (RuntimeException | LinkageError ex) {
+            breakBlockWithBukkit(player, block, ex);
+        }
+    }
+
+    private void breakBlockWithBukkit(Player player, Block block, Throwable cause) {
+        try {
+            if (player.breakBlock(block))
+                return;
+        } catch (RuntimeException | LinkageError ignored) {
+        }
+
+        try {
+            if (!block.breakNaturally(player.getItemInHand()))
+                block.setType(Material.AIR);
+        } catch (RuntimeException | LinkageError fallbackEx) {
+            LegacyFoundationAdapter.error(
+                    fallbackEx,
+                    "VeinMiner failed to break a connected block after the legacy NMS break failed.",
+                    "Original failure: " + cause.getClass().getSimpleName() + ": " + cause.getMessage()
+            );
+        }
     }
 
     private Set<Block> calculateConnectBlocks(Block startBlock, SelectMode mode) {
@@ -45,7 +75,7 @@ public class VeinMiner {
 
             if (getType(b) == type && allBlocks.add(b)) {
                 temp.addAll(getNearBlocks(b, mode));
-                count++;
+                count = nextVisitedCount(count, MAX_COUNT);
             }
         }
 
@@ -61,6 +91,10 @@ public class VeinMiner {
     private Material getType(Block block) {
         return block.getType().toString().equalsIgnoreCase("GLOWING_REDSTONE_ORE") ?
                 Material.REDSTONE_ORE : block.getType();
+    }
+
+    static int nextVisitedCount(int currentCount, int maxCount) {
+        return Math.min(currentCount + 1, maxCount);
     }
 
     private boolean isMining(Player player) {

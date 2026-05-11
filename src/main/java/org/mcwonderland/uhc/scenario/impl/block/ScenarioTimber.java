@@ -20,7 +20,28 @@ public class ScenarioTimber extends ConfigBasedScenario implements Listener {
 
     @EventHandler
     protected void onBlockBreak(UHCBlockBreakEvent e) {
-        if (LegacyFoundationAdapter.isLog(e.getBlockType()))
-            VeinMiner.mineVeins(e.getBlock(), e.getPlayer(), SelectMode.CUBE);
+        try {
+            if (LegacyFoundationAdapter.isLog(e.getBlockType()))
+                VeinMiner.mineVeins(e.getBlock(), e.getPlayer(), SelectMode.CUBE);
+        } catch (RuntimeException | LinkageError ex) {
+            LegacyFoundationAdapter.error(
+                    ex,
+                    "Scenario 'Timber' failed while handling a block break event.",
+                    "The scenario was disabled for this run, but the block break flow will continue."
+            );
+            disableAfterRuntimeFailure();
+        }
+    }
+
+    private void disableAfterRuntimeFailure() {
+        try {
+            if (isEnabled())
+                disable();
+        } catch (RuntimeException | LinkageError disableEx) {
+            LegacyFoundationAdapter.error(
+                    disableEx,
+                    "Scenario 'Timber' could not be disabled after a runtime failure."
+            );
+        }
     }
 }

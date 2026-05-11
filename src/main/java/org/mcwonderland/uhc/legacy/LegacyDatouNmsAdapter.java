@@ -7,15 +7,21 @@ import me.lulu.datounms.model.NewerSpigotAPI;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.enchantment.PrepareItemEnchantEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.platform.PlatformCapabilities;
+
+import java.util.Collection;
 
 public final class LegacyDatouNmsAdapter {
 
@@ -59,21 +65,46 @@ public final class LegacyDatouNmsAdapter {
 
         try {
             return DaTouNMS.getCommonNMS().getAbsorptionHeart(player);
-        } catch (RuntimeException ex) {
+        } catch (RuntimeException | LinkageError ex) {
             return getBukkitAbsorptionHearts(player);
         }
     }
 
     public double getArmorPoints(Material material) {
-        if (!supported)
+        double bukkitArmorPoints = getBukkitArmorPoints(material);
+
+        if (supported) {
+            try {
+                ArmorInfo info = ArmorInfo.fromMaterial(material);
+                double armorPoints = DaTouNMS.getCommonNMS().getArmorPoint(info);
+
+                if (armorPoints > 0)
+                    return armorPoints;
+            } catch (RuntimeException | LinkageError ignored) {
+            }
+        }
+
+        return bukkitArmorPoints > 0 ? bukkitArmorPoints : getVanillaArmorPoints(material);
+    }
+
+    public double getArmorPoints(ItemStack itemStack) {
+        if (itemStack == null)
             return 0;
 
-        try {
-            ArmorInfo info = ArmorInfo.fromMaterial(material);
-            return DaTouNMS.getCommonNMS().getArmorPoint(info);
-        } catch (RuntimeException ex) {
-            return 0;
+        double bukkitArmorPoints = getBukkitArmorPoints(itemStack);
+
+        if (supported) {
+            try {
+                ArmorInfo info = ArmorInfo.fromMaterial(itemStack.getType());
+                double armorPoints = DaTouNMS.getCommonNMS().getArmorPoint(info);
+
+                if (armorPoints > 0)
+                    return armorPoints + getCustomArmorPoints(itemStack);
+            } catch (RuntimeException | LinkageError ignored) {
+            }
         }
+
+        return bukkitArmorPoints > 0 ? bukkitArmorPoints : getVanillaArmorPoints(itemStack.getType());
     }
 
     public void setCanPickupExp(Player player, boolean canPickup) {
@@ -186,11 +217,97 @@ public final class LegacyDatouNmsAdapter {
     }
 
     private double getBukkitAbsorptionHearts(Player player) {
+        try {
+            return Math.max(0, player.getAbsorptionAmount());
+        } catch (RuntimeException | LinkageError ignored) {
+        }
+
         PotionEffect effect = player.getPotionEffect(PotionEffectType.ABSORPTION);
         if (effect == null)
             return 0;
 
         return (effect.getAmplifier() + 1) * 4.0;
+    }
+
+    static double getBukkitArmorPoints(Material material) {
+        if (material == null)
+            return 0;
+
+        try {
+            return sumArmorPoints(material.getDefaultAttributeModifiers().get(Attribute.ARMOR));
+        } catch (RuntimeException | LinkageError ignored) {
+            return 0;
+        }
+    }
+
+    static double getBukkitArmorPoints(ItemStack itemStack) {
+        if (itemStack == null)
+            return 0;
+
+        return getBukkitArmorPoints(itemStack.getType()) + getCustomArmorPoints(itemStack);
+    }
+
+    private static double getCustomArmorPoints(ItemStack itemStack) {
+        try {
+            if (!itemStack.hasItemMeta())
+                return 0;
+
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta == null || !itemMeta.hasAttributeModifiers())
+                return 0;
+
+            return sumArmorPoints(itemMeta.getAttributeModifiers(Attribute.ARMOR));
+        } catch (RuntimeException | LinkageError ignored) {
+            return 0;
+        }
+    }
+
+    private static double sumArmorPoints(Collection<AttributeModifier> modifiers) {
+        if (modifiers == null || modifiers.isEmpty())
+            return 0;
+
+        double points = 0;
+        for (AttributeModifier modifier : modifiers) {
+            if (modifier != null && modifier.getOperation() == AttributeModifier.Operation.ADD_NUMBER)
+                points += modifier.getAmount();
+        }
+
+        return points;
+    }
+
+    static double getVanillaArmorPoints(Material material) {
+        if (material == null)
+            return 0;
+
+        String name = material.name();
+
+        if ("TURTLE_HELMET".equals(name))
+            return 2;
+        if (name.startsWith("LEATHER_"))
+            return getArmorPiecePoints(name, 1, 3, 2, 1);
+        if (name.startsWith("GOLDEN_"))
+            return getArmorPiecePoints(name, 2, 5, 3, 1);
+        if (name.startsWith("CHAINMAIL_") || name.startsWith("COPPER_"))
+            return getArmorPiecePoints(name, 2, 5, 4, 1);
+        if (name.startsWith("IRON_"))
+            return getArmorPiecePoints(name, 2, 6, 5, 2);
+        if (name.startsWith("DIAMOND_") || name.startsWith("NETHERITE_"))
+            return getArmorPiecePoints(name, 3, 8, 6, 3);
+
+        return 0;
+    }
+
+    private static double getArmorPiecePoints(String materialName, double helmet, double chestplate, double leggings, double boots) {
+        if (materialName.endsWith("_HELMET"))
+            return helmet;
+        if (materialName.endsWith("_CHESTPLATE"))
+            return chestplate;
+        if (materialName.endsWith("_LEGGINGS"))
+            return leggings;
+        if (materialName.endsWith("_BOOTS"))
+            return boots;
+
+        return 0;
     }
 
     private static LegacyDatouNmsAdapter unavailable() {
