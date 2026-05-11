@@ -140,12 +140,18 @@ public class UHCPlayer {
     }
 
     private void changeRole(RoleName roleName) {
+        changeRole(roleName, true);
+    }
+
+    private void changeRole(RoleName roleName, boolean applyStuff) {
         Role role = SimpleRoleFactory.getRole(roleName);
         getRole().end(entityPlayer);
 
         setRole(role);
         checkHide();
-        applyRoleStuff();
+
+        if (applyStuff)
+            applyRoleStuff();
     }
 
     public void applyRoleStuff() {
@@ -162,6 +168,10 @@ public class UHCPlayer {
 
     public void changeSpectatorRole() {
         changeRole(RoleName.SPECTATOR);
+    }
+
+    public void markSpectatorRole() {
+        changeRole(RoleName.SPECTATOR, false);
     }
 
     public void changeStaffRole() {

@@ -20,15 +20,17 @@ import org.mineacademy.fo.menu.model.ItemCreator;
  * 2019-12-10 上午 01:00
  */
 public class ScenarioSettingsMenu extends ConfigMenuPagged<Scenario> {
+    private final ScenarioManager manager;
     private final Button clearScenariosButton;
 
     public ScenarioSettingsMenu(Menu parent, ScenarioManager manager) {
         super(parent, UHCMenuSection.of("Scenarios"), manager.getScenarios());
+        this.manager = manager;
 
         clearScenariosButton = new Button() {
             @Override
             public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                manager.getEnabledScenarios().forEach(scenario -> scenario.toggleEnabled(false));
+                manager.getEnabledScenarios().forEach(scenario -> manager.toggleScenario(scenario, false));
                 Game.getSettings().getScenarios().clear();
                 Extra.sound(player, Sounds.Host.CLEAR_ENABLED_SCENARIOS);
                 restartMenu();
@@ -53,7 +55,9 @@ public class ScenarioSettingsMenu extends ConfigMenuPagged<Scenario> {
 
     @Override
     protected void onPageClick(Player player, Scenario scenario, ClickType clickType) {
-        scenario.toggleEnabled(!scenario.isEnabled());
+        boolean toggled = manager.toggleScenario(scenario, !scenario.isEnabled());
+        if (!toggled)
+            return;
 
         Chat.broadcast((scenario.isEnabled() ?
                 Messages.Host.SCENARIO_ENABLED_PLAYER : Messages.Host.SCENARIO_DISABLED_PLAYER)

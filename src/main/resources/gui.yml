@@ -323,7 +323,7 @@ Times:
         - "&e點擊來設定"
 Scenarios:
   Title: "&2&l模式列表"
-  Rows: 5
+  Rows: 6
   Buttons:
     Clear_Scenarios:
       Type: BARRIER

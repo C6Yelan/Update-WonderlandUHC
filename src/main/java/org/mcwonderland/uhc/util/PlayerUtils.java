@@ -64,6 +64,17 @@ public class PlayerUtils {
         }
     }
 
+    public boolean respawnIfDead(Player player) {
+        if (player == null || !player.isOnline())
+            return false;
+
+        if (!player.isDead() && player.getHealth() > 0)
+            return false;
+
+        player.spigot().respawn();
+        return true;
+    }
+
     private boolean isItemReachedMaxDurability(ItemStack i) {
         return i.getDurability() > i.getType().getMaxDurability();
     }
@@ -90,7 +101,7 @@ public class PlayerUtils {
     }
 
     private double getArmorPoints(ItemStack itemStack) {
-        return LegacyDatouNmsAdapter.current().getArmorPoints(itemStack.getType());
+        return LegacyDatouNmsAdapter.current().getArmorPoints(itemStack);
     }
 
     public boolean isShieldBlocked(EntityDamageEvent e) {

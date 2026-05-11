@@ -13,6 +13,9 @@ import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
+import org.mcwonderland.uhc.util.PlayerUtils;
+import org.mcwonderland.uhc.util.UHCWorldUtils;
+import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -57,10 +60,29 @@ public class PlayingDeathListener implements Listener {
         UHCPlayer uhcPlayer = e.getUhcPlayer();
         Player player = uhcPlayer.getPlayer();
 
-        uhcPlayer.changeSpectatorRole();
+        uhcPlayer.markSpectatorRole();
         checkDeathKick(player);
         if (Settings.Misc.DEATH_ANIMATION)
             LegacyDatouNmsAdapter.current().playDeathAnimation(player);
+
+        respawnPlayerAsSpectator(uhcPlayer);
+    }
+
+    private void respawnPlayerAsSpectator(UHCPlayer uhcPlayer) {
+        LegacyFoundationAdapter.runLater(1, () -> {
+            if (!uhcPlayer.isOnline() || !uhcPlayer.isDead())
+                return;
+
+            if (!PlayerUtils.respawnIfDead(uhcPlayer.getPlayer()))
+                return;
+
+            LegacyFoundationAdapter.runLater(1, () -> {
+                if (uhcPlayer.isOnline() && uhcPlayer.isDead()) {
+                    uhcPlayer.applyRoleStuff();
+                    uhcPlayer.getPlayer().teleport(UHCWorldUtils.getMatchCenterLocation());
+                }
+            });
+        });
     }
 
     private void checkDeathKick(Player player) {
@@ -101,12 +123,23 @@ public class PlayingDeathListener implements Listener {
         CombatRelog relog = CombatRelog.get(uhcPlayer);
 
         if (relog != null)
-            drops.addAll(Arrays.asList(relog.getInventoryContent().getAllItems()));
+            addDrops(drops, Arrays.asList(relog.getInventoryContent().getAllItems()));
         else
-            drops.addAll(Arrays.asList(InventoryContent.contentsOf(uhcPlayer.getPlayer())));
+            addDrops(drops, Arrays.asList(InventoryContent.contentsOf(uhcPlayer.getPlayer())));
 
         e.getDrops().clear();
         e.getDrops().addAll(drops);
+    }
+
+    private void addDrops(List<ItemStack> drops, List<ItemStack> items) {
+        for (ItemStack item : items) {
+            if (isDropItem(item))
+                drops.add(item);
+        }
+    }
+
+    private boolean isDropItem(ItemStack item) {
+        return item != null && item.getType() != Material.AIR;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)

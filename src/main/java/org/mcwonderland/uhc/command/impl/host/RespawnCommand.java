@@ -70,6 +70,15 @@ public class RespawnCommand extends SimpleCommand {
         private void respawn() {
             handleRespawnVaribles();
             handleData();
+            if (PlayerUtils.respawnIfDead(target)) {
+                LegacyFoundationAdapter.runLater(1, this::completeRespawn);
+                return;
+            }
+
+            completeRespawn();
+        }
+
+        private void completeRespawn() {
             restoreAndTeleport();
             InvinciblePlayer.addInvincible(targetUHCPlayer, Settings.Game.RESPAWN_INVINCIBLE_TIME);
 
