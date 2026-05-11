@@ -24,7 +24,7 @@
 | Double_Or_Nothing | block/drop/config list | `List<Material>` config、`SimpleSound` | 保留；material list / sound 讀取風險已由 `ScenarioConfig` 與 `ScenarioManager` 隔離 | 指定方塊隨機雙倍或清空掉落 |
 | Fast_Obsidian | block/effect | `PotionEffectType.HASTE`、block damage event | 保留 | 挖黑曜石時給 haste |
 | Fast_Smelting | furnace/task | furnace inventory 與排程 | 保留，高行為風險；已補 furnace boost task runtime 隔離、停用清理、world-aware key 與 burn / cook time 邊界 | 熔爐燒製速度 |
-| Fragile_Rods | item durability | `PlayerUtils.costPlayerToolDurability` | 保留，後續 Step 18 清 Paper item API | 魚竿甩出扣耐久 |
+| Fragile_Rods | item durability | `PlayerUtils.costPlayerToolDurability` | 保留，後續 Step 19 清 Paper item API | 魚竿甩出扣耐久 |
 | Fire_Less | damage | fire/lava damage cause | 保留 | 火焰與岩漿傷害被取消 |
 | Food_Neophobia | consume/config sound | material allowlist、player metadata | 保留 | 第一次食物鎖定與例外食物 |
 | Gold_Less | block/drop | `UHCBlockBreakEvent`、legacy material adapter | 保留 | 金礦不掉黃金 |
@@ -40,13 +40,13 @@
 | Potion_Less | consume/brewing | 1.9 lingering potion、1.14 effect event | 保留，version listener 已隔離在 `initListeners()` | 飲用、丟擲、滯留與釀造藥水被取消 |
 | Rod_Less | disable / Bukkit event | fishing rod use | 保留 | 釣竿使用被取消 |
 | Shift_Kill | death / legacy NMS fallback | `LegacyDatouNmsAdapter#getAbsorptionHearts` | 保留；已補 DatouNMS linkage 失敗時走 Bukkit `getAbsorptionAmount()` fallback，死亡事件失敗時停用單一 scenario | 非蹲下擊殺扣一半血含吸收血量 |
-| Silk_Web | block/drop/legacy hand API | `getItemInHand()`、legacy material adapter | 保留，Step 18 再清手持 API | 剪刀挖蜘蛛網掉蜘蛛網，其他掉線 |
+| Silk_Web | block/drop/legacy hand API | `getItemInHand()`、legacy material adapter | 保留，Step 19 再清手持 API | 剪刀挖蜘蛛網掉蜘蛛網，其他掉線 |
 | Soup | consume/health | max health 讀取、material adapter | 保留 | 喝湯補血並變碗 |
 | Swap_Inventory | death/inventory | 死亡時交換背包與裝備 | 保留，高行為風險；已補死亡事件 runtime 隔離、drops 快照計算與 inventory / combat relog rollback | 擊殺後交換 inventory |
 | Switcheroo | damage/projectile/config sound | projectile hit teleport、`SimpleSound` | 保留 | 弓箭命中後交換位置 |
 | Timber | block/tree | `VeinMiner` / block break fallback | 保留，高行為風險；已補 block break runtime 隔離、mining 狀態 cleanup 與單一方塊 break fallback | 挖一塊木頭破壞整棵樹 |
 | Time_Bomb | death/inventory / legacy NMS fallback | `LegacyDatouNmsAdapter#mergeLargeChest`、ticker、chest inventory | 保留，高風險；已補死亡箱建立失敗時停用單一 scenario、容量不足時保留 overflow 掉落、ticker 單箱失敗隔離 | 死亡後生成大箱子、倒數、爆炸、已入箱掉落從死亡掉落移除 |
-| Triple_Arrow | projectile / legacy hand API | `getItemInHand()`、metadata、箭矢扣除 | 保留，Step 18 再清手持 API | 射箭額外生成兩支箭，Infinity 不扣箭 |
+| Triple_Arrow | projectile / legacy hand API | `getItemInHand()`、metadata、箭矢扣除 | 保留，Step 19 再清手持 API | 射箭額外生成兩支箭，Infinity 不扣箭 |
 | Triple_Ores | block/drop | `UHCBlockBreakEvent` | 保留 | 礦物掉落三倍 |
 | Vanilla_Plus | block/drop/random | gravel/flint drop replacement | 保留 | gravel 掉 flint 機率提高 |
 | Vein_Miners | block/recursive break | `VeinMiner` 連鎖破壞 | 保留，高行為風險；已補 block break runtime 隔離，共用 `VeinMiner` 已具備 mining cleanup 與單一方塊 break fallback | 挖礦連鎖破壞相鄰礦 |
@@ -57,14 +57,14 @@
 1. `ScenarioManager` 註冊與重載必須逐項隔離。
 2. 單一 scenario 建構、`reload()` 或 config 讀取失敗時，應記錄為 unavailable，不得中斷其他 scenario 註冊。
 3. unavailable scenario 不應出現在一般 scenario 清單或啟用清單中。
-4. 後續 Step 15 才逐項補完整行為與 rule module；Step 17 才處理 scenario menu presentation。
+4. 後續 Step 15 才逐項補完整行為與 rule module；Step 18 才處理 scenario menu presentation。
 
 ## 已知後續項目
 
 - `ScenarioConfig` 已補上 scenario icon、`Material`、`List<Material>` 與 `SimpleSound` 的 alias / namespace 解析；後續若遇到更多舊 alias，應只擴充本地 alias 表，不把問題擴成 scenario 架構重寫。
 - Step 14 程式隔離與本輪回測 blocker 已完成；`ScenarioSettingsMenu`、核心死亡流程、`Armor_Vs_Health`、`Vein_Miners` 與 `Time_Bomb` 已完成實機確認；`Timber` 走同一個 `VeinMiner` 玩家原生破壞 fallback，不再另列 Step 14 blocker。
 - `Damage_Dogers`、`Shift_Kill`、`Iron_Man`、`Limitations`、`Swap_Inventory`、`Fast_Smelting` 目前已有 runtime 隔離；逐項完整玩法差異與 rule module 收斂留到 Step 15，不再列為 Step 14 blocker。
-- `getItemInHand()` 等 Bukkit 舊 API 清理留到 Step 18，除非它直接阻擋 Step 14 的啟動安全。
+- `getItemInHand()` 等 Bukkit 舊 API 清理留到 Step 19，除非它直接阻擋 Step 14 的啟動安全。
 
 ## 2026-05-10 實跑驗收紀錄
 
