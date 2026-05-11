@@ -4,6 +4,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -329,7 +331,7 @@ public final class LegacyFoundationAdapter {
     }
 
     public static void playItemBreakSound(Player player) {
-        CompSound.ITEM_BREAK.play(player, 0.5F, 1F);
+        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 0.5F, 1F);
     }
 
     public static String bountifyCapitalized(Enum<?> value) {
