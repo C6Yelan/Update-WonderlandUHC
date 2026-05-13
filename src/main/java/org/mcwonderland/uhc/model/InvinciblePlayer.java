@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InvinciblePlayer {
+    private static final String INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG = "wonderlanduhc_invincible_damage_cancel_bypass";
     private static final Map<UHCPlayer, InvinciblePlayer> invinciblePlayers = new HashMap<>();
 
     public static void startTask() {
@@ -59,6 +60,20 @@ public class InvinciblePlayer {
 
     public static boolean isInvincible(UHCPlayer uhcPlayer) {
         return getInvinciblePlayer(uhcPlayer) != null;
+    }
+
+    public static boolean shouldCancelDamage(UHCPlayer uhcPlayer) {
+        return isInvincible(uhcPlayer)
+                && !LegacyFoundationAdapter.hasTempMetadata(uhcPlayer.getPlayer(), INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG);
+    }
+
+    public static void runBypassingInvincibleDamageCancel(Player player, Runnable runnable) {
+        LegacyFoundationAdapter.setTempMetadata(player, INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG);
+        try {
+            runnable.run();
+        } finally {
+            LegacyFoundationAdapter.removeTempMetadata(player, INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG);
+        }
     }
 
     private static class InvinciblePlayerTask extends BukkitRunnable {

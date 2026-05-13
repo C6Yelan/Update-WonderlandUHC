@@ -7,12 +7,12 @@ import static org.junit.Assert.assertEquals;
 public class ScenarioShiftKillTest {
 
     @Test
-    public void penaltyDamageUsesHalfOfHealthAndAbsorption() {
+    public void penaltyDamageUsesHalfOfMaxHealthAndAbsorption() {
         assertEquals(12.0, ScenarioShiftKill.calculatePenaltyDamage(20.0, 4.0), 0.0001);
     }
 
     @Test
-    public void penaltyDamageIgnoresNegativeAbsorption() {
+    public void penaltyDamageUsesHalfOfMaxHealthWhenAbsorptionIsNegative() {
         assertEquals(10.0, ScenarioShiftKill.calculatePenaltyDamage(20.0, -4.0), 0.0001);
     }
 

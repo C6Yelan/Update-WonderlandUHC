@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.scenario.impl.death;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.entity.LivingEntity;
@@ -45,13 +46,17 @@ public class ScenarioShiftKill extends ConfigBasedScenario implements Listener {
     }
 
     private void costHalfHealth(Player killer) {
-        double damage = calculatePenaltyDamage(killer.getHealth(), LegacyDatouNmsAdapter.current().getAbsorptionHearts(killer));
+        double damage = calculatePenaltyDamage(LegacyFoundationAdapter.getMaxHealth(killer), LegacyDatouNmsAdapter.current().getAbsorptionHearts(killer));
+        /*
+         * ShiftKill 懲罰是 scenario 規則，不應被 NoClean 的短暫無敵抵銷。
+         * 這裡只繞過 InvinciblePlayer 的取消邏輯，不改變 Bukkit 原本的傷害 / 死亡事件流程。
+         */
         if (damage > 0)
-            killer.damage(damage);
+            InvinciblePlayer.runBypassingInvincibleDamageCancel(killer, () -> killer.damage(damage));
     }
 
-    static double calculatePenaltyDamage(double health, double absorptionHearts) {
-        return (Math.max(0, health) + Math.max(0, absorptionHearts)) / 2;
+    static double calculatePenaltyDamage(double maxHealth, double absorptionHearts) {
+        return (Math.max(0, maxHealth) + Math.max(0, absorptionHearts)) / 2;
     }
 
     private void disableAfterRuntimeFailure() {

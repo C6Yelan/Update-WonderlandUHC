@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class ScenarioDamageDogers extends ConfigBasedScenario implements Listener {
     private static int numberOfDead;
+    private static final double MIN_LETHAL_DAMAGE = 2048.0D;
 
     @FilePath(name = "Amount")
     private Integer amount;
@@ -57,7 +58,7 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
             if (PlayerUtils.isShieldBlocked(e.getEvent()))
                 return;
 
-            killGamingEntity(e.getUhcPlayer().getEntity());
+            killGamingEntity(e);
         } catch (RuntimeException | LinkageError ex) {
             LegacyFoundationAdapter.error(
                     ex,
@@ -84,9 +85,10 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
         return getNumberOfDead() >= amount;
     }
 
-    private void killGamingEntity(LivingEntity entity) {
+    private void killGamingEntity(UHCPlayerDamageEvent e) {
+        LivingEntity entity = e.getUhcPlayer().getEntity();
         int remaining = recordDeathAndGetRemaining(amount);
-        entity.setHealth(0);
+        e.setDamage(calculateLethalDamage(entity.getHealth()));
         Chat.broadcast(deathCauseThis
                 .replace("{player}", entity.getName())
                 .replace("{amount}", remaining + "")
@@ -101,6 +103,10 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
 
     static int getNumberOfDead() {
         return numberOfDead;
+    }
+
+    static double calculateLethalDamage(double health) {
+        return Math.max(MIN_LETHAL_DAMAGE, Math.max(0.0D, health));
     }
 
     static void resetNumberOfDead() {

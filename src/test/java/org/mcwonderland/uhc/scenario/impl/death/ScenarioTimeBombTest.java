@@ -21,20 +21,22 @@ public class ScenarioTimeBombTest {
     }
 
     @Test
-    public void removeStoredDropsKeepsOverflowDropsInDeathEvent() {
+    public void extractOverflowDropsClearsDeathEventDrops() {
         List<String> drops = new ArrayList<>(Arrays.asList("one", "two", "three", "four"));
 
-        ScenarioTimeBomb.removeStoredDrops(drops, 2);
+        List<String> overflow = ScenarioTimeBomb.extractOverflowDrops(drops, 2);
 
-        assertEquals(Arrays.asList("three", "four"), drops);
+        assertEquals(Arrays.asList("three", "four"), overflow);
+        assertEquals(0, drops.size());
     }
 
     @Test
-    public void removeStoredDropsDoesNotOverRemoveWhenCountIsTooLarge() {
+    public void extractOverflowDropsReturnsEmptyWhenStoredCountIsTooLarge() {
         List<String> drops = new ArrayList<>(Arrays.asList("one", "two"));
 
-        ScenarioTimeBomb.removeStoredDrops(drops, 10);
+        List<String> overflow = ScenarioTimeBomb.extractOverflowDrops(drops, 10);
 
+        assertEquals(0, overflow.size());
         assertEquals(0, drops.size());
     }
 

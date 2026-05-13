@@ -22,4 +22,11 @@ public class ScenarioDamageDogersTest {
         assertEquals(0, ScenarioDamageDogers.getNumberOfDead());
         assertEquals(2, ScenarioDamageDogers.recordDeathAndGetRemaining(3));
     }
+
+    @Test
+    public void lethalDamageIsLargeEnoughToKeepOriginalDamageEvent() {
+        assertEquals(2048.0D, ScenarioDamageDogers.calculateLethalDamage(20.0D), 0.0D);
+        assertEquals(4096.0D, ScenarioDamageDogers.calculateLethalDamage(4096.0D), 0.0D);
+        assertEquals(2048.0D, ScenarioDamageDogers.calculateLethalDamage(-1.0D), 0.0D);
+    }
 }

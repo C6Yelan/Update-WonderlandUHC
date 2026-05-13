@@ -69,8 +69,17 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
         int originalDropCount = e.getDrops().size();
 
         try {
+            /*
+             * TimeBomb 是死亡 drops 的最後消費者之一：
+             * - 前面的 scenario 可以先改寫 e.getDrops()，例如 SwapInventory 或 BackPack。
+             * - TimeBomb 只把死亡箱容量內的 drops 放進箱子。
+             * - 超出死亡箱容量的 drops 由這裡手動掉在死亡位置，不能依賴事件後續自動掉落。
+             *
+             * 放進箱子與 overflow 都處理完後會清空事件 drops，避免同一批物品又被 Bukkit 掉一次。
+             */
             int storedDropCount = new TimeBombRunner(e).run();
-            removeStoredDrops(e.getDrops(), storedDropCount);
+            List<ItemStack> overflowDrops = extractOverflowDrops(e.getDrops(), storedDropCount);
+            dropOverflowDrops(e.getEntity(), overflowDrops);
             logOverflowDrops(originalDropCount, storedDropCount);
         } catch (RuntimeException | LinkageError ex) {
             LegacyFoundationAdapter.error(
@@ -130,6 +139,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
         private int putItemsIn() {
             Chest chestState = ( Chest ) leftSideChest.getState();
             Inventory inventory = chestState.getInventory();
+            // 先建立 snapshot，避免邊讀 drops 邊清 drops 時影響死亡箱內容。
             List<ItemStack> storedDrops = snapshotStorableDrops(drops, inventory.getSize());
 
             for (int i = 0; i < storedDrops.size(); i++)
@@ -143,9 +153,27 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
         return Math.max(0, Math.min(dropCount, inventorySize));
     }
 
-    static void removeStoredDrops(List<?> drops, int storedDropCount) {
+    static <T> List<T> extractOverflowDrops(List<T> drops, int storedDropCount) {
+        List<T> overflowDrops = new ArrayList<>();
+
+        if (drops == null)
+            return overflowDrops;
+
         int removableCount = Math.max(0, Math.min(storedDropCount, drops.size()));
-        drops.subList(0, removableCount).clear();
+        overflowDrops.addAll(drops.subList(removableCount, drops.size()));
+        // TimeBomb 已經接手本次死亡 drops；清空事件清單可避免已入箱或 overflow 的物品重複掉落。
+        drops.clear();
+        return overflowDrops;
+    }
+
+    private static void dropOverflowDrops(Entity entity, List<ItemStack> overflowDrops) {
+        if (entity == null || overflowDrops == null)
+            return;
+
+        for (ItemStack item : overflowDrops) {
+            if (isStorableDrop(item))
+                entity.getWorld().dropItemNaturally(entity.getLocation(), item);
+        }
     }
 
     static List<ItemStack> snapshotStorableDrops(List<ItemStack> drops, int inventorySize) {
@@ -181,7 +209,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
         try {
             LegacyFoundationAdapter.logNoPrefix(
                     "&e[WonderlandUHC] Scenario 'Time_Bomb' stored " + storedDropCount + " of " + originalDropCount + " death drops.",
-                    "&e[WonderlandUHC] Overflow drops will stay in the regular death drop list."
+                    "&e[WonderlandUHC] Overflow drops were released at the death location."
             );
         } catch (RuntimeException | LinkageError ignored) {
         }

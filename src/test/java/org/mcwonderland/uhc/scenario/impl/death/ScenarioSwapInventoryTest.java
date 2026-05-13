@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ScenarioSwapInventoryTest {
 
@@ -49,6 +51,12 @@ public class ScenarioSwapInventoryTest {
 
         assertEquals(1, swapped.size());
         assertEquals("killer bow", swapped.get(0));
+    }
+
+    @Test
+    public void swappedDropsAreReleasedOnlyWhenTimeBombIsDisabled() {
+        assertTrue(ScenarioSwapInventory.shouldReleaseDropsImmediately(false));
+        assertFalse(ScenarioSwapInventory.shouldReleaseDropsImmediately(true));
     }
 
     private static boolean isDropItem(String item) {

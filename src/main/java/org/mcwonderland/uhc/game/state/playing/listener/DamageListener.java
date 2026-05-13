@@ -53,7 +53,7 @@ public class DamageListener implements Listener {
         if (!Game.getGame().isDamageEnabled())
             e.setCancelled(true);
 
-        else if (InvinciblePlayer.isInvincible(e.getUhcPlayer()))
+        else if (InvinciblePlayer.shouldCancelDamage(e.getUhcPlayer()))
             e.setCancelled(true);
     }
 

@@ -122,10 +122,10 @@ public class PlayingDeathListener implements Listener {
         UHCPlayer uhcPlayer = e.getUhcPlayer();
         CombatRelog relog = CombatRelog.get(uhcPlayer);
 
-        if (relog != null)
-            addDrops(drops, Arrays.asList(relog.getInventoryContent().getAllItems()));
-        else
-            addDrops(drops, Arrays.asList(InventoryContent.contentsOf(uhcPlayer.getPlayer())));
+        if (relog == null)
+            return;
+
+        addDrops(drops, Arrays.asList(relog.getInventoryContent().getAllItems()));
 
         e.getDrops().clear();
         e.getDrops().addAll(drops);
