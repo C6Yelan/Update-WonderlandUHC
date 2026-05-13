@@ -28,7 +28,7 @@ public class ScenarioCutClean extends ConfigBasedScenario implements Listener {
     protected void handleCutClean(UHCBlockBreakEvent e) {
         replaceOreDrops(e);
 
-        if (e.isDropsModified())
+        if (shouldSetBlockExp(e.isDropsModified(), e.isExpToDropModified()))
             e.setExpToDrop(WorldUtils.getBlockEXP(e.getBlockType()));
     }
 
@@ -42,8 +42,10 @@ public class ScenarioCutClean extends ConfigBasedScenario implements Listener {
 
     private void replaceOreDrops(UHCBlockBreakEvent e) {
         e.getDrops().forEach(drop -> drop.setType(OreRuleSupport.cookedOreDrop(drop.getType())));
-        e.replaceDrop(Material.GRAVEL, Material.FLINT);
-        e.replaceDrop(Material.FLINT, Material.FLINT);
+    }
+
+    static boolean shouldSetBlockExp(boolean dropsModified, boolean expToDropModified) {
+        return dropsModified && !expToDropModified;
     }
 
     private void replaceEntityDrops(EntityType entityType, List<ItemStack> drops) {

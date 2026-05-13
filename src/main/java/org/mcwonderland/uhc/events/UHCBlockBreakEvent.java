@@ -29,8 +29,8 @@ public class UHCBlockBreakEvent extends UHCPlayerEvent {
     private final List<ItemStack> drops;
     @Getter(AccessLevel.PRIVATE)
     private final List<ItemStack> originalDrops;
-    @Setter
     private int expToDrop;
+    private boolean expToDropModified;
     @Setter
     private boolean handleCustom;
 
@@ -65,6 +65,11 @@ public class UHCBlockBreakEvent extends UHCPlayerEvent {
 
     public void replaceDrop(Material from, Material to) {
         WorldUtils.replaceDrop(drops, from, to);
+    }
+
+    public void setExpToDrop(int expToDrop) {
+        this.expToDrop = expToDrop;
+        this.expToDropModified = true;
     }
 
     public boolean isDropsModified() {

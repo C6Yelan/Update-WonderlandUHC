@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.mcwonderland.uhc.util.cuboid.SelectMode;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class ScenarioBloodDiamonds extends ConfigBasedScenario implements Listen
         super(name);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOW)
     public void onBlockBreak(UHCBlockBreakEvent e) {
         if (!OreRuleSupport.isDiamondOre(e.getBlockType()) || VeinMiner.isMining(e.getPlayer()))
             return;
