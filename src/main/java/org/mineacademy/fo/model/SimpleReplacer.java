@@ -1,5 +1,7 @@
 package org.mineacademy.fo.model;
 
+import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -57,11 +59,7 @@ public class SimpleReplacer implements Cloneable {
 
     /** Legacy helper used by multiple scenarios. */
     public SimpleReplacer replaceTime(final Number time) {
-        // 先用最保守做法：提供常見 placeholder，不影響編譯，也方便後續依 messages.yml 再微調
-        return this
-                .replace("{time}", time)
-                .replace("{seconds}", time)
-                .replace("{second}", time);
+        return replaceArray(TimePlaceholderFormatter.replacementPairs(time));
     }
 
     /** Add replacements in pairs: key1, value1, key2, value2... */

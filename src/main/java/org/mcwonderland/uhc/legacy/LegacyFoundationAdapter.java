@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.scheduler.BukkitTask;
+import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
 import org.mineacademy.fo.Common;
 import org.mineacademy.fo.FileUtil;
 import org.mineacademy.fo.ItemUtil;
@@ -232,6 +233,7 @@ public final class LegacyFoundationAdapter {
         TimeUtil.SECONDS_SYMBOL = seconds;
         TimeUtil.MINUTE_SYMBOL = minute;
         TimeUtil.MINUTES_SYMBOL = minutes;
+        TimePlaceholderFormatter.configureSymbols(second, seconds, minute, minutes);
     }
 
     public static ItemStack getFirstItem(Player player, ItemStack item) {
