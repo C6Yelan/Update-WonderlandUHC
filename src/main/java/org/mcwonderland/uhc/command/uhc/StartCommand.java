@@ -1,10 +1,12 @@
 package org.mcwonderland.uhc.command.uhc;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.application.match.MatchStartRequestService;
 import org.mineacademy.fo.command.SimpleSubCommand;
 
 public class StartCommand extends SimpleSubCommand {
+
+    private final MatchStartRequestService matchStartRequest = new MatchStartRequestService();
 
     protected StartCommand(UHCMainCommandGroup parent, String sublabel) {
         super(parent, sublabel);
@@ -16,6 +18,6 @@ public class StartCommand extends SimpleSubCommand {
 
     @Override
     protected void onCommand() {
-        Game.getGame().tryToStart(sender);
+        matchStartRequest.requestStart(sender);
     }
 }

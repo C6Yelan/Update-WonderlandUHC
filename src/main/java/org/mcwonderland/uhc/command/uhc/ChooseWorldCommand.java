@@ -1,18 +1,15 @@
 package org.mcwonderland.uhc.command.uhc;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
-import org.mcwonderland.uhc.game.settings.LoadingStatus;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.settings.CommandSettings;
-import org.mcwonderland.uhc.util.Extra;
-import org.bukkit.entity.Player;
+import org.mcwonderland.uhc.application.world.PreviewWorldSelectionService;
 import org.mineacademy.fo.command.SimpleSubCommand;
 
 /**
  * 2019-11-24 下午 12:50
  */
 public class ChooseWorldCommand extends SimpleSubCommand {
+
+    private final PreviewWorldSelectionService previewWorldSelection = new PreviewWorldSelectionService();
 
     protected ChooseWorldCommand(UHCMainCommandGroup parent, String subLabel) {
         super(parent, subLabel);
@@ -24,27 +21,6 @@ public class ChooseWorldCommand extends SimpleSubCommand {
 
     @Override
     protected void onCommand() {
-        if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE)
-            return;
-
-        saveCaches();
-        kickPlayers();
-        LegacyFoundationAdapter.runLater(1, Extra::restartServer);
-    }
-
-    private void saveCaches() {
-        CacheSaver.setLoadingStatus(LoadingStatus.GENERATING);
-
-        if (isPlayer())
-            CacheSaver.setHost(getPlayer().getName());
-
-        CacheSaver.saveCache();
-    }
-
-    private void kickPlayers() {
-        String msg = LegacyFoundationAdapter.replaceToString(CommandSettings.Uhc.Choose.KICK_INIT_MSG);
-
-        for (Player player : LegacyFoundationAdapter.getOnlinePlayers())
-            LegacyFoundationAdapter.kickPlayer(player, msg);
+        previewWorldSelection.select(isPlayer() ? getPlayer() : null);
     }
 }

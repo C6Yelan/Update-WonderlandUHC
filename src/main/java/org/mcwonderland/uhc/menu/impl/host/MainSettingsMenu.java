@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
 import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.application.match.MatchStartRequestService;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
@@ -25,6 +26,8 @@ import org.mineacademy.fo.menu.config.ConfigMenu;
 import org.mineacademy.fo.model.SimpleReplacer;
 
 public class MainSettingsMenu extends ConfigMenu {
+
+    private final MatchStartRequestService matchStartRequest = new MatchStartRequestService();
 
     private final ConfigMenuButton appleRatesButton;
     private final ConfigMenuButton borderButton;
@@ -271,7 +274,7 @@ public class MainSettingsMenu extends ConfigMenu {
             button = new ConfigClickableButton(getButtonPath("Start")) {
                 @Override
                 protected void onClicked(Player player, Menu menu, ClickType click) {
-                    Game.getGame().tryToStart(player);
+                    matchStartRequest.requestStart(player);
                     player.closeInventory();
                 }
             };

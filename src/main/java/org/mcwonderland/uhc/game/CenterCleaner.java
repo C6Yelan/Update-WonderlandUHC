@@ -44,6 +44,10 @@ import java.util.Set;
 public class CenterCleaner {
 
     public static void createWorld(String worldName, Player player, @Nullable String seed) {
+        createWorld(worldName, player, Game.getGame().isCenterCleaner(), seed);
+    }
+
+    public static void createWorld(String worldName, Player player, boolean centerCleanerEnabled, @Nullable String seed) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -57,12 +61,12 @@ public class CenterCleaner {
 
                 WorldCreator creator = new WorldCreator(worldName);
                 applySeed(creator, seed);
-                applyLegacyGeneratorSettings(creator);
+                applyLegacyGeneratorSettings(creator, centerCleanerEnabled);
 
                 World uhcWorld = creator.createWorld();
                 uhcWorld.setKeepSpawnInMemory(false);
 
-                if (Game.getGame().isCenterCleaner()) {
+                if (centerCleanerEnabled) {
                     startCenterSearch(player, uhcWorld);
                     return;
                 }
@@ -90,10 +94,10 @@ public class CenterCleaner {
         }
     }
 
-    private static void applyLegacyGeneratorSettings(WorldCreator creator) {
+    private static void applyLegacyGeneratorSettings(WorldCreator creator, boolean centerCleanerEnabled) {
         String generatorSettings = Settings.CenterCleaner.GENERATOR_SETTINGS;
 
-        if ((!Game.getGame().isCenterCleaner() || LegacyFoundationAdapter.isOlderThanMinecraft1_14())
+        if ((!centerCleanerEnabled || LegacyFoundationAdapter.isOlderThanMinecraft1_14())
                 && generatorSettings != null
                 && !generatorSettings.isEmpty())
             creator.generatorSettings(generatorSettings);

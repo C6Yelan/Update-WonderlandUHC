@@ -1,16 +1,15 @@
 package org.mcwonderland.uhc.command.uhc;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.util.Extra;
-import org.bukkit.Bukkit;
+import org.mcwonderland.uhc.application.match.MatchStopService;
 import org.mineacademy.fo.command.SimpleSubCommand;
 
 /**
  * 2019-11-24 下午 12:50
  */
 public class StopCommand extends SimpleSubCommand {
+
+    private final MatchStopService matchStop = new MatchStopService();
 
     protected StopCommand(UHCMainCommandGroup parent, String subLabel) {
         super(parent, subLabel);
@@ -21,9 +20,7 @@ public class StopCommand extends SimpleSubCommand {
 
     @Override
     protected void onCommand() {
-        CacheSaver.deleteCache();
-        LegacyFoundationAdapter.getOnlinePlayers().forEach(Extra::sendToFallbackServer);
-        Bukkit.shutdown();
+        matchStop.stopServer();
     }
 
 }

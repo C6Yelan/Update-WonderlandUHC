@@ -1,23 +1,20 @@
 package org.mcwonderland.uhc.command.uhc;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.game.CenterCleaner;
-import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.application.world.PreviewWorldGenerationService;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Messages;
-import org.mcwonderland.uhc.settings.Settings;
-import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Chat;
-import org.mcwonderland.uhc.util.Extra;
 import org.mineacademy.fo.command.SimpleSubCommand;
 
 /**
  * 2019-11-24 下午 12:50
  */
 public class RegenWorldCommand extends SimpleSubCommand {
+
+    private final PreviewWorldGenerationService previewWorldGeneration = new PreviewWorldGenerationService();
 
     protected RegenWorldCommand(UHCMainCommandGroup parent, String subLabel) {
         super(parent, subLabel);
@@ -84,9 +81,6 @@ public class RegenWorldCommand extends SimpleSubCommand {
     }
 
     private void createWorld(boolean centerCleaner, String seed) {
-        Game.getGame().setCenterCleaner(centerCleaner);
-        Chat.send(getPlayer(), CommandSettings.Uhc.Regen.CREATING_WORLD);
-        Extra.sound(getPlayer(), Sounds.Host.START_CREATING_WORLD);
-        CenterCleaner.createWorld(Settings.Game.UHC_WORLD_NAME, getPlayer(), seed);
+        previewWorldGeneration.create(getPlayer(), centerCleaner, seed);
     }
 }

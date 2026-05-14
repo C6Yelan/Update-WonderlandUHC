@@ -1,19 +1,14 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
-import org.mcwonderland.uhc.game.CenterCleaner;
-import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
-import org.mcwonderland.uhc.settings.CommandSettings;
-import org.mcwonderland.uhc.settings.Settings;
-import org.mcwonderland.uhc.settings.Sounds;
-import org.mcwonderland.uhc.util.Chat;
-import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.Player;
+import org.mcwonderland.uhc.application.world.PreviewWorldGenerationService;
+import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mineacademy.fo.menu.Menu;
 import org.mineacademy.fo.menu.config.ConfigConfirmMenu;
 
 public class CenterCleanerMenu extends ConfigConfirmMenu {
 
+    private final PreviewWorldGenerationService previewWorldGeneration = new PreviewWorldGenerationService();
     private String seed;
 
     public CenterCleanerMenu(Menu parent) {
@@ -27,25 +22,17 @@ public class CenterCleanerMenu extends ConfigConfirmMenu {
 
     @Override
     protected void onAgree(Player player, Menu menu) {
-        Game.getGame().setCenterCleaner(true);
-
-        createWorld(player);
+        createWorld(player, true);
     }
 
     @Override
     protected void onDisagree(Player player, Menu menu) {
-        Game.getGame().setCenterCleaner(false);
-
-        createWorld(player);
+        createWorld(player, false);
     }
 
-    private void createWorld(Player player) {
+    private void createWorld(Player player, boolean centerCleanerEnabled) {
         player.closeInventory();
-
-        Chat.send(player, CommandSettings.Uhc.Regen.CREATING_WORLD);
-        Extra.sound(player, Sounds.Host.START_CREATING_WORLD);
-
-        CenterCleaner.createWorld(Settings.Game.UHC_WORLD_NAME, player, seed);
+        previewWorldGeneration.create(player, centerCleanerEnabled, seed);
     }
 
 }

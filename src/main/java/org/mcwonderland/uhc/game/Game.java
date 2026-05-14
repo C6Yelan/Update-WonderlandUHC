@@ -21,11 +21,6 @@ import org.mcwonderland.uhc.game.state.starting.PreStartState;
 import org.mcwonderland.uhc.game.state.starting.TeleportingState;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
-import org.mcwonderland.uhc.settings.Messages;
-import org.mcwonderland.uhc.settings.Sounds;
-import org.mcwonderland.uhc.util.Chat;
-import org.mcwonderland.uhc.util.Extra;
-import org.bukkit.command.CommandSender;
 import org.mineacademy.fo.collection.PlayerCollection;
 
 import java.util.*;
@@ -137,16 +132,6 @@ public class Game {
 
         if (!transitionResult.isSuccess())
             throw new IllegalStateException(transitionResult.getFailureReason());
-    }
-
-    public void tryToStart(CommandSender sender) {
-        if (getCurrentStateName() != StateName.WAITING) {
-            Chat.send(sender, Messages.Host.GAME_RUNNING);
-            return;
-        }
-
-        GameTimerRunnable.RUN = true;
-        Extra.sound(Sounds.Countdown.Lobby.START);
     }
 
     public StateName getCurrentStateName() {
