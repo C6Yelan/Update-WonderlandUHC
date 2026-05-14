@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
+import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.PotionApplier;
 import org.bukkit.entity.Player;
@@ -20,11 +21,16 @@ public class GoldenHeadListener implements Listener {
         String name = getItemName(item);
 
         if (name != null && name.equalsIgnoreCase(Settings.Misc.GOLDEN_HEAD_NAME)) {
-            PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 10 * 20, 1);
-            PotionEffect absorp = new PotionEffect(PotionEffectType.ABSORPTION, 60 * 20 * 2, 0);
+            LegacyFoundationAdapter.runLater(1, () -> {
+                if (!player.isOnline() || player.isDead())
+                    return;
 
-            PotionApplier.addPotionEffect(player, regen);
-            PotionApplier.addPotionEffect(player, absorp);
+                PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 10 * 20, 1);
+                PotionEffect absorp = new PotionEffect(PotionEffectType.ABSORPTION, 60 * 20 * 2, 0);
+
+                PotionApplier.addPotionEffect(player, regen);
+                PotionApplier.addPotionEffect(player, absorp);
+            });
         }
     }
 

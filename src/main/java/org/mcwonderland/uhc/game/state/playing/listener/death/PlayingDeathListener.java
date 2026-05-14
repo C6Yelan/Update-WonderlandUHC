@@ -27,12 +27,16 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IdentityHashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 2019-12-07 下午 07:02
  */
 public class PlayingDeathListener implements Listener {
+    private final Map<UHCGamingDeathEvent, List<ItemStack>> customDropsByEvent = new IdentityHashMap<>();
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
@@ -40,7 +44,10 @@ public class PlayingDeathListener implements Listener {
         UHCPlayer uhcPlayer = UHCPlayer.getFromEntity(entity);
 
         if (uhcPlayer != null) {
-            LegacyFoundationAdapter.callEvent(new UHCGamingDeathEvent(uhcPlayer, e));
+            UHCGamingDeathEvent uhcDeathEvent = new UHCGamingDeathEvent(uhcPlayer, e);
+
+            LegacyFoundationAdapter.callEvent(uhcDeathEvent);
+            releaseCustomDropsIfStillPending(entity, e.getDrops(), customDropsByEvent.remove(uhcDeathEvent));
         }
     }
 
@@ -131,20 +138,59 @@ public class PlayingDeathListener implements Listener {
         e.getDrops().addAll(drops);
     }
 
-    private void addDrops(List<ItemStack> drops, List<ItemStack> items) {
+    private static void addDrops(List<ItemStack> drops, List<ItemStack> items) {
         for (ItemStack item : items) {
             if (isDropItem(item))
-                drops.add(item);
+                drops.add(item.clone());
         }
     }
 
-    private boolean isDropItem(ItemStack item) {
+    private static boolean isDropItem(ItemStack item) {
         return item != null && item.getType() != Material.AIR;
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void handleDeathDrops(UHCGamingDeathEvent e) {
-        e.getDrops().addAll(Game.getSettings().getItemSettings().getCustomDrops());
+        List<ItemStack> customDrops = collectDropItems(Game.getSettings().getItemSettings().getCustomDrops());
+
+        if (customDrops.isEmpty())
+            return;
+
+        e.getDrops().addAll(customDrops);
+        customDropsByEvent.put(e, customDrops);
+    }
+
+    static List<ItemStack> collectDropItems(List<ItemStack> items) {
+        List<ItemStack> drops = new ArrayList<>();
+
+        if (items == null)
+            return drops;
+
+        addDrops(drops, items);
+        return drops;
+    }
+
+    private void releaseCustomDropsIfStillPending(LivingEntity entity, List<ItemStack> finalDrops, List<ItemStack> customDrops) {
+        if (entity == null || finalDrops == null || customDrops == null || customDrops.isEmpty())
+            return;
+
+        for (ItemStack customDrop : customDrops) {
+            if (removeByIdentity(finalDrops, customDrop))
+                entity.getWorld().dropItemNaturally(entity.getLocation(), customDrop);
+        }
+    }
+
+    private boolean removeByIdentity(List<ItemStack> drops, ItemStack target) {
+        Iterator<ItemStack> iterator = drops.iterator();
+
+        while (iterator.hasNext()) {
+            if (iterator.next() == target) {
+                iterator.remove();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)

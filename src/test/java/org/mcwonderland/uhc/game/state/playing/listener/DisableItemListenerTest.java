@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 
 public class DisableItemListenerTest {
@@ -17,5 +18,10 @@ public class DisableItemListenerTest {
         assertEquals(2, items.length);
         assertNull(items[0]);
         assertNull(items[1]);
+    }
+
+    @Test
+    public void disabledMatcherHandlesMissingItems() {
+        assertFalse(DisableItemListener.containsDisabledItem(null, (ItemStack[]) null));
     }
 }

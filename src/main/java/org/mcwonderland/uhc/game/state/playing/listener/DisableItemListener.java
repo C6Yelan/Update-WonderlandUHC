@@ -12,6 +12,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.CrafterCraftEvent;
 import org.bukkit.event.inventory.BrewEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -27,6 +28,11 @@ public class DisableItemListener implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onCraft(CraftItemEvent e) {
         DisabledChecker.check(e, (Player) e.getWhoClicked(), e.getCurrentItem());
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void onCrafterCraft(CrafterCraftEvent e) {
+        DisabledChecker.check(e, null, e.getResult());
     }
 
 
@@ -84,15 +90,23 @@ public class DisableItemListener implements Listener {
         private static boolean isDisabledItems() {
             UHCItemSettings itemSettings = Game.getSettings().getItemSettings();
 
-            return itemSettings.getCustomDisabledItems()
-                    .stream()
-                    .anyMatch(disableItem -> {
-                        for (ItemStack item : toChecks) {
-                            if (ItemSimilarChecker.isSimilar(item, disableItem))
-                                return true;
-                        }
-                        return false;
-                    });
+            return containsDisabledItem(itemSettings.getCustomDisabledItems(), toChecks);
         }
+    }
+
+    static boolean containsDisabledItem(List<ItemStack> disabledItems, ItemStack... itemStacks) {
+        if (disabledItems == null || itemStacks == null)
+            return false;
+
+        return disabledItems
+                .stream()
+                .anyMatch(disableItem -> {
+                    for (ItemStack item : itemStacks) {
+                        if (ItemSimilarChecker.isSimilar(item, disableItem))
+                            return true;
+                    }
+
+                    return false;
+                });
     }
 }
