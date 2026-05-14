@@ -28,9 +28,13 @@ public class RuntimeUtil {
     }
 
     public static double getTPS(int time) {
-        double paperTps = getPaperTPS(time);
+        double paperTps = getPaperApiTPS(time);
         if (paperTps > 0D)
             return paperTps;
+
+        double reflectedPaperTps = getReflectedPaperTPS(time);
+        if (reflectedPaperTps > 0D)
+            return reflectedPaperTps;
 
         if (tpsField == null || si == null)
             return DEFAULT_TPS;
@@ -59,7 +63,15 @@ public class RuntimeUtil {
         return AvailableMemory() < fillMemoryTolerance;
     }
 
-    private static double getPaperTPS(int time) {
+    private static double getPaperApiTPS(int time) {
+        try {
+            return getTPSAt(Bukkit.getTPS(), time);
+        } catch (RuntimeException | LinkageError ex) {
+            return -1D;
+        }
+    }
+
+    private static double getReflectedPaperTPS(int time) {
         try {
             Method getTps = Bukkit.getServer().getClass().getMethod("getTPS");
             double[] tps = (double[]) getTps.invoke(Bukkit.getServer());

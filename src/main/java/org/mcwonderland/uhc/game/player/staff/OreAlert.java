@@ -1,26 +1,26 @@
 package org.mcwonderland.uhc.game.player.staff;
 
 import lombok.Getter;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.mineacademy.fo.remain.CompColor;
-import org.mineacademy.fo.remain.CompMaterial;
+import org.mcwonderland.uhc.core.rule.OreRuleSupport;
 
 @Getter
 public enum OreAlert {
-    GOLD_ORE(CompMaterial.GOLD_ORE, CompColor.YELLOW),
-    DIAMOND_ORE(CompMaterial.DIAMOND_ORE, CompColor.AQUA);
+    GOLD_ORE(Material.GOLD_ORE, ChatColor.YELLOW),
+    DIAMOND_ORE(Material.DIAMOND_ORE, ChatColor.AQUA);
 
     private final Material material;
-    private final CompColor color;
+    private final ChatColor color;
 
-    OreAlert(CompMaterial compMaterial, CompColor color) {
-        this.material = compMaterial.getMaterial();
+    OreAlert(Material material, ChatColor color) {
+        this.material = material;
         this.color = color;
     }
 
     public static OreAlert fromMaterial(Material material) {
         for (OreAlert value : values()) {
-            if (value.getMaterial() == material)
+            if (OreRuleSupport.matchesBlock(value.getMaterial(), material))
                 return value;
         }
 
@@ -28,6 +28,6 @@ public enum OreAlert {
     }
 
     public String colorizedName() {
-        return color.getChatColor() + material.name();
+        return color + material.name();
     }
 }
