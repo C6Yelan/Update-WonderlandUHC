@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.util.PlayerUtils;
 
 public class CommonPracticeListener implements Listener {
 
@@ -31,13 +32,29 @@ public class CommonPracticeListener implements Listener {
 
         if (practice.isInPractice(player)) {
             e.getDrops().clear();
-            player.setHealth(player.getMaxHealth());
 
-            LegacyFoundationAdapter.runLater(3, () -> practice.stuff(player));
+            respawnAndRestuff(player);
 
             if (killer != null)
                 killer.setHealth(killer.getMaxHealth());
         }
+    }
+
+    private void respawnAndRestuff(Player player) {
+        LegacyFoundationAdapter.runLater(1, () -> {
+            if (!player.isOnline() || !practice.isInPractice(player))
+                return;
+
+            PlayerUtils.respawnIfDead(player);
+
+            LegacyFoundationAdapter.runLater(1, () -> {
+                if (!player.isOnline() || !practice.isInPractice(player) || player.isDead())
+                    return;
+
+                player.setHealth(player.getMaxHealth());
+                practice.stuff(player);
+            });
+        });
     }
 
     @EventHandler

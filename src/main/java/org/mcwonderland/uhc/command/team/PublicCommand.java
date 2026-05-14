@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.command.team;
 
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.UHCTeam;
+import org.mcwonderland.uhc.settings.CommandSettings;
 
 class PublicCommand extends TeamOwnerCommand {
 
@@ -18,5 +19,6 @@ class PublicCommand extends TeamOwnerCommand {
 
         UHCTeam team = getTeam();
         team.setOpenJoin(!team.isOpenJoin());
+        tell(team.isOpenJoin() ? CommandSettings.Team.Public.OPENED : CommandSettings.Team.Public.CLOSED);
     }
 }

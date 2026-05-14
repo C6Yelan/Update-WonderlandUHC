@@ -103,6 +103,10 @@ public class CommandSettings extends AutoLoadStaticConfig {
             public static String NO_INVITATION;
         }
 
+        public static class Public {
+            public static String OPENED, CLOSED;
+        }
+
         public static class Kick {
             public static List<String> KICKED;
         }

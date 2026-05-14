@@ -21,13 +21,14 @@ public class StatsCommand extends SimpleCommand {
 
     @Override
     protected void onCommand() {
-        Player player;
+        Player viewer = getPlayer();
+        Player target;
 
         if (args.length >= 1)
-            player = findPlayer(args[0]);
+            target = findPlayer(args[0]);
         else
-            player = getPlayer();
+            target = viewer;
 
-        new StatsMenu(player).displayTo(player);
+        new StatsMenu(target).displayTo(viewer);
     }
 }

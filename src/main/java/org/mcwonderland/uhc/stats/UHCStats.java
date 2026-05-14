@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.stats;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Material;
+import org.mcwonderland.uhc.core.rule.OreRuleSupport;
 import org.mineacademy.fo.collection.SerializedMap;
 import org.mineacademy.fo.model.ConfigSerializable;
 
@@ -24,8 +25,9 @@ public class UHCStats implements ConfigSerializable {
     }
 
     public int addOreMined(Material material) {
-        Integer amount = oreMined.getOrDefault(material, 0);
-        oreMined.put(material, ++amount);
+        Material countedMaterial = OreRuleSupport.canonicalLimitedOre(material);
+        Integer amount = oreMined.getOrDefault(countedMaterial, 0);
+        oreMined.put(countedMaterial, ++amount);
 
         return amount;
     }

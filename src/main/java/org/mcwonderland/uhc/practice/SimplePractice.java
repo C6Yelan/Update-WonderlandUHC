@@ -38,6 +38,7 @@ public class SimplePractice extends AbstractPractice {
         Extra.deleteWorld(Settings.Practice.WORLD);
 
         world = Bukkit.createWorld(new WorldCreator(Settings.Practice.WORLD));
+        applyPracticeWorldRules();
         BORDER_SERVICE.setExactFixedBorderAtOrigin(world.getName(), Settings.Practice.WORLD_SIZE);
     }
 
@@ -65,12 +66,18 @@ public class SimplePractice extends AbstractPractice {
             }
         }
 
-        world.setGameRuleValue("doMobSpawning", "false");
+        applyPracticeWorldRules();
         world.getEntities().stream()
                 .filter(entity -> !(entity instanceof Player))
                 .forEach(Entity::remove);
 
         LegacyFoundationAdapter.logFramed("&e優化完畢！");
+    }
+
+    private void applyPracticeWorldRules() {
+        world.setTime(6000);
+        world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+        world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
     }
 
     private void checkBlock(Block block) {
