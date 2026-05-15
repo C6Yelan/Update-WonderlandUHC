@@ -17,7 +17,7 @@ public class JoinListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        e.setJoinMessage(null);
+        e.joinMessage(null);
 
         UHCJoinEvent uhcJoinEvent = new UHCJoinEvent(e);
         joinBehaviors.forEach(joinBehavior -> joinBehavior.onJoin(uhcJoinEvent));

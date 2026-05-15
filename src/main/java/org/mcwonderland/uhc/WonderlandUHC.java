@@ -1,9 +1,6 @@
 package org.mcwonderland.uhc;
 
 import lombok.Getter;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.java.JavaPluginLoader;
-import org.jetbrains.annotations.NotNull;
 import org.mcwonderland.uhc.bootstrap.FeatureRegistry;
 import org.mcwonderland.uhc.bootstrap.PluginBootstrap;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
@@ -14,9 +11,6 @@ import org.mcwonderland.uhc.scenario.ScenarioManager;
 import org.mcwonderland.uhc.settings.spawn.Spawns;
 import org.mcwonderland.uhc.stats.storages.StatsStorage;
 import org.mineacademy.fo.plugin.SimplePlugin;
-
-import java.io.File;
-
 
 public class WonderlandUHC extends SimplePlugin {
     public static Boolean TEST_MODE = false;
@@ -36,10 +30,6 @@ public class WonderlandUHC extends SimplePlugin {
 
     public static WonderlandUHC getInstance() {
         return ( WonderlandUHC ) SimplePlugin.getInstance();
-    }
-
-    public WonderlandUHC(@NotNull JavaPluginLoader loader, @NotNull PluginDescriptionFile description, @NotNull File dataFolder, @NotNull File file) {
-        super(loader, description, dataFolder, file);
     }
 
     public WonderlandUHC() {

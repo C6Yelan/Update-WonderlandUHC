@@ -15,6 +15,7 @@ import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.*;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
@@ -52,9 +53,9 @@ public class StartCountdown extends Countdown {
     private static void setupWorlds() {
         for (World world : UHCWorldUtils.getUhcWorlds()) {
             if (Settings.Misc.ALWAYS_DAY)
-                world.setGameRuleValue("doDaylightCycle", "false");
+                world.setGameRule(GameRules.ADVANCE_TIME, false);
             if (Settings.Misc.NO_FIRE_TICK)
-                world.setGameRuleValue("doFireTick", "false");
+                world.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
 
             world.setSpawnLocation(0, 0, 0);
             world.setTime(Settings.Misc.ALWAYS_DAY ? 6000 : 0);

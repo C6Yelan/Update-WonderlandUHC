@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.menu.model;
 
 import lombok.RequiredArgsConstructor;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -81,16 +82,16 @@ public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
         }
 
         private void change() {
-            if (player.getItemInHand().getType() == Material.GOLDEN_APPLE)
+            if (PlayerHand.getMainHandItem(player).getType() == Material.GOLDEN_APPLE)
                 changeGoldenAppleToGoldenHead();
             else
                 Chat.sendConversing(player, Messages.Editor.Inventory.TO_HEAD_FAILED);
         }
 
         private void changeGoldenAppleToGoldenHead() {
-            ItemMeta meta = player.getItemInHand().getItemMeta();
+            ItemMeta meta = PlayerHand.getMainHandItem(player).getItemMeta();
             meta.setDisplayName(Settings.Misc.GOLDEN_HEAD_NAME);
-            player.getItemInHand().setItemMeta(meta);
+            PlayerHand.getMainHandItem(player).setItemMeta(meta);
             Extra.sound(player, Sounds.Host.GOLDEN_HEAD_CREATED);
         }
     }

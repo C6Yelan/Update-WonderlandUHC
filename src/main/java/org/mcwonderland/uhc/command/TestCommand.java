@@ -37,7 +37,7 @@ public class TestCommand extends SimpleCommand {
             getPlayer().setHealth(0);
         else if ("item".equalsIgnoreCase(param)) {
         } else if ("potion".equalsIgnoreCase(param)) {
-//            final ItemStack result = BrewResultGetter.getBrewResult(getPlayer().getItemInHand(), CompMaterial.BLAZE_POWDER.toItem());
+//            final ItemStack result = BrewResultGetter.getBrewResult(getPlayer().getInventory().getItemInMainHand(), CompMaterial.BLAZE_POWDER.toItem());
 //            getPlayer().getInventory().addItem(result);
         } else if ("half".equalsIgnoreCase(param)) {
             getPlayer().setHealth(1);

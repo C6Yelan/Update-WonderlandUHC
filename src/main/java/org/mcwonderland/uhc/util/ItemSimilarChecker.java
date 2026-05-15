@@ -4,7 +4,6 @@ import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
 
 public class ItemSimilarChecker {
     private static ItemStack item;
@@ -40,9 +39,6 @@ public class ItemSimilarChecker {
     }
 
     private static boolean checkPotion() {
-        PotionData potionMeta = ((PotionMeta) itemMeta).getBasePotionData();
-        PotionData comparisionData = ((PotionMeta) comparisionMeta).getBasePotionData();
-
-        return potionMeta.equals(comparisionData);
+        return ((PotionMeta) itemMeta).getBasePotionType() == ((PotionMeta) comparisionMeta).getBasePotionType();
     }
 }

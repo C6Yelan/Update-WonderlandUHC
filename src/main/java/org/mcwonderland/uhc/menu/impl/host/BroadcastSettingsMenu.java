@@ -4,8 +4,7 @@ import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.broadcast.AbstractBroadcastSender;
-import org.mcwonderland.uhc.model.broadcast.GameStartTimeConversation;
-import org.mcwonderland.uhc.model.broadcast.GameStartTimeInfo;
+import org.mcwonderland.uhc.model.broadcast.GameStartTimeInputSession;
 import org.mcwonderland.uhc.model.broadcast.impl.DiscordBroadcastSender;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
@@ -43,17 +42,14 @@ public class BroadcastSettingsMenu extends ConfigMenu {
             }
 
             AbstractBroadcastSender sender = new DiscordBroadcastSender();
-            new GameStartTimeConversation() {
-                @Override
-                protected void onStartTimeInfoBuilt(GameStartTimeInfo info) {
-                    try {
-                        sender.sendBroadcast(info);
-                        Chat.send(player, "&aDiscord 公告已送出。");
-                    } catch (RuntimeException e) {
-                        handleBroadcastFailure(player, e);
-                    }
+            GameStartTimeInputSession.start(player, info -> {
+                try {
+                    sender.sendBroadcast(info);
+                    Chat.send(player, "&aDiscord 公告已送出。");
+                } catch (RuntimeException e) {
+                    handleBroadcastFailure(player, e);
                 }
-            }.start(player);
+            });
         }
 
         private void handleBroadcastFailure(Player player, RuntimeException e) {

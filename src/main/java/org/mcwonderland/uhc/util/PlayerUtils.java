@@ -121,6 +121,10 @@ public class PlayerUtils {
     }
 
     public boolean isShieldBlocked(EntityDamageEvent e) {
-        return LegacyFoundationAdapter.isAtLeastMinecraft1_9() && e.getOriginalDamage(EntityDamageEvent.DamageModifier.BLOCKING) < 0;
+        if (!(e.getEntity() instanceof Player))
+            return false;
+
+        Player player = ( Player ) e.getEntity();
+        return player.isBlocking() && e.getFinalDamage() <= 0;
     }
 }

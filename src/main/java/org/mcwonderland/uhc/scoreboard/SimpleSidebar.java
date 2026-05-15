@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.scoreboard;
 import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -22,7 +23,7 @@ public class SimpleSidebar {
 
     private SimpleSidebar(Scoreboard scoreboard) {
         this.scoreboard = scoreboard;
-        this.sidebar = scoreboard.registerNewObjective("sidebar", "dummy");
+        this.sidebar = scoreboard.registerNewObjective("sidebar", Criteria.DUMMY, "sidebar");
         this.sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         for (int i = 1; i <= 15; i++) {

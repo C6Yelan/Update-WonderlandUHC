@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.model;
 
 import lombok.experimental.UtilityClass;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.util.PlayerUtils;
 import org.mcwonderland.uhc.util.UniqueQueue;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
@@ -55,7 +56,7 @@ public class VeinMiner {
         }
 
         try {
-            if (!block.breakNaturally(player.getItemInHand()))
+            if (!block.breakNaturally(PlayerHand.getMainHandItem(player)))
                 block.setType(Material.AIR);
         } catch (RuntimeException | LinkageError fallbackEx) {
             LegacyFoundationAdapter.error(

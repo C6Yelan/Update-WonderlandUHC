@@ -1,28 +1,40 @@
 package org.mcwonderland.uhc.game.state.share.join;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.Nullable;
 
-public class UHCJoinEvent extends PlayerJoinEvent {
+public class UHCJoinEvent {
 
-    private PlayerJoinEvent source;
+    private final PlayerJoinEvent source;
     @Getter
-    private UHCPlayer uhcPlayer;
+    private final UHCPlayer uhcPlayer;
     @Getter
-    private Game game;
+    private final Game game;
 
     public UHCJoinEvent(PlayerJoinEvent source) {
-        super(source.getPlayer(), source.getJoinMessage());
         this.source = source;
         this.uhcPlayer = UHCPlayer.getUHCPlayer(source.getPlayer());
         this.game = Game.getGame();
     }
 
-    @Override
+    public Player getPlayer() {
+        return source.getPlayer();
+    }
+
     public void setJoinMessage(@Nullable String joinMessage) {
-        source.setJoinMessage(joinMessage);
+        source.joinMessage(toComponent(joinMessage));
+    }
+
+    private Component toComponent(@Nullable String message) {
+        if (message == null)
+            return null;
+
+        return LegacyComponentSerializer.legacySection().deserialize(message);
     }
 }

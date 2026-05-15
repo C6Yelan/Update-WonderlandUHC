@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
+import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.Location;
@@ -86,7 +87,7 @@ public class CombatRelog {
         villager.setCustomName(UHCTeam.getTeam(player).getPrefix() + player.getName());
         villager.setProfession(Villager.Profession.LIBRARIAN);
 
-        villager.getEquipment().setItemInHand(player.getItemInHand());
+        villager.getEquipment().setItemInMainHand(PlayerHand.getMainHandItem(player));
         villager.getEquipment().setArmorContents(player.getInventory().getArmorContents());
         villager.setAdult();
         Extra.copyHealth(player, villager);

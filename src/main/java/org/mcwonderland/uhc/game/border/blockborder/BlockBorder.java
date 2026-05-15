@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.mcwonderland.uhc.util.UniqueQueue;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -39,7 +40,7 @@ public class BlockBorder implements Listener {
 
         if (distanceToBorder(nextLocation) > TRIGGER_RANGE) {
             for (Location location : recent)
-                player.sendBlockChange(location, LegacyFoundationAdapter.materialOf("AIR"), (byte) 0);
+                player.sendBlockChange(location, Material.AIR.createBlockData());
             return;
         }
 
@@ -56,13 +57,13 @@ public class BlockBorder implements Listener {
             if (sphere.remove(location))
                 noChangeLocations.add(location);
             else
-                player.sendBlockChange(location, LegacyFoundationAdapter.materialOf("AIR"), (byte) 0);
+                player.sendBlockChange(location, Material.AIR.createBlockData());
         }
 
         recent.addAll(noChangeLocations);
 
         for (Location location : sphere) {
-            player.sendBlockChange(location, LegacyFoundationAdapter.materialOf("BEDROCK"), (byte) 0);
+            player.sendBlockChange(location, Material.BEDROCK.createBlockData());
             recent.add(location);
         }
     }

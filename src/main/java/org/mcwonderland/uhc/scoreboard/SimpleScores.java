@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -165,7 +166,7 @@ public final class SimpleScores {
         Objective nameHeal = scoreboard.getObjective("namehealth");
 
         if (nameHeal == null && Settings.Misc.USE_BELOW_NAME_HEALTH) {
-            nameHeal = scoreboard.registerNewObjective("namehealth", "health");
+            nameHeal = scoreboard.registerNewObjective("namehealth", Criteria.HEALTH, "namehealth");
             nameHeal.setDisplaySlot(DisplaySlot.BELOW_NAME);
             nameHeal.setDisplayName(Game.getSettings().getScoreboardSettings().getHeartColor() + "§l❤");
         }
@@ -177,13 +178,20 @@ public final class SimpleScores {
 
         if (healthType != TabHealthType.NONE) {
             if (tabHeal == null) {
-                tabHeal = scoreboard.registerNewObjective("tabhealth", healthType.name());
+                tabHeal = scoreboard.registerNewObjective("tabhealth", criteriaOf(healthType), "tabhealth");
                 tabHeal.setDisplaySlot(DisplaySlot.PLAYER_LIST);
             }
 
             for (Player o : LegacyFoundationAdapter.getOnlinePlayers())
                 tabHeal.getScore(o.getName()).setScore(( int ) (o.getHealth() + LegacyDatouNmsAdapter.current().getAbsorptionHearts(o)));
         }
+    }
+
+    private Criteria criteriaOf(TabHealthType healthType) {
+        if (healthType == TabHealthType.HEALTH)
+            return Criteria.HEALTH;
+
+        return Criteria.DUMMY;
     }
 
 

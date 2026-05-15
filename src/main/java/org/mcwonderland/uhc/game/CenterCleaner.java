@@ -64,7 +64,6 @@ public class CenterCleaner {
                 applyLegacyGeneratorSettings(creator, centerCleanerEnabled);
 
                 World uhcWorld = creator.createWorld();
-                uhcWorld.setKeepSpawnInMemory(false);
 
                 if (centerCleanerEnabled) {
                     startCenterSearch(player, uhcWorld);

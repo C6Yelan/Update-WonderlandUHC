@@ -1,45 +1,67 @@
 package org.mcwonderland.uhc.game.state.share.login;
 
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class UHCLoginEvent extends PlayerLoginEvent {
+import java.net.InetAddress;
 
-    private PlayerLoginEvent source;
+public class UHCLoginEvent {
+
+    private final PlayerLoginEvent source;
     @Getter
-    private UHCPlayer uhcPlayer;
+    private final UHCPlayer uhcPlayer;
     @Getter
-    private Game game;
+    private final Game game;
 
     public UHCLoginEvent(PlayerLoginEvent source) {
-        super(
-                source.getPlayer(),
-                source.getHostname(),
-                source.getAddress(),
-                source.getResult(),
-                source.getHostname(),
-                source.getRealAddress()
-        );
         this.source = source;
         this.uhcPlayer = UHCPlayer.getUHCPlayer(source.getPlayer());
         this.game = Game.getGame();
     }
 
-    @Override
+    public Player getPlayer() {
+        return source.getPlayer();
+    }
+
+    public String getHostname() {
+        return source.getHostname();
+    }
+
+    public InetAddress getAddress() {
+        return source.getAddress();
+    }
+
+    public InetAddress getRealAddress() {
+        return source.getRealAddress();
+    }
+
+    public PlayerLoginEvent.Result getResult() {
+        return source.getResult();
+    }
+
     public void setResult(@NotNull PlayerLoginEvent.Result result) {
         source.setResult(result);
     }
 
-    @Override
     public void setKickMessage(@NotNull String message) {
-        source.setKickMessage(message);
+        source.kickMessage(toComponent(message));
     }
 
-    @Override
     public void disallow(@NotNull PlayerLoginEvent.Result result, @NotNull String message) {
-        source.disallow(result, message);
+        source.disallow(result, toComponent(message));
+    }
+
+    public void allow() {
+        source.allow();
+    }
+
+    private Component toComponent(String message) {
+        return LegacyComponentSerializer.legacySection().deserialize(message);
     }
 }
