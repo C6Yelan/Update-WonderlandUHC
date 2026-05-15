@@ -8,19 +8,13 @@ public class PlayerHider {
 
     public static void hide(Player player, Player target) {
         if (player.canSee(target)) {
-            if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
-                player.hidePlayer(WonderlandUHC.getInstance(), target);
-            else
-                player.hidePlayer(target);
+            player.hidePlayer(WonderlandUHC.getInstance(), target);
         }
     }
 
     public static void show(Player player, Player target) {
         if (!player.canSee(target))
-            if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
-                player.showPlayer(WonderlandUHC.getInstance(), target);
-            else
-                player.showPlayer(target);
+            player.showPlayer(WonderlandUHC.getInstance(), target);
     }
 
     public static void hidePlayer(Player target) {

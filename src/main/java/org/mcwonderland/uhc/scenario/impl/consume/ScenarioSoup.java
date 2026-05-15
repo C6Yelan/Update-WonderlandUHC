@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -31,7 +32,7 @@ public class ScenarioSoup extends ConfigBasedScenario implements Listener {
         ItemStack itemInHand = e.getItem();
 
         if (needRegen(player) && isSoup(itemInHand))
-            soupRegen(player, itemInHand);
+            soupRegen(player, e.getHand(), itemInHand);
     }
 
     private boolean needRegen(Player player) {
@@ -42,8 +43,11 @@ public class ScenarioSoup extends ConfigBasedScenario implements Listener {
         return itemInHand != null && itemInHand.getType() == LegacyFoundationAdapter.materialOf("MUSHROOM_STEW");
     }
 
-    private void soupRegen(Player player, ItemStack soupItem) {
-        soupItem.setType(LegacyFoundationAdapter.materialOf("BOWL"));
+    private void soupRegen(Player player, EquipmentSlot hand, ItemStack soupItem) {
+        if (hand == null)
+            return;
+
+        player.getInventory().setItem(hand, soupItem.withType(LegacyFoundationAdapter.materialOf("BOWL")));
         player.setHealth(LegacyFoundationAdapter.range(player.getHealth() + soupRegenHealth, 0, LegacyFoundationAdapter.getMaxHealth(player)));
     }
 

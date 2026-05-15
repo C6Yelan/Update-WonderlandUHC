@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.util;
 
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
@@ -57,7 +58,7 @@ public class Extra {
     public static void createHead() {
         ItemStack goldenHead = LegacyFoundationAdapter.itemOf("GOLDEN_APPLE");
         ItemMeta gMeta = goldenHead.getItemMeta();
-        gMeta.setDisplayName(Settings.Misc.GOLDEN_HEAD_NAME);
+        gMeta.displayName(LegacyComponentSerializer.legacySection().deserialize(Settings.Misc.GOLDEN_HEAD_NAME));
         goldenHead.setItemMeta(gMeta);
 
         ShapedRecipe goldenHeadRecipe = new ShapedRecipe(new NamespacedKey(WonderlandUHC.getInstance(), "golden_head"), goldenHead);
@@ -85,7 +86,7 @@ public class Extra {
     }
 
     public static void potion(Player p, PotionEffectType type, int duration, int amplifier, boolean displayEffect) {
-        p.addPotionEffect(new PotionEffect(type, duration, amplifier), !displayEffect);
+        p.addPotionEffect(new PotionEffect(type, duration, amplifier));
     }
 
     public static void clearInventory(Player player) {

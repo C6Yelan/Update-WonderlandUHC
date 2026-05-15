@@ -1,5 +1,7 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.PotionApplier;
@@ -9,6 +11,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -35,10 +38,11 @@ public class GoldenHeadListener implements Listener {
     }
 
     private String getItemName(ItemStack item) {
-        try {
-            return item.getItemMeta().getDisplayName();
-        } catch (Exception e) {
+        if (item == null || item.getItemMeta() == null)
             return "";
-        }
+
+        ItemMeta meta = item.getItemMeta();
+        Component displayName = meta.displayName();
+        return displayName == null ? "" : LegacyComponentSerializer.legacySection().serialize(displayName);
     }
 }

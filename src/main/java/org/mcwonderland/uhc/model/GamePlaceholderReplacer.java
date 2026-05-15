@@ -1,5 +1,7 @@
 package org.mcwonderland.uhc.model;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.game.Game;
@@ -132,12 +134,17 @@ public class GamePlaceholderReplacer extends SimpleReplacer {
 
     private String formatItemStack(ItemStack itemStack) {
         ItemMeta meta = itemStack.getItemMeta();
-        String name = meta.getDisplayName();
+        String name = getDisplayName(meta);
         Material type = itemStack.getType();
 
         String finalName = (name == null || name.isEmpty()) ? LegacyFoundationAdapter.bountifyCapitalized(type) : name;
 
         return finalName + " x" + itemStack.getAmount();
+    }
+
+    private String getDisplayName(ItemMeta meta) {
+        Component displayName = meta.displayName();
+        return displayName == null ? "" : LegacyComponentSerializer.legacySection().serialize(displayName);
     }
 
 

@@ -2,6 +2,9 @@ package org.mcwonderland.uhc.scoreboard;
 
 import com.google.common.collect.Sets;
 import lombok.Getter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -23,6 +26,7 @@ import org.mcwonderland.uhc.settings.Settings;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.UUID;
 
 @Getter
@@ -60,7 +64,7 @@ public final class SimpleScores {
     }
 
     public static Collection<SimpleScores> getAllScores() {
-        return Sets.newHashSet(allScores.values());
+        return new HashSet<>(allScores.values());
     }
 
     public static void removeScores(Player player) {
@@ -121,9 +125,10 @@ public final class SimpleScores {
             Team t = getOrRegisterTeam(u);
 
             String prefix = StringUtils.left(u.getPrefix(), 15);
+            Component prefixComponent = toComponent(prefix);
 
-            if (!t.getPrefix().equals(prefix)) {
-                t.setPrefix(prefix);
+            if (!prefixComponent.equals(t.prefix())) {
+                t.prefix(prefixComponent);
                 fixNameColors(t, u);
             }
 
@@ -139,7 +144,7 @@ public final class SimpleScores {
 
     @NotNull
     private HashSet<UHCTeam> getTeams() {
-        return Sets.newHashSet(UHCTeam.getTeams());
+        return new HashSet<>(UHCTeam.getTeams());
     }
 
     private synchronized Team getOrRegisterTeam(UHCTeam u) {
@@ -153,8 +158,9 @@ public final class SimpleScores {
     }
 
     private synchronized void fixNameColors(Team t, UHCTeam u) {
-        if (LegacyFoundationAdapter.isAtLeastMinecraft1_13() && t.getColor() != u.getColor())
-            t.setColor(u.getColor());
+        NamedTextColor color = toNamedTextColor(u);
+        if (color != null && !color.equals(t.color()))
+            t.color(color);
     }
 
     public synchronized void updateHeals() {
@@ -166,9 +172,9 @@ public final class SimpleScores {
         Objective nameHeal = scoreboard.getObjective("namehealth");
 
         if (nameHeal == null && Settings.Misc.USE_BELOW_NAME_HEALTH) {
-            nameHeal = scoreboard.registerNewObjective("namehealth", Criteria.HEALTH, "namehealth");
+            nameHeal = scoreboard.registerNewObjective("namehealth", Criteria.HEALTH, toComponent("namehealth"));
             nameHeal.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            nameHeal.setDisplayName(Game.getSettings().getScoreboardSettings().getHeartColor() + "§l❤");
+            nameHeal.displayName(toComponent(Game.getSettings().getScoreboardSettings().getHeartColor() + "§l❤"));
         }
     }
 
@@ -178,7 +184,7 @@ public final class SimpleScores {
 
         if (healthType != TabHealthType.NONE) {
             if (tabHeal == null) {
-                tabHeal = scoreboard.registerNewObjective("tabhealth", criteriaOf(healthType), "tabhealth");
+                tabHeal = scoreboard.registerNewObjective("tabhealth", criteriaOf(healthType), toComponent("tabhealth"));
                 tabHeal.setDisplaySlot(DisplaySlot.PLAYER_LIST);
             }
 
@@ -200,5 +206,13 @@ public final class SimpleScores {
 
         sidebar.setTitle(Game.getSettings().getTitle());
         sidebar.setSlotsFromList(linesGetter.getBoardLines(player));
+    }
+
+    private Component toComponent(String text) {
+        return LegacyComponentSerializer.legacySection().deserialize(text);
+    }
+
+    private NamedTextColor toNamedTextColor(UHCTeam team) {
+        return NamedTextColor.NAMES.value(team.getColor().name().toLowerCase(Locale.ROOT));
     }
 }

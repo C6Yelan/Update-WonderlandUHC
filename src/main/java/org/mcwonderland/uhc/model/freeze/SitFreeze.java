@@ -32,11 +32,11 @@ public class SitFreeze implements FreezeMode, Listener {
     public void freeze(Player player) {
         LegacyFoundationAdapter.runLater(5, () -> {
             Pig pig = player.getWorld().spawn(player.getLocation(), Pig.class);
-            pig.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999, 1), false);
-            pig.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 99999, 255), false);
+            pig.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999, 1));
+            pig.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 99999, 255));
             Extra.noAIAndSilent(pig);
             pig.setAdult();
-            pig.setPassenger(player);
+            pig.addPassenger(player);
             sitPlayers.put(player.getUniqueId(), pig);
         });
 

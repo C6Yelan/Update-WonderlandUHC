@@ -42,9 +42,7 @@ public class WorldUtils {
         for (int i = 0; i < drops.size(); i++) {
             ItemStack original = drops.get(i);
             if (original.getType() == from) {
-                ItemStack newOne = original.clone();
-                newOne.setType(to);
-                drops.set(i, newOne);
+                drops.set(i, original.withType(to));
             }
         }
     }

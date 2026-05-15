@@ -22,6 +22,6 @@ public class RoleSpectatorEvents implements RoleEventHandler {
 
     @Override
     public void onQuit(PlayerQuitEvent e) {
-        e.setQuitMessage(null);
+        e.quitMessage(null);
     }
 }

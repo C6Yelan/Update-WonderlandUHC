@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.api.event.team.TeamCreatedEvent;
 import org.mcwonderland.uhc.api.event.team.TeamDisbandedEvent;
 import org.mcwonderland.uhc.api.event.team.TeamJoinedEvent;
@@ -118,7 +119,7 @@ public class UHCTeam {
     private void createBackpack() {
         Integer size = 27;//(( ScenarioBackPack ) Scenarios.BACKPACK.getData()).getSize();
         String name = LegacyFoundationAdapter.colorize(this.name);
-        backpack = Bukkit.createInventory(null, size, name);
+        backpack = Bukkit.createInventory(null, size, LegacyComponentSerializer.legacySection().deserialize(name));
     }
 
     public boolean containMember(UHCPlayer uhcPlayer) {

@@ -1,11 +1,17 @@
 package org.mcwonderland.uhc.menu;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.mineacademy.fo.menu.button.ButtonReturnBack;
 import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
 import org.mineacademy.fo.settings.YamlConfig;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ButtonLocalization extends YamlConfig {
 
@@ -22,10 +28,11 @@ public class ButtonLocalization extends YamlConfig {
 
     private void setupReturnBackButton() {
         ItemStack item = getItem("Leave");
+        ItemMeta meta = item.getItemMeta();
 
         ButtonReturnBack.setMaterial(CompMaterial.fromMaterial(item.getType()));
-        ButtonReturnBack.setTitle(item.getItemMeta().getDisplayName());
-        ButtonReturnBack.setLore(item.getItemMeta().getLore());
+        ButtonReturnBack.setTitle(getDisplayName(meta));
+        ButtonReturnBack.setLore(getLore(meta));
     }
 
     private void setupPageToggleButtons() {
@@ -43,5 +50,25 @@ public class ButtonLocalization extends YamlConfig {
                 , getString(path + "Name"),
                 getStringList(path + "Lore")
         ).make();
+    }
+
+    private String getDisplayName(ItemMeta meta) {
+        if (meta == null || meta.displayName() == null)
+            return "";
+
+        return LegacyComponentSerializer.legacySection().serialize(meta.displayName());
+    }
+
+    private List<String> getLore(ItemMeta meta) {
+        if (meta == null || meta.lore() == null)
+            return null;
+
+        return meta.lore().stream()
+                .map(this::toLegacyString)
+                .collect(Collectors.toList());
+    }
+
+    private String toLegacyString(Component component) {
+        return LegacyComponentSerializer.legacySection().serialize(component);
     }
 }

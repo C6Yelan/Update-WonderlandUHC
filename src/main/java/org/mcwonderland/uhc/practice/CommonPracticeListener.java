@@ -1,5 +1,7 @@
 package org.mcwonderland.uhc.practice;
 
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,7 +38,7 @@ public class CommonPracticeListener implements Listener {
             respawnAndRestuff(player);
 
             if (killer != null)
-                killer.setHealth(killer.getMaxHealth());
+                killer.setHealth(getMaxHealth(killer));
         }
     }
 
@@ -51,10 +53,15 @@ public class CommonPracticeListener implements Listener {
                 if (!player.isOnline() || !practice.isInPractice(player) || player.isDead())
                     return;
 
-                player.setHealth(player.getMaxHealth());
+                player.setHealth(getMaxHealth(player));
                 practice.stuff(player);
             });
         });
+    }
+
+    private double getMaxHealth(Player player) {
+        AttributeInstance maxHealth = player.getAttribute(Attribute.MAX_HEALTH);
+        return maxHealth == null ? 20.0 : maxHealth.getValue();
     }
 
     @EventHandler

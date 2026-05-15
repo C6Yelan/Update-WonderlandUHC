@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
 import lombok.val;
+import net.kyori.adventure.text.Component;
 import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
@@ -51,7 +52,7 @@ public class InteractListener implements Listener {
 
                     if (uhcPlayer.getRoleName() == RoleName.STAFF) {
                         Chest chest = ( Chest ) clickedBlock.getState();
-                        Inventory inv = Bukkit.createInventory(null, chest.getInventory().getSize(), "Chest");
+                        Inventory inv = Bukkit.createInventory(null, chest.getInventory().getSize(), Component.text("Chest"));
                         inv.setContents(chest.getInventory().getContents());
                         player.openInventory(inv);
                     }

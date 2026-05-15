@@ -3,6 +3,8 @@ package org.mcwonderland.uhc.scenario.impl;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioDisabledEvent;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioEnabledEvent;
@@ -80,11 +82,11 @@ public abstract class AbstractScenario implements Scenario {
 
     @Override
     public String getFancyName() {
-        try {
-            return icon.getItemMeta().getDisplayName();
-        } catch (NullPointerException ex) {
+        if (icon == null || icon.getItemMeta() == null)
             return name;
-        }
+
+        Component displayName = icon.getItemMeta().displayName();
+        return displayName == null ? name : LegacyComponentSerializer.legacySection().serialize(displayName);
     }
 
     protected void onReload() {

@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.menu.model;
 
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.settings.Messages;
@@ -90,7 +91,7 @@ public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
 
         private void changeGoldenAppleToGoldenHead() {
             ItemMeta meta = PlayerHand.getMainHandItem(player).getItemMeta();
-            meta.setDisplayName(Settings.Misc.GOLDEN_HEAD_NAME);
+            meta.displayName(LegacyComponentSerializer.legacySection().deserialize(Settings.Misc.GOLDEN_HEAD_NAME));
             PlayerHand.getMainHandItem(player).setItemMeta(meta);
             Extra.sound(player, Sounds.Host.GOLDEN_HEAD_CREATED);
         }

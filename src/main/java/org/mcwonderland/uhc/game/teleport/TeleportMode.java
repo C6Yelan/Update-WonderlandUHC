@@ -14,7 +14,7 @@ import java.util.Queue;
 
 public abstract class TeleportMode {
 
-    @Getter(AccessLevel.MODULE)
+    @Getter(AccessLevel.PACKAGE)
     private final Queue<Location> points = new LinkedList<>();
 
     public abstract void preGenerateTeleportLocation(int border);

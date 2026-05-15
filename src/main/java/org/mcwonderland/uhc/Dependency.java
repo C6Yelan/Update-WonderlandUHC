@@ -31,7 +31,7 @@ public enum Dependency {
     public String getVersion() {
         Plugin plugin = Bukkit.getPluginManager().getPlugin(pluginName);
 
-        return plugin == null ? "" : plugin.getDescription().getVersion();
+        return plugin == null ? "" : plugin.getPluginMeta().getVersion();
     }
 
     private void checkExist(String falseMsg) {

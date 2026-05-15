@@ -54,7 +54,7 @@ public class PlayingDeathListener implements Listener {
     @EventHandler
     public void removeDeathMessages(PlayerDeathEvent e) {
         if (Settings.Misc.USE_PLUGIN_DEATH_MESSAGE)
-            e.setDeathMessage(null);
+            e.deathMessage(null);
     }
 
     @EventHandler

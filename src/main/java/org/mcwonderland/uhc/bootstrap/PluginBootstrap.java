@@ -172,7 +172,7 @@ public final class PluginBootstrap {
                 " \\/  \\/ \\___/|_| |_|\\__,_|\\___|_|  |_|\\__,_|_| |_|\\__,_|  \\___/\\_| |_/\\____/",
                 "                                                  ",
                 "&3Author: &fLU__LU",
-                "&3Version: &f" + plugin.getDescription().getVersion(),
+                "&3Version: &f" + plugin.getPluginMeta().getVersion(),
                 "",
                 "&3Enjoy your own UHC time!",
                 LegacyFoundationAdapter.consoleLineSmooth());

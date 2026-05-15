@@ -1,5 +1,7 @@
 package org.mcwonderland.uhc.game.player.role.player;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.game.CombatRelog;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
@@ -62,10 +64,14 @@ public class RolePlayerEvents implements RoleEventHandler {
 
             CombatRelog.setCombatRelog(uhcPlayer);
 
-            e.setQuitMessage(Messages.Game.PLAYER_DISCONNECT
+            e.quitMessage(toComponent(Messages.Game.PLAYER_DISCONNECT
                     .replace("{player}", uhcPlayer.getTeam().getChatFormat() + uhcPlayer.getName())
-                    .replace("{time}", relogInMinutes + ""));
+                    .replace("{time}", relogInMinutes + "")));
         }
+    }
+
+    private Component toComponent(String message) {
+        return LegacyComponentSerializer.legacySection().deserialize(message);
     }
 
     private boolean isNoRelog() {
