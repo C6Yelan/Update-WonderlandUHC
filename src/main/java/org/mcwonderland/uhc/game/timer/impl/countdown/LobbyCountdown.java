@@ -10,14 +10,13 @@ import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.*;
 import org.bukkit.Difficulty;
 import org.bukkit.entity.Player;
-import org.mcwonderland.uhc.util.*;
 
 public class LobbyCountdown extends Countdown {
 
     @Override
     public void execute() {
         Game game = Game.getGame();
-        UHCGameSettings settings = game.getSettings();
+        UHCGameSettings settings = Game.getSettings();
 
         BorderUtil.setInitialBorders();
         game.setCurrentBorder(settings.getBorderSettings().getInitialBorder());

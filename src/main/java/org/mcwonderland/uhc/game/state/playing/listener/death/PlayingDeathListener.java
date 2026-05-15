@@ -9,7 +9,6 @@ import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;

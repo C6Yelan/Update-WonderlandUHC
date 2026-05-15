@@ -34,7 +34,7 @@ public class PortalListener implements Listener {
         }
 
         if (getToLocation(e).getWorld() == UHCWorldUtils.getNether()) {
-            if (!game.getSettings().isUsingNether()) {
+            if (!Game.getSettings().isUsingNether()) {
                 cancelJoin(e, p, Messages.Game.NO_NETHER);
                 return;
             }

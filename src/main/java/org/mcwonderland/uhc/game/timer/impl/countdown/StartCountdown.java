@@ -24,7 +24,7 @@ public class StartCountdown extends Countdown {
     @Override
     public void execute() {
         Game game = Game.getGame();
-        UHCGameSettings settings = game.getSettings();
+        UHCGameSettings settings = Game.getSettings();
         game.setAllPlayers(UHCPlayers.countOf(uhcPlayer -> uhcPlayer.getRoleName() == RoleName.PLAYER));
         game.nextState();
         setupWorlds();

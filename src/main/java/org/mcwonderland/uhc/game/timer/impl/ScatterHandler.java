@@ -18,7 +18,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class ScatterHandler implements Timer {
-    private int cacheTP = 0;
     private Iterator<UHCTeam> teleportingTeams;
     private Map<UHCTeam, Location> teleportedTeams = new HashMap<>();
 
@@ -37,7 +36,6 @@ public class ScatterHandler implements Timer {
 
     public void start() {
         teleportingTeams = UHCTeam.getTeams().iterator();
-        cacheTP = UHCTeam.getTeams().size();
     }
 
     public void scatter(UHCTeam team) {

@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
-import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
@@ -19,6 +18,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.LeavesDecayEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BlockListener implements Listener {
@@ -51,7 +51,7 @@ public class BlockListener implements Listener {
     @EventHandler
     public void leaveDecay(LeavesDecayEvent e) {
         Block block = e.getBlock();
-        List<ItemStack> drops = Lists.newArrayList(block.getDrops());
+        List<ItemStack> drops = new ArrayList<>(block.getDrops());
 
         appleDrops(block, drops);
     }

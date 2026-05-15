@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.game.player;
 
-import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -43,7 +42,7 @@ public class UHCPlayer {
     private Role role;
 
     public static Set<UHCPlayer> getAllPlayers() {
-        return Sets.newHashSet(allPlayers);
+        return new HashSet<>(allPlayers);
     }
 
     public static UHCPlayer getUHCPlayer(Player player) {

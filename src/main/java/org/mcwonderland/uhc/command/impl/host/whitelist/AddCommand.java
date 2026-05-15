@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.command.impl.host.whitelist;
 
-import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.util.Chat;
 

@@ -8,8 +8,11 @@ import org.mcwonderland.uhc.tools.lobby.LeaveItem;
 import org.mcwonderland.uhc.tools.lobby.SettingsBook;
 import org.mcwonderland.uhc.tools.lobby.TeamSettingsItem;
 import org.mcwonderland.uhc.tools.lobby.TeamsItem;
-import org.mcwonderland.uhc.tools.spectator.*;
-import org.mcwonderland.uhc.tools.spectator.*;
+import org.mcwonderland.uhc.tools.spectator.NetherPlayersItem;
+import org.mcwonderland.uhc.tools.spectator.OverworldPlayersItem;
+import org.mcwonderland.uhc.tools.spectator.RandomTeleportItem;
+import org.mcwonderland.uhc.tools.spectator.TeleportZeroZeroItem;
+import org.mcwonderland.uhc.tools.spectator.ToggleGameModeItem;
 import org.mcwonderland.uhc.tools.staff.StaffOptionsItem;
 import org.bukkit.entity.Player;
 

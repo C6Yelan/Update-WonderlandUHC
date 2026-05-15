@@ -18,13 +18,11 @@ import java.util.List;
 
 public class SidebarThemeSettingsMenu extends ConfigMenuPagged<SidebarTheme> {
 
-    private final Player player;
     private final UHCPlayer uhcPlayer;
 
     public SidebarThemeSettingsMenu(Menu parent, Player player) {
         super(parent, UHCMenuSection.of("Sidebar_Theme_Selector"), SidebarTheme.getAllThemes());
 
-        this.player = player;
         this.uhcPlayer = UHCPlayer.getUHCPlayer(player);
     }
 

@@ -14,8 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.menu.model.ItemCreator;
 import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Collection;
@@ -111,12 +109,6 @@ public class SimplePractice extends AbstractPractice {
     private void randomTp(Player player) {
         Location location = Teleporter.getRandomTp(world, Settings.Practice.WORLD_SIZE);
         player.teleport(location);
-    }
-
-    private ItemStack unBreakItem(ItemStack item) {
-        return ItemCreator.of(item)
-                .unbreakable(true)
-                .make();
     }
 
 }

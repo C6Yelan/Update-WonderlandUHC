@@ -1,7 +1,5 @@
 package org.mcwonderland.uhc.game.border;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameTimerRunnable;
@@ -19,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class TimerBorder implements Border {
     public boolean TELEPORTING = false;
@@ -81,7 +80,7 @@ public class TimerBorder implements Border {
 
             if (hasNextBorder()) {
                 Integer after = GameTimerRunnable.totalSecond + Settings.Border.BORDER_TIMER_AFTER_FIRST_SHRINK;
-                game.getSettings().getTimer().setBorderShrinkTime(after);
+                Game.getSettings().getTimer().setBorderShrinkTime(after);
             }
         });
     }
@@ -172,10 +171,10 @@ public class TimerBorder implements Border {
     }
 
     private Queue<UHCTeam> getQueue() {
-        ArrayList<UHCTeam> teams = Lists.newArrayList(UHCTeam.getAliveTeams());
+        ArrayList<UHCTeam> teams = new ArrayList<>(UHCTeam.getAliveTeams());
         Collections.shuffle(teams);
 
-        return Queues.newLinkedBlockingQueue(teams);
+        return new LinkedBlockingQueue<>(teams);
     }
 
     private boolean hasMemberOutOfTheBorder(UHCTeam team) {

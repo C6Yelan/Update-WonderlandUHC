@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.scoreboard;
 
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;

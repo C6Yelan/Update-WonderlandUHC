@@ -96,7 +96,7 @@ public class UniqueQueue<T> implements Queue<T> {
     }
 
     @Override
-    public <T> T[] toArray(T[] arg0) {
+    public <E> E[] toArray(E[] arg0) {
         return queue.toArray(arg0);
     }
 

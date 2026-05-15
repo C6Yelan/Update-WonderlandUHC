@@ -1,20 +1,20 @@
 package org.mcwonderland.uhc.game.state.share.login;
 
-import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.game.state.share.login.checker.LoginChecker;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class LoginListener implements Listener {
 
-    private UHCLoginEvent event;
     private List<LoginChecker> checkers;
 
     public LoginListener(LoginChecker... checkers) {
-        this.checkers = Lists.newArrayList(checkers);
+        this.checkers = new ArrayList<>(Arrays.asList(checkers));
     }
 
     @EventHandler

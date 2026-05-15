@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.game;
 
-import com.google.common.collect.Sets;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -51,7 +50,7 @@ public class UHCTeam {
     private Inventory backpack;
 
     public static Set<UHCTeam> getTeams() {
-        return Sets.newHashSet(teams);
+        return new HashSet<>(teams);
     }
 
     public static UHCTeam createTeamIfNotExist(UHCPlayer uhcPlayer) {

@@ -1,8 +1,13 @@
 package org.mcwonderland.uhc.scoreboard;
 
 import lombok.Getter;
-import org.mcwonderland.uhc.scoreboard.line.*;
-import org.mcwonderland.uhc.scoreboard.line.*;
+import org.mcwonderland.uhc.scoreboard.line.GameLines;
+import org.mcwonderland.uhc.scoreboard.line.LobbyLines;
+import org.mcwonderland.uhc.scoreboard.line.SoloLines;
+import org.mcwonderland.uhc.scoreboard.line.StaffLines;
+import org.mcwonderland.uhc.scoreboard.line.StartingLines;
+import org.mcwonderland.uhc.scoreboard.line.TeamsLines;
+import org.mcwonderland.uhc.scoreboard.line.UHCLines;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mineacademy.fo.settings.YamlConfig;
 

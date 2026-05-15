@@ -17,11 +17,9 @@ import java.util.Set;
 
 public class GameSettingsScenarioListener implements Listener {
 
-    private WonderlandUHC plugin;
     private ScenarioManager scenarioManager;
 
     public GameSettingsScenarioListener(WonderlandUHC plugin) {
-        this.plugin = plugin;
         this.scenarioManager = plugin.getScenarioManager();
     }
 

@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.game;
 
-import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -55,7 +55,7 @@ public class CombatRelog {
     }
 
     public static List<CombatRelog> getRelogs() {
-        return Lists.newArrayList(relogPlayer.values());
+        return new ArrayList<>(relogPlayer.values());
     }
 
     public static boolean isRelogEntity(Entity entity) {

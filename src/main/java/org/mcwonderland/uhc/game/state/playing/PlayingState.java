@@ -6,7 +6,6 @@ import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.state.SimpleGameState;
 import org.mcwonderland.uhc.game.state.playing.listener.*;
-import org.mcwonderland.uhc.game.state.playing.listener.*;
 import org.mcwonderland.uhc.game.state.playing.listener.death.PlayingDeathListener;
 import org.mcwonderland.uhc.game.timer.Timer;
 import org.mcwonderland.uhc.game.timer.Timers;

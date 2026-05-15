@@ -1,10 +1,11 @@
 package org.mcwonderland.uhc.game.state.share.join;
 
-import com.google.common.collect.Lists;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class JoinListener implements Listener {
@@ -12,7 +13,7 @@ public class JoinListener implements Listener {
     private List<JoinBehavior> joinBehaviors;
 
     public JoinListener(JoinBehavior... joinBehaviors) {
-        this.joinBehaviors = Lists.newArrayList(joinBehaviors);
+        this.joinBehaviors = new ArrayList<>(Arrays.asList(joinBehaviors));
     }
 
     @EventHandler

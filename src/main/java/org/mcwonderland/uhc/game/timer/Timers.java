@@ -1,12 +1,10 @@
 package org.mcwonderland.uhc.game.timer;
 
-import com.google.common.collect.Sets;
 import lombok.experimental.UtilityClass;
 import org.mcwonderland.uhc.game.GameTimerRunnable;
 import org.mcwonderland.uhc.game.timer.impl.BorderSizeUpdater;
 import org.mcwonderland.uhc.game.timer.impl.RelogExpireChecker;
 import org.mcwonderland.uhc.game.timer.impl.ScatterHandler;
-import org.mcwonderland.uhc.game.timer.impl.countdown.*;
 import org.mcwonderland.uhc.game.timer.impl.countdown.*;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
@@ -32,7 +30,7 @@ public class Timers {
     public Timer BORDER_SIZE_UPDATER = new BorderSizeUpdater();
 
     public Set<Countdown> getGameCountdowns() {
-        return Sets.newHashSet(gameTimers);
+        return new HashSet<>(gameTimers);
     }
 
     public int getSecondsUntilEnable(Countdown countdown) {

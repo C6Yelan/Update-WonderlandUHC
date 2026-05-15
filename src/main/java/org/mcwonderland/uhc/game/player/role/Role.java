@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.game.player.role.models.*;
-import org.mcwonderland.uhc.game.player.role.models.*;
 import org.bukkit.entity.Player;
 
 public abstract class Role {

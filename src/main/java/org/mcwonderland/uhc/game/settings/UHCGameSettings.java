@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import org.mcwonderland.uhc.game.settings.sub.*;
-import org.mcwonderland.uhc.game.settings.sub.*;
 import org.mineacademy.fo.collection.SerializedMap;
 import org.mineacademy.fo.model.ConfigSerializable;
 
@@ -80,9 +79,9 @@ public class UHCGameSettings implements ConfigSerializable, Cloneable, org.mcwon
     @SneakyThrows
     public static <E> E getOrDefault(SerializedMap map, String key, Class<E> clazz) {
         Method method = clazz.getDeclaredMethod("deserialize", SerializedMap.class);
-        Object defaultValueOfObj = method.invoke(null, new SerializedMap());
+        E defaultValueOfObj = clazz.cast(method.invoke(null, new SerializedMap()));
 
-        return map.get(key, clazz, ( E ) defaultValueOfObj);
+        return map.get(key, clazz, defaultValueOfObj);
     }
 
     public static UHCGameSettings defaultSettings() {

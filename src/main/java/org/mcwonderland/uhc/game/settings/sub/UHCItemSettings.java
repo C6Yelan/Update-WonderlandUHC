@@ -39,8 +39,4 @@ public class UHCItemSettings implements ConfigSerializable {
 
         return uhcItemSettings;
     }
-
-    private static ItemStack[] getItemArray(SerializedMap map, String path) {
-        return map.getList(path, ItemStack.class).toArray(new ItemStack[0]);
-    }
 }

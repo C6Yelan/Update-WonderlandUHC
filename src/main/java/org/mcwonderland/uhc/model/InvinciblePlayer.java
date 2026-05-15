@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.model;
 
-import com.google.common.collect.Maps;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
@@ -79,7 +78,7 @@ public class InvinciblePlayer {
     private static class InvinciblePlayerTask extends BukkitRunnable {
 
         public void run() {
-            Maps.newHashMap(invinciblePlayers).forEach((uhcPlayer, invinciblePlayer) -> {
+            new HashMap<>(invinciblePlayers).forEach((uhcPlayer, invinciblePlayer) -> {
                 invinciblePlayer.time--;
 
                 if (invinciblePlayer.time <= 0)

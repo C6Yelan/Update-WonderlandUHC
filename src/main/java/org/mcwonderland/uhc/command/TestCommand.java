@@ -1,12 +1,10 @@
 package org.mcwonderland.uhc.command;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
-import org.mcwonderland.uhc.practice.SimplePractice;
 import org.mcwonderland.uhc.tools.spectator.OverworldPlayersItem;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.Bukkit;
@@ -68,9 +66,6 @@ public class TestCommand extends SimpleCommand {
             }
         } else if ("state".equalsIgnoreCase(param)) {
             System.out.println(Game.getGame().getCurrentStateName());
-        } else if ("clean".equalsIgnoreCase(param)) {
-            SimplePractice simplePractice = ( SimplePractice ) WonderlandUHC.getInstance().getPractice();
-//            simplePractice.cleanWorld();
         }
 
         tell(

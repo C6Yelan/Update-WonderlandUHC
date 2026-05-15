@@ -19,7 +19,6 @@ import org.mcwonderland.uhc.util.*;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.mcwonderland.uhc.util.*;
 import org.mineacademy.fo.command.SimpleCommand;
 
 import java.util.List;

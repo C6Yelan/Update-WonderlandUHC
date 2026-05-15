@@ -22,7 +22,7 @@ public class DefaultJoinMessage implements JoinBehavior {
                     Messages.Lobby.WELCOME_MSG,
                     "{player}", player.getName(),
                     "{host}", game.getHost(),
-                    "{title}", game.getSettings().getTitle()));
+                    "{title}", Game.getSettings().getTitle()));
 
             Chat.broadcast(Messages.Lobby.PLAYER_JOIN_MSG
                     .replace("{player}", player.getName())

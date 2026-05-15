@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.scenario.impl.death;
 
-import com.google.common.collect.Sets;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
@@ -219,7 +218,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
 
         @Override
         public void run() {
-            Set<TimeBombChest> timeBombs = Sets.newHashSet(ScenarioTimeBomb.timeBombs);
+            Set<TimeBombChest> timeBombs = new HashSet<>(ScenarioTimeBomb.timeBombs);
             timeBombs.forEach(this::tick);
         }
 
