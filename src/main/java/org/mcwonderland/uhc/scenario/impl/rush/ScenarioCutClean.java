@@ -73,6 +73,8 @@ public class ScenarioCutClean extends ConfigBasedScenario implements Listener {
             case RABBIT:
                 WorldUtils.replaceDrop(drops, Material.RABBIT, Material.COOKED_RABBIT);
                 break;
+            default:
+                break;
         }
     }
 }

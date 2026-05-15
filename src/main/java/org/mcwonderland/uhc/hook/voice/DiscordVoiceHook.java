@@ -4,6 +4,7 @@ import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Category;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Guild;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.GuildVoiceState;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Member;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.VoiceChannel;
 import lombok.Getter;
@@ -98,7 +99,8 @@ public class DiscordVoiceHook {
             return;
         }
 
-        if (!member.getVoiceState().inVoiceChannel()) {
+        GuildVoiceState voiceState = member.getVoiceState();
+        if (voiceState == null || !voiceState.inVoiceChannel()) {
             Chat.send(player, Messages.DiscordVoice.NOT_IN_VOICE);
             return;
         }

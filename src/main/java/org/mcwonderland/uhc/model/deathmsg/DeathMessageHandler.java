@@ -15,7 +15,6 @@ public class DeathMessageHandler {
     private static DeathMessageHandler instance;
 
     private DeathMessageLoader messageLoader = new DeathMessageLoader();
-    private DeathMessageFormatter formater = new DeathMessageFormatter();
 
     private UHCPlayer uhcPlayer;
     private EntityDamageEvent damageEvent;

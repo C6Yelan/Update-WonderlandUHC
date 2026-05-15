@@ -26,6 +26,8 @@ public class ScenarioVanillaPlus extends ConfigBasedScenario implements Listener
                 removeOriginalChance(e);
                 replaceDropChance(e, 20, Material.GRAVEL, Material.FLINT);
                 break;
+            default:
+                break;
         }
     }
 

@@ -67,6 +67,8 @@ public class SavedSettingsMenu extends ConfigMenuPagged<UHCGameSettings> {
                 deleteSavedSettings(player, settings);
                 refreshMenu(player);
                 break;
+            default:
+                break;
         }
     }
 
