@@ -1,5 +1,7 @@
 package org.mcwonderland.uhc.platform.text;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
 
 import java.text.DecimalFormat;
@@ -11,6 +13,8 @@ import java.util.regex.Pattern;
 public final class PluginText {
     private static final String DELIMITER = "\n";
     private static final char LEGACY_COLOR_CHAR = '\u00A7';
+    private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
+    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
     private static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("(?i)" + LEGACY_COLOR_CHAR + "[0-9A-FK-ORX]");
     private static final DecimalFormat FIVE_DIGITS = new DecimalFormat("#.#####");
 
@@ -38,6 +42,22 @@ public final class PluginText {
             return null;
 
         return LEGACY_COLOR_PATTERN.matcher(colorize(message)).replaceAll("");
+    }
+
+    public static Component toComponent(String message) {
+        return LEGACY_SECTION.deserialize(colorize(message));
+    }
+
+    public static Component toNullableComponent(String message) {
+        return message == null ? null : toComponent(message);
+    }
+
+    public static String toLegacyString(Component component) {
+        return LEGACY_SECTION.serialize(component);
+    }
+
+    public static String toLegacyAmpersandString(Component component) {
+        return LEGACY_AMPERSAND.serialize(component);
     }
 
     public static String[] replaceToArray(String message, Object... replacements) {
