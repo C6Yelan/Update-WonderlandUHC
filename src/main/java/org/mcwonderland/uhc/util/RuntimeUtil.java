@@ -1,9 +1,7 @@
 package org.mcwonderland.uhc.util;
 
 import org.bukkit.Bukkit;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 
@@ -11,21 +9,8 @@ public class RuntimeUtil {
 
     private static final DecimalFormat format = new DecimalFormat("00.00");
     private static final double DEFAULT_TPS = 20D;
-    private static Class<?> clazz = null;
-    private static Object si = null;
-    private static Field tpsField = null;
     private static final Runtime rt = Runtime.getRuntime();
     private static final int fillMemoryTolerance = 500;
-
-    static {
-        try {
-            clazz = Class.forName("net.minecraft.server." + LegacyFoundationAdapter.getServerVersion() + "." + "MinecraftServer");
-            si = clazz.getMethod("getServer").invoke(null);
-            tpsField = si.getClass().getField("recentTps");
-        } catch (Exception e) {
-            tpsField = null;
-        }
-    }
 
     public static double getTPS(int time) {
         double paperTps = getPaperApiTPS(time);
@@ -36,15 +21,7 @@ public class RuntimeUtil {
         if (reflectedPaperTps > 0D)
             return reflectedPaperTps;
 
-        if (tpsField == null || si == null)
-            return DEFAULT_TPS;
-
-        try {
-            double[] tps = (double[]) tpsField.get(si);
-            return getTPSAt(tps, time);
-        } catch (Exception e) {
-            return DEFAULT_TPS;
-        }
+        return DEFAULT_TPS;
     }
 
     public static DecimalFormat getTPSFormat() {

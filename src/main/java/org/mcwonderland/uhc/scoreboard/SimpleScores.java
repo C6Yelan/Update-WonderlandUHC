@@ -18,9 +18,9 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
+import org.mcwonderland.uhc.util.PlayerUtils;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -188,7 +188,7 @@ public final class SimpleScores {
             }
 
             for (Player o : LegacyFoundationAdapter.getOnlinePlayers())
-                tabHeal.getScore(o.getName()).setScore(( int ) (o.getHealth() + LegacyDatouNmsAdapter.current().getAbsorptionHearts(o)));
+                tabHeal.getScore(o.getName()).setScore(( int ) (o.getHealth() + PlayerUtils.getAbsorptionHearts(o)));
         }
     }
 

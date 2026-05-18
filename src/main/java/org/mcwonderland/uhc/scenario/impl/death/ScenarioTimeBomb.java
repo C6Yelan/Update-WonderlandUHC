@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
@@ -38,6 +37,7 @@ import java.util.Set;
 @Getter
 public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
     private static final Set<TimeBombChest> timeBombs = new HashSet<>();
+    private static final BlockFace TIME_BOMB_CHEST_FACING = BlockFace.WEST;
 
     @FilePath(name = "Exploded")
     private String explodedMessage;
@@ -119,10 +119,15 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             Location chestSpawnLoc = entity.getLocation().clone().add(0, 1, 0);
             leftSideChest = chestSpawnLoc.getBlock().getRelative(BlockFace.DOWN);
             RightSideChest = leftSideChest.getRelative(BlockFace.NORTH);
-            leftSideChest.setType(Material.CHEST);
-            RightSideChest.setType(Material.CHEST);
-            if (LegacyFoundationAdapter.isAtLeastMinecraft1_13())
-                LegacyDatouNmsAdapter.current().mergeLargeChest(leftSideChest, RightSideChest);
+            placeChestPart(leftSideChest, org.bukkit.block.data.type.Chest.Type.LEFT);
+            placeChestPart(RightSideChest, org.bukkit.block.data.type.Chest.Type.RIGHT);
+        }
+
+        private void placeChestPart(Block block, org.bukkit.block.data.type.Chest.Type type) {
+            org.bukkit.block.data.type.Chest data = ( org.bukkit.block.data.type.Chest ) Material.CHEST.createBlockData();
+            data.setFacing(TIME_BOMB_CHEST_FACING);
+            data.setType(type);
+            block.setBlockData(data, false);
         }
 
         private void clearUpperBlocks() {

@@ -8,7 +8,6 @@ import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.menu.ButtonLocalization;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
@@ -51,10 +50,6 @@ public final class PluginBootstrap {
     public void loadFiles() {
         UHCFiles.getFileNames().forEach(LegacyFoundationAdapter::extractFile);
         LegacyFoundationAdapter.extractFile(UHCFiles.PERMISSIONS, UHCFiles.PERMISSIONS);
-    }
-
-    public void setupNms() {
-        LegacyDatouNmsAdapter.initialize(plugin);
     }
 
     public DependencyReport checkDependencies() {

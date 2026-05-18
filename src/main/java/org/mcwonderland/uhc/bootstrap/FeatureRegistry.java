@@ -37,9 +37,9 @@ import org.mcwonderland.uhc.integration.worldborder.LegacyWorldBorderPregenerati
 import org.mcwonderland.uhc.listener.BooleanEvents;
 import org.mcwonderland.uhc.listener.ChatListener;
 import org.mcwonderland.uhc.listener.DamageListener;
+import org.mcwonderland.uhc.listener.ExperiencePickupListener;
 import org.mcwonderland.uhc.listener.GameSettingsScenarioListener;
 import org.mcwonderland.uhc.listener.InvViewListener;
-import org.mcwonderland.uhc.listener.OldEnchantListener;
 import org.mcwonderland.uhc.listener.StatsListener;
 import org.mcwonderland.uhc.listener.ToolListener;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
@@ -67,9 +67,9 @@ public final class FeatureRegistry {
                 new ChatListener(),
                 new TutorialListener(),
                 new DamageListener(),
+                new ExperiencePickupListener(),
                 new InvViewListener(),
                 new GameSettingsScenarioListener(plugin),
-                new OldEnchantListener(),
                 new StatsListener(),
                 new ToolListener(),
                 new ScoreListener(),

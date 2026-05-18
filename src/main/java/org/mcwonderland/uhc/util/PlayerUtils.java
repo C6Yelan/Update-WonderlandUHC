@@ -1,8 +1,9 @@
 package org.mcwonderland.uhc.util;
 
 import lombok.experimental.UtilityClass;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.platform.PlayerHand;
 import org.bukkit.Material;
@@ -15,6 +16,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.Collection;
 
 /**
  * 2019-12-08 上午 09:16
@@ -51,9 +56,22 @@ public class PlayerUtils {
         double absorption = 0;
 
         if (entity instanceof Player)
-            absorption = LegacyDatouNmsAdapter.current().getAbsorptionHearts(( Player ) entity);
+            absorption = getAbsorptionHearts(( Player ) entity);
 
         return health + absorption;
+    }
+
+    public double getAbsorptionHearts(Player player) {
+        try {
+            return Math.max(0, player.getAbsorptionAmount());
+        } catch (RuntimeException | LinkageError ignored) {
+        }
+
+        PotionEffect effect = player.getPotionEffect(PotionEffectType.ABSORPTION);
+        if (effect == null)
+            return 0;
+
+        return (effect.getAmplifier() + 1) * 4.0;
     }
 
     public void costPlayerToolDurability(Player p) {
@@ -117,7 +135,10 @@ public class PlayerUtils {
     }
 
     private double getArmorPoints(ItemStack itemStack) {
-        return LegacyDatouNmsAdapter.current().getArmorPoints(itemStack);
+        if (itemStack == null)
+            return 0;
+
+        return getBukkitArmorPoints(itemStack);
     }
 
     public boolean isShieldBlocked(EntityDamageEvent e) {
@@ -127,4 +148,51 @@ public class PlayerUtils {
         Player player = ( Player ) e.getEntity();
         return player.isBlocking() && e.getFinalDamage() <= 0;
     }
+
+    private double getBukkitArmorPoints(ItemStack itemStack) {
+        if (itemStack == null)
+            return 0;
+
+        return getBukkitArmorPoints(itemStack.getType()) + getCustomArmorPoints(itemStack);
+    }
+
+    private double getBukkitArmorPoints(Material material) {
+        if (material == null)
+            return 0;
+
+        try {
+            return sumArmorPoints(material.getDefaultAttributeModifiers().get(Attribute.ARMOR));
+        } catch (RuntimeException | LinkageError ignored) {
+            return 0;
+        }
+    }
+
+    private double getCustomArmorPoints(ItemStack itemStack) {
+        try {
+            if (!itemStack.hasItemMeta())
+                return 0;
+
+            ItemMeta itemMeta = itemStack.getItemMeta();
+            if (itemMeta == null || !itemMeta.hasAttributeModifiers())
+                return 0;
+
+            return sumArmorPoints(itemMeta.getAttributeModifiers(Attribute.ARMOR));
+        } catch (RuntimeException | LinkageError ignored) {
+            return 0;
+        }
+    }
+
+    private double sumArmorPoints(Collection<AttributeModifier> modifiers) {
+        if (modifiers == null || modifiers.isEmpty())
+            return 0;
+
+        double points = 0;
+        for (AttributeModifier modifier : modifiers) {
+            if (modifier != null && modifier.getOperation() == AttributeModifier.Operation.ADD_NUMBER)
+                points += modifier.getAmount();
+        }
+
+        return points;
+    }
+
 }

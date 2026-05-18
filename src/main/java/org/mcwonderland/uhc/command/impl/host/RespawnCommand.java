@@ -7,7 +7,6 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
@@ -96,7 +95,7 @@ public class RespawnCommand extends SimpleCommand {
             inv.setContents(target);
             target.setLevel(level);
             target.setExp(exp);
-            LegacyDatouNmsAdapter.current().setCanPickupExp(target, true);
+            target.setExpCooldown(0);
             target.setCollidable(true);
             target.teleport(toTeleport);
         }

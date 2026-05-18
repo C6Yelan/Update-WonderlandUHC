@@ -7,7 +7,6 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -68,8 +67,6 @@ public class PlayingDeathListener implements Listener {
 
         uhcPlayer.markSpectatorRole();
         checkDeathKick(player);
-        if (Settings.Misc.DEATH_ANIMATION)
-            LegacyDatouNmsAdapter.current().playDeathAnimation(player);
 
         respawnPlayerAsSpectator(uhcPlayer);
     }

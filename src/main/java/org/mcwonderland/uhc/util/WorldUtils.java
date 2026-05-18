@@ -1,12 +1,12 @@
 package org.mcwonderland.uhc.util;
 
 import lombok.experimental.UtilityClass;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collection;
@@ -58,11 +58,14 @@ public class WorldUtils {
     }
 
     public void spawnOrb(Location l, int amount, int value) {
-        if (value == 0)
+        if (amount <= 0 || value <= 0)
             return;
 
         Location location = LegacyFoundationAdapter.isAtLeastMinecraft1_13() ? l : l.clone().add(0.5, 0.5, 0.5);
-        LegacyDatouNmsAdapter.current().spawnExpOrb(location, amount, value);
+        for (int i = 0; i < amount; i++) {
+            ExperienceOrb orb = location.getWorld().spawn(location, ExperienceOrb.class);
+            orb.setExperience(value);
+        }
     }
 
     public int getBlockEXP(Material blockType) {

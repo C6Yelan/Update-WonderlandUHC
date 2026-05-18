@@ -7,7 +7,6 @@ import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.platform.paper.PaperWorldBorderAdapter;
 import org.mcwonderland.uhc.settings.Settings;
@@ -105,7 +104,7 @@ public class BorderUtil {
                                     break;
                             }
                             block = block.getRelative(BlockFace.UP);
-                            LegacyDatouNmsAdapter.current().setBlockFast(block.getLocation(), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
+                            block.setType(CompMaterial.BEDROCK.getMaterial(), false);
                             preBorderBlocks.get(world).add(block.getLocation());
                         }
                     }
@@ -143,7 +142,7 @@ public class BorderUtil {
         } else {
             preBlocksNumber.put(world, preBlocksNumber.get(world) + 1);
             for (Location loc : preBorderBlocks.get(world)) {
-                LegacyDatouNmsAdapter.current().setBlockFast(loc.clone().add(0, preBlocksNumber.get(world), 0), CompMaterial.BEDROCK.getMaterial(), (byte) 0, false);
+                loc.clone().add(0, preBlocksNumber.get(world), 0).getBlock().setType(CompMaterial.BEDROCK.getMaterial(), false);
             }
         }
     }

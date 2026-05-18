@@ -119,7 +119,7 @@ Step 19 / Step 20 已明確把下列項目排除到 Step 21，不能在本步驟
 
 盤點分支：`step-21-legacy-removal`
 
-本輪只做只讀盤點與文件紀錄，尚未修改程式碼。掃描指令：
+此段為 Step 21 開始前的初始只讀盤點。後續實作進度記錄於本節下方，避免把已完成項目誤判為仍待處理。初始掃描指令：
 
 ```bash
 rg -n "LegacyDatouNmsAdapter|DaTouNMS|NewerSpigotAPI|net\\.minecraft|org\\.bukkit\\.craftbukkit" Update-WonderlandUHC/src/main/java Update-WonderlandUHC/build.gradle
@@ -145,37 +145,102 @@ rg -n "LegacyDatouNmsAdapter\\.current\\(\\)\\." Update-WonderlandUHC/src/main/j
 | custom exp orb | `util/WorldUtils.java#spawnOrb` | DatouNMS 可生成指定 amount/value；fallback 逐顆 spawn `ExperienceOrb` 並設 experience。 | 適合作為第一批正式化：保留 Bukkit fallback，移除 DatouNMS branch。 |
 | fast block set | `util/GenerateUtil.java`、`util/BorderUtil.java` | DatouNMS 可 super fast set block；fallback 使用 Bukkit `setType(..., applyPhysics)`。 | 可轉為正式 Bukkit/Paper block set helper，但需獨立測試 bedrock border / ore clump。不要和 absorption/armor 混同一刀。 |
 | large chest merge | `scenario/impl/death/ScenarioTimeBomb.java` | DatouNMS `NewerSpigotAPI.mergeChest`；fallback 已用 Bukkit chest `BlockData` 設定左右大箱。 | 適合作為第一批或第二批正式化；需測 Time Bomb 死亡箱仍能合併與存物品。 |
-| old enchant simulation | `listener/OldEnchantListener.java` | random seed、old costs、hide enchants 依 DatouNMS；其餘 lapis / exp level 邏輯仍在 listener。 | `docs/steps.md` 已明確接受 1.7 舊附魔模擬正式移除；Step 21 不修復 NMS，只清理 NMS 呼叫與註冊殘留，避免把它列成 regression。 |
+| old enchant simulation | `listener/OldEnchantListener.java` | random seed、old costs、hide enchants 依 DatouNMS；其餘 lapis / exp level 邏輯仍在 listener。 | 已完成：1.7 舊附魔模擬正式移除，解除 `OldEnchantListener` 註冊並刪除檔案；`settings.yml` / `Settings.OldEnchant` 暫留作舊設定相容欄位，不再有 runtime 行為。 |
 | TPS NMS reflection | `util/RuntimeUtil.java` | 先走 Paper `Bukkit#getTPS()`，再走 reflected Paper `getTPS()`，最後仍嘗試 `net.minecraft.server.<version>.MinecraftServer#recentTps`。 | 應在 21.1 移除最後的 NMS class reflection，只保留 Paper API / accepted fallback。這可和 DatouNMS 第一批一起做，因為同屬 NMS 搜尋 gate。 |
 
 目前方法呼叫粗略數量：
 
 | 方法 | 呼叫數 | 建議處理批次 |
 | --- | ---: | --- |
-| `getAbsorptionHearts` | 3 | 第一批：正式化 Bukkit absorption helper。 |
-| `getArmorPoints` | 1 | 第一批：正式化 Bukkit / vanilla armor helper。 |
-| `spawnExpOrb` | 1 | 第一批：正式化 Bukkit exp orb fallback。 |
-| `mergeLargeChest` | 1 | 第一批或第二批：正式化 Bukkit chest merge fallback。 |
-| `setCanPickupExp` | 4 | 第二批：在 Step 21 內改成正式 no-op / 移除呼叫 / 其他替代，並記錄 Step 22 檢查點。 |
-| `playDeathAnimation` | 2 | 第二批：在 Step 21 內改成正式 no-op 或接受移除；`TestCommand` 測試入口可清理。 |
-| `setBlockFast` | 3 | 第二批：單獨測 border / ore generation。 |
-| old enchant methods | 3 | 第三批：正式移除 1.7 舊附魔 NMS path，並檢查 listener 註冊。 |
+| `getAbsorptionHearts` | 3 | 已完成：改走 `PlayerUtils#getAbsorptionHearts`，使用 Paper/Bukkit API 與 potion fallback。 |
+| `getArmorPoints` | 1 | 已完成：改走 Bukkit attribute / item meta attribute，不再維護材質名稱表。 |
+| `spawnExpOrb` | 1 | 已完成：改走 Bukkit `ExperienceOrb`。 |
+| `mergeLargeChest` | 1 | 已完成：`ScenarioTimeBomb` 改用 Bukkit chest `BlockData` 設定左右大箱。 |
+| `setCanPickupExp` | 4 | 本輪完成：移除 role / respawn 的 DatouNMS 呼叫，改用 Paper `Player#setExpCooldown(...)` 保留舊版 cooldown 語意，並用 `EntityTargetLivingEntityEvent` / `PlayerPickupExperienceEvent` 補足 XP orb target / pickup 邊界。 |
+| `playDeathAnimation` | 2 | 已完成：正式死亡流程與 `TestCommand` debug 分支不再呼叫 DatouNMS；`Death_Animation` 設定在 1.21 線成為已接受 no-op。 |
+| `setBlockFast` | 3 | 已完成：`GenerateUtil` / `BorderUtil` 改走 Bukkit `Block#setType(..., false)`。 |
+| old enchant methods | 3 | 已完成：解除 `OldEnchantListener` 註冊並刪除檔案；`OldEnchant` 設定暫留為相容欄位。 |
 
-建議第一刀：
+#### 21.1 進度更新
 
-1. 新增或重用小型 runtime helper，承接 absorption hearts、armor points、custom exp orb、large chest merge 與 TPS Paper fallback。
-2. 只替換上述已有 Bukkit fallback 的使用點。
-3. 不處理 command/menu/settings，也不移除 `build.gradle` 的 DatouNMS dependency。
-4. 跑 DatouNMS 搜尋 gate，預期仍會剩下 `setCanPickupExp`、`playDeathAnimation`、`setBlockFast`、old enchant 與 `LegacyDatouNmsAdapter` 本體；這些要留給下一批。
-5. 封裝並用 Paper `1.21.11` server startup smoke test 驗證。
+更新日期：2026-05-16
 
-第一刀不建議包含：
+已完成項目：
 
-- 直接刪 `LegacyDatouNmsAdapter`。
-- 直接刪 DatouNMS dependency。
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 已推送：`1a07614` | simple DatouNMS reads | `SimpleScores`、`ScenarioShiftKill`、`PlayerUtils`、`WorldUtils`、`RuntimeUtil` 不再透過 DatouNMS 讀 absorption、armor points、custom exp orb 或 TPS NMS reflection。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；Paper `1.21.11` server 以 `start.bat` 啟動到 `Done`。 |
+| 已推送：`0c53444` | block placement | `GenerateUtil`、`BorderUtil` 的 `setBlockFast` 呼叫改成直接 Bukkit `Block#setType(..., false)`；沒有新增 helper 或抽象層。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；Paper `1.21.11` server 以 `start.bat` 啟動到 `Done`。 |
+| 已推送：`70c3d6c` | large chest merge | `ScenarioTimeBomb` 不再呼叫 `LegacyDatouNmsAdapter#mergeLargeChest`，改用 Bukkit chest `BlockData` 設定左右箱與 facing；沒有新增 helper 或抽象層。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；Paper `1.21.11` server 以 `start.bat` 啟動到 `Done`。 |
+| 已推送：`e1d3394` | death animation | `PlayingDeathListener` 不再呼叫 DatouNMS 播放假玩家死亡動畫；`TestCommand` 移除 `ani` debug 分支。Paper/Bukkit 無穩定等價 API，本切片不導入 packet/NMS 替代。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；Paper `1.21.11` server 以 `start.bat` 啟動到 `Done`。 |
+| 已推送：`4be50ea` | old enchant removal | `FeatureRegistry` 不再註冊 `OldEnchantListener`，並刪除 listener 檔案。1.7 舊附魔模擬正式移除；`OldEnchant` 設定暫留相容。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；Paper `1.21.11` server 以 `start.bat` 啟動到 `Done`。 |
+| 本輪完成 | exp pickup control | `RolePlayerApplier`、`RoleSpectatorApplier`、`RoleStaffApplier`、`RespawnCommand` 不再呼叫 `setCanPickupExp`；role / respawn 改用 Paper `Player#setExpCooldown(...)`，staff/spectator 設為 `Integer.MAX_VALUE`，player/respawn 設回 `0`。另新增 `ExperiencePickupListener`，在 XP orb target 選到 `RoleName.SPECTATOR` / `RoleName.STAFF` 時改指向最近的 `RoleName.PLAYER`，沒有參賽玩家則清成 `null`；pickup 事件仍取消作保險。這不建立大型狀態系統，也不手寫 orb 物理。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`。已接受 staff/spectator client 視角可能仍有 XP 吸附假象，因其不影響公平性且活著玩家視角正常。 |
+| 本輪完成，尚未 commit | dependency / adapter cleanup | 移除 `build.gradle` 的 DatouNMS dependency、`WonderlandUHC#onPluginStart()` 的 `bootstrap.setupNms()` 呼叫、`PluginBootstrap#setupNms()`、`LegacyDatouNmsAdapter.java`、`PlatformCapabilities.java` 與只測 legacy adapter 的 `LegacyDatouNmsAdapterTest`。本刀不處理 Foundation，也不新增 DatouNMS replacement service。 | `rg` gate 已確認 `src/main/java` / `build.gradle` 無 DatouNMS、NMS、CraftBukkit 與 legacy DatouNMS 命中；`scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`，且 DaTouNMS unsupported 訊息已不再出現。 |
+
+目前 `LegacyDatouNmsAdapter.current()` 主流程剩餘呼叫：
+
+| 類型 | 使用點 | 下一步判斷 |
+| --- | --- | --- |
+| 無 | 無 | 主流程 call site 已清空；`PluginBootstrap#setupNms()`、`LegacyDatouNmsAdapter` 本體、`PlatformCapabilities` 與 `build.gradle` DatouNMS dependency 已在本輪移除，且封裝與 Paper startup 已通過。 |
+
+#### 21.1 DatouNMS dependency / adapter cleanup 盤點
+
+更新日期：2026-05-16
+
+本輪只讀盤點指令：
+
+```bash
+rg -n "DaTouNMS|datounms|NewerSpigotAPI|LegacyDatouNmsAdapter|PlatformCapabilities|setupNms|net\\.minecraft|org\\.bukkit\\.craftbukkit|ArmorInfo" src/main/java build.gradle
+rg -n "LegacyDatouNmsAdapter\\.current\\(\\)|capabilities\\(|is[A-Za-z]+Available\\(" src/main/java
+```
+
+盤點結果：
+
+| 類型 | 目前殘留 | 判斷 |
+| --- | --- | --- |
+| dependency | 已移除 `build.gradle` 的 `implementation 'com.github.lulu2002:DatouNms:1.2.2'`。 | DatouNMS 不再是主插件 build/runtime dependency。 |
+| bootstrap setup | 已移除 `WonderlandUHC#onPluginStart()` 的 `bootstrap.setupNms()` 呼叫與 `PluginBootstrap#setupNms()` 方法。 | 不需要替代初始化流程。 |
+| adapter 本體 | 已刪除 `legacy/LegacyDatouNmsAdapter.java`。 | 未把舊 fallback 抽成新 helper；正式使用點已各自改成 Bukkit/Paper 實作。 |
+| adapter test | 已刪除 `src/test/java/org/mcwonderland/uhc/legacy/LegacyDatouNmsAdapterTest.java`。 | 測試目標已被正式移除；不為測試重新建立 legacy adapter 或替代 helper。 |
+| capability wrapper | 已刪除 `platform/PlatformCapabilities.java`。 | 該類只服務 DatouNMS adapter，無需保留。 |
+| NMS / CraftBukkit reflection | `src/main/java` / `build.gradle` 搜尋未發現 DatouNMS、NMS、CraftBukkit 或 `ArmorInfo` 使用。 | 搜尋 gate、封裝與 server startup 均已通過。 |
+
+本輪修改範圍：
+
+- `build.gradle`
+- `src/main/java/org/mcwonderland/uhc/WonderlandUHC.java`
+- `src/main/java/org/mcwonderland/uhc/bootstrap/PluginBootstrap.java`
+- `src/main/java/org/mcwonderland/uhc/legacy/LegacyDatouNmsAdapter.java`
+- `src/main/java/org/mcwonderland/uhc/platform/PlatformCapabilities.java`
+- `src/test/java/org/mcwonderland/uhc/legacy/LegacyDatouNmsAdapterTest.java`
+- `docs/step-21-legacy-removal-plan.md`
+- `docs/steps.md`
+
+本刀不處理：
+
+- `LegacyFoundationAdapter` 或 Foundation dependency。
+- `org.mineacademy.fo.*` command/menu/settings 繼承。
+- `PlayerLoginEvent`、ChatColor、metadata state 等 Step 21 後續項目。
+- 重新抽一個 DatouNMS replacement service。
+
+本輪驗收：
+
+```bash
+rg -n "DaTouNMS|datounms|NewerSpigotAPI|LegacyDatouNmsAdapter|PlatformCapabilities|setupNms|net\\.minecraft|org\\.bukkit\\.craftbukkit|ArmorInfo" src/main/java build.gradle
+scripts/package-plugin-1.21.sh --skip-foundation --no-clean
+```
+
+`rg` gate、封裝、部署與 Paper `1.21.11` `start.bat` startup smoke test 均已通過。
+
+後續建議順序：
+
+1. commit 並 push dependency / adapter cleanup。
+2. 進入 21.2 Foundation utility adapter 拆除盤點；不得和 21.1 DatouNMS 收尾混在同一刀。
+
+後續切片仍不建議包含：
+
 - 重寫 role / spectator / respawn 流程。
-- 重寫 `OldEnchantListener` 的整個設定與 GUI 行為。
-- 把 block placement、border、ore generation 和 scoreboard/health 同一刀處理。
+- 把 dependency cleanup 與 Foundation utility adapter 拆除混在同一刀處理。
 
 ### 21.2 Foundation utility adapter 拆除
 

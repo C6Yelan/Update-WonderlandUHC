@@ -5,7 +5,6 @@ import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.role.models.RoleApplier;
 import org.mcwonderland.uhc.game.player.staff.StaffOptions;
-import org.mcwonderland.uhc.legacy.LegacyDatouNmsAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.tools.Hotbars;
@@ -25,7 +24,7 @@ public class RoleStaffApplier implements RoleApplier {
         Extra.comepleteClear(player);
         GameManager.unFreeze(player);
         player.setGameMode(GameMode.CREATIVE);
-        LegacyDatouNmsAdapter.current().setCanPickupExp(player, false);
+        player.setExpCooldown(Integer.MAX_VALUE);
         player.setWalkSpeed(option.getMCSpeed());
         player.setFlySpeed(option.getMCSpeed());
         Hotbars.giveSpecItems(player);

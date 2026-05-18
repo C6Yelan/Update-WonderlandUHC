@@ -40,7 +40,6 @@ public class WonderlandUHC extends SimplePlugin {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
         bootstrap.loadFiles();
-        bootstrap.setupNms();
         featureRegistry.registerListeners(this::registerEvents);
         featureRegistry.registerCommandGroups(LegacyFoundationAdapter.commandGroupRegistrar(this::registerCommands));
         featureRegistry.registerCommands(this::registerCommand);
