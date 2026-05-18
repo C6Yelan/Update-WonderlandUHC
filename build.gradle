@@ -6,10 +6,6 @@ plugins {
 group = 'me.lulu'
 version = '1.0.0-alpha-2'
 
-def foundationVersion = '6.0.8'
-def useLocalFoundation = project.hasProperty('useLocalFoundation')
-def localFoundationJar = file("../lib-foundation/target/Foundation-${foundationVersion}.jar")
-
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
@@ -23,7 +19,6 @@ processResources {
 }
 
 shadowJar {
-    relocate("org.mineacademy", "org.mcwonderland.uhc.lib.mineacademy")
     relocate("org.apache", "org.mcwonderland.uhc.lib.apache")
     archiveClassifier.set("")
 }
@@ -32,8 +27,6 @@ repositories {
     mavenLocal()
     mavenCentral()
     flatDir { dir("./libs") }
-
-    maven { url 'https://jitpack.io' }
 
     maven {
         name 'm2-dv8tion'
@@ -55,16 +48,6 @@ repositories {
 }
 
 dependencies {
-    if (useLocalFoundation) {
-        implementation files(localFoundationJar)
-    } else {
-        // Default to the public JitPack artifact to make clean setups work.
-        implementation("com.github.kangarko:Foundation:${foundationVersion}") {
-            // Foundation POM still references private/legacy optional hooks.
-            // We only need the main Foundation jar for this plugin.
-            transitive = false
-        }
-    }
     compileOnly 'com.discordsrv:discordsrv:1.30.5'
 
     compileOnly name: 'Chunky-Bukkit-1.4.40'

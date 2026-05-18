@@ -10,8 +10,9 @@ import org.mcwonderland.uhc.game.timer.Countdown;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.LivingEntity;
-import org.mineacademy.fo.remain.CompAttribute;
 
 public class FinalHealCountdown extends Countdown {
 
@@ -22,8 +23,13 @@ public class FinalHealCountdown extends Countdown {
 
         for (UHCPlayer uhcPlayer : UHCPlayers.getStatusIs(RoleName.PLAYER)) {
             LivingEntity entity = uhcPlayer.getEntity();
-            entity.setHealth(CompAttribute.GENERIC_MAX_HEALTH.get(entity));
+            entity.setHealth(getMaxHealth(entity));
         }
+    }
+
+    private double getMaxHealth(LivingEntity entity) {
+        AttributeInstance maxHealth = entity.getAttribute(Attribute.MAX_HEALTH);
+        return maxHealth == null ? 20.0 : maxHealth.getValue();
     }
 
     @Override

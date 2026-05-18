@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.platform.paper.PaperWorldBorderAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
@@ -16,7 +17,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,7 +104,7 @@ public class BorderUtil {
                                     break;
                             }
                             block = block.getRelative(BlockFace.UP);
-                            block.setType(CompMaterial.BEDROCK.getMaterial(), false);
+                            block.setType(Material.BEDROCK, false);
                             preBorderBlocks.get(world).add(block.getLocation());
                         }
                     }
@@ -117,18 +117,18 @@ public class BorderUtil {
                 private boolean isNetherTopBedrock(Block block) {
                     String blockWorldName = block.getWorld().getName();
                     return blockWorldName.equalsIgnoreCase(world + "_nether")
-                            && block.getType() == CompMaterial.BEDROCK.getMaterial();
+                            && block.getType() == Material.BEDROCK;
                 }
 
                 private boolean isContainAbleMaterials(Material material) {
-                    return CompMaterial.isAir(material)
-                            || CompMaterial.isLongGrass(material)
+                    return PluginMaterials.isAir(material)
+                            || PluginMaterials.isLongGrass(material)
                             || material.toString().contains("LEAVES")
                             || material.toString().contains("LOG")
                             || material.toString().contains("GRASS")
-                            || material == CompMaterial.SUGAR_CANE.getMaterial()
-                            || material == CompMaterial.SNOW.getMaterial()
-                            || material == CompMaterial.WATER.getMaterial(); // prevent nether border gen in the top
+                            || material == Material.SUGAR_CANE
+                            || material == Material.SNOW
+                            || material == Material.WATER; // prevent nether border gen in the top
                 }
 
                 @AllArgsConstructor
@@ -142,7 +142,7 @@ public class BorderUtil {
         } else {
             preBlocksNumber.put(world, preBlocksNumber.get(world) + 1);
             for (Location loc : preBorderBlocks.get(world)) {
-                loc.clone().add(0, preBlocksNumber.get(world), 0).getBlock().setType(CompMaterial.BEDROCK.getMaterial(), false);
+                loc.clone().add(0, preBlocksNumber.get(world), 0).getBlock().setType(Material.BEDROCK, false);
             }
         }
     }

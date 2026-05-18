@@ -7,6 +7,8 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.LivingEntity;
@@ -16,8 +18,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.mineacademy.fo.remain.CompAttribute;
-import org.mineacademy.fo.remain.CompProperty;
 
 import java.io.File;
 import java.util.*;
@@ -95,7 +95,7 @@ public class Extra {
     }
 
     public static void comepleteClear(Player player) {
-        CompAttribute.GENERIC_MAX_HEALTH.set(player, 20);
+        setMaxHealthAttribute(player, 20.0);
         player.setHealth(20.0);
         player.setFoodLevel(20);
         player.getInventory().clear();
@@ -122,20 +122,27 @@ public class Extra {
     }
 
     public static void setMaxHealth(LivingEntity entity, double health) {
-        CompAttribute attribute = CompAttribute.GENERIC_MAX_HEALTH;
         health = Math.max(0, health);
 
-        attribute.set(entity, health);
+        setMaxHealthAttribute(entity, health);
         entity.setHealth(health);
     }
 
     public static double getMaxHealth(LivingEntity entity) {
-        return CompAttribute.GENERIC_MAX_HEALTH.get(entity);
+        AttributeInstance maxHealth = entity.getAttribute(Attribute.MAX_HEALTH);
+        return maxHealth == null ? 20.0 : maxHealth.getBaseValue();
     }
 
     public static void noAIAndSilent(LivingEntity entity) {
-        CompProperty.AI.apply(entity, false);
-        CompProperty.SILENT.apply(entity, true);
+        entity.setAI(false);
+        entity.setSilent(true);
+    }
+
+    private static void setMaxHealthAttribute(LivingEntity entity, double health) {
+        AttributeInstance maxHealth = entity.getAttribute(Attribute.MAX_HEALTH);
+
+        if (maxHealth != null)
+            maxHealth.setBaseValue(health);
     }
 
     public static double formatHealth(double health) {

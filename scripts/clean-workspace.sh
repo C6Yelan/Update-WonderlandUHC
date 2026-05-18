@@ -3,18 +3,12 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-DEFAULT_FOUNDATION_DIR="$(cd "$ROOT_DIR/.." && pwd)/lib-foundation"
-FOUNDATION_DIR="${FOUNDATION_DIR:-$DEFAULT_FOUNDATION_DIR}"
 
 safe_cleanup() {
   echo "[cleanup] safe cleanup started"
 
   rm -rf "$ROOT_DIR/build"
   rm -rf "$ROOT_DIR/.gradle"
-
-  if [[ -d "$FOUNDATION_DIR" ]]; then
-    rm -rf "$FOUNDATION_DIR/target"
-  fi
 
   echo "[cleanup] safe cleanup done"
 }
@@ -33,9 +27,6 @@ show_usage() {
 Usage:
   bash scripts/clean-workspace.sh          # safe cleanup
   bash scripts/clean-workspace.sh --deep   # deep cleanup
-
-Environment:
-  FOUNDATION_DIR  Foundation repository directory. Default: ../lib-foundation.
 EOF
 }
 

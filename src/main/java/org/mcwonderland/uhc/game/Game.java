@@ -21,7 +21,7 @@ import org.mcwonderland.uhc.game.state.preparing.PreparingState;
 import org.mcwonderland.uhc.game.state.starting.PreStartState;
 import org.mcwonderland.uhc.game.state.starting.TeleportingState;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
-import org.mineacademy.fo.collection.PlayerCollection;
+import org.mcwonderland.uhc.platform.player.PlayerCollection;
 
 import java.util.*;
 

@@ -29,7 +29,7 @@ public class TimePlaceholderFormatterTest {
     }
 
     @Test
-    public void exposesReplacementPairsForLegacySimpleReplacer() {
+    public void exposesReplacementPairsForGamePlaceholders() {
         Object[] pairs = TimePlaceholderFormatter.replacementPairs(185);
 
         assertArrayEquals(new Object[]{

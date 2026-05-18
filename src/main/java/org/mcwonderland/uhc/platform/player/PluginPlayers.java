@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
 import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 
 import java.util.Collection;
@@ -73,12 +72,7 @@ public final class PluginPlayers {
     }
 
     private static boolean isVanished(Player player) {
-        for (MetadataValue metadata : player.getMetadata("vanished")) {
-            if (metadata.asBoolean())
-                return true;
-        }
-
-        return false;
+        return player.hasMetadata("vanished");
     }
 
     private static Component toComponent(String message) {

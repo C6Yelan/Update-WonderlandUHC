@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.scenario;
 
-import org.mineacademy.fo.ChatUtil;
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 public enum ScenarioName {
 
@@ -44,6 +44,6 @@ public enum ScenarioName {
     VEIN_MINERS;
 
     public String capitalize() {
-        return ChatUtil.capitalizeFully(name(), new char[]{'_'});
+        return PluginText.bountifyCapitalized(name()).replace(' ', '_');
     }
 }

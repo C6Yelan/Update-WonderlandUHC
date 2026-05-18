@@ -19,10 +19,8 @@ Usage:
   bash scripts/package-plugin-1.21.sh --check-env
 
 Purpose:
-  Run the upgrade-line package entry with WSL Java 21 while keeping Java 8
-  baseline caches separate. This is a Step 4 transition script; the stable
-  package entry remains scripts/package-plugin.sh until the 1.21.11 build
-  platform is fully settled.
+  Run the package entry with WSL Java 21 while keeping Java 21 caches separate
+  from the default local Gradle cache.
 
 Options:
   --check-env       Verify Java 21 and cache paths, then exit without packaging.

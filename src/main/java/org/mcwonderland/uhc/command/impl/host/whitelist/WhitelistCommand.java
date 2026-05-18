@@ -8,11 +8,11 @@ import org.bukkit.command.TabCompleter;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.platform.player.PlayerCollection;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
-import org.mineacademy.fo.collection.PlayerCollection;
 
 import java.util.ArrayList;
 import java.util.List;

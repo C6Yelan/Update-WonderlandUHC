@@ -25,7 +25,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.mineacademy.fo.remain.CompColor;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,6 +36,24 @@ import java.util.stream.Collectors;
 @Setter
 public class UHCTeam {
     private static final Set<UHCTeam> teams = new HashSet<>();
+    private static final List<ChatColor> RANDOM_TEAM_COLORS = List.of(
+            ChatColor.BLACK,
+            ChatColor.DARK_BLUE,
+            ChatColor.DARK_GREEN,
+            ChatColor.DARK_AQUA,
+            ChatColor.DARK_RED,
+            ChatColor.DARK_PURPLE,
+            ChatColor.GOLD,
+            ChatColor.GRAY,
+            ChatColor.DARK_GRAY,
+            ChatColor.BLUE,
+            ChatColor.GREEN,
+            ChatColor.AQUA,
+            ChatColor.RED,
+            ChatColor.LIGHT_PURPLE,
+            ChatColor.YELLOW,
+            ChatColor.WHITE
+    );
 
     @Setter(AccessLevel.PRIVATE)
     private UHCPlayer owner;
@@ -111,10 +128,9 @@ public class UHCTeam {
     }
 
     private ChatColor getRandomColor() {
-        List<ChatColor> chatColors = CompColor.getChatColors();
-        int colorIndex = teams.size() % chatColors.size();
+        int colorIndex = teams.size() % RANDOM_TEAM_COLORS.size();
 
-        return chatColors.get(colorIndex);
+        return RANDOM_TEAM_COLORS.get(colorIndex);
     }
 
     private void createBackpack() {

@@ -7,9 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.jetbrains.annotations.NotNull;
-
-import java.net.InetAddress;
 
 public class UHCLoginEvent {
 
@@ -29,36 +26,12 @@ public class UHCLoginEvent {
         return source.getPlayer();
     }
 
-    public String getHostname() {
-        return source.getHostname();
+    public boolean isAllowed() {
+        return source.getResult() == PlayerLoginEvent.Result.ALLOWED;
     }
 
-    public InetAddress getAddress() {
-        return source.getAddress();
-    }
-
-    public InetAddress getRealAddress() {
-        return source.getRealAddress();
-    }
-
-    public PlayerLoginEvent.Result getResult() {
-        return source.getResult();
-    }
-
-    public void setResult(@NotNull PlayerLoginEvent.Result result) {
-        source.setResult(result);
-    }
-
-    public void setKickMessage(@NotNull String message) {
-        source.kickMessage(toComponent(message));
-    }
-
-    public void disallow(@NotNull PlayerLoginEvent.Result result, @NotNull String message) {
-        source.disallow(result, toComponent(message));
-    }
-
-    public void allow() {
-        source.allow();
+    public void disallow(String message) {
+        source.disallow(PlayerLoginEvent.Result.KICK_OTHER, toComponent(message));
     }
 
     private Component toComponent(String message) {

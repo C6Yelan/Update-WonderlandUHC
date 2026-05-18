@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.Teleporter;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.platform.paper.PaperWorldBorderAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
@@ -14,7 +15,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.remain.CompMaterial;
 
 import java.util.Collection;
 
@@ -83,11 +83,11 @@ public class SimplePractice extends AbstractPractice {
         String typeStr = type.toString();
 
         if (typeStr.contains("WATER") || typeStr.contains("LAVA"))
-            block.setType(CompMaterial.STONE.getMaterial());
-        else if (CompMaterial.isLog(type) || CompMaterial.isLeaves(type))
-            block.setType(CompMaterial.AIR.getMaterial());
+            block.setType(Material.STONE);
+        else if (PluginMaterials.isLog(type) || PluginMaterials.isLeaves(type))
+            block.setType(Material.AIR);
         else if (isGrassOrFlower(type))
-            block.setType(CompMaterial.AIR.getMaterial());
+            block.setType(Material.AIR);
     }
 
     private boolean isGrassOrFlower(Material type) {

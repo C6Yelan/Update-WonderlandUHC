@@ -1482,6 +1482,25 @@ metadata state 預期決策：
 - tutorial 或 entity metadata 若需要跨 tick / entity store，優先使用 Bukkit `PersistentDataContainer` 或明確清理的本地狀態。
 - 不為了消 warning 加 suppress。
 
+21.6 第一個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | Foundation `ChatUtil` enum display cleanup | `ScenarioName#capitalize()` 與 `BorderType#fancyName()` 不再使用 Foundation `ChatUtil`，改用既有本地 `PluginText.bountifyCapitalized(...)`。`ScenarioName#capitalize()` 會保留底線，避免改動 scenario YAML section key；`BorderType#fancyName()` 仍只輸出顯示名稱。 | `rg` gate 確認 production / test source 無 Foundation `ChatUtil` import 命中。 |
+| 本輪完成 | Foundation `PlayerCollection` whitelist cleanup | 新增本地薄 `platform.player.PlayerCollection`，只承接白名單需要的玩家名稱 / UUID add、remove、contains 語意；`Game` 與 `WhitelistCommand` 不再 import Foundation `PlayerCollection`。`WhitelistChecker` 與 `RespawnCommand` 透過既有 `Game#getWhiteList()` 繼續使用同一份白名單資料。 | `rg` gate 確認 production / test source 無 Foundation `PlayerCollection` import 命中。 |
+| 本輪完成 | login event wrapper shrink | `UHCLoginEvent` 移除未使用的 hostname / address / setResult / setKickMessage / allow pass-through，只保留目前 login checker 實際需要的 `getPlayer()`、`getGame()`、`isAllowed()` 與 `disallow(message)`；`LoginChecker` 不再 import `PlayerLoginEvent`。保留既有 `PlayerLoginEvent` 時機與 `UHCPlayer` 建立時機，不改 pre-login / join gate 模型。 | `rg` gate 確認 login checker 不再直接 import `PlayerLoginEvent`，且登入 gate 仍只由 `LoginListener` 接 Bukkit login event。 |
+| 本輪完成 | Foundation `CompColor` team random color cleanup | `UHCTeam#getRandomColor()` 不再使用 Foundation `CompColor.getChatColors()`，改用本地固定 16 色 `ChatColor` 清單保留原本循序分配語意。這刀不改 `UHCTeam` public API、不改 `ColorPickerMenu`，也不把 team color model 遷移到 Adventure 或 DyeColor。 | `rg` gate 確認 `UHCTeam` 無 Foundation `CompColor` import 命中。 |
+| 本輪完成 | deprecated `MetadataValue` vanished cleanup | `PluginPlayers#getByName(..., true)` 保留 vanished 過濾語意，但 `PluginPlayers#isVanished(...)` 不再讀取 `MetadataValue` 清單，改用 `Player#hasMetadata("vanished")` 判斷外部 vanish metadata 是否存在。這刀不移除 vanished gate、不新增 vanish service，也不改玩家查找的 exact / prefix matching。 | `rg` gate 確認 production / test source 無 `MetadataValue` / `getMetadata("vanished")` 命中。 |
+| 本輪完成 | Foundation `StrictMap` scenario limitations cleanup | `ScenarioLimitations` 不再使用 Foundation `StrictMap`，改用標準 `Map` / `HashMap` 保存玩家已挖礦物數與礦物限制；`getOrPut` 改成 `computeIfAbsent`，`override` 改成 `put`。這刀不改 Limitations 規則、限制數值、canonical ore 判斷或錯誤保護流程。 | `rg` gate 確認 production / test source 無 Foundation `StrictMap` import 命中。 |
+| 本輪完成 | Foundation `CompAttribute` final heal cleanup | `FinalHealCountdown` 不再使用 Foundation `CompAttribute.GENERIC_MAX_HEALTH`，改用 Bukkit `Attribute.MAX_HEALTH` 取得最大血量，null 時維持 20.0 fallback。這刀不改 final heal 觸發、廣播、音效或玩家篩選規則。 | `rg` gate 確認 `FinalHealCountdown` 無 Foundation `CompAttribute` import 命中。 |
+
+本刀刻意未處理：
+
+- 不把 `PlayerLoginEvent` login gate 改成 pre-login / join 後分段模型。
+- 不遷移 `UHCTeam` / public API / menu color picker 的 `ChatColor` team color model。
+- 不處理 `Extra` 中仍較廣的 `CompAttribute` / `CompProperty` helper。
+- 不處理 `WonderlandUHC extends SimplePlugin` lifecycle。
+
 驗收：
 
 - `rg -n "PlayerLoginEvent|org\\.bukkit\\.ChatColor|MetadataValue|clearLoadedSections" Update-WonderlandUHC/src/main/java`
@@ -1515,6 +1534,15 @@ rg -n "PlayerLoginEvent|org\\.bukkit\\.ChatColor|MetadataValue|clearLoadedSectio
 - Paper `1.21.11` server startup smoke test 通過。
 - Step 22 最終對照 checklist 已補上 Step 21 完成或明確接受的所有行為差異；不能把已知待修改項留到 Step 22 才處理。
 
+執行結果（2026-05-17）：
+
+- `WonderlandUHC` 已從 Foundation `SimplePlugin` 改成 Bukkit `JavaPlugin`，保留啟動、重載與關閉時的必要流程；本刀只明確化現有 lifecycle，沒有新增插件框架。
+- `build.gradle` 已移除 Foundation dependency、Foundation relocate 與 JitPack Foundation repo；`settings.gradle` 不再 include `../lib-foundation`。
+- `scripts/package-plugin.sh`、`deploy-to-windows-server.sh`、`clean-workspace.sh` 與 `package-plugin-1.21.sh` 已移除 Foundation build / bootstrap alias / `--skip-foundation` 流程；`scripts/bootstrap-foundation-deps.sh` 已刪除。
+- 本地 `org.mineacademy.fo.model.SimpleReplacer` shim 已刪除；test method 名稱也移除 `LegacySimpleReplacer` 字樣，避免後續搜尋誤判。
+- `rg -n "org\\.mineacademy\\.fo|LegacyFoundationAdapter|lib-foundation" src/main/java build.gradle` 為 0；DatouNMS / NMS / CraftBukkit gate 也為 0。
+- `bash scripts/package-plugin-1.21.sh` 通過；部署到 Paper `1.21.11` 測試服後用 `start.bat` 啟動到 `Done`，console `uhc reload` 成功，latest.log 未出現 `ERROR` / `Exception`。
+
 ## 每個程式碼切片的固定驗證
 
 每個 Step 21 程式碼切片完成後都必須做：
@@ -1527,10 +1555,10 @@ rg -n "PlayerLoginEvent|org\\.bukkit\\.ChatColor|MetadataValue|clearLoadedSectio
 目前升級線封裝入口：
 
 ```bash
-bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean
+bash scripts/package-plugin-1.21.sh
 ```
 
-若切片已移除 Foundation dependency，`--skip-foundation` 只代表不嘗試建置本機 `lib-foundation`，不應再成為 runtime 依賴條件。
+Foundation dependency 已移除；後續封裝不再使用 `--skip-foundation` 或本機 `lib-foundation`。
 
 ## 過度抽象化停止條件
 

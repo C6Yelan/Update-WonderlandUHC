@@ -1,6 +1,8 @@
 package org.mcwonderland.uhc;
 
 import lombok.Getter;
+import org.bukkit.event.Listener;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.mcwonderland.uhc.bootstrap.FeatureRegistry;
 import org.mcwonderland.uhc.bootstrap.PluginBootstrap;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
@@ -9,9 +11,10 @@ import org.mcwonderland.uhc.practice.SimplePractice;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
 import org.mcwonderland.uhc.settings.spawn.Spawns;
 import org.mcwonderland.uhc.stats.storages.StatsStorage;
-import org.mineacademy.fo.plugin.SimplePlugin;
 
-public class WonderlandUHC extends SimplePlugin {
+public class WonderlandUHC extends JavaPlugin {
+    private static WonderlandUHC instance;
+
     public static Boolean TEST_MODE = false;
     @Getter
     private static StatsStorage statsStorage;
@@ -28,14 +31,41 @@ public class WonderlandUHC extends SimplePlugin {
     // generating 時沒有禁止玩家登入，motd 依然顯示開放入場
 
     public static WonderlandUHC getInstance() {
-        return ( WonderlandUHC ) SimplePlugin.getInstance();
+        if (instance == null)
+            instance = JavaPlugin.getPlugin(WonderlandUHC.class);
+
+        return instance;
     }
 
     public WonderlandUHC() {
     }
 
     @Override
-    public void onPluginStart() {
+    public void onLoad() {
+        instance = this;
+    }
+
+    @Override
+    public void onEnable() {
+        startReloadableRuntime();
+        startPluginRuntime();
+    }
+
+    @Override
+    public void onDisable() {
+        getServer().getScheduler().cancelTasks(this);
+        getServer().getMessenger().unregisterIncomingPluginChannel(this);
+        getServer().getMessenger().unregisterOutgoingPluginChannel(this);
+        instance = null;
+    }
+
+    public void reload() {
+        getServer().getScheduler().cancelTasks(this);
+        reloadRuntimeState();
+        startReloadableRuntime();
+    }
+
+    private void startPluginRuntime() {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
         featureRegistry.registerListeners(this::registerEvents);
@@ -48,19 +78,12 @@ public class WonderlandUHC extends SimplePlugin {
 
     }
 
-    @Override
-    public boolean areToolsEnabled() {
-        return false;
-    }
-
-    @Override
-    protected void onPluginReload() {
+    private void reloadRuntimeState() {
         scenarioManager.reloadAll();
         UHCGameSettingsSaver.reloadFromFile();
     }
 
-    @Override
-    protected void onReloadablesStart() {
+    private void startReloadableRuntime() {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
 
@@ -79,6 +102,10 @@ public class WonderlandUHC extends SimplePlugin {
         }
 
         bootstrap.applyTestModeSettings();
+    }
+
+    private void registerEvents(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, this);
     }
 
 }

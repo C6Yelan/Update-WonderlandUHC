@@ -26,7 +26,7 @@ public abstract class LoginListener implements Listener {
         for (LoginChecker checker : checkers) {
             checker.check(loginEvent);
 
-            if (loginEvent.getResult() != PlayerLoginEvent.Result.ALLOWED) {
+            if (!loginEvent.isAllowed()) {
                 pass = false;
 
                 break;

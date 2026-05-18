@@ -12,10 +12,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.collection.StrictMap;
 import org.mcwonderland.uhc.platform.sound.PluginSound;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -23,8 +24,8 @@ import java.util.UUID;
  */
 public class ScenarioLimitations extends ConfigBasedScenario implements Listener {
 
-    private static final StrictMap<UUID, OreMined> blockMines = new StrictMap<>();
-    private final StrictMap<Material, Integer> limitedBlocks = new StrictMap<>();
+    private static final Map<UUID, OreMined> blockMines = new HashMap<>();
+    private final Map<Material, Integer> limitedBlocks = new HashMap<>();
 
     @FilePath(name = "Reached_Limit")
     private String reachedLimitMsg;
@@ -113,7 +114,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     }
 
     private void addBlockMines(Player player, Material blockType) {
-        blockMines.get(player.getUniqueId()).addMinedAmount(blockType);
+        blockMines.computeIfAbsent(player.getUniqueId(), uuid -> new OreMined()).addMinedAmount(blockType);
 
         if (getMineAmount(player, blockType) == limitedBlocks.get(blockType))
             tellReachLimit(player, blockType);
@@ -132,7 +133,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     private int getMineAmount(Player player, Material blockType) {
         UUID uuid = player.getUniqueId();
 
-        OreMined oreMined = blockMines.getOrPut(uuid, new OreMined());
+        OreMined oreMined = blockMines.computeIfAbsent(uuid, key -> new OreMined());
 
         return oreMined.getBlockMined(blockType);
     }
@@ -150,7 +151,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     }
 
     private class OreMined {
-        private final StrictMap<Material, Integer> mined = new StrictMap<>();
+        private final Map<Material, Integer> mined = new HashMap<>();
 
         public int getBlockMined(Material material) {
             return mined.getOrDefault(material, 0);
@@ -159,7 +160,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
         public void addMinedAmount(Material material) {
             int newAmount = getBlockMined(material) + 1;
 
-            mined.override(material, newAmount);
+            mined.put(material, newAmount);
         }
     }
 }

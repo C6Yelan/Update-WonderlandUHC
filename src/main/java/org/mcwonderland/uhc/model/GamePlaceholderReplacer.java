@@ -14,7 +14,6 @@ import org.mcwonderland.uhc.settings.Messages;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.mineacademy.fo.model.SimpleReplacer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,12 +24,14 @@ import java.util.stream.Collectors;
 /**
  * 2019-11-21 下午 04:20
  */
-public class GamePlaceholderReplacer extends SimpleReplacer {
+public class GamePlaceholderReplacer {
+    private static final String DELIMITER = "\n";
+
+    private String messages;
     private final UHCGameSettings settings;
 
     private GamePlaceholderReplacer(List<String> messages, UHCGameSettings settings) {
-        super(messages);
-
+        this.messages = String.join(DELIMITER, messages);
         this.settings = settings;
     }
 
@@ -105,9 +106,19 @@ public class GamePlaceholderReplacer extends SimpleReplacer {
         replace("{disabled-items}", "disableitems");
     }
 
-    @Override
-    public SimpleReplacer replace(String from, Object to) {
-        return super.replace(from, ((to instanceof Boolean) ? replaceBoolean(( Boolean ) to) : to));
+    private GamePlaceholderReplacer replace(String from, Object to) {
+        Object replacement = to instanceof Boolean ? replaceBoolean(( Boolean ) to) : to;
+
+        if (messages.contains(from))
+            messages = messages.replace(from, replacement.toString());
+
+        return this;
+    }
+
+    private List<String> buildList() {
+        List<String> list = new ArrayList<>();
+        list.addAll(Arrays.asList(messages.split(DELIMITER)));
+        return list;
     }
 
     private String formatTime(Integer time) {

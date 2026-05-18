@@ -32,7 +32,7 @@ Options:
   --server-dir PATH  Windows server directory mounted under WSL.
   --target-name NAME Destination jar name. Default: WonderlandUHC.jar
   --port PORT       Windows server port used for the stopped-server check.
-  --full-build       Run package-plugin.sh without --skip-foundation --no-clean.
+  --full-build       Run package-plugin.sh with a clean build.
   --skip-build       Reuse the latest existing build/libs/WonderlandUHC-*.jar.
   --skip-tests       Pass --skip-tests to package-plugin.sh.
   --skip-server-check
@@ -139,7 +139,7 @@ package_plugin() {
 
   local -a package_args=()
   if [[ "$FULL_BUILD" != "1" ]]; then
-    package_args+=(--skip-foundation --no-clean)
+    package_args+=(--no-clean)
   fi
 
   if [[ "$SKIP_TESTS" == "1" ]]; then
