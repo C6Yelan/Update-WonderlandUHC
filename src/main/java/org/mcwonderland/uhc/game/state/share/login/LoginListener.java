@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.mcwonderland.uhc.application.login.LoginSubject;
 import org.mcwonderland.uhc.game.state.share.login.checker.LoginChecker;
 import org.mcwonderland.uhc.integration.luckperms.LuckPermsLoginPermissionService;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public abstract class LoginListener implements Listener {
 
         Optional<LoginSubject> subject = LoginSubject.from(e.getConnection());
         if (subject.isEmpty()) {
-            e.kickMessage(UHCLoginEvent.toComponent(Messages.Kick.WAITING_HOST));
+            e.kickMessage(PluginText.toComponent(Messages.Kick.WAITING_HOST));
             return;
         }
 

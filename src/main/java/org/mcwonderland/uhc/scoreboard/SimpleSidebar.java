@@ -3,7 +3,6 @@ package org.mcwonderland.uhc.scoreboard;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
@@ -17,7 +16,7 @@ import java.util.List;
  * @author crisdev333
  */
 public class SimpleSidebar {
-    private static final char LEGACY_COLOR_CHAR = LegacyComponentSerializer.SECTION_CHAR;
+    private static final char LEGACY_COLOR_CHAR = '\u00A7';
     private static final char[] SIDEBAR_ENTRY_CODES = "0123456789abcdef".toCharArray();
 
     @Getter
@@ -101,7 +100,7 @@ public class SimpleSidebar {
     }
 
     private Component toComponent(String text) {
-        return LegacyComponentSerializer.legacySection().deserialize(text);
+        return PluginText.toComponent(text);
     }
 
     private String getLastColors(String input) {

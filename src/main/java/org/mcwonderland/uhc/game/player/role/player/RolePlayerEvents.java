@@ -1,8 +1,6 @@
 package org.mcwonderland.uhc.game.player.role.player;
 
 import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.game.CombatRelog;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
@@ -11,6 +9,7 @@ import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.role.models.RoleEventHandler;
 import org.mcwonderland.uhc.game.state.share.join.UHCJoinEvent;
 import org.mcwonderland.uhc.game.timer.Timers;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
@@ -64,14 +63,10 @@ public class RolePlayerEvents implements RoleEventHandler {
 
             CombatRelog.setCombatRelog(uhcPlayer);
 
-            e.quitMessage(toComponent(Messages.Game.PLAYER_DISCONNECT
+            e.quitMessage(PluginText.toComponent(Messages.Game.PLAYER_DISCONNECT
                     .replace("{player}", uhcPlayer.getTeam().getChatFormat() + uhcPlayer.getName())
                     .replace("{time}", relogInMinutes + "")));
         }
-    }
-
-    private Component toComponent(String message) {
-        return LegacyComponentSerializer.legacySection().deserialize(message);
     }
 
     private boolean isNoRelog() {

@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.game.state.share;
 
 import org.mcwonderland.uhc.platform.text.PluginText;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -21,8 +20,8 @@ public abstract class QuitListener implements Listener {
         if (message == null)
             return null;
 
-        String legacyMessage = LegacyComponentSerializer.legacySection().serialize(message);
-        return LegacyComponentSerializer.legacySection().deserialize(PluginText.colorize(legacyMessage));
+        String legacyMessage = PluginText.toLegacyString(message);
+        return PluginText.toComponent(legacyMessage);
     }
 
 }

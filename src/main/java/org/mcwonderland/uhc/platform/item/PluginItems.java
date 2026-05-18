@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.platform.item;
 
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemFlag;
@@ -16,7 +16,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public final class PluginItems {
-    private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
     private static final Map<String, String> LEGACY_MATERIAL_ALIASES = Map.of(
             "CARROT_STICK", "CARROT_ON_A_STICK",
             "DIODE", "REPEATER",
@@ -79,7 +78,7 @@ public final class PluginItems {
             return item;
 
         if (name != null && !name.isEmpty())
-            meta.displayName(LEGACY_SECTION.deserialize(PluginText.colorize("&r&f" + name)));
+            meta.displayName(PluginText.toComponent("&r&f" + name));
 
         if (lore != null && !lore.isEmpty())
             meta.lore(toLoreComponents(lore));
@@ -91,15 +90,15 @@ public final class PluginItems {
         return item;
     }
 
-    private static List<net.kyori.adventure.text.Component> toLoreComponents(List<String> lore) {
-        List<net.kyori.adventure.text.Component> components = new ArrayList<>();
+    private static List<Component> toLoreComponents(List<String> lore) {
+        List<Component> components = new ArrayList<>();
 
         for (String line : lore) {
             if (line == null)
                 continue;
 
             for (String subLine : line.split("\n"))
-                components.add(LEGACY_SECTION.deserialize(PluginText.colorize("&7" + subLine)));
+                components.add(PluginText.toComponent("&7" + subLine));
         }
 
         return components;

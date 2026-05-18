@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.platform.menu;
 
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -10,8 +9,6 @@ import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.platform.text.PluginText;
 
 public abstract class PluginMenu implements InventoryHolder {
-    private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
-
     private final PluginMenuSection section;
     private Inventory inventory;
 
@@ -20,7 +17,7 @@ public abstract class PluginMenu implements InventoryHolder {
     }
 
     public final void displayTo(Player player) {
-        inventory = Bukkit.createInventory(this, section.getSize(), LEGACY_SECTION.deserialize(PluginText.colorize(getTitle())));
+        inventory = Bukkit.createInventory(this, section.getSize(), PluginText.toComponent(getTitle()));
 
         for (int slot = 0; slot < inventory.getSize(); slot++)
             inventory.setItem(slot, getItemAt(slot));

@@ -5,10 +5,10 @@ import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Setter;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioDisabledEvent;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioEnabledEvent;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -86,7 +86,7 @@ public abstract class AbstractScenario implements Scenario {
             return name;
 
         Component displayName = icon.getItemMeta().displayName();
-        return displayName == null ? name : LegacyComponentSerializer.legacySection().serialize(displayName);
+        return displayName == null ? name : PluginText.toLegacyString(displayName);
     }
 
     protected void onReload() {

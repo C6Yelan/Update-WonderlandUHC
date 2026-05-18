@@ -3,7 +3,6 @@ package org.mcwonderland.uhc.command.team;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.UHCTeam;
@@ -13,8 +12,6 @@ import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
 
 class InviteCommand extends TeamOwnerCommand {
-
-    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
 
     protected InviteCommand(String sublabel) {
         super(sublabel);
@@ -69,9 +66,9 @@ class InviteCommand extends TeamOwnerCommand {
     }
 
     private Component runCommandComponent(String message, String command, String hover) {
-        return LEGACY_AMPERSAND.deserialize(message)
+        return PluginText.toComponent(message)
                 .clickEvent(ClickEvent.runCommand(command))
-                .hoverEvent(HoverEvent.showText(LEGACY_AMPERSAND.deserialize(hover)));
+                .hoverEvent(HoverEvent.showText(PluginText.toComponent(hover)));
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.mcwonderland.uhc.game.state.playing.listener;
 
 import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.PotionApplier;
 import org.bukkit.entity.Player;
@@ -43,6 +43,6 @@ public class GoldenHeadListener implements Listener {
 
         ItemMeta meta = item.getItemMeta();
         Component displayName = meta.displayName();
-        return displayName == null ? "" : LegacyComponentSerializer.legacySection().serialize(displayName);
+        return displayName == null ? "" : PluginText.toLegacyString(displayName);
     }
 }

@@ -1,14 +1,13 @@
 package org.mcwonderland.uhc.game.state.share.login;
 
 import lombok.Getter;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import io.papermc.paper.event.connection.PlayerConnectionValidateLoginEvent;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.application.login.LoginPermissionService;
 import org.mcwonderland.uhc.application.login.LoginSubject;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 public class UHCLoginEvent {
 
@@ -38,10 +37,6 @@ public class UHCLoginEvent {
     }
 
     public void disallow(String message) {
-        source.kickMessage(toComponent(message));
-    }
-
-    public static Component toComponent(String message) {
-        return LegacyComponentSerializer.legacySection().deserialize(message);
+        source.kickMessage(PluginText.toComponent(message));
     }
 }

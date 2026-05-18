@@ -3,7 +3,7 @@ package org.mcwonderland.uhc.util;
 import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.platform.sound.PluginSound;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.*;
@@ -59,7 +59,7 @@ public class Extra {
     public static void createHead() {
         ItemStack goldenHead = PluginMaterials.itemOf("GOLDEN_APPLE");
         ItemMeta gMeta = goldenHead.getItemMeta();
-        gMeta.displayName(LegacyComponentSerializer.legacySection().deserialize(Settings.Misc.GOLDEN_HEAD_NAME));
+        gMeta.displayName(PluginText.toComponent(Settings.Misc.GOLDEN_HEAD_NAME));
         goldenHead.setItemMeta(gMeta);
 
         ShapedRecipe goldenHeadRecipe = new ShapedRecipe(new NamespacedKey(WonderlandUHC.getInstance(), "golden_head"), goldenHead);

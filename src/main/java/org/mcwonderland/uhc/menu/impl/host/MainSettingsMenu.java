@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.menu.impl.host;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -33,8 +32,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntConsumer;
 
 public class MainSettingsMenu extends PluginMenu {
-    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
-    private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
     private static final Map<UUID, InputSession> inputSessions = new ConcurrentHashMap<>();
     private static final String SECTION = "Main";
     private static final String TEAM_BUTTON = "Team";
@@ -367,7 +364,7 @@ public class MainSettingsMenu extends PluginMenu {
     }
 
     private static Component runCommandComponent(String message, String command) {
-        return LEGACY_AMPERSAND.deserialize(message)
+        return PluginText.toComponent(message)
                 .clickEvent(ClickEvent.runCommand(command));
     }
 
@@ -432,7 +429,7 @@ public class MainSettingsMenu extends PluginMenu {
 
             ItemMeta meta = mainHand.getItemMeta();
 
-            meta.displayName(LEGACY_SECTION.deserialize(Settings.Misc.GOLDEN_HEAD_NAME));
+            meta.displayName(PluginText.toComponent(Settings.Misc.GOLDEN_HEAD_NAME));
             mainHand.setItemMeta(meta);
             Extra.sound(player, Sounds.Host.GOLDEN_HEAD_CREATED);
         }

@@ -3,16 +3,14 @@ package org.mcwonderland.uhc.game.player.staff;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.mcwonderland.uhc.core.rule.OreRuleSupport;
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 @Getter
 public enum OreAlert {
     GOLD_ORE(Material.GOLD_ORE, NamedTextColor.YELLOW),
     DIAMOND_ORE(Material.DIAMOND_ORE, NamedTextColor.AQUA);
-
-    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
 
     private final Material material;
     private final NamedTextColor color;
@@ -32,6 +30,6 @@ public enum OreAlert {
     }
 
     public String colorizedName() {
-        return LEGACY_AMPERSAND.serialize(Component.text(material.name(), color));
+        return PluginText.toLegacyAmpersandString(Component.text(material.name(), color));
     }
 }

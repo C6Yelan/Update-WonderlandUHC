@@ -4,7 +4,6 @@ import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,6 +18,7 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.PlayerUtils;
 
@@ -220,6 +220,6 @@ public final class SimpleScores {
     }
 
     private Component toComponent(String text) {
-        return LegacyComponentSerializer.legacySection().deserialize(text);
+        return PluginText.toComponent(text);
     }
 }
