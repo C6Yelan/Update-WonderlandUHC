@@ -1,27 +1,27 @@
 package org.mcwonderland.uhc.model.tutorial.model;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.MetadataValue;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public abstract class Tutorial {
     public static final String CANCELLER = "exit";
-    private static final String TUTORIAL_TAG = "wonderlanduhc_tutorial_tag";
+    private static final Map<UUID, Tutorial> tutorials = new HashMap<>();
 
     public static Tutorial getCurrentTutorial(Player player) {
-        MetadataValue metadata = LegacyFoundationAdapter.getTempMetadata(player, TUTORIAL_TAG);
-
-        return metadata == null ? null : (Tutorial) metadata.value();
+        return tutorials.get(player.getUniqueId());
     }
 
     public static boolean isInTutorial(Player player) {
-        return LegacyFoundationAdapter.hasTempMetadata(player, TUTORIAL_TAG);
+        return tutorials.containsKey(player.getUniqueId());
     }
 
     public static void exit(Player player) {
-        LegacyFoundationAdapter.removeTempMetadata(player, TUTORIAL_TAG);
+        tutorials.remove(player.getUniqueId());
     }
 
     private TutorialSection currentSection;
@@ -34,7 +34,7 @@ public abstract class Tutorial {
     protected abstract TutorialSection getFirstSection();
 
     public final void start() {
-        LegacyFoundationAdapter.setTempMetadata(player, TUTORIAL_TAG, this);
+        tutorials.put(player.getUniqueId(), this);
 
         showSection(getFirstSection());
     }

@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.model;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.WonderlandUHC;
@@ -8,7 +9,6 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
 import org.mcwonderland.uhc.game.settings.sub.UHCTimerSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
 import org.mcwonderland.uhc.settings.Messages;
 import org.bukkit.Material;
@@ -111,7 +111,7 @@ public class GamePlaceholderReplacer extends SimpleReplacer {
     }
 
     private String formatTime(Integer time) {
-        return LegacyFoundationAdapter.formatTime(time);
+        return PluginText.formatTime(time);
     }
 
     private String formatItems(ItemStack[]... itemStacks) {
@@ -137,7 +137,7 @@ public class GamePlaceholderReplacer extends SimpleReplacer {
         String name = getDisplayName(meta);
         Material type = itemStack.getType();
 
-        String finalName = (name == null || name.isEmpty()) ? LegacyFoundationAdapter.bountifyCapitalized(type) : name;
+        String finalName = (name == null || name.isEmpty()) ? PluginText.bountifyCapitalized(type) : name;
 
         return finalName + " x" + itemStack.getAmount();
     }

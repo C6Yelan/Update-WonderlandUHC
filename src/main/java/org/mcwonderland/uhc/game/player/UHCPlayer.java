@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.game.player;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,14 +13,15 @@ import org.mcwonderland.uhc.game.player.role.SimpleRoleFactory;
 import org.mcwonderland.uhc.game.player.role.models.RoleBoard;
 import org.mcwonderland.uhc.game.player.role.models.RoleEventHandler;
 import org.mcwonderland.uhc.game.player.staff.StaffOptions;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.stats.UHCStats;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,8 +29,7 @@ import java.util.UUID;
 @Getter
 public class UHCPlayer {
     private static final Set<UHCPlayer> allPlayers = new HashSet<>();
-
-    public static final String UHCPLAYER_TAG = "wonderlanduhc_uhcplayer_tag";
+    private static final Map<UUID, UHCPlayer> playersByUniqueId = new HashMap<>();
 
     @Getter(AccessLevel.PRIVATE)
     private Player entityPlayer;
@@ -46,23 +47,21 @@ public class UHCPlayer {
     }
 
     public static UHCPlayer getUHCPlayer(Player player) {
-        if (!LegacyFoundationAdapter.hasTempMetadata(player, UHCPLAYER_TAG))
-            LegacyFoundationAdapter.setTempMetadata(player, UHCPLAYER_TAG, new UHCPlayer(player));
+        UHCPlayer uhcPlayer = playersByUniqueId.get(player.getUniqueId());
+        if (uhcPlayer == null)
+            uhcPlayer = new UHCPlayer(player);
+        else
+            uhcPlayer.setEntityPlayer(player);
 
-        return getFromEntity(player);
+        return uhcPlayer;
     }
 
     public static UHCPlayer getFromEntity(Entity entity) {
-        try {
-            UHCPlayer uhcPlayer = ( UHCPlayer ) LegacyFoundationAdapter.getTempMetadata(entity, UHCPLAYER_TAG).value();
+        if (entity instanceof Player)
+            return getUHCPlayer(( Player ) entity);
 
-            if (entity instanceof Player)
-                uhcPlayer.setEntityPlayer(( Player ) entity);
-
-            return uhcPlayer;
-        } catch (NullPointerException e) {
-            return null;
-        }
+        CombatRelog relog = CombatRelog.getByRelogEntity(entity);
+        return relog == null ? null : relog.getUhcPlayer();
     }
 
 
@@ -71,6 +70,7 @@ public class UHCPlayer {
 
         initPlayerStatusFirstTime();
         allPlayers.add(this);
+        playersByUniqueId.put(player.getUniqueId(), this);
 
         loadStats();
     }
@@ -84,7 +84,7 @@ public class UHCPlayer {
 
     private void loadStats() {
         this.stats = new UHCStats();
-        LegacyFoundationAdapter.runLaterAsync(() -> this.stats = WonderlandUHC.getStatsStorage().loadOrCreate(this));
+        PluginScheduler.runLaterAsync(() -> this.stats = WonderlandUHC.getStatsStorage().loadOrCreate(this));
     }
 
 

@@ -1,9 +1,9 @@
 package org.mcwonderland.uhc.game.timer;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameTimerRunnable;
 import org.mcwonderland.uhc.game.settings.sub.UHCTimerSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
 import org.jetbrains.annotations.Nullable;
@@ -46,7 +46,7 @@ public abstract class Countdown extends SecondTimer {
             String broadcast = getCountdownBroadcast();
 
             if (broadcast != null)
-                Chat.broadcast(LegacyFoundationAdapter.replaceTimeToString(broadcast, untilEnable));
+                Chat.broadcast(PluginText.replaceTimeToString(broadcast, untilEnable));
         }
     }
 

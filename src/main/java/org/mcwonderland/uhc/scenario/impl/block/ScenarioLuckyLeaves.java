@@ -1,7 +1,8 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.random.PluginRandom;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -33,13 +34,13 @@ public class ScenarioLuckyLeaves extends ConfigBasedScenario implements Listener
 
     @EventHandler
     protected void onBlockBreak(UHCBlockBreakEvent e) {
-        if (LegacyFoundationAdapter.isLeaves(e.getBlockType()))
+        if (PluginMaterials.isLeaves(e.getBlockType()))
             randomDropGoldenApple(e.getBlock());
     }
 
     private void randomDropGoldenApple(Block block) {
-        if (LegacyFoundationAdapter.chance(goldenApplePercent))
-            WorldUtils.dropItems(block.getLocation(), LegacyFoundationAdapter.itemOf("GOLDEN_APPLE"));
+        if (PluginRandom.chance(goldenApplePercent))
+            WorldUtils.dropItems(block.getLocation(), PluginMaterials.itemOf("GOLDEN_APPLE"));
     }
 
     @Override

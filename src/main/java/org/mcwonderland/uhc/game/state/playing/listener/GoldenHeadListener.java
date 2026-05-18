@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.PotionApplier;
 import org.bukkit.entity.Player;
@@ -24,7 +24,7 @@ public class GoldenHeadListener implements Listener {
         String name = getItemName(item);
 
         if (name != null && name.equalsIgnoreCase(Settings.Misc.GOLDEN_HEAD_NAME)) {
-            LegacyFoundationAdapter.runLater(1, () -> {
+            PluginScheduler.runLater(1, () -> {
                 if (!player.isOnline() || player.isDead())
                     return;
 

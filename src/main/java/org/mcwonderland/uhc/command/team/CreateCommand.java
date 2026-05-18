@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.command.team;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.UHCTeam;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
@@ -22,7 +22,7 @@ class CreateCommand extends TeamSubCommand {
         checkAlreadyInTeam();
 
         UHCTeam.createTeamIfNotExist(getUhcPlayer());
-        tell(LegacyFoundationAdapter.replaceToArray(
+        tell(PluginText.replaceToArray(
                 CommandSettings.Team.Create.CREATED,
                 "{cmd}", getLabel()));
 

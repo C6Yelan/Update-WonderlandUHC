@@ -1,5 +1,7 @@
 package org.mcwonderland.uhc.game.timer.impl;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.application.match.CombatRelogTickAction;
 import org.mcwonderland.uhc.application.match.CombatRelogTickResult;
@@ -8,7 +10,6 @@ import org.mcwonderland.uhc.game.CombatRelog;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.timer.SecondTimer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.BorderUtil;
@@ -56,10 +57,10 @@ public class RelogExpireChecker extends SecondTimer {
         Location deathLocation = relogEntity.getLocation();
         DamageSource damageSource = DamageSource.builder(DamageType.GENERIC_KILL).build();
         EntityDeathEvent deathEvent = new EntityDeathEvent(relogEntity, damageSource, Lists.newArrayList());
-        LegacyFoundationAdapter.callEvent(deathEvent);
+        PluginEvents.callEvent(deathEvent);
 
         for (ItemStack drop : deathEvent.getDrops()) {
-            if (drop == null || LegacyFoundationAdapter.isAir(drop.getType()))
+            if (drop == null || PluginMaterials.isAir(drop.getType()))
                 continue;
 
             deathLocation.getWorld().dropItemNaturally(deathLocation, drop);

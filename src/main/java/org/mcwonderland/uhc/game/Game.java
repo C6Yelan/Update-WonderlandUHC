@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.game;
 
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +20,6 @@ import org.mcwonderland.uhc.game.state.playing.PlayingState;
 import org.mcwonderland.uhc.game.state.preparing.PreparingState;
 import org.mcwonderland.uhc.game.state.starting.PreStartState;
 import org.mcwonderland.uhc.game.state.starting.TeleportingState;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mineacademy.fo.collection.PlayerCollection;
 
@@ -75,7 +75,7 @@ public class Game {
         game.matchCenter = game.withCurrentBorderSize(game.matchCenter);
         game.getActiveMatch().updateSettings(matchSettings);
 
-        LegacyFoundationAdapter.callEvent(new GameChangeSettingsEvent(newSettings));
+        PluginEvents.callEvent(new GameChangeSettingsEvent(newSettings));
     }
 
     public MatchCenter getMatchCenter() {

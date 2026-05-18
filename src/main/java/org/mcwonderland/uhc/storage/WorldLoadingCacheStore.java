@@ -1,9 +1,9 @@
 package org.mcwonderland.uhc.storage;
 
 import org.mcwonderland.uhc.application.world.MatchCenter;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mineacademy.fo.settings.YamlConfig;
 
@@ -62,7 +62,7 @@ public final class WorldLoadingCacheStore extends YamlConfig {
     }
 
     public void delete() {
-        File file = LegacyFoundationAdapter.getFile(getFileName());
+        File file = new File(WonderlandUHC.getInstance().getDataFolder(), getFileName());
 
         if (file.exists()) {
             YamlConfig.clearLoadedSections();

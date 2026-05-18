@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.model.deathmsg;
 
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.random.PluginRandom;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mineacademy.fo.settings.YamlConfig;
 
@@ -23,7 +23,7 @@ public abstract class DeathMessages extends YamlConfig {
         if (messages.isEmpty())
             return "";
 
-        return replacePlaceholders(uhcPlayer, LegacyFoundationAdapter.nextItem(messages));
+        return replacePlaceholders(uhcPlayer, PluginRandom.nextItem(messages));
     }
 
     private String replacePlaceholders(UHCPlayer uhcPlayer, String s) {

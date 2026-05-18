@@ -2,7 +2,7 @@ package org.mcwonderland.uhc.settings.spawn;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,15 +24,23 @@ public class UHCSpawn extends YamlConfig {
     }
 
     private Location getLocationSafe(String path) {
-        return LegacyFoundationAdapter.getLocationOrDefault(() -> {
+        if (!isSet(path))
+            return defaultLocation();
+
+        try {
             Location location = getLocation(path);
+            if (location == null)
+                return defaultLocation();
+
             set = true;
             return location;
-        }, this::defaultLocation);
+        } catch (RuntimeException e) {
+            return defaultLocation();
+        }
     }
 
     private Location defaultLocation(String... msg) {
-        LegacyFoundationAdapter.log(msg);
+        PluginConsole.log(msg);
         return Bukkit.getWorlds().get(0).getSpawnLocation();
     }
 

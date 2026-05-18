@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.util;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -24,7 +23,7 @@ public class ItemSimilarChecker {
     }
 
     private static boolean checkSimilar() {
-        if (LegacyFoundationAdapter.isSimilar(item, comparision))
+        if (item.isSimilar(comparision))
             return checkOther();
 
         return false;

@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.model.freeze;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.mcwonderland.uhc.WonderlandUHC;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.Bukkit;
@@ -30,7 +30,7 @@ public class SitFreeze implements FreezeMode, Listener {
 
     @Override
     public void freeze(Player player) {
-        LegacyFoundationAdapter.runLater(5, () -> {
+        PluginScheduler.runLater(5, () -> {
             Pig pig = player.getWorld().spawn(player.getLocation(), Pig.class);
             pig.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 99999, 1));
             pig.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 99999, 255));

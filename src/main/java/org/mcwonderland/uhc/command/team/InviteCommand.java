@@ -1,15 +1,21 @@
 package org.mcwonderland.uhc.command.team;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
 
 class InviteCommand extends TeamOwnerCommand {
+
+    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
 
     protected InviteCommand(TeamCommandGroup parent, String sublabel) {
         super(parent, sublabel);
@@ -31,7 +37,7 @@ class InviteCommand extends TeamOwnerCommand {
         checkInvitationValid(team, target);
 
         team.addInvited(target);
-        team.sendMessage(LegacyFoundationAdapter.replaceToArray(
+        team.sendMessage(PluginText.replaceToArray(
                 CommandSettings.Team.Invite.INVITED,
                 "{player}", player.getName(),
                 "{target}", target.getName()));
@@ -54,13 +60,18 @@ class InviteCommand extends TeamOwnerCommand {
         for (String s : CommandSettings.Team.Invite.INVITATION_MESSAGES) {
             if (s.contains("{click-join}")) {
                 String clickHere = CommandSettings.Team.Invite.CLICK_HERE;
-                LegacyFoundationAdapter.sendRunCommandComponent(
-                        target,
+                target.sendMessage(runCommandComponent(
                         s.replace("{click-join}", clickHere),
                         "/team join " + getPlayer().getName(),
-                        clickHere);
+                        clickHere));
             } else
                 Chat.send(target, s.replace("{player}", getPlayer().getName()));
         }
+    }
+
+    private Component runCommandComponent(String message, String command, String hover) {
+        return LEGACY_AMPERSAND.deserialize(message)
+                .clickEvent(ClickEvent.runCommand(command))
+                .hoverEvent(HoverEvent.showText(LEGACY_AMPERSAND.deserialize(hover)));
     }
 }

@@ -4,8 +4,8 @@ import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.CombatRelog;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class ScenarioSwapInventory extends ConfigBasedScenario implements Listen
         try {
             swapInventory(e);
         } catch (RuntimeException | LinkageError ex) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     ex,
                     "Scenario 'Swap_Inventory' failed while handling a death event.",
                     "The scenario was disabled for this run, but the death flow will continue."
@@ -139,7 +139,7 @@ public class ScenarioSwapInventory extends ConfigBasedScenario implements Listen
 
             replaceDrops(drops, originalDrops);
         } catch (RuntimeException | LinkageError rollbackEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     rollbackEx,
                     "Scenario 'Swap_Inventory' could not fully roll back a failed inventory swap."
             );
@@ -179,7 +179,7 @@ public class ScenarioSwapInventory extends ConfigBasedScenario implements Listen
             if (isEnabled())
                 disable();
         } catch (RuntimeException | LinkageError disableEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     disableEx,
                     "Scenario 'Swap_Inventory' could not be disabled after a runtime failure."
             );

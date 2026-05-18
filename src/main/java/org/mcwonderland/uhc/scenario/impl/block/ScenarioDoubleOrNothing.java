@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.core.rule.OreRuleSupport;
+import org.mcwonderland.uhc.platform.random.PluginRandom;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -37,7 +37,7 @@ public class ScenarioDoubleOrNothing extends ConfigBasedScenario implements List
     }
 
     private void doubleOrNothing(UHCBlockBreakEvent e) {
-        if (LegacyFoundationAdapter.nextBoolean())
+        if (PluginRandom.nextBoolean())
             e.getDrops().forEach(drop -> drop.setAmount(drop.getAmount() * 2));
         else {
             e.getDrops().clear();

@@ -1,9 +1,9 @@
 package org.mcwonderland.uhc.game.timer.impl.countdown;
 
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.timer.Countdown;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -23,7 +23,7 @@ public class LobbyCountdown extends Countdown {
         UHCWorldUtils.getWorld().setDifficulty(Difficulty.PEACEFUL);
         TeamModifier.splitTeams();
 
-        for (Player p : LegacyFoundationAdapter.getOnlinePlayers()) {
+        for (Player p : PluginPlayers.onlinePlayers()) {
             p.closeInventory();
 
             if (GameUtils.isStaff(p))

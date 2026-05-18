@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.consume;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -84,10 +84,10 @@ public class ScenarioFoodNeophobia extends ConfigBasedScenario implements Listen
     }
 
     private boolean isIgnoredItem(Material material) {
-        return material == LegacyFoundationAdapter.materialOf("MILK_BUCKET")
-                || material == LegacyFoundationAdapter.materialOf("GOLDEN_APPLE")
-                || material == LegacyFoundationAdapter.materialOf("ENCHANTED_GOLDEN_APPLE")
-                || material == LegacyFoundationAdapter.materialOf("POTION");
+        return material == PluginMaterials.materialOf("MILK_BUCKET")
+                || material == PluginMaterials.materialOf("GOLDEN_APPLE")
+                || material == PluginMaterials.materialOf("ENCHANTED_GOLDEN_APPLE")
+                || material == PluginMaterials.materialOf("POTION");
     }
 
     static void recordEatenFoodType(UUID playerId, Material material) {

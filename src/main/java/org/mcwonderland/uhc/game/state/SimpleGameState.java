@@ -4,7 +4,7 @@ import lombok.Getter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.StateName;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import org.mcwonderland.uhc.scoreboard.SidebarTheme;
 import org.mcwonderland.uhc.scoreboard.line.ScoreLines;
 import org.bukkit.entity.Player;
@@ -27,7 +27,7 @@ public abstract class SimpleGameState implements GameState {
     @Override
     public final void init() {
         this.listeners = initListeners();
-        this.listeners.forEach(LegacyFoundationAdapter::registerEvents);
+        this.listeners.forEach(PluginEvents::registerEvents);
         onInit();
     }
 

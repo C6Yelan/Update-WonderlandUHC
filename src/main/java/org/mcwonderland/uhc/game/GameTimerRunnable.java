@@ -1,11 +1,11 @@
 package org.mcwonderland.uhc.game;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.mcwonderland.uhc.application.match.MatchTimerTickResult;
 import org.mcwonderland.uhc.application.match.MatchTimerTickUseCase;
 import org.mcwonderland.uhc.game.timer.Timer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GameTimerRunnable implements Runnable {
@@ -15,7 +15,7 @@ public class GameTimerRunnable implements Runnable {
     public static boolean RUN = false;
 
     public static void start() {
-        LegacyFoundationAdapter.runTimer(1, new GameTimerRunnable());
+        PluginScheduler.runTimer(1, new GameTimerRunnable());
     }
 
     @Override

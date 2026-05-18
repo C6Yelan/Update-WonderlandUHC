@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scoreboard;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -9,7 +10,6 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.util.List;
 
@@ -41,7 +41,7 @@ public class SimpleSidebar {
     }
 
     public final void setTitle(String title) {
-        title = LegacyFoundationAdapter.colorize(title);
+        title = PluginText.colorize(title);
         sidebar.displayName(toComponent(StringUtils.left(title, 32)));
     }
 
@@ -51,7 +51,7 @@ public class SimpleSidebar {
         if (!scoreboard.getEntries().contains(entry)) {
             sidebar.getScore(entry).setScore(slot);
         }
-        text = LegacyFoundationAdapter.colorize(text);
+        text = PluginText.colorize(text);
         String pre = getFirstSplit(text);
         String suf = getFirstSplit(getLastColors(pre) + getSecondSplit(text));
         team.prefix(toComponent(pre));

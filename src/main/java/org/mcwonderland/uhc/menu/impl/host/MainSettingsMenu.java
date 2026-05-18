@@ -1,12 +1,12 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.application.match.MatchStartRequestService;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.menu.model.InventoryEditButton;
 import org.mcwonderland.uhc.menu.model.UHCNumberEditButton;
@@ -194,7 +194,7 @@ public class MainSettingsMenu extends ConfigMenu {
 
             @Override
             protected void onEdit(String s) {
-                String newTitle = LegacyFoundationAdapter.colorize(s);
+                String newTitle = PluginText.colorize(s);
                 settings.setTitle(newTitle);
 
                 String broadcastMessage = Messages.Editor.Text.Title.SAVED.replace("{title}", newTitle);

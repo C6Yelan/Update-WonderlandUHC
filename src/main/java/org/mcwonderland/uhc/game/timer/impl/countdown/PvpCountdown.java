@@ -1,9 +1,9 @@
 package org.mcwonderland.uhc.game.timer.impl.countdown;
 
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import org.mcwonderland.uhc.api.event.timer.PvPEnableEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.timer.Countdown;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
@@ -12,7 +12,7 @@ public class PvpCountdown extends Countdown {
 
     @Override
     public void execute() {
-        LegacyFoundationAdapter.callEvent(new PvPEnableEvent());
+        PluginEvents.callEvent(new PvPEnableEvent());
         Game.getGame().setPvpEnabled(true);
     }
 

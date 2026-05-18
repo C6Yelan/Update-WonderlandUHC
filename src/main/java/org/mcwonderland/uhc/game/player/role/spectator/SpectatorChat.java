@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.game.player.role.spectator;
 
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.player.role.models.RoleChat;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
@@ -18,7 +18,7 @@ public class SpectatorChat extends RoleChat {
         String formattedMsg = replace(Messages.ChatFormat.SPECTATORS, player, message);
 
         if (UHCPermission.SPECTATOR_CHAT_GLOBAL.hasPerm(player)) {
-            for (Player o : LegacyFoundationAdapter.getOnlinePlayers())
+            for (Player o : PluginPlayers.onlinePlayers())
                 Chat.send(o, formattedMsg);
         } else {
             Collection<UHCPlayer> toSend = UHCPlayers

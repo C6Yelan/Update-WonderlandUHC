@@ -175,7 +175,7 @@ rg -n "LegacyDatouNmsAdapter\\.current\\(\\)\\." Update-WonderlandUHC/src/main/j
 | 已推送：`e1d3394` | death animation | `PlayingDeathListener` 不再呼叫 DatouNMS 播放假玩家死亡動畫；`TestCommand` 移除 `ani` debug 分支。Paper/Bukkit 無穩定等價 API，本切片不導入 packet/NMS 替代。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；Paper `1.21.11` server 以 `start.bat` 啟動到 `Done`。 |
 | 已推送：`4be50ea` | old enchant removal | `FeatureRegistry` 不再註冊 `OldEnchantListener`，並刪除 listener 檔案。1.7 舊附魔模擬正式移除；`OldEnchant` 設定暫留相容。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；Paper `1.21.11` server 以 `start.bat` 啟動到 `Done`。 |
 | 本輪完成 | exp pickup control | `RolePlayerApplier`、`RoleSpectatorApplier`、`RoleStaffApplier`、`RespawnCommand` 不再呼叫 `setCanPickupExp`；role / respawn 改用 Paper `Player#setExpCooldown(...)`，staff/spectator 設為 `Integer.MAX_VALUE`，player/respawn 設回 `0`。另新增 `ExperiencePickupListener`，在 XP orb target 選到 `RoleName.SPECTATOR` / `RoleName.STAFF` 時改指向最近的 `RoleName.PLAYER`，沒有參賽玩家則清成 `null`；pickup 事件仍取消作保險。這不建立大型狀態系統，也不手寫 orb 物理。 | `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`。已接受 staff/spectator client 視角可能仍有 XP 吸附假象，因其不影響公平性且活著玩家視角正常。 |
-| 本輪完成，尚未 commit | dependency / adapter cleanup | 移除 `build.gradle` 的 DatouNMS dependency、`WonderlandUHC#onPluginStart()` 的 `bootstrap.setupNms()` 呼叫、`PluginBootstrap#setupNms()`、`LegacyDatouNmsAdapter.java`、`PlatformCapabilities.java` 與只測 legacy adapter 的 `LegacyDatouNmsAdapterTest`。本刀不處理 Foundation，也不新增 DatouNMS replacement service。 | `rg` gate 已確認 `src/main/java` / `build.gradle` 無 DatouNMS、NMS、CraftBukkit 與 legacy DatouNMS 命中；`scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`，且 DaTouNMS unsupported 訊息已不再出現。 |
+| 已推送：`e8c0bb9` | dependency / adapter cleanup | 移除 `build.gradle` 的 DatouNMS dependency、`WonderlandUHC#onPluginStart()` 的 `bootstrap.setupNms()` 呼叫、`PluginBootstrap#setupNms()`、`LegacyDatouNmsAdapter.java`、`PlatformCapabilities.java` 與只測 legacy adapter 的 `LegacyDatouNmsAdapterTest`。本刀不處理 Foundation，也不新增 DatouNMS replacement service。 | `rg` gate 已確認 `src/main/java` / `build.gradle` 無 DatouNMS、NMS、CraftBukkit 與 legacy DatouNMS 命中；`scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`，且 DaTouNMS unsupported 訊息已不再出現。 |
 
 目前 `LegacyDatouNmsAdapter.current()` 主流程剩餘呼叫：
 
@@ -203,7 +203,7 @@ rg -n "LegacyDatouNmsAdapter\\.current\\(\\)|capabilities\\(|is[A-Za-z]+Availabl
 | adapter 本體 | 已刪除 `legacy/LegacyDatouNmsAdapter.java`。 | 未把舊 fallback 抽成新 helper；正式使用點已各自改成 Bukkit/Paper 實作。 |
 | adapter test | 已刪除 `src/test/java/org/mcwonderland/uhc/legacy/LegacyDatouNmsAdapterTest.java`。 | 測試目標已被正式移除；不為測試重新建立 legacy adapter 或替代 helper。 |
 | capability wrapper | 已刪除 `platform/PlatformCapabilities.java`。 | 該類只服務 DatouNMS adapter，無需保留。 |
-| NMS / CraftBukkit reflection | `src/main/java` / `build.gradle` 搜尋未發現 DatouNMS、NMS、CraftBukkit 或 `ArmorInfo` 使用。 | 搜尋 gate、封裝與 server startup 均已通過。 |
+| NMS / CraftBukkit reflection | `src/main/java` / `build.gradle` 搜尋未發現 DatouNMS、NMS、CraftBukkit 或 `ArmorInfo` 使用；後續補強 gate 也移除 `PlayerUtils#breakBlockNms`、`LegacyFoundationAdapter#getHandleEntity`、`newBlockPosition` 與 `ObjectCreator.NMS_BLOCKPOSITION`。 | 搜尋 gate、封裝與 server startup 均已通過。 |
 
 本輪修改範圍：
 
@@ -227,6 +227,7 @@ rg -n "LegacyDatouNmsAdapter\\.current\\(\\)|capabilities\\(|is[A-Za-z]+Availabl
 
 ```bash
 rg -n "DaTouNMS|datounms|NewerSpigotAPI|LegacyDatouNmsAdapter|PlatformCapabilities|setupNms|net\\.minecraft|org\\.bukkit\\.craftbukkit|ArmorInfo" src/main/java build.gradle
+rg -n "NMS|Nms|nms|breakBlockNms|newBlockPosition|getHandleEntity|ObjectCreator|playerInteractManager" src/main/java build.gradle
 scripts/package-plugin-1.21.sh --skip-foundation --no-clean
 ```
 
@@ -261,6 +262,194 @@ scripts/package-plugin-1.21.sh --skip-foundation --no-clean
 | metadata / entity state | `setTempMetadata`、`getTempMetadata` | 轉成 Bukkit `PersistentDataContainer`、本地 map，或明確 owner-managed state；不可只包一層 suppress。 |
 | file/config utility | `getFile`、`getOrMakeFile`、`extractFile` | 使用 `JavaPlugin#getDataFolder()` 與既有 asset port。 |
 | command component | `sendRunCommandComponent` | 使用 Adventure component API 或既有 text helper。 |
+
+#### 21.2 只讀盤點：`LegacyFoundationAdapter` 使用點
+
+更新日期：2026-05-16。
+
+本輪只做盤點與文件更新，未修改程式碼。掃描指令：
+
+```bash
+rg -n "LegacyFoundationAdapter\.([A-Za-z0-9_]+)" src/main/java src/test/java
+rg -o "LegacyFoundationAdapter\.[A-Za-z0-9_]+" src/main/java src/test/java | sed 's/.*LegacyFoundationAdapter\.//' | sort | uniq -c | sort -nr
+rg -n "org\.mineacademy\.fo|LegacyFoundationAdapter|lib-foundation" src/main/java build.gradle | wc -l
+```
+
+盤點結果：
+
+- `org.mineacademy.fo`、`LegacyFoundationAdapter` 與 `lib-foundation` 相關命中合計仍有 `648` 行；移除 `LegacyFoundationAdapter` 只是 21.2 utility adapter 拆除的一部分，不能視為已移除 Foundation。
+- `LegacyFoundationAdapter` 仍包住 logging、scheduler、event、placeholder/text、material/item/sound、metadata/reflection、player/command、file/config、random/math 與 version/platform 等多種 Foundation helper。
+- 高頻方法包含：`materialOf` `24`、`error` `24`、`callEvent` `19`、`runLater` `18`、`log` `12`、`getOnlinePlayers` `12`、`colorize` `9`、`replaceToList` `8`、`isAir` `7`、`logNoPrefix` `7`。
+- 中低頻但風險高的方法包含：`setTempMetadata` / `getTempMetadata` / `hasTempMetadata`、`setChunkForceLoaded`、`getHandleEntity`、`newBlockPosition`、`invoke`、`commandGroupRegistrar`、`sendRunCommandComponent`。
+
+依實際使用點重新排序的 21.2 建議：
+
+| 優先級 | 功能族群 | 盤點判斷 |
+| --- | --- | --- |
+| 先做 | logging / console | `log`、`logNoPrefix`、`logFramed`、`consoleLineSmooth` 屬於低 gameplay 風險，且多處共享輸出語意；第一刀可建立極小 logger/helper 或直接替換明確使用點。 |
+| 暫緩 | `error` | 次數高且多在 scenario / listener catch block；可作為 logging 第二刀，先確認舊 `Common.error` 的輸出與 stack trace 語意。 |
+| 暫緩 | scheduler / events | `runLater`、`runTimer`、`callEvent` 牽涉 tick 時序與 async/sync 邊界；可做，但不應作為 21.2 第一刀。 |
+| 暫緩 | material / item / sound | `materialOf` 次數最高，且與 config alias、scenario、menu/settings 顯示混在一起；需要更細切，不可一次大改。 |
+| 暫緩 | metadata / reflection / chunk | 牽涉 runtime state 與 Paper 版本差異；不得只包一層新的 suppress helper。 |
+| 不屬於 21.2 第一刀 | command / menu / settings framework | `commandGroupRegistrar`、Foundation command base、Foundation menu/config direct import 應留給 21.3、21.4、21.5 的對應切片。 |
+
+下一個實作切片建議先處理 logging / console utility，範圍限縮為：
+
+- `LegacyFoundationAdapter.log(...)`
+- `LegacyFoundationAdapter.logNoPrefix(...)`
+- `LegacyFoundationAdapter.logFramed(...)`
+- `LegacyFoundationAdapter.consoleLineSmooth(...)`
+- 如有實際呼叫再一併處理 `logReplacing(...)`
+
+此切片不先處理 `error(...)`，也不碰 command、menu、settings、scheduler、material parser 或 metadata/reflection。這樣可以先拔掉一組 Foundation utility dependency，同時避免把行為風險擴散到 gameplay。
+
+本切片實作結果：
+
+- 新增 `PluginConsole` 承接 `log`、`logNoPrefix`、`logFramed` 與 `consoleLineSmooth` 的 console 輸出語意。
+- `LegacyFoundationAdapter.log(...)`、`logNoPrefix(...)`、`logFramed(...)`、`consoleLineSmooth()`、`logReplacing(...)` 已從 adapter 移除。
+- 呼叫點已改為直接使用 `PluginConsole`；`rg -n "LegacyFoundationAdapter\.(log|logNoPrefix|logFramed|consoleLineSmooth|logReplacing)" src/main/java src/test/java` 無命中。
+- 本切片刻意不處理 scheduler、material parser、metadata/reflection、command、menu、settings。
+
+後續 `error(...)` 小切片實作結果：
+
+- `PluginConsole.error(Throwable, String...)` 承接錯誤輸出、stack trace、`%error%` placeholder 替換與 framed console message。
+- `LegacyFoundationAdapter.error(...)` 已從 adapter 移除。
+- 24 個 scenario / listener / model runtime failure handler 已改為 `PluginConsole.error(...)`；不改 catch 行為、不改 scenario 邏輯。
+- `rg -n "LegacyFoundationAdapter\.error\(" src/main/java src/test/java` 無命中。
+- 本切片不移植 Foundation `Debugger` / `errors.log` subsystem，避免把 Foundation debug layer 搬成新的大型相容層。
+
+後續 scheduler / events 小切片實作結果：
+
+- 新增 `PluginScheduler` 承接 `runLater`、`runAsync`、`runLaterAsync`、`runTimer` 與 `runTimerAsync`，底層直接使用 Bukkit scheduler 與 `WonderlandUHC` plugin instance。
+- 新增 `PluginEvents` 承接 `callEvent` 與 `registerEvents`，底層直接使用 Bukkit plugin manager。
+- `LegacyFoundationAdapter` 的 scheduler / event wrapper 已移除，呼叫點改為 `PluginScheduler` / `PluginEvents`；`rg -n "LegacyFoundationAdapter\.(runLater|runAsync|runLaterAsync|runTimer|runTimerAsync|callEvent|registerEvents)|LegacyFoundationAdapter::registerEvents" src/main/java src/test/java` 無命中。
+- 本切片只替換 Foundation `Common` scheduler/event helper；不改 tick 時序、不重寫 listener/scenario 邏輯，也不建立大型 task framework。
+- `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 已通過。
+
+後續 player / action bar 小切片實作結果：
+
+- 新增 `PluginPlayers` 承接 `onlinePlayers`、`getByUniqueId`、`getByName`、`playerNames`、`kick` 與 `sendActionBar`，底層使用 Bukkit online player API、metadata vanished flag、Adventure component 與 `PluginScheduler`。
+- `LegacyFoundationAdapter` 的 `getOnlinePlayers`、`getPlayerByUUID`、`getPlayerByNick`、`getPlayerNames`、`kickPlayer`、`sendActionBar` wrapper 已移除，呼叫點改為 `PluginPlayers`。
+- `rg -n "LegacyFoundationAdapter\.(getOnlinePlayers|getPlayerByUUID|getPlayerByNick|getPlayerNames|kickPlayer|sendActionBar)|LegacyFoundationAdapter::getPlayerByUUID" src/main/java src/test/java` 無命中。
+- 本切片不重寫 player state、permission、team、menu 或 nickname integration；`getByName` 保留 online player exact / prefix lookup 與 vanished metadata gate，避免把 Foundation hook layer 搬回主插件。
+- `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 已通過。
+
+後續 text / placeholder / time 小切片實作結果：
+
+- 新增 `PluginText` 承接 legacy color、strip color、placeholder pair replacement、time placeholder、clock time、five-digit number formatting 與 enum display name formatting。
+- `LegacyFoundationAdapter` 的 `colorize`、`stripColors`、`replaceToArray`、`replaceToString`、`replaceToList`、`replaceJoinedToList`、`replaceTimeToArray`、`replaceTimeToString`、`replaceTimeToList`、`replaceTimePlaceholders`、`formatTime`、`formatFiveDigits`、`bountifyCapitalized` wrapper 已移除，呼叫點改為 `PluginText`。
+- `rg -n "LegacyFoundationAdapter\.(colorize|stripColors|replaceToArray|replaceToString|replaceToList|replaceJoinedToList|replaceTimeToArray|replaceTimeToString|replaceTimeToList|replaceTimePlaceholders|formatTime|formatFiveDigits|bountifyCapitalized)" src/main/java src/test/java` 無命中。
+- 本切片不導入 MiniMessage 或新訊息框架，也不重寫 command/menu/settings lifecycle；只承接原本散在 Foundation 的純字串 helper。
+- `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 已通過。
+
+後續 material / item / block classification 小切片實作結果：
+
+- 新增 `PluginMaterials` 承接 vanilla `Material` lookup、`ItemStack` 建立、air / leaves / log / grass / double plant 判斷與 player inventory first item lookup。
+- `LegacyFoundationAdapter` 的 `materialOf`、`itemOf`、`isAir`、`isLeaves`、`isLog`、`isLongGrass`、`isDoublePlant`、`getFirstItem` wrapper 已移除，呼叫點改為 `PluginMaterials`。
+- `rg -n "LegacyFoundationAdapter\.(materialOf|itemOf|isAir|isLeaves|isLog|isLongGrass|isDoublePlant|getFirstItem)" src/main/java src/test/java` 無命中。
+- 本切片只處理明確 vanilla material 與 block classification；不處理 `ScenarioConfig` / Foundation `YamlConfig#getMaterial`、Foundation `ItemCreator`、menu material parser 或舊 alias config migration。
+- `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 已通過。
+
+後續 random / math 小切片實作結果：
+
+- 新增 `PluginRandom` 承接 `nextItem`、`chance`、`nextBoolean`，底層使用 Java `ThreadLocalRandom`；不建立大型 random service 或可注入狀態系統。
+- `LegacyFoundationAdapter` 的 `nextItem`、`chance`、`nextBoolean`、`range`、`ceiling`、`isSimilar`、`getMaxHealth` wrapper 已移除；隨機呼叫點改為 `PluginRandom`，數值 clamp / radius / item similarity 改用 Java / Bukkit 原生 API，player max health 改由 `PlayerUtils#getMaxHealth` 使用 Bukkit `Attribute.MAX_HEALTH`。
+- `rg -n "LegacyFoundationAdapter\.(nextItem|chance|nextBoolean|range|ceiling|isSimilar|getMaxHealth)" src/main/java src/test/java` 無命中。
+- 本切片不處理 command、menu、settings、metadata/reflection、sound 或 file/config helper。
+
+後續 sound playback 小切片實作結果：
+
+- `LegacyFoundationAdapter` 的 `playSound`、`playGlobalSound`、`playItemBreakSound` wrapper 已移除。
+- 既有 `Extra.sound(...)` 保持為全專案播放入口，直接呼叫目前設定仍使用的 Foundation `SimpleSound#play(...)`；工具耐久破裂音改在 `PlayerUtils` 直接使用 Bukkit `Player#playSound(...)`。
+- `rg -n "LegacyFoundationAdapter\.(playSound|playGlobalSound|playItemBreakSound)" src/main/java src/test/java` 無命中。
+- 重要未完成項：本切片只移除 adapter sound wrapper，尚未移除 Foundation `SimpleSound` dependency。`Sounds.java`、`SoundConfigParser`、`YamlConfigLoader`、scenario sound 欄位與 `sounds.yml` migration 仍需後續獨立盤點與實作，不能在 Step 21 收尾時誤判為已完成。
+- 本切片不新增 `PluginSounds` 或其他播放 service，不處理 `sounds.yml`、`SimpleSound` 設定型別、`SoundConfigParser` 或 Foundation config parser。
+
+後續 version / old-server compatibility 小切片實作結果：
+
+- 固定 Paper `1.21.11` 目標後，`Dependency`、`WorldUtils`、`CenterCleaner`、`ScenarioPotionLess`、`PlayingState` 不再透過 Foundation `MinecraftVersion` / `Remain.isPaper()` 判斷舊版分支。
+- `PortalListener` 移除只服務舊版 travel agent 的 reflection fallback，不再呼叫 Foundation `getMethod` / `invoke`。
+- `LegacyFoundationAdapter` 的 `isAtLeastMinecraft1_13`、`isAtLeastMinecraft1_14`、`isAtLeastMinecraft1_9`、`isAtLeastMinecraft1_11`、`isOlderThanMinecraft1_9`、`isOlderThanMinecraft1_14`、`getServerVersion`、`isPaperServer`、`getMethod`、`invoke` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\.(isAtLeastMinecraft1_13|isAtLeastMinecraft1_14|isAtLeastMinecraft1_9|isAtLeastMinecraft1_11|isOlderThanMinecraft1_9|isOlderThanMinecraft1_14|getServerVersion|isPaperServer|getMethod|invoke)" src/main/java src/test/java` 無命中。
+- 本切片不新增 `PluginVersion` 或 platform detection wrapper；只刪除固定 1.21.11 目標下不再需要的舊版相容分支。
+
+後續 legacy WorldBorder fallback 小切片實作結果：
+
+- 舊外部 WorldBorder plugin 不再作為預生成 fallback；預生成正式部署依賴為 `Chunky`，缺少 Chunky 時會明確報錯，不再建議暫時啟用 legacy WorldBorder。
+- 刪除 `LegacyWorldBorderPregenerationAdapter`、`LegacyWorldBorderFillListener` 與 `FeatureRegistry` 的 legacy listener 註冊；`ChunkPregenerationAdapters` 只選擇 `ChunkyPregenerationAdapter` 或 `MissingChunkPregenerationAdapter`。
+- `Dependency.WORLD_BORDER`、`plugin.yml` 的 `WorldBorder` softdepend、`build.gradle` 的 WorldBorder `compileOnly` 與舊 WorldBorder 訊息 key 已移除。
+- `rg -n "dispatchCommand\\(.*wb|WorldBorderFillFinishedEvent|com\\.wimbli\\.WorldBorder" src/main/java src/main/resources` 無命中。
+- 本切片不改 Paper/Bukkit `WorldBorderPort`、`PaperWorldBorderAdapter` 或既有 Chunky 預生成主路徑。
+
+後續 metadata / chunk force-loaded 小切片實作結果：
+
+- `CombatRelog`、`CombatRelogListener`、`UHCPlayer`、`InvinciblePlayer`、`Tutorial` 與 `ScenarioTripleArrow` 不再透過 `LegacyFoundationAdapter` 存取 Foundation `CompMetadata` / `ChunkKeeper`。
+- `UHCPlayer`、combat relog、tutorial 與 no-clean bypass 這類 runtime object state 改成 owner-managed map / set；`ScenarioTripleArrow` 的 projectile marker 改用 `PersistentDataContainer`；combat relog chunk keep alive 改用 Bukkit `Chunk#setForceLoaded(...)`。
+- `LegacyFoundationAdapter` 的 `getTempMetadata`、`hasTempMetadata`、`setTempMetadata`、`removeTempMetadata` 與 `setChunkForceLoaded` wrapper 已移除。
+- `rg -n "getTempMetadata|hasTempMetadata|setTempMetadata|removeTempMetadata|setChunkForceLoaded|CompMetadata|ChunkKeeper" src/main/java src/test/java` 無命中。
+- 本切片不重寫 `UHCPlayer` lifecycle、combat relog model、tutorial 流程或 scenario 行為，也不新增新的 metadata service；沒有改用 Bukkit deprecated metadata API 當替代。
+
+後續 permission / validation 小切片實作結果：
+
+- `UHCPermission` 不再透過 Foundation `PlayerUtil.hasPerm` / `Valid.checkPermission`；權限判斷改用 Bukkit `Player#hasPermission(...)`，缺權限訊息改讀本地 `Messages.NO_PERMISSION`。
+- `Dependency` 不再提供 Foundation 風格 `check()` / `checkSoft()`；目前唯一使用點 `/reconnect` 改在 command 內檢查 DiscordSRV 是否 hooked，並用既有 command `returnTell(...)` 回覆缺 dependency 訊息。
+- `LegacyFoundationAdapter` 的 `hasPermission`、`checkPermission` 與 `checkBoolean` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.(hasPermission|checkPermission|checkBoolean)|org\\.mineacademy\\.fo\\.PlayerUtil|org\\.mineacademy\\.fo\\.Valid|Dependency\\.[A-Z_]+\\.check" src/main/java src/test/java` 無命中。
+- 本切片不處理 `SimpleCommand` / command `returnTell(...)` 最終移除；這仍屬 command framework 切片。
+
+後續 file extraction / data-file access 小切片實作結果：
+
+- `PluginBootstrap#loadFiles()` 不再透過 Foundation `FileUtil.extract(...)`；改用 Bukkit `JavaPlugin#saveResource(path, false)` 複製內建設定檔。
+- `OldMenusCheck` 與 `WorldLoadingCacheStore#delete()` 不再透過 Foundation `FileUtil#getFile` / `getOrMakeFile`；改用 `WonderlandUHC#getDataFolder()` 下的明確 `File` 路徑。
+- `LegacyFoundationAdapter` 的 `extractFile`、`getFile` 與 `getOrMakeFile` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.(extractFile|getFile|getOrMakeFile)|org\\.mineacademy\\.fo\\.FileUtil" src/main/java src/test/java` 無命中。
+- 本切片不建立通用 file service，也不處理 Foundation `YamlConfig` / settings lifecycle。
+
+後續 broadcast failure 小切片實作結果：
+
+- `DiscordBroadcastSender` 不再透過 Foundation `FoException` 表示可回覆給玩家的 Discord 發送失敗；改用主插件本地 `BroadcastDeliveryException`。
+- `BroadcastSettingsMenu` 只捕捉 `BroadcastDeliveryException` 並把訊息回覆給玩家；其他 runtime exception 仍維持拋出，避免吞掉真正錯誤。
+- `LegacyFoundationAdapter` 的 `failure` 與 `isFailure` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.(failure|isFailure)" src/main/java src/test/java` 無命中。
+- 本切片不重寫 broadcast framework、DiscordSRV 整合或 menu lifecycle。
+
+後續 reflection / location fallback 小切片實作結果：
+
+- `UHCSpawn` 不再透過 `LegacyFoundationAdapter#getLocationOrDefault(...)`；設定讀取失敗時直接在使用點保留既有 fallback，回到主世界 spawn。
+- `TestCommand` 的 `files` debug 分支不再反射 Foundation `YamlConfig.loadedFiles`，該反射入口已移除。
+- `LegacyFoundationAdapter` 的 `getLocationOrDefault`、`getFieldContent` 與 `getStaticFieldContent` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.(getLocationOrDefault|getFieldContent|getStaticFieldContent)|org\\.mineacademy\\.fo\\.ReflectionUtil" src/main/java src/test/java` 無命中。
+- 本切片不重寫 `YamlConfig` / settings lifecycle，也不新增 reflection helper。
+
+後續 command dispatch 小切片實作結果：
+
+- `PlayerChat` 的 team chat 轉發不再透過 Foundation `Common.dispatchCommandAsPlayer(...)`；改用既有 `PluginScheduler.runLater(0, ...)` 回主執行緒後呼叫 Bukkit `Player#performCommand(...)`。
+- 保留舊 wrapper 的 `{player}` 替換語意；chat event 仍不在 async thread 直接執行 command。
+- `LegacyFoundationAdapter` 的 `dispatchCommand` 與 `dispatchCommandAsPlayer` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.(dispatchCommand|dispatchCommandAsPlayer)" src/main/java src/test/java` 無命中。
+- 本切片不新增 command helper，也不重寫 team command / command framework。
+
+後續 tutorial boxed message 小切片實作結果：
+
+- `TutorialSection` 不再透過 Foundation `BoxedMessage.tell(...)`；改在 tutorial section 本地輸出上下分隔線與訊息內容。
+- `LegacyFoundationAdapter` 的 `tellBoxed` 與 `broadcastBoxed` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.(tellBoxed|broadcastBoxed)|org\\.mineacademy\\.fo\\.model\\.BoxedMessage" src/main/java src/test/java` 無命中。
+- 本切片不新增 boxed message service，也不重寫 tutorial 流程。
+
+後續 clickable run-command component 小切片實作結果：
+
+- `InviteCommand`、`RegenWorldCommand` 與 `InventoryEditButton` 不再透過 Foundation `SimpleComponent` 送 clickable run-command 訊息；改用 Adventure `Component`、`ClickEvent.runCommand(...)` 與必要的 `HoverEvent.showText(...)`。
+- `LegacyFoundationAdapter` 的 `sendRunCommandComponent` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.sendRunCommandComponent|org\\.mineacademy\\.fo\\.model\\.SimpleComponent" src/main/java src/test/java` 無命中。
+- 本切片不新增共用 component helper，也不重寫 command / menu framework。
+- 這些使用點仍透過 Adventure `LegacyComponentSerializer.legacyAmpersand()` 承接既有 `&` 色碼設定；這不是 Foundation 回流。未來若要改成 MiniMessage 或其他正式文字格式，需放到獨立文字格式 / 設定訊息切片，不在本小切片處理。
+
+後續 time symbols 小切片實作結果：
+
+- `Messages.Symbol#init()` 不再透過 `LegacyFoundationAdapter.configureTimeSymbols(...)` 寫 Foundation `TimeUtil` 全域欄位；改直接設定本地 `TimePlaceholderFormatter`。
+- `LegacyFoundationAdapter` 的 `configureTimeSymbols` wrapper 已移除。
+- `rg -n "LegacyFoundationAdapter\\.configureTimeSymbols|org\\.mineacademy\\.fo\\.TimeUtil|TimeUtil\\." src/main/java src/test/java` 無命中。
+- `WonderlandUHC#onPluginStart()` 的 `setTellPrefix("")` 暫時保留，因為目前 command framework 仍使用 Foundation `SimpleCommand#tell(...)`；此項應隨 21.3 command framework 移除時處理，不在本切片硬刪。
 
 切片限制：
 

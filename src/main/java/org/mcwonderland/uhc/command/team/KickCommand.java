@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.command.team;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 
 class KickCommand extends TeamOwnerCommand {
@@ -28,7 +28,7 @@ class KickCommand extends TeamOwnerCommand {
         checkExecuteSelf(target);
         checkInTeam(target);
 
-        team.sendMessage(LegacyFoundationAdapter.replaceToArray(
+        team.sendMessage(PluginText.replaceToArray(
                 CommandSettings.Team.Kick.KICKED,
                 "{player}", target.getName()));
 

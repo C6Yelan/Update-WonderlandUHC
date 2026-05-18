@@ -3,9 +3,9 @@ package org.mcwonderland.uhc.practice;
 import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.application.border.BorderService;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.Teleporter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.platform.paper.PaperWorldBorderAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
@@ -50,7 +50,7 @@ public class SimplePractice extends AbstractPractice {
 
 
     private void cleanWorld() {
-        LegacyFoundationAdapter.logFramed("&e正在優化練習模式的世界...");
+        PluginConsole.logFramed("&e正在優化練習模式的世界...");
 
         int radius = (Settings.Practice.WORLD_SIZE + 10) / 2;
 
@@ -69,7 +69,7 @@ public class SimplePractice extends AbstractPractice {
                 .filter(entity -> !(entity instanceof Player))
                 .forEach(Entity::remove);
 
-        LegacyFoundationAdapter.logFramed("&e優化完畢！");
+        PluginConsole.logFramed("&e優化完畢！");
     }
 
     private void applyPracticeWorldRules() {

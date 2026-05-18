@@ -68,7 +68,6 @@ dependencies {
     compileOnly 'com.discordsrv:discordsrv:1.30.5'
 
     compileOnly name: 'Chunky-Bukkit-1.4.40'
-    compileOnly 'com.github.Brettflan:WorldBorder:44f388f3ba'
 
     compileOnly 'io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT'
 

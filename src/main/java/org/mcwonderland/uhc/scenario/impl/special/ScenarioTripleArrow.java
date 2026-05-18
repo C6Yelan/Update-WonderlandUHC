@@ -1,10 +1,12 @@
 package org.mcwonderland.uhc.scenario.impl.special;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.Vector;
 
 /**
@@ -19,7 +22,7 @@ import org.bukkit.util.Vector;
  */
 public class ScenarioTripleArrow extends ConfigBasedScenario implements Listener {
 
-    private static String NO_PICKUP_TAG = "wonderlanduhc_arrow_no_pickup";
+    private static final String NO_PICKUP_TAG = "triple_arrow_no_pickup";
 
     public ScenarioTripleArrow(ScenarioName name) {
         super(name);
@@ -37,7 +40,7 @@ public class ScenarioTripleArrow extends ConfigBasedScenario implements Listener
     public void onProjectileHit(ProjectileHitEvent e) {
         Projectile entity = e.getEntity();
 
-        if (LegacyFoundationAdapter.hasTempMetadata(entity, NO_PICKUP_TAG)) {
+        if (entity.getPersistentDataContainer().has(noPickupKey(), PersistentDataType.BYTE)) {
             entity.remove();
         }
     }
@@ -59,7 +62,7 @@ public class ScenarioTripleArrow extends ConfigBasedScenario implements Listener
             return;
 
         Arrow arrow = shooter.launchProjectile(Arrow.class, v);
-        LegacyFoundationAdapter.setTempMetadata(arrow, NO_PICKUP_TAG);
+        arrow.getPersistentDataContainer().set(noPickupKey(), PersistentDataType.BYTE, ( byte ) 1);
 
         if (!isBowInfinity(shooter))
             arrowItem.setAmount(arrowItem.getAmount() - 1);
@@ -70,6 +73,10 @@ public class ScenarioTripleArrow extends ConfigBasedScenario implements Listener
     }
 
     private ItemStack getArrowsInInventory(Player shooter) {
-        return LegacyFoundationAdapter.getFirstItem(shooter, LegacyFoundationAdapter.itemOf("ARROW"));
+        return PluginMaterials.getFirstItem(shooter, PluginMaterials.itemOf("ARROW"));
+    }
+
+    private NamespacedKey noPickupKey() {
+        return new NamespacedKey(WonderlandUHC.getInstance(), NO_PICKUP_TAG);
     }
 }

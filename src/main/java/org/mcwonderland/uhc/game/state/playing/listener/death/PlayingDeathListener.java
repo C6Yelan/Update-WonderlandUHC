@@ -1,5 +1,9 @@
 package org.mcwonderland.uhc.game.state.playing.listener.death;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.CombatRelog;
@@ -7,7 +11,6 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
@@ -44,7 +47,7 @@ public class PlayingDeathListener implements Listener {
         if (uhcPlayer != null) {
             UHCGamingDeathEvent uhcDeathEvent = new UHCGamingDeathEvent(uhcPlayer, e);
 
-            LegacyFoundationAdapter.callEvent(uhcDeathEvent);
+            PluginEvents.callEvent(uhcDeathEvent);
             releaseCustomDropsIfStillPending(entity, e.getDrops(), customDropsByEvent.remove(uhcDeathEvent));
         }
     }
@@ -72,14 +75,14 @@ public class PlayingDeathListener implements Listener {
     }
 
     private void respawnPlayerAsSpectator(UHCPlayer uhcPlayer) {
-        LegacyFoundationAdapter.runLater(1, () -> {
+        PluginScheduler.runLater(1, () -> {
             if (!uhcPlayer.isOnline() || !uhcPlayer.isDead())
                 return;
 
             if (!PlayerUtils.respawnIfDead(uhcPlayer.getPlayer()))
                 return;
 
-            LegacyFoundationAdapter.runLater(1, () -> {
+            PluginScheduler.runLater(1, () -> {
                 if (uhcPlayer.isOnline() && uhcPlayer.isDead()) {
                     uhcPlayer.applyRoleStuff();
                     uhcPlayer.getPlayer().teleport(UHCWorldUtils.getMatchCenterLocation());
@@ -96,10 +99,10 @@ public class PlayingDeathListener implements Listener {
         Chat.send(player, Messages.Spectator.NO_PERM_TO_SPEC
                 .replace("{time}", "" + seconds));
 
-        LegacyFoundationAdapter.runLater(seconds * 20, () -> {
-            LegacyFoundationAdapter.kickPlayer(
+        PluginScheduler.runLater(seconds * 20, () -> {
+            PluginPlayers.kick(
                     player,
-                    LegacyFoundationAdapter.replaceToString(
+                    PluginText.replaceToString(
                             Messages.Spectator.DEATH_KICK_MESSAGE,
                             "{player}", player.getName()));
         });

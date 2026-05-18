@@ -1,5 +1,8 @@
 package org.mcwonderland.uhc.game;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import org.mcwonderland.uhc.application.match.HandleDeathResult;
 import org.mcwonderland.uhc.application.match.HandleDeathUseCase;
 import org.mcwonderland.uhc.api.event.timer.GameEndEvent;
@@ -7,7 +10,6 @@ import org.mcwonderland.uhc.core.match.MatchState;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.freeze.FreezeMode;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -37,9 +39,9 @@ public class GameManager {
     public static Block getHighestBlock(World world, int x, int z) {
         for (int runY = world.getMaxHeight(); runY > 0; runY--) { // get highest block
             Block temp = world.getBlockAt(x, runY, z);
-            if (!LegacyFoundationAdapter.isAir(temp)
-                    && !LegacyFoundationAdapter.isLongGrass(temp.getType())
-                    && !LegacyFoundationAdapter.isDoublePlant(temp.getType())) {
+            if (!PluginMaterials.isAir(temp)
+                    && !PluginMaterials.isLongGrass(temp.getType())
+                    && !PluginMaterials.isDoublePlant(temp.getType())) {
                 return temp;
             }
         }
@@ -70,7 +72,7 @@ public class GameManager {
 
         Game.getGame().endMatch();
         broadcastWinning(team);
-        LegacyFoundationAdapter.callEvent(new GameEndEvent());
+        PluginEvents.callEvent(new GameEndEvent());
         CacheSaver.deleteCache();
     }
 
@@ -83,7 +85,7 @@ public class GameManager {
 
     private static List<String> getWinningMsg(UHCTeam winner) {
 
-        List<String> list = LegacyFoundationAdapter.replaceToList(
+        List<String> list = PluginText.replaceToList(
                 Messages.Game.VICTORY_BROADCAST,
                 "{winner}", winner.getName(),
                 "{kills}", "" + winner.getKills(),

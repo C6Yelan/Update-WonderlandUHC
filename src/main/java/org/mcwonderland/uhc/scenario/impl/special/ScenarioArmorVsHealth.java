@@ -1,8 +1,10 @@
 package org.mcwonderland.uhc.scenario.impl.special;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerRespawnedEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -52,9 +54,9 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
         UHCPlayer uhcPlayer = e.getUhcPlayer();
         Player player = uhcPlayer.getPlayer();
 
-        Chat.send(player, LegacyFoundationAdapter.replaceTimeToArray(Warn_Msg, Apply_Within_Seconds));
+        Chat.send(player, PluginText.replaceTimeToArray(Warn_Msg, Apply_Within_Seconds));
 
-        LegacyFoundationAdapter.runLater(Apply_Within_Seconds * 20, () -> {
+        PluginScheduler.runLater(Apply_Within_Seconds * 20, () -> {
             try {
                 if (!uhcPlayer.isDead()) {
                     costs.remove(uhcPlayer);
@@ -105,7 +107,7 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
     }
 
     private void scheduleHealthUpdate(Player player) {
-        LegacyFoundationAdapter.runLater(0, () -> {
+        PluginScheduler.runLater(0, () -> {
             try {
                 updateHealth(UHCPlayer.getUHCPlayer(player));
             } catch (RuntimeException | LinkageError ex) {
@@ -177,7 +179,7 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
     }
 
     private void handleRuntimeFailure(Throwable throwable, String action) {
-        LegacyFoundationAdapter.error(
+        PluginConsole.error(
                 throwable,
                 "Scenario 'Armor_Vs_Health' failed while " + action + ".",
                 "The scenario was disabled for this run, but the game flow will continue."
@@ -190,7 +192,7 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
             if (isEnabled())
                 disable();
         } catch (RuntimeException | LinkageError disableEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     disableEx,
                     "Scenario 'Armor_Vs_Health' could not be disabled after a runtime failure."
             );

@@ -1,13 +1,14 @@
 package org.mcwonderland.uhc.util;
 
 import lombok.experimental.UtilityClass;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.attribute.AttributeModifier;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.platform.PlayerHand;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -61,6 +62,11 @@ public class PlayerUtils {
         return health + absorption;
     }
 
+    public double getMaxHealth(Player player) {
+        AttributeInstance maxHealth = player.getAttribute(Attribute.MAX_HEALTH);
+        return maxHealth == null ? 20.0 : maxHealth.getValue();
+    }
+
     public double getAbsorptionHearts(Player player) {
         try {
             return Math.max(0, player.getAbsorptionAmount());
@@ -91,7 +97,7 @@ public class PlayerUtils {
         if (isItemReachedMaxDurability(itemInHand, damageable)) {
             p.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
             p.updateInventory();
-            LegacyFoundationAdapter.playItemBreakSound(p);
+            p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, SoundCategory.PLAYERS, 0.5F, 1F);
             return;
         }
 
@@ -111,15 +117,6 @@ public class PlayerUtils {
 
     private boolean isItemReachedMaxDurability(ItemStack i, Damageable damageable) {
         return damageable.getDamage() > i.getType().getMaxDurability();
-    }
-
-    public void breakBlockNms(Player player, Block toBreak) {
-        Object entityPlayer = LegacyFoundationAdapter.getHandleEntity(player);
-        Object playerInteractManager = LegacyFoundationAdapter.getFieldContent(entityPlayer, "playerInteractManager");
-        Object blockPosition = LegacyFoundationAdapter.newBlockPosition(toBreak.getX(), toBreak.getY(), toBreak.getZ());
-
-        Extra.playBlockBreakEffect(toBreak.getLocation(), toBreak.getType());
-        LegacyFoundationAdapter.invoke("breakBlock", playerInteractManager, blockPosition);
     }
 
     public double getArmorPoints(LivingEntity livingEntity) {

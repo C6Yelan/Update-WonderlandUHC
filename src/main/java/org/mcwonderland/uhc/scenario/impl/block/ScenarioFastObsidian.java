@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.mcwonderland.uhc.util.Extra;
@@ -43,7 +43,7 @@ public class ScenarioFastObsidian extends ConfigBasedScenario implements Listene
         Player player = e.getPlayer();
         UUID uuid = player.getUniqueId();
 
-        if (e.getBlock().getType() == LegacyFoundationAdapter.materialOf("OBSIDIAN"))
+        if (e.getBlock().getType() == PluginMaterials.materialOf("OBSIDIAN"))
             miningPlayers.add(uuid);
         else
             miningPlayers.remove(uuid);

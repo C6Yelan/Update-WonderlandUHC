@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.scenario;
 
 import org.mcwonderland.uhc.api.Scenario;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.impl.block.*;
 import org.mcwonderland.uhc.scenario.impl.consume.ScenarioAbsorptionLess;
 import org.mcwonderland.uhc.scenario.impl.consume.ScenarioFoodNeophobia;
@@ -193,7 +193,7 @@ public class ScenarioManager {
     }
 
     private static void logRegistrationFailure(ScenarioRegistrationFailure failure) {
-        LegacyFoundationAdapter.error(
+        PluginConsole.error(
                 failure.getCause(),
                 "Scenario '" + failure.getScenarioName() + "' was isolated during " + failure.getAction() + ".",
                 "This scenario is unavailable, but plugin startup and other scenarios will continue."

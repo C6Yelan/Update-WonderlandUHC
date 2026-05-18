@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.game.state.playing;
 
 import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.game.StateName;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.state.SimpleGameState;
 import org.mcwonderland.uhc.game.state.playing.listener.*;
@@ -46,12 +45,10 @@ public class PlayingState extends SimpleGameState {
                 new PlayingMotdListener(),
                 new PlayingQuitListener(),
                 new PlayingDeathListener(),
+                new PaperListener(),
                 new PortalListener(),
                 new StatsListener()
         );
-
-        if (LegacyFoundationAdapter.isAtLeastMinecraft1_11() && LegacyFoundationAdapter.isPaperServer())
-            listeners.add(new PaperListener());
 
         return listeners;
     }

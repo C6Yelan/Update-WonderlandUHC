@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.practice;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -8,7 +9,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.PlayerUtils;
 
 public class CommonPracticeListener implements Listener {
@@ -43,13 +43,13 @@ public class CommonPracticeListener implements Listener {
     }
 
     private void respawnAndRestuff(Player player) {
-        LegacyFoundationAdapter.runLater(1, () -> {
+        PluginScheduler.runLater(1, () -> {
             if (!player.isOnline() || !practice.isInPractice(player))
                 return;
 
             PlayerUtils.respawnIfDead(player);
 
-            LegacyFoundationAdapter.runLater(1, () -> {
+            PluginScheduler.runLater(1, () -> {
                 if (!player.isOnline() || !practice.isInPractice(player) || player.isDead())
                     return;
 

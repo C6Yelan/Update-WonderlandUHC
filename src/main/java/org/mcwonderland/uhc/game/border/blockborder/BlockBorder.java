@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.game.border.blockborder;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.mcwonderland.uhc.util.UniqueQueue;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
@@ -46,7 +46,7 @@ public class BlockBorder implements Listener {
 
         Set<Location> sphere = Cuboid.selectLocations(nextLocation, TRIGGER_RANGE)
                 .stream()
-                .filter(loc -> isBorderLocation(loc) && LegacyFoundationAdapter.isAir(loc.getBlock()))
+                .filter(loc -> isBorderLocation(loc) && PluginMaterials.isAir(loc.getBlock()))
                 .collect(Collectors.toSet());
 
         UniqueQueue<Location> noChangeLocations = new UniqueQueue<>();

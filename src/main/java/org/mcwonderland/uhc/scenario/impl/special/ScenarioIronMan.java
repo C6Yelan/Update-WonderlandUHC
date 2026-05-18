@@ -6,7 +6,7 @@ import org.mcwonderland.uhc.api.event.timer.FinalHealEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -117,7 +117,7 @@ public class ScenarioIronMan extends ConfigBasedScenario implements Listener {
     }
 
     private void handleRuntimeFailure(Throwable throwable, String action) {
-        LegacyFoundationAdapter.error(
+        PluginConsole.error(
                 throwable,
                 "Scenario 'Iron_Man' failed while " + action + ".",
                 "The scenario was disabled for this run, but the game flow will continue."
@@ -135,7 +135,7 @@ public class ScenarioIronMan extends ConfigBasedScenario implements Listener {
     }
 
     private void logLifecycleFailure(Throwable throwable, String action) {
-        LegacyFoundationAdapter.error(
+        PluginConsole.error(
                 throwable,
                 "Scenario 'Iron_Man' failed while " + action + "."
         );

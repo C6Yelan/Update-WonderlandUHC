@@ -1,8 +1,9 @@
 package org.mcwonderland.uhc.model.deathmsg;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.random.PluginRandom;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -59,7 +60,7 @@ public class DeathMessageHandler {
             addReplacement(replacements, "{killerKills}", killerTeam.getKills() + "");
         }
 
-        return LegacyFoundationAdapter.replaceToString(msg, replacements.toArray());
+        return PluginText.replaceToString(msg, replacements.toArray());
     }
 
     private void addReplacement(List<Object> replacements, String placeholder, Object value) {
@@ -71,7 +72,7 @@ public class DeathMessageHandler {
         if (messages.isEmpty())
             return "";
 
-        return LegacyFoundationAdapter.nextItem(messages);
+        return PluginRandom.nextItem(messages);
     }
 
     private List<String> getMessages(EntityDamageEvent damageEvent) {

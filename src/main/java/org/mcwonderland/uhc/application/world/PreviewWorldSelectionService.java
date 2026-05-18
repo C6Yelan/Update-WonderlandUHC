@@ -1,9 +1,11 @@
 package org.mcwonderland.uhc.application.world;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.bukkit.entity.Player;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.util.Extra;
 
@@ -17,7 +19,7 @@ public final class PreviewWorldSelectionService {
 
         saveCaches(host);
         kickPlayers();
-        LegacyFoundationAdapter.runLater(1, Extra::restartServer);
+        PluginScheduler.runLater(1, Extra::restartServer);
     }
 
     private void saveCaches(@Nullable Player host) {
@@ -30,9 +32,9 @@ public final class PreviewWorldSelectionService {
     }
 
     private void kickPlayers() {
-        String message = LegacyFoundationAdapter.replaceToString(CommandSettings.Uhc.Choose.KICK_INIT_MSG);
+        String message = PluginText.replaceToString(CommandSettings.Uhc.Choose.KICK_INIT_MSG);
 
-        for (Player player : LegacyFoundationAdapter.getOnlinePlayers())
-            LegacyFoundationAdapter.kickPlayer(player, message);
+        for (Player player : PluginPlayers.onlinePlayers())
+            PluginPlayers.kick(player, message);
     }
 }

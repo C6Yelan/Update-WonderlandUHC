@@ -1,9 +1,9 @@
 package org.mcwonderland.uhc.command.impl.game;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Extra;
@@ -34,7 +34,7 @@ public class SendCoordsCommand extends SimpleCommand {
 
         Location location = player.getLocation();
 
-        team.sendMessage(LegacyFoundationAdapter.replaceToString(
+        team.sendMessage(PluginText.replaceToString(
                 CommandSettings.SendCoords.FORMAT,
                 "{teamname}", team.getName(),
                 "{color}", team.getColor(),

@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.listener;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.VoiceChannel;
 import org.mcwonderland.uhc.api.event.team.TeamCreatedEvent;
 import org.mcwonderland.uhc.api.event.team.TeamDisbandedEvent;
@@ -9,7 +10,6 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.hook.voice.DiscordVoiceHook;
 import org.mcwonderland.uhc.hook.voice.TeamVoices;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -23,7 +23,7 @@ public class VoiceListener implements Listener {
     public void onTeamCreated(TeamCreatedEvent e) {
         UHCTeam team = e.getTeam();
 
-        LegacyFoundationAdapter.runAsync(() -> {
+        PluginScheduler.runAsync(() -> {
             VoiceChannel channel = DiscordVoiceHook.createHiddenChannel(team.getName());
 
             teamVoices.add(team, channel);

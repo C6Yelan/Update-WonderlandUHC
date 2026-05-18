@@ -1,8 +1,10 @@
 package org.mcwonderland.uhc.scenario.impl.rush;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
 import org.bukkit.event.EventHandler;
@@ -61,11 +63,11 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
     }
 
     private void increaseFurnaceSpeed(Block block, String blockKey) {
-        BukkitTask task = LegacyFoundationAdapter.runTimer(0, 1, new BukkitRunnable() {
+        BukkitTask task = PluginScheduler.runTimer(0, 1, new BukkitRunnable() {
             @Override
             public void run() {
                 try {
-                    if (block.getType() != LegacyFoundationAdapter.materialOf("FURNACE")) {
+                    if (block.getType() != PluginMaterials.materialOf("FURNACE")) {
                         stopBoost(blockKey);
                         return;
                     }
@@ -92,7 +94,7 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
 
     private boolean needUpdate(Furnace furnace) {
         ItemStack smelting = furnace.getInventory().getSmelting();
-        boolean hasItemToSmelt = smelting != null && smelting.getType() != LegacyFoundationAdapter.materialOf("AIR");
+        boolean hasItemToSmelt = smelting != null && smelting.getType() != PluginMaterials.materialOf("AIR");
         boolean isFueling = furnace.getInventory().getFuel() != null || furnace.getBurnTime() > 0;
 
 
@@ -120,7 +122,7 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
     }
 
     private void handleRuntimeFailure(Throwable throwable, String action) {
-        LegacyFoundationAdapter.error(
+        PluginConsole.error(
                 throwable,
                 "Scenario 'Fast_Smelting' failed while " + action + ".",
                 "The scenario was disabled for this run, but the game flow will continue."
@@ -133,7 +135,7 @@ public class ScenarioFastSmelting extends ConfigBasedScenario implements Listene
             if (isEnabled())
                 disable();
         } catch (RuntimeException | LinkageError disableEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     disableEx,
                     "Scenario 'Fast_Smelting' could not be disabled after a runtime failure."
             );

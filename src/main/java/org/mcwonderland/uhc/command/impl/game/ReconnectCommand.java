@@ -21,7 +21,11 @@ public class ReconnectCommand extends SimpleCommand {
 
     @Override
     protected void onCommand() {
-        Dependency.DISCORD_SRV.checkSoft();
+        if (!Dependency.DISCORD_SRV.isHooked())
+            returnTell(Messages.Dependency.REQUIRE_SOFT_DEPENDENCY
+                    .replace("{plugin}", Dependency.DISCORD_SRV.getPluginName())
+                    .replace("{url}", Dependency.DISCORD_SRV.getDownloadUrl()));
+
         checkBoolean(Settings.DiscordVoice.USE, Messages.DiscordVoice.MOVE_FAILED);
 
         Player player = getPlayer();

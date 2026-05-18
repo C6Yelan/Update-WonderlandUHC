@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scoreboard;
 
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -18,7 +19,6 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.PlayerUtils;
 
@@ -187,7 +187,7 @@ public final class SimpleScores {
                 tabHeal.setDisplaySlot(DisplaySlot.PLAYER_LIST);
             }
 
-            for (Player o : LegacyFoundationAdapter.getOnlinePlayers())
+            for (Player o : PluginPlayers.onlinePlayers())
                 tabHeal.getScore(o.getName()).setScore(( int ) (o.getHealth() + PlayerUtils.getAbsorptionHearts(o)));
         }
     }

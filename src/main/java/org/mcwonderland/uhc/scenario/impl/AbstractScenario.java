@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl;
 
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import com.google.common.collect.Lists;
 import lombok.AccessLevel;
 import lombok.Setter;
@@ -8,7 +9,6 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioDisabledEvent;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioEnabledEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -51,9 +51,9 @@ public abstract class AbstractScenario implements Scenario {
         this.enabled = true;
 
         if (GameUtils.isGameStarted())
-            this.listeners.forEach(LegacyFoundationAdapter::registerEvents);
+            this.listeners.forEach(PluginEvents::registerEvents);
 
-        LegacyFoundationAdapter.callEvent(new ScenarioEnabledEvent(this));
+        PluginEvents.callEvent(new ScenarioEnabledEvent(this));
     }
 
     @Override
@@ -61,7 +61,7 @@ public abstract class AbstractScenario implements Scenario {
         onDisable();
         this.enabled = false;
         this.listeners.forEach(HandlerList::unregisterAll);
-        LegacyFoundationAdapter.callEvent(new ScenarioDisabledEvent(this));
+        PluginEvents.callEvent(new ScenarioDisabledEvent(this));
     }
 
     @Override

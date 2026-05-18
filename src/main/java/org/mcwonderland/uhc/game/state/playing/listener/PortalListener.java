@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.game.state.playing.listener;
 
 import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -17,8 +16,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerPortalEvent;
-
-import java.lang.reflect.Method;
 
 public class PortalListener implements Listener {
     private static final double NETHER_COORDINATE_SCALE = 8D;
@@ -48,11 +45,6 @@ public class PortalListener implements Listener {
         Location to = getSameCoordsLocation(e);
         to.getChunk().load();
         e.setTo(to);
-
-        if (LegacyFoundationAdapter.isOlderThanMinecraft1_14()) {
-            openPortalAgent(e);
-            findOrCreate(e);
-        }
     }
 
     private void cancelJoin(Cancellable cancellable, Player player, String msg) {
@@ -60,18 +52,6 @@ public class PortalListener implements Listener {
 
         Chat.send(player, msg);
         Extra.sound(player, Sounds.Game.CANT_JOIN_NETHER);
-    }
-
-    private void openPortalAgent(PlayerPortalEvent e) {
-        Method method = LegacyFoundationAdapter.getMethod(e.getClass(), "useTravelAgent", boolean.class);
-
-        LegacyFoundationAdapter.invoke(method, e, true);
-    }
-
-    private void findOrCreate(PlayerPortalEvent e) {
-        Object portalAgent = LegacyFoundationAdapter.invoke("getPortalTravelAgent", e);
-
-        LegacyFoundationAdapter.invoke("findOrCreate", portalAgent, e.getTo());
     }
 
     private Location getSameCoordsLocation(PlayerPortalEvent e) {

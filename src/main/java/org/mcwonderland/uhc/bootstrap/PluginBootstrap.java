@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
 import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.ButtonLocalization;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
 import org.mcwonderland.uhc.platform.paper.PaperPluginMessagingPort;
 import org.mcwonderland.uhc.platform.paper.PaperSchedulerPort;
@@ -48,15 +49,20 @@ public final class PluginBootstrap {
     }
 
     public void loadFiles() {
-        UHCFiles.getFileNames().forEach(LegacyFoundationAdapter::extractFile);
-        LegacyFoundationAdapter.extractFile(UHCFiles.PERMISSIONS, UHCFiles.PERMISSIONS);
+        UHCFiles.getFileNames().forEach(this::saveResourceIfMissing);
+    }
+
+    private void saveResourceIfMissing(String path) {
+        if (new java.io.File(plugin.getDataFolder(), path).exists())
+            return;
+
+        plugin.saveResource(path, false);
     }
 
     public DependencyReport checkDependencies() {
         DependencyReport report = new DependencyReport();
 
         checkOptionalDependency(report, Dependency.CHUNKY);
-        checkOptionalDependency(report, Dependency.WORLD_BORDER);
 
         logDependencyReport(report);
 
@@ -64,13 +70,13 @@ public final class PluginBootstrap {
     }
 
     private void logDependencyReport(DependencyReport report) {
-        LegacyFoundationAdapter.log("&7Dependency status:");
+        PluginConsole.log("&7Dependency status:");
 
         for (DependencyReport.Entry entry : report.getEntries()) {
             String status = entry.isAvailable() ? "&aAvailable" : entry.isDisabled() ? "&eDisabled" : "&cUnavailable";
             String reason = entry.getReason().isEmpty() ? "" : " &7(" + entry.getReason() + ")";
 
-            LegacyFoundationAdapter.log("&7- &f" + entry.getDependency().getPluginName() + "&7: " + status + reason);
+            PluginConsole.log("&7- &f" + entry.getDependency().getPluginName() + "&7: " + status + reason);
         }
     }
 
@@ -157,8 +163,8 @@ public final class PluginBootstrap {
     }
 
     public void logPluginEnabledMessage() {
-        LegacyFoundationAdapter.logNoPrefix(
-                LegacyFoundationAdapter.consoleLineSmooth(),
+        PluginConsole.logNoPrefix(
+                PluginConsole.consoleLineSmooth(),
                 " _    _                 _           _                 _   _   _ _   _ _____",
                 "| |  | |               | |         | |               | | | | | | | | /  __ \\",
                 "| |  | | ___  _ __   __| | ___ _ __| | __ _ _ __   __| | | | | | |_| | /  \\/",
@@ -170,6 +176,6 @@ public final class PluginBootstrap {
                 "&3Version: &f" + plugin.getPluginMeta().getVersion(),
                 "",
                 "&3Enjoy your own UHC time!",
-                LegacyFoundationAdapter.consoleLineSmooth());
+                PluginConsole.consoleLineSmooth());
     }
 }

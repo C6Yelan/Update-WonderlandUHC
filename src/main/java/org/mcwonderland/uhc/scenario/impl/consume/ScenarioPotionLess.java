@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.consume;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.event.EventHandler;
@@ -28,7 +28,7 @@ public class ScenarioPotionLess extends ConfigBasedScenario implements Listener 
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onDrinkPotion(PlayerItemConsumeEvent e) {
-        if (e.getItem().getType() == LegacyFoundationAdapter.materialOf("POTION"))
+        if (e.getItem().getType() == PluginMaterials.materialOf("POTION"))
             e.setCancelled(true);
     }
 
@@ -40,24 +40,20 @@ public class ScenarioPotionLess extends ConfigBasedScenario implements Listener 
     @Override
     protected Collection<Listener> initListeners() {
         Collection<Listener> listeners = super.initListeners();
-
-        if (LegacyFoundationAdapter.isAtLeastMinecraft1_14())
-            listeners.add(new Listener_1_14());
-
-        if (LegacyFoundationAdapter.isAtLeastMinecraft1_9())
-            listeners.add(new Listener_1_9());
+        listeners.add(new PotionEffectListener());
+        listeners.add(new LingeringPotionListener());
 
         return listeners;
     }
 
-    class Listener_1_9 implements Listener {
+    class LingeringPotionListener implements Listener {
         @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-        public void onEntityPotionEffect(org.bukkit.event.entity.LingeringPotionSplashEvent e) {
+        public void onLingeringPotionSplash(org.bukkit.event.entity.LingeringPotionSplashEvent e) {
             e.setCancelled(true);
         }
     }
 
-    class Listener_1_14 implements Listener {
+    class PotionEffectListener implements Listener {
         @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
         public void onEntityPotionEffect(org.bukkit.event.entity.EntityPotionEffectEvent e) {
             if (e.getCause().toString().contains("POTION"))

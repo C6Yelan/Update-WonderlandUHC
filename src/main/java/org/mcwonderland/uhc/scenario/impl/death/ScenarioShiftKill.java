@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.scenario.impl.death;
 
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.mcwonderland.uhc.util.PlayerUtils;
@@ -25,7 +25,7 @@ public class ScenarioShiftKill extends ConfigBasedScenario implements Listener {
         try {
             handleGamingEntityDeath(e);
         } catch (RuntimeException | LinkageError ex) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     ex,
                     "Scenario 'Shift_Kill' failed while handling a death event.",
                     "The scenario was disabled for this run, but the death flow will continue."
@@ -46,7 +46,7 @@ public class ScenarioShiftKill extends ConfigBasedScenario implements Listener {
     }
 
     private void costHalfHealth(Player killer) {
-        double damage = calculatePenaltyDamage(LegacyFoundationAdapter.getMaxHealth(killer), PlayerUtils.getAbsorptionHearts(killer));
+        double damage = calculatePenaltyDamage(PlayerUtils.getMaxHealth(killer), PlayerUtils.getAbsorptionHearts(killer));
         /*
          * ShiftKill 懲罰是 scenario 規則，不應被 NoClean 的短暫無敵抵銷。
          * 這裡只繞過 InvinciblePlayer 的取消邏輯，不改變 Bukkit 原本的傷害 / 死亡事件流程。
@@ -64,7 +64,7 @@ public class ScenarioShiftKill extends ConfigBasedScenario implements Listener {
             if (isEnabled())
                 disable();
         } catch (RuntimeException | LinkageError disableEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     disableEx,
                     "Scenario 'Shift_Kill' could not be disabled after a runtime failure."
             );

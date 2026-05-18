@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.hook.voice;
 
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.Permission;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.Category;
@@ -10,8 +11,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.VoiceChannel;
 import lombok.Getter;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.listener.VoiceListener;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
@@ -46,24 +47,24 @@ public class DiscordVoiceHook {
                 discordSRV = DiscordSRV.getPlugin();
                 guild = discordSRV.getJda().getGuildById(Settings.DiscordVoice.GUILD_ID);
                 if (guild == null) {
-                    LegacyFoundationAdapter.log("&cDiscord voice setup failed: guild not found: " + Settings.DiscordVoice.GUILD_ID);
+                    PluginConsole.log("&cDiscord voice setup failed: guild not found: " + Settings.DiscordVoice.GUILD_ID);
                     return;
                 }
 
                 voiceCategory = guild.getCategoryById(Settings.DiscordVoice.VOICE_CATEGORY);
                 if (voiceCategory == null) {
-                    LegacyFoundationAdapter.log("&cDiscord voice setup failed: voice category not found: " + Settings.DiscordVoice.VOICE_CATEGORY);
+                    PluginConsole.log("&cDiscord voice setup failed: voice category not found: " + Settings.DiscordVoice.VOICE_CATEGORY);
                     return;
                 }
 
                 lobbyVoice = guild.getVoiceChannelById(Settings.DiscordVoice.LOBBY_VOICE);
                 if (lobbyVoice == null) {
-                    LegacyFoundationAdapter.log("&cDiscord voice setup failed: lobby voice channel not found: " + Settings.DiscordVoice.LOBBY_VOICE);
+                    PluginConsole.log("&cDiscord voice setup failed: lobby voice channel not found: " + Settings.DiscordVoice.LOBBY_VOICE);
                     return;
                 }
 
                 clearChannels();
-                LegacyFoundationAdapter.registerEvents(voiceListener);
+                PluginEvents.registerEvents(voiceListener);
             }).start();
     }
 
@@ -88,7 +89,7 @@ public class DiscordVoiceHook {
         Player player = uhcPlayer.getPlayer();
         if (channel == null) {
             Chat.send(player, Messages.DiscordVoice.MOVE_FAILED);
-            LegacyFoundationAdapter.log("&cDiscord voice move failed for " + player.getName() + ": target channel is not available.");
+            PluginConsole.log("&cDiscord voice move failed for " + player.getName() + ": target channel is not available.");
             return;
         }
 
@@ -110,7 +111,7 @@ public class DiscordVoiceHook {
                 aVoid -> Chat.send(player, movedMsg),
                 error -> {
                     Chat.send(player, Messages.DiscordVoice.MOVE_FAILED);
-                    LegacyFoundationAdapter.log("&cDiscord voice move failed for " + player.getName() + ": " + error.getMessage());
+                    PluginConsole.log("&cDiscord voice move failed for " + player.getName() + ": " + error.getMessage());
                 });
     }
 
@@ -140,7 +141,7 @@ public class DiscordVoiceHook {
         guild.moveVoiceMember(member, lobbyVoice).queue(
                 ignored -> {
                 },
-                error -> LegacyFoundationAdapter.log("&cDiscord voice lobby move failed for " + member.getEffectiveName() + ": " + error.getMessage()));
+                error -> PluginConsole.log("&cDiscord voice lobby move failed for " + member.getEffectiveName() + ": " + error.getMessage()));
     }
 
 }

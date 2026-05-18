@@ -1,10 +1,11 @@
 package org.mcwonderland.uhc.menu.impl.game;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -33,7 +34,7 @@ public class TeamSelectorMenu extends ConfigMenuPagged<UHCTeam> {
         TeamSelectorMenu newMenu = new TeamSelectorMenu();
 
         viewing = viewing.stream().filter(uuid -> {
-            Player player = LegacyFoundationAdapter.getPlayerByUUID(uuid);
+            Player player = PluginPlayers.getByUniqueId(uuid);
             if (player == null)
                 return false;
             Menu menu = Menu.getMenu(player);
@@ -74,7 +75,7 @@ public class TeamSelectorMenu extends ConfigMenuPagged<UHCTeam> {
         return ItemCreator.of(
                 item.getMaterial(),
                 item.getName(),
-                LegacyFoundationAdapter.replaceToList(
+                PluginText.replaceToList(
                         item.getLore(),
                         "{slots}", team.getPlayersAmount(),
                         "{max}", Game.getSettings().getTeamSettings().getTeamSize(),

@@ -1,5 +1,8 @@
 package org.mcwonderland.uhc.command.impl.host;
 
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerRespawnedEvent;
 import org.mcwonderland.uhc.command.CommandHelper;
@@ -7,7 +10,6 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.model.Teleporter;
@@ -47,7 +49,7 @@ public class RespawnCommand extends SimpleCommand {
     @Override
     protected List<String> tabComplete() {
         if (args.length == 1)
-            return completeLastWord(LegacyFoundationAdapter.getPlayerNames());
+            return completeLastWord(PluginPlayers.playerNames());
 
         return super.tabComplete();
     }
@@ -69,7 +71,7 @@ public class RespawnCommand extends SimpleCommand {
             handleRespawnVaribles();
             handleData();
             if (PlayerUtils.respawnIfDead(target)) {
-                LegacyFoundationAdapter.runLater(1, this::completeRespawn);
+                PluginScheduler.runLater(1, this::completeRespawn);
                 return;
             }
 
@@ -86,7 +88,7 @@ public class RespawnCommand extends SimpleCommand {
                     .replace("{player}", target.getName()));
             Extra.sound(target, Sounds.Commands.RESPAWN);
 
-            LegacyFoundationAdapter.callEvent(new UHCPlayerRespawnedEvent(targetUHCPlayer));
+            PluginEvents.callEvent(new UHCPlayerRespawnedEvent(targetUHCPlayer));
         }
 
         private void restoreAndTeleport() {

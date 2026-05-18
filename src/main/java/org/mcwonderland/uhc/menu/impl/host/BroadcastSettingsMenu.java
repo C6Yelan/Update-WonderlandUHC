@@ -2,8 +2,8 @@ package org.mcwonderland.uhc.menu.impl.host;
 
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.broadcast.AbstractBroadcastSender;
+import org.mcwonderland.uhc.model.broadcast.BroadcastDeliveryException;
 import org.mcwonderland.uhc.model.broadcast.GameStartTimeInputSession;
 import org.mcwonderland.uhc.model.broadcast.impl.DiscordBroadcastSender;
 import org.mcwonderland.uhc.settings.Messages;
@@ -46,17 +46,10 @@ public class BroadcastSettingsMenu extends ConfigMenu {
                 try {
                     sender.sendBroadcast(info);
                     Chat.send(player, "&aDiscord 公告已送出。");
-                } catch (RuntimeException e) {
-                    handleBroadcastFailure(player, e);
+                } catch (BroadcastDeliveryException e) {
+                    Chat.send(player, e.getMessage());
                 }
             });
-        }
-
-        private void handleBroadcastFailure(Player player, RuntimeException e) {
-            if (!LegacyFoundationAdapter.isFailure(e))
-                throw e;
-
-            Chat.send(player, e.getMessage());
         }
     }
 

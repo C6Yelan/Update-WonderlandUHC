@@ -7,10 +7,7 @@ import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.tools.spectator.OverworldPlayersItem;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.Bukkit;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mineacademy.fo.collection.StrictSet;
 import org.mineacademy.fo.command.SimpleCommand;
-import org.mineacademy.fo.settings.YamlConfig;
 
 public class TestCommand extends SimpleCommand {
 
@@ -50,12 +47,6 @@ public class TestCommand extends SimpleCommand {
             getPlayer().sendMessage("Hi, it's working!");
         } else if ("inv".equalsIgnoreCase(param)) {
             Chat.broadcast(getPlayer().getInventory().getStorageContents().length + "");
-        } else if ("files".equalsIgnoreCase(param)) {
-//            YamlConfig.clearLoadedFiles();
-            final StrictSet<Object> files = LegacyFoundationAdapter.getStaticFieldContent(YamlConfig.class, "loadedFiles");
-            files.forEach(s -> {
-                System.out.println(s.getClass());
-            });
         } else if ("saveinv".equals(param)) {
             try {
             } catch (Exception e) {

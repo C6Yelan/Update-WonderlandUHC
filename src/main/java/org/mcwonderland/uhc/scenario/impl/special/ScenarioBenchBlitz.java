@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.scenario.impl.special;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -39,7 +39,7 @@ public class ScenarioBenchBlitz extends ConfigBasedScenario implements Listener 
     public void onCraftItem(CraftItemEvent e) {
         Player player = ( Player ) e.getWhoClicked();
 
-        if (e.getCurrentItem().getType() != LegacyFoundationAdapter.materialOf("CRAFTING_TABLE"))
+        if (e.getCurrentItem().getType() != PluginMaterials.materialOf("CRAFTING_TABLE"))
             return;
 
         if (isBenchCrafted(player))
@@ -52,12 +52,12 @@ public class ScenarioBenchBlitz extends ConfigBasedScenario implements Listener 
     public void onPrepareItemCraft(PrepareItemCraftEvent e) {
         ItemStack result = e.getInventory().getResult();
 
-        if (result == null || result.getType() != LegacyFoundationAdapter.materialOf("CRAFTING_TABLE"))
+        if (result == null || result.getType() != PluginMaterials.materialOf("CRAFTING_TABLE"))
             return;
 
         for (HumanEntity viewer : e.getViewers()) {
             if (isBenchCrafted(viewer))
-                e.getInventory().setResult(LegacyFoundationAdapter.itemOf("AIR"));
+                e.getInventory().setResult(PluginMaterials.itemOf("AIR"));
         }
     }
 

@@ -1,8 +1,9 @@
 package org.mcwonderland.uhc.util;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.WonderlandUHC;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -15,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.mineacademy.fo.BungeeUtil;
+import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompAttribute;
 import org.mineacademy.fo.remain.CompProperty;
 
@@ -56,7 +58,7 @@ public class Extra {
     }
 
     public static void createHead() {
-        ItemStack goldenHead = LegacyFoundationAdapter.itemOf("GOLDEN_APPLE");
+        ItemStack goldenHead = PluginMaterials.itemOf("GOLDEN_APPLE");
         ItemMeta gMeta = goldenHead.getItemMeta();
         gMeta.displayName(LegacyComponentSerializer.legacySection().deserialize(Settings.Misc.GOLDEN_HEAD_NAME));
         goldenHead.setItemMeta(gMeta);
@@ -64,25 +66,25 @@ public class Extra {
         ShapedRecipe goldenHeadRecipe = new ShapedRecipe(new NamespacedKey(WonderlandUHC.getInstance(), "golden_head"), goldenHead);
         goldenHeadRecipe.shape("@@@", "@#@", "@@@");
 
-        goldenHeadRecipe.setIngredient('@', LegacyFoundationAdapter.materialOf("GOLD_INGOT"));
-        goldenHeadRecipe.setIngredient('#', LegacyFoundationAdapter.materialOf("PLAYER_HEAD"));
+        goldenHeadRecipe.setIngredient('@', PluginMaterials.materialOf("GOLD_INGOT"));
+        goldenHeadRecipe.setIngredient('#', PluginMaterials.materialOf("PLAYER_HEAD"));
         Bukkit.getServer().addRecipe(goldenHeadRecipe);
     }
 
-    public static void sound(Player player, Object sound) {
-        LegacyFoundationAdapter.playSound(player, sound);
+    public static void sound(Player player, SimpleSound sound) {
+        sound.play(player);
     }
 
-    public static void sound(Collection<Player> players, Object sound) {
-        LegacyFoundationAdapter.playSound(players, sound);
+    public static void sound(Collection<Player> players, SimpleSound sound) {
+        sound.play(players);
     }
 
-    public static void sound(Location location, Object sound) {
-        LegacyFoundationAdapter.playSound(location, sound);
+    public static void sound(Location location, SimpleSound sound) {
+        sound.play(location);
     }
 
-    public static void sound(Object sound) {
-        LegacyFoundationAdapter.playGlobalSound(sound);
+    public static void sound(SimpleSound sound) {
+        sound.play(new ArrayList<>(Bukkit.getOnlinePlayers()));
     }
 
     public static void potion(Player p, PotionEffectType type, int duration, int amplifier, boolean displayEffect) {
@@ -112,7 +114,7 @@ public class Extra {
     }
 
     public static Integer getOnlinePlayers() {
-        return LegacyFoundationAdapter.getOnlinePlayers().size();
+        return PluginPlayers.onlinePlayers().size();
     }
 
     public static void sendToFallbackServer(Player p) {
@@ -172,7 +174,7 @@ public class Extra {
             final Block block = w.getBlockAt(x, y, z);
             final Block above = block.getRelative(BlockFace.UP);
             final Block down = block.getRelative(BlockFace.DOWN);
-            if (y != -1 && LegacyFoundationAdapter.isAir(block) && LegacyFoundationAdapter.isAir(above)
+            if (y != -1 && PluginMaterials.isAir(block) && PluginMaterials.isAir(above)
                     && down.getType().isSolid())
                 return new Location(w, x, y, z);
         }
@@ -181,7 +183,7 @@ public class Extra {
 
     public static final int getHighestPoint(World w, int x, int z) {
         for (int y = w.getMaxHeight(); y >= 0; y--) {
-            if (!LegacyFoundationAdapter.isAir(w.getBlockAt(x, y, z)))
+            if (!PluginMaterials.isAir(w.getBlockAt(x, y, z)))
                 return y + 1;
         }
         return -1;

@@ -1,8 +1,9 @@
 package org.mcwonderland.uhc.scenario.impl;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import com.google.common.collect.Lists;
 import org.bukkit.inventory.ItemStack;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mineacademy.fo.menu.model.ItemCreator;
 
@@ -12,7 +13,7 @@ import java.util.List;
 public abstract class ConfigBasedScenario extends AbstractScenario {
 
     public ConfigBasedScenario(ScenarioName name) {
-        super(name.capitalize(), LegacyFoundationAdapter.itemOf("AIR"));
+        super(name.capitalize(), PluginMaterials.itemOf("AIR"));
     }
 
     @Override
@@ -44,19 +45,19 @@ public abstract class ConfigBasedScenario extends AbstractScenario {
     }
 
     protected List<String> replaceLore(List<String> description) {
-        return LegacyFoundationAdapter.replaceToList(description);
+        return PluginText.replaceToList(description);
     }
 
     protected final List<String> replaceLore(List<String> description, Object... replacements) {
-        return LegacyFoundationAdapter.replaceToList(description, replacements);
+        return PluginText.replaceToList(description, replacements);
     }
 
     protected final List<String> replaceLoreJoined(List<String> description, String placeholder, Collection<?> values, String delimiter) {
-        return LegacyFoundationAdapter.replaceJoinedToList(description, placeholder, values, delimiter);
+        return PluginText.replaceJoinedToList(description, placeholder, values, delimiter);
     }
 
     protected final List<String> replaceLoreTime(List<String> description, Number seconds) {
-        return LegacyFoundationAdapter.replaceTimeToList(description, seconds);
+        return PluginText.replaceTimeToList(description, seconds);
     }
 
     private ScenarioConfig getNewConfig() {

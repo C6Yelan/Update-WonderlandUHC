@@ -1,6 +1,6 @@
 package org.mcwonderland.uhc.settings;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
 
 import java.util.List;
 
@@ -14,6 +14,7 @@ public class Messages extends AutoLoadStaticConfig {
     }
 
     public static String ENABLED, DISABLED;
+    public static String NO_PERMISSION;
     public static String NOT_YET_STARTED;
     public static String USE_ONLY_WHILE_WAITING;
     public static String NOT_GAMING_PLAYER, ONLY_FOR_SPECTATOR;
@@ -245,7 +246,7 @@ public class Messages extends AutoLoadStaticConfig {
         public static String MINUTE, MINUTES;
 
         private static void init() {
-            LegacyFoundationAdapter.configureTimeSymbols(SECOND, SECONDS, MINUTE, MINUTES);
+            TimePlaceholderFormatter.configureSymbols(SECOND, SECONDS, MINUTE, MINUTES);
         }
     }
 
@@ -256,8 +257,6 @@ public class Messages extends AutoLoadStaticConfig {
 
     public static class Dependency {
         public static String REQUIRE_DEPENDENCY, REQUIRE_SOFT_DEPENDENCY;
-        public static List<String> USING_OLD_WORLD_BORDER_IN_NEW_VERSION;
-        public static String CHANGE_TO_OLDER_WORLD_BORDER_VERSION;
     }
 
     public static class DiscordVoice {

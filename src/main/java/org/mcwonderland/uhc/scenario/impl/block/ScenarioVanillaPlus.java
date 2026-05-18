@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.block;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.random.PluginRandom;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.bukkit.Material;
@@ -36,7 +36,7 @@ public class ScenarioVanillaPlus extends ConfigBasedScenario implements Listener
     }
 
     private void replaceDropChance(UHCBlockBreakEvent e, int percent, Material from, Material to) {
-        if (LegacyFoundationAdapter.chance(percent))
+        if (PluginRandom.chance(percent))
             e.replaceDrop(from, to);
     }
 }

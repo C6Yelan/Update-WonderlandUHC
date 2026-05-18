@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.game.player.role.player;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.game.CombatRelog;
@@ -10,7 +11,6 @@ import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.role.models.RoleEventHandler;
 import org.mcwonderland.uhc.game.state.share.join.UHCJoinEvent;
 import org.mcwonderland.uhc.game.timer.Timers;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
@@ -90,7 +90,7 @@ public class RolePlayerEvents implements RoleEventHandler {
         player.setExp(z.getXp());
         player.addPotionEffects(z.getEntity().getActivePotionEffects());
 
-        LegacyFoundationAdapter.runLater(1, () -> {
+        PluginScheduler.runLater(1, () -> {
             if (!uhcPlayer.isOnline())
                 return;
 

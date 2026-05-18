@@ -1,12 +1,12 @@
 package org.mcwonderland.uhc.game.timer;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import lombok.experimental.UtilityClass;
 import org.mcwonderland.uhc.game.GameTimerRunnable;
 import org.mcwonderland.uhc.game.timer.impl.BorderSizeUpdater;
 import org.mcwonderland.uhc.game.timer.impl.RelogExpireChecker;
 import org.mcwonderland.uhc.game.timer.impl.ScatterHandler;
 import org.mcwonderland.uhc.game.timer.impl.countdown.*;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -38,7 +38,7 @@ public class Timers {
     }
 
     public String getUntilEnableFormat(Countdown countdown) {
-        return LegacyFoundationAdapter.formatTime(getSecondsUntilEnable(countdown));
+        return PluginText.formatTime(getSecondsUntilEnable(countdown));
     }
 
     static {

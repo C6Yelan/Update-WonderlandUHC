@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.util;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import lombok.experimental.UtilityClass;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,7 +21,7 @@ public class WorldUtils {
 
     public void dropItems(Location l, ItemStack... items) {
         for (ItemStack i : items) {
-            if (LegacyFoundationAdapter.isAir(i.getType()))
+            if (PluginMaterials.isAir(i.getType()))
                 return;
 
             l.getWorld().dropItemNaturally(centerOfBlock(l), i);
@@ -29,13 +29,7 @@ public class WorldUtils {
     }
 
     public Location centerOfBlock(Location location) {
-        Location newLocation = location.clone();
-
-        if (LegacyFoundationAdapter.isAtLeastMinecraft1_13()) {
-            return newLocation;
-        }
-
-        return newLocation.add(0.5, 0.5, 0.5);
+        return location.clone();
     }
 
     public void replaceDrop(List<ItemStack> drops, Material from, Material to) {
@@ -61,9 +55,8 @@ public class WorldUtils {
         if (amount <= 0 || value <= 0)
             return;
 
-        Location location = LegacyFoundationAdapter.isAtLeastMinecraft1_13() ? l : l.clone().add(0.5, 0.5, 0.5);
         for (int i = 0; i < amount; i++) {
-            ExperienceOrb orb = location.getWorld().spawn(location, ExperienceOrb.class);
+            ExperienceOrb orb = l.getWorld().spawn(l, ExperienceOrb.class);
             orb.setExperience(value);
         }
     }

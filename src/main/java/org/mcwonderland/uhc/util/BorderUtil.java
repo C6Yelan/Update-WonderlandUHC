@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.util;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import lombok.AllArgsConstructor;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.application.border.BorderService;
@@ -7,7 +8,6 @@ import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.platform.paper.PaperWorldBorderAdapter;
 import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
@@ -200,7 +200,7 @@ public class BorderUtil {
     }
 
     public static double getShrinkSpeedPerSecond(int from, int to, int seconds) {
-        return LegacyFoundationAdapter.formatFiveDigits((from - to) / (seconds * 2D));
+        return PluginText.formatFiveDigits((from - to) / (seconds * 2D));
     }
 
     public static int getShrinkSecondsCost() {
@@ -242,7 +242,7 @@ public class BorderUtil {
     }
 
     public static int getRadius(int size) {
-        return (int) LegacyFoundationAdapter.ceiling(size / 2);
+        return size / 2;
     }
 
 

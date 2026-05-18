@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.bootstrap;
 
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import com.google.common.collect.Lists;
 import org.bukkit.command.Command;
 import org.bukkit.event.Listener;
@@ -30,10 +31,6 @@ import org.mcwonderland.uhc.command.impl.host.whitelist.WhitelistCommandGroup;
 import org.mcwonderland.uhc.command.team.TeamCommandGroup;
 import org.mcwonderland.uhc.command.uhc.UHCMainCommandGroup;
 import org.mcwonderland.uhc.hook.voice.DiscordVoiceHook;
-import org.mcwonderland.uhc.application.world.ChunkPregenerationService;
-import org.mcwonderland.uhc.integration.ChunkPregenerationAdapters;
-import org.mcwonderland.uhc.integration.worldborder.LegacyWorldBorderFillListener;
-import org.mcwonderland.uhc.integration.worldborder.LegacyWorldBorderPregenerationAdapter;
 import org.mcwonderland.uhc.listener.BooleanEvents;
 import org.mcwonderland.uhc.listener.ChatListener;
 import org.mcwonderland.uhc.listener.DamageListener;
@@ -75,11 +72,6 @@ public final class FeatureRegistry {
                 new ScoreListener(),
                 new ScenarioListener(plugin)
         ).forEach(registerListener);
-
-        if (ChunkPregenerationAdapters.usesLegacyWorldBorder())
-            registerListener.accept(new LegacyWorldBorderFillListener(
-                    new ChunkPregenerationService(new LegacyWorldBorderPregenerationAdapter())
-            ));
     }
 
     public void registerCommands(Consumer<Command> registerCommand) {
@@ -120,7 +112,7 @@ public final class FeatureRegistry {
 
     public void registerDefaultScenarios() {
         plugin.getScenarioManager().registerDefaults();
-        LegacyFoundationAdapter.callEvent(new ScenarioInitEvent());
+        PluginEvents.callEvent(new ScenarioInitEvent());
     }
 
     public void loadScoreboardThemes() {

@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import lombok.val;
 import net.kyori.adventure.text.Component;
 import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
 import org.mcwonderland.uhc.util.cuboid.SelectMode;
 import org.bukkit.Bukkit;
@@ -39,8 +39,8 @@ public class InteractListener implements Listener {
 
         if (action == Action.PHYSICAL) {
             if (uhcPlayer.isDead()) {
-                if (type == LegacyFoundationAdapter.materialOf("FARMLAND")
-                        || type == LegacyFoundationAdapter.materialOf("TRIPWIRE")
+                if (type == PluginMaterials.materialOf("FARMLAND")
+                        || type == PluginMaterials.materialOf("TRIPWIRE")
                         || type.toString().contains("PLATE")) {
                     e.setCancelled(true);
                 }
@@ -61,7 +61,7 @@ public class InteractListener implements Listener {
             }
         } else if (action == Action.LEFT_CLICK_BLOCK) {
             if (uhcPlayer.isDead()) {
-                Material fire = LegacyFoundationAdapter.materialOf("FIRE");
+                Material fire = PluginMaterials.materialOf("FIRE");
                 e.setCancelled(Cuboid.getBlocksNearBy(clickedBlock, SelectMode.CUBE)
                         .anyMatch(block -> block.getType() == fire));
             }

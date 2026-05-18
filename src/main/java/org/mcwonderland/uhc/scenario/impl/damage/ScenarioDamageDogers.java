@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.scenario.impl.damage;
 
 import org.mcwonderland.uhc.api.event.player.UHCPlayerDamageEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -60,7 +60,7 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
 
             killGamingEntity(e);
         } catch (RuntimeException | LinkageError ex) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     ex,
                     "Scenario 'Damage_Dogers' failed while handling a damage event.",
                     "The scenario was disabled for this run, but the damage flow will continue."
@@ -74,7 +74,7 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
             if (isEnabled())
                 disable();
         } catch (RuntimeException | LinkageError disableEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     disableEx,
                     "Scenario 'Damage_Dogers' could not be disabled after a runtime failure."
             );

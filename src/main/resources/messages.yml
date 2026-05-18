@@ -284,16 +284,6 @@ Console:
 Dependency:
   Require_Dependency: "&c你尚未安裝 &f{plugin} &c插件，因此插件無法啟動。請先至 &b{url} &c下載並安裝後，再重新啟動伺服器。"
   Require_Soft_Dependency: "&c你尚未安裝 &f{plugin} &c插件，因此本功能無法使用。請先至 &b{url} &c下載並安裝後，再重新嘗試一次。"
-  Using_Old_World_Border_In_New_Version:
-    - "&4&m______________________________________________________________"
-    - " "
-    - " "
-    - "&c&l請注意，你正在使用舊版本的 WorldBorder，載圖速度將會非常緩慢"
-    - "&c&l請至 &b&l{link} &c&l下載最新版本！"
-    - " "
-    - " "
-    - "&4&m______________________________________________________________"
-  Change_To_Older_World_Border_Version: "&c&l新版的 WorldBorder 並不支援 1.13 以下版本，請至 &b&l{link} &c&l下載舊版本。"
 
 Motd:
   Configuring: "&3遊戲設定中"

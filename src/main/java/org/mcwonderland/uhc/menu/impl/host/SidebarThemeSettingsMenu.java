@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.scoreboard.SidebarTheme;
 import org.mcwonderland.uhc.scoreboard.line.ScoreLines;
@@ -38,7 +38,7 @@ public class SidebarThemeSettingsMenu extends ConfigMenuPagged<SidebarTheme> {
 
     private List<String> getPreview(SidebarTheme theme, List<String> lore) {
 
-        return LegacyFoundationAdapter.replaceToList(lore, "{theme_preview}", getTestLinesIn(theme).getFor(uhcPlayer));
+        return PluginText.replaceToList(lore, "{theme_preview}", getTestLinesIn(theme).getFor(uhcPlayer));
     }
 
     private ScoreLines getTestLinesIn(SidebarTheme theme) {

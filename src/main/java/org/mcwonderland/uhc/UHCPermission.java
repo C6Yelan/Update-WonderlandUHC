@@ -1,7 +1,8 @@
 package org.mcwonderland.uhc;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.entity.Player;
+import org.mcwonderland.uhc.settings.Messages;
+import org.mcwonderland.uhc.util.Chat;
 
 public enum UHCPermission {
     BYPASS_JOIN_CONFIGURING,
@@ -68,11 +69,15 @@ public enum UHCPermission {
     }
 
     public boolean hasPerm(Player player) {
-        return LegacyFoundationAdapter.hasPermission(player, permission);
+        return player.hasPermission(permission);
     }
 
     public boolean checkPerms(Player player) {
-        return LegacyFoundationAdapter.checkPermission(player, permission);
+        if (hasPerm(player))
+            return true;
+
+        Chat.send(player, Messages.NO_PERMISSION.replace("{permission}", permission));
+        return false;
     }
 
     public String toString() {

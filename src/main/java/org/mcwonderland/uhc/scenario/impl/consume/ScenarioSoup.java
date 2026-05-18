@@ -1,9 +1,10 @@
 package org.mcwonderland.uhc.scenario.impl.consume;
 
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
+import org.mcwonderland.uhc.util.PlayerUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -36,19 +37,22 @@ public class ScenarioSoup extends ConfigBasedScenario implements Listener {
     }
 
     private boolean needRegen(Player player) {
-        return player.getHealth() < LegacyFoundationAdapter.getMaxHealth(player);
+        return player.getHealth() < PlayerUtils.getMaxHealth(player);
     }
 
     private boolean isSoup(ItemStack itemInHand) {
-        return itemInHand != null && itemInHand.getType() == LegacyFoundationAdapter.materialOf("MUSHROOM_STEW");
+        return itemInHand != null && itemInHand.getType() == PluginMaterials.materialOf("MUSHROOM_STEW");
     }
 
     private void soupRegen(Player player, EquipmentSlot hand, ItemStack soupItem) {
         if (hand == null)
             return;
 
-        player.getInventory().setItem(hand, soupItem.withType(LegacyFoundationAdapter.materialOf("BOWL")));
-        player.setHealth(LegacyFoundationAdapter.range(player.getHealth() + soupRegenHealth, 0, LegacyFoundationAdapter.getMaxHealth(player)));
+        player.getInventory().setItem(hand, soupItem.withType(PluginMaterials.materialOf("BOWL")));
+        double maxHealth = PlayerUtils.getMaxHealth(player);
+        double regeneratedHealth = player.getHealth() + soupRegenHealth;
+
+        player.setHealth(Math.max(0, Math.min(regeneratedHealth, maxHealth)));
     }
 
     @Override

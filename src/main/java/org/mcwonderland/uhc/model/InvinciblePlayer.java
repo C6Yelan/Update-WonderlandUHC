@@ -1,7 +1,9 @@
 package org.mcwonderland.uhc.model;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -11,14 +13,17 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class InvinciblePlayer {
-    private static final String INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG = "wonderlanduhc_invincible_damage_cancel_bypass";
     private static final Map<UHCPlayer, InvinciblePlayer> invinciblePlayers = new HashMap<>();
+    private static final Set<UUID> invincibleDamageCancelBypass = new HashSet<>();
 
     public static void startTask() {
-        LegacyFoundationAdapter.runTimerAsync(20 * 1, new InvinciblePlayerTask());
+        PluginScheduler.runTimerAsync(20 * 1, new InvinciblePlayerTask());
     }
 
     private int time;
@@ -31,7 +36,7 @@ public class InvinciblePlayer {
         if (isNeedToAdd(uhcPlayer, time)) {
             invinciblePlayers.put(uhcPlayer, new InvinciblePlayer(time));
 
-            Chat.send(uhcPlayer.getPlayer(), LegacyFoundationAdapter.replaceTimePlaceholders(Messages.Game.NoClean.OBTAINED, time));
+            Chat.send(uhcPlayer.getPlayer(), PluginText.replaceTimePlaceholders(Messages.Game.NoClean.OBTAINED, time));
         }
     }
 
@@ -63,15 +68,15 @@ public class InvinciblePlayer {
 
     public static boolean shouldCancelDamage(UHCPlayer uhcPlayer) {
         return isInvincible(uhcPlayer)
-                && !LegacyFoundationAdapter.hasTempMetadata(uhcPlayer.getPlayer(), INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG);
+                && !invincibleDamageCancelBypass.contains(uhcPlayer.getPlayer().getUniqueId());
     }
 
     public static void runBypassingInvincibleDamageCancel(Player player, Runnable runnable) {
-        LegacyFoundationAdapter.setTempMetadata(player, INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG);
+        invincibleDamageCancelBypass.add(player.getUniqueId());
         try {
             runnable.run();
         } finally {
-            LegacyFoundationAdapter.removeTempMetadata(player, INVINCIBLE_DAMAGE_CANCEL_BYPASS_TAG);
+            invincibleDamageCancelBypass.remove(player.getUniqueId());
         }
     }
 
@@ -93,9 +98,9 @@ public class InvinciblePlayer {
             Player player = uhcPlayer.getPlayer();
 
             if (time > 0)
-                LegacyFoundationAdapter.sendActionBar(player, LegacyFoundationAdapter.replaceTimePlaceholders(Messages.Game.NoClean.ACTION_BAR, time));
+                PluginPlayers.sendActionBar(player, PluginText.replaceTimePlaceholders(Messages.Game.NoClean.ACTION_BAR, time));
             else
-                LegacyFoundationAdapter.sendActionBar(player, Messages.Game.NoClean.ACTION_BAR_END);
+                PluginPlayers.sendActionBar(player, Messages.Game.NoClean.ACTION_BAR_END);
         }
     }
 }

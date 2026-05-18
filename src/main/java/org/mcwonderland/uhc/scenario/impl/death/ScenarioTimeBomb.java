@@ -1,10 +1,11 @@
 package org.mcwonderland.uhc.scenario.impl.death;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -60,7 +61,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
 
     @Override
     protected void onConfigReload() {
-        LegacyFoundationAdapter.runTimer(20, new ChestExplodeTicker());
+        PluginScheduler.runTimer(20, new ChestExplodeTicker());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -81,7 +82,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             dropOverflowDrops(e.getEntity(), overflowDrops);
             logOverflowDrops(originalDropCount, storedDropCount);
         } catch (RuntimeException | LinkageError ex) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     ex,
                     "Scenario 'Time_Bomb' failed while creating a death chest.",
                     "The scenario was disabled for this run, but regular death drops will continue."
@@ -211,7 +212,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             return;
 
         try {
-            LegacyFoundationAdapter.logNoPrefix(
+            PluginConsole.logNoPrefix(
                     "&e[WonderlandUHC] Scenario 'Time_Bomb' stored " + storedDropCount + " of " + originalDropCount + " death drops.",
                     "&e[WonderlandUHC] Overflow drops were released at the death location."
             );
@@ -232,7 +233,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
                 chest.tick();
             } catch (RuntimeException | LinkageError ex) {
                 ScenarioTimeBomb.timeBombs.remove(chest);
-                LegacyFoundationAdapter.error(
+                PluginConsole.error(
                         ex,
                         "Scenario 'Time_Bomb' failed while ticking a death chest.",
                         "The failed chest was removed; other Time_Bomb chests will continue ticking."
@@ -296,7 +297,7 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
             if (isEnabled())
                 disable();
         } catch (RuntimeException | LinkageError disableEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     disableEx,
                     "Scenario 'Time_Bomb' could not be disabled after a runtime failure."
             );

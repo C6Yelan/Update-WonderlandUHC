@@ -1,12 +1,13 @@
 package org.mcwonderland.uhc.application.world;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.port.ChunkPregenerationPort;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -22,7 +23,7 @@ public final class ChunkPregenerationService {
     public ChunkPregenerationService(ChunkPregenerationPort pregeneration) {
         this.pregeneration = pregeneration;
         this.pregeneration.onComplete((worldName, totalChunks) ->
-                LegacyFoundationAdapter.runLater(0, () -> finish(worldName, totalChunks))
+                PluginScheduler.runLater(0, () -> finish(worldName, totalChunks))
         );
     }
 
@@ -30,7 +31,7 @@ public final class ChunkPregenerationService {
         String worldName = world.getName();
         int radius = pregenerationRadius(world);
         int borderSize = pregenerationBorderSize(world);
-        LegacyFoundationAdapter.log(Messages.Console.CHUNK_LOAD_STARTED.replace("{world}", worldName));
+        PluginConsole.log(Messages.Console.CHUNK_LOAD_STARTED.replace("{world}", worldName));
         pregeneration.startSquarePregeneration(
                 worldName,
                 UHCWorldUtils.getBorderCenter(world, borderSize),
@@ -44,7 +45,7 @@ public final class ChunkPregenerationService {
         if (!WorldUtils.isUHCWorld(world))
             return;
 
-        LegacyFoundationAdapter.logNoPrefix(Messages.Console.CHUNK_LOAD_FINISHED
+        PluginConsole.logNoPrefix(Messages.Console.CHUNK_LOAD_FINISHED
                 .replace("{world}", world.getName())
                 .replace("{number}", "" + totalChunks)
         );
@@ -61,7 +62,7 @@ public final class ChunkPregenerationService {
         World world = Bukkit.getWorld(worldName);
 
         if (world == null) {
-            LegacyFoundationAdapter.log("&cChunk pregeneration finished for unloaded world: " + worldName);
+            PluginConsole.log("&cChunk pregeneration finished for unloaded world: " + worldName);
             return;
         }
 
@@ -81,15 +82,15 @@ public final class ChunkPregenerationService {
     }
 
     private void buildBorders(World world, int size) {
-        LegacyFoundationAdapter.logNoPrefix("&eGenerating Border...");
+        PluginConsole.logNoPrefix("&eGenerating Border...");
 
         generateBorder(world, size);
 
-        LegacyFoundationAdapter.runLater(20 * 3, () -> {
+        PluginScheduler.runLater(20 * 3, () -> {
             for (int i = 0; i < Settings.Border.BEDROCK_BORDER_HEIGHT - 1; i++)
                 generateBorder(world, size);
 
-            LegacyFoundationAdapter.logNoPrefix("&eBorder Generated!");
+            PluginConsole.logNoPrefix("&eBorder Generated!");
             onBorderGenerated(world);
         });
     }
@@ -108,7 +109,7 @@ public final class ChunkPregenerationService {
 
     private void checkNether() {
         if (Game.getSettings().isUsingNether()) {
-            LegacyFoundationAdapter.logNoPrefix(Messages.Console.CHUNK_LOAD_NETHER_DETECTED);
+            PluginConsole.logNoPrefix(Messages.Console.CHUNK_LOAD_NETHER_DETECTED);
             start(UHCWorldUtils.getNether());
         } else
             checkForceChunk();
@@ -116,7 +117,7 @@ public final class ChunkPregenerationService {
 
     private void checkForceChunk() {
         if (Settings.ChunkLoading.FORCE_LOADING_NETHER_CHUNK) {
-            LegacyFoundationAdapter.logNoPrefix(Messages.Console.FORCE_NETHER_CHUNK_ON);
+            PluginConsole.logNoPrefix(Messages.Console.FORCE_NETHER_CHUNK_ON);
             start(UHCWorldUtils.getNether());
         } else
             saveAndRestart();

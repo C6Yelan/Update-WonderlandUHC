@@ -1,9 +1,8 @@
 package org.mcwonderland.uhc.model;
 
 import lombok.experimental.UtilityClass;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.platform.PlayerHand;
-import org.mcwonderland.uhc.util.PlayerUtils;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.util.UniqueQueue;
 import org.mcwonderland.uhc.util.cuboid.Cuboid;
 import org.mcwonderland.uhc.util.cuboid.SelectMode;
@@ -41,30 +40,36 @@ public class VeinMiner {
     }
 
     private void breakBlock(Player player, Block block) {
-        try {
-            PlayerUtils.breakBlockNms(player, block);
-        } catch (RuntimeException | LinkageError ex) {
-            breakBlockWithBukkit(player, block, ex);
-        }
-    }
+        Throwable failure = null;
 
-    private void breakBlockWithBukkit(Player player, Block block, Throwable cause) {
         try {
             if (player.breakBlock(block))
                 return;
-        } catch (RuntimeException | LinkageError ignored) {
+        } catch (RuntimeException | LinkageError ex) {
+            failure = ex;
         }
 
+        breakBlockNaturally(player, block, failure);
+    }
+
+    private void breakBlockNaturally(Player player, Block block, Throwable cause) {
         try {
             if (!block.breakNaturally(PlayerHand.getMainHandItem(player)))
                 block.setType(Material.AIR);
         } catch (RuntimeException | LinkageError fallbackEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     fallbackEx,
-                    "VeinMiner failed to break a connected block after the legacy NMS break failed.",
-                    "Original failure: " + cause.getClass().getSimpleName() + ": " + cause.getMessage()
+                    "VeinMiner failed to break a connected block after Bukkit player break failed.",
+                    "Original failure: " + describeBreakFailure(cause)
             );
         }
+    }
+
+    private String describeBreakFailure(Throwable cause) {
+        if (cause == null)
+            return "Player#breakBlock returned false";
+
+        return cause.getClass().getSimpleName() + ": " + cause.getMessage();
     }
 
     private Set<Block> calculateConnectBlocks(Block startBlock, SelectMode mode) {

@@ -1,9 +1,11 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
+import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.random.PluginRandom;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.mcwonderland.uhc.util.PlayerUtils;
 import org.mcwonderland.uhc.util.WorldUtils;
@@ -44,7 +46,7 @@ public class BlockListener implements Listener {
 
     @EventHandler
     public void onBreakBlock(UHCBlockBreakEvent e) {
-        if (LegacyFoundationAdapter.isLeaves(e.getBlockType()))
+        if (PluginMaterials.isLeaves(e.getBlockType()))
             replaceAppleDrops(e.getDrops());
     }
 
@@ -58,20 +60,20 @@ public class BlockListener implements Listener {
 
     private void appleDrops(Block block, List<ItemStack> drops) {
         replaceAppleDrops(drops);
-        block.setType(LegacyFoundationAdapter.materialOf("AIR"));
+        block.setType(PluginMaterials.materialOf("AIR"));
         WorldUtils.dropItems(block.getLocation(), drops);
     }
 
     private void replaceAppleDrops(List<ItemStack> drops) {
-        WorldUtils.replaceDrop(drops, LegacyFoundationAdapter.materialOf("APPLE"), LegacyFoundationAdapter.materialOf("AIR"));
+        WorldUtils.replaceDrop(drops, PluginMaterials.materialOf("APPLE"), PluginMaterials.materialOf("AIR"));
 
-        if (LegacyFoundationAdapter.chance(Game.getSettings().getAppleRate()))
-            drops.add(LegacyFoundationAdapter.itemOf("APPLE"));
+        if (PluginRandom.chance(Game.getSettings().getAppleRate()))
+            drops.add(PluginMaterials.itemOf("APPLE"));
     }
 
     private void handleCustomEvents(BlockBreakEvent e) {
         UHCBlockBreakEvent event = new UHCBlockBreakEvent(e);
-        LegacyFoundationAdapter.callEvent(event);
+        PluginEvents.callEvent(event);
 
         if (event.isDropsModified())
             handleCustomBlockDrops(event);
@@ -84,7 +86,7 @@ public class BlockListener implements Listener {
         dropItems(e, blockLocation);
         PlayerUtils.costPlayerToolDurability(e.getPlayer());
 
-        block.setType(LegacyFoundationAdapter.materialOf("AIR"));
+        block.setType(PluginMaterials.materialOf("AIR"));
     }
 
     private void dropItems(UHCBlockBreakEvent e, Location location) {

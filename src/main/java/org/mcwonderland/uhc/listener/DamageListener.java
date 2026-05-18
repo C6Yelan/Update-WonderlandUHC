@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.listener;
 
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerDamageByEntityEvent;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerDamageEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
@@ -95,8 +95,8 @@ public class DamageListener implements Listener {
 
     private void handleCustomDamageEvents(UHCPlayer uhcPlayer, EntityDamageEvent e) {
         if (e instanceof EntityDamageByEntityEvent)
-            LegacyFoundationAdapter.callEvent(new UHCPlayerDamageByEntityEvent(uhcPlayer, ( EntityDamageByEntityEvent ) e));
+            PluginEvents.callEvent(new UHCPlayerDamageByEntityEvent(uhcPlayer, ( EntityDamageByEntityEvent ) e));
         else
-            LegacyFoundationAdapter.callEvent(new UHCPlayerDamageEvent(uhcPlayer, e));
+            PluginEvents.callEvent(new UHCPlayerDamageEvent(uhcPlayer, e));
     }
 }

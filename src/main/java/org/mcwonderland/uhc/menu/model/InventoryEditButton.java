@@ -1,8 +1,9 @@
 package org.mcwonderland.uhc.menu.model;
 
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.platform.PlayerHand;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -18,6 +19,8 @@ import org.mineacademy.fo.menu.button.config.conversation.ConfigInventoryEditorB
 import org.mineacademy.fo.menu.config.ItemPath;
 
 public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
+    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
+
     private final String TO_HEAD_INPUT = "tohead";
 
     private final InventorySaver.SaveType saveType;
@@ -47,8 +50,13 @@ public abstract class InventoryEditButton extends ConfigInventoryEditorButton {
     protected abstract String getMessage();
 
     protected void tellComponents(Player player) {
-        LegacyFoundationAdapter.sendRunCommandComponent(player, Messages.Editor.Inventory.CLICK_TO_HEAD, TO_HEAD_INPUT);
-        LegacyFoundationAdapter.sendRunCommandComponent(player, Messages.Editor.CLICK_FINISH, FINISH_INPUT);
+        player.sendMessage(runCommandComponent(Messages.Editor.Inventory.CLICK_TO_HEAD, TO_HEAD_INPUT));
+        player.sendMessage(runCommandComponent(Messages.Editor.CLICK_FINISH, FINISH_INPUT));
+    }
+
+    private Component runCommandComponent(String message, String command) {
+        return LEGACY_AMPERSAND.deserialize(message)
+                .clickEvent(ClickEvent.runCommand(command));
     }
 
     @Override

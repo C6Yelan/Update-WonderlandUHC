@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.scoreboard.line;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.util.List;
 
@@ -32,6 +32,6 @@ public abstract class ScoreLines {
     }
 
     protected final List<String> replaceLines(List<String> lines, Object... replacements) {
-        return LegacyFoundationAdapter.replaceToList(lines, replacements);
+        return PluginText.replaceToList(lines, replacements);
     }
 }

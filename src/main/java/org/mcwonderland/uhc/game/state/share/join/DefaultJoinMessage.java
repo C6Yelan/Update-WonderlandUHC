@@ -1,9 +1,9 @@
 package org.mcwonderland.uhc.game.state.share.join;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
@@ -18,7 +18,7 @@ public class DefaultJoinMessage implements JoinBehavior {
         Game game = e.getGame();
 
         if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE) {
-            Chat.send(player, LegacyFoundationAdapter.replaceToArray(
+            Chat.send(player, PluginText.replaceToArray(
                     Messages.Lobby.WELCOME_MSG,
                     "{player}", player.getName(),
                     "{host}", game.getHost(),
@@ -29,7 +29,7 @@ public class DefaultJoinMessage implements JoinBehavior {
                     .replace("{online}", "" + Extra.getOnlinePlayers())
                     .replace("{max}", "" + Game.getSettings().getMaxPlayers()));
         } else
-            Chat.send(player, LegacyFoundationAdapter.replaceToString(
+            Chat.send(player, PluginText.replaceToString(
                     Messages.Lobby.WELCOME_MSG_CONFIGURING,
                     "{cmd}", "uhc tutorial config"));
     }

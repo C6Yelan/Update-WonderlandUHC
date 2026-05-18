@@ -1,10 +1,11 @@
 package org.mcwonderland.uhc.practice;
 
+import org.mcwonderland.uhc.platform.event.PluginEvents;
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.mcwonderland.uhc.util.Lobby;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -18,7 +19,7 @@ public abstract class AbstractPractice implements Practice {
 
     @Override
     public final void setup() {
-        getListeners().forEach(LegacyFoundationAdapter::registerEvents);
+        getListeners().forEach(PluginEvents::registerEvents);
         onSetup();
     }
 
@@ -57,7 +58,7 @@ public abstract class AbstractPractice implements Practice {
     @Override
     public Iterable<Player> getPlayers() {
         return practicePlayers.stream()
-                .map(LegacyFoundationAdapter::getPlayerByUUID)
+                .map(PluginPlayers::getByUniqueId)
                 .filter(player -> player != null)
                 .collect(Collectors.toSet());
     }

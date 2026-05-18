@@ -1,9 +1,9 @@
 package org.mcwonderland.uhc.command.team;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -54,7 +54,7 @@ class ChatCommand extends TeamSubCommand {
     }
 
     private void sendTeamChat(UHCTeam team, UHCPlayer uhcPlayer) {
-        String msg = LegacyFoundationAdapter.colorize(joinArgs(0, args.length));
+        String msg = PluginText.colorize(joinArgs(0, args.length));
 
         team.sendMessage(Messages.ChatFormat.TEAM_CHAT
                 .replace("{teamname}", team.getName())

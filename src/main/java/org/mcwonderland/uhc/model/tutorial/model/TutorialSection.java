@@ -1,14 +1,21 @@
 package org.mcwonderland.uhc.model.tutorial.model;
 
 import org.bukkit.entity.Player;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.util.Chat;
 
 public abstract class TutorialSection {
 
     public static final TutorialSection END_TUTORIAL = null;
+    private static final String BOX_LINE = "&8-----------------------------------------------------";
 
     protected void show(Player player) {
-        LegacyFoundationAdapter.tellBoxed(player, getMessages());
+        Chat.send(player, BOX_LINE);
+
+        for (String message : getMessages())
+            for (String part : message.split("\n"))
+                Chat.send(player, part);
+
+        Chat.send(player, BOX_LINE);
     }
 
     public boolean isLastOne() {

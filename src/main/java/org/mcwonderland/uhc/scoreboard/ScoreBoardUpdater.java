@@ -1,23 +1,23 @@
 package org.mcwonderland.uhc.scoreboard;
 
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ScoreBoardUpdater {
 
     public static void start() {
-        LegacyFoundationAdapter.runTimerAsync(1, new SidebarUpdater());
+        PluginScheduler.runTimerAsync(1, new SidebarUpdater());
         addNewUpdate(1, SimpleScores::updateHeals);
         addNewUpdate(5, SimpleScores::updateNameTagColors);
     }
 
 
     public static void addNewUpdate(int tick, ScoreUpdateCallback scoreUpdateCallback) {
-        LegacyFoundationAdapter.runTimerAsync(tick, () -> {
+        PluginScheduler.runTimerAsync(tick, () -> {
             for (SimpleScores score : SimpleScores.getAllScores())
                 scoreUpdateCallback.update(score);
         });

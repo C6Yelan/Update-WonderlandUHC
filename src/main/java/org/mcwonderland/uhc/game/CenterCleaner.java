@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.game;
 
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -23,7 +24,6 @@ import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -96,7 +96,7 @@ public class CenterCleaner {
     private static void applyLegacyGeneratorSettings(WorldCreator creator, boolean centerCleanerEnabled) {
         String generatorSettings = Settings.CenterCleaner.GENERATOR_SETTINGS;
 
-        if ((!centerCleanerEnabled || LegacyFoundationAdapter.isOlderThanMinecraft1_14())
+        if (!centerCleanerEnabled
                 && generatorSettings != null
                 && !generatorSettings.isEmpty())
             creator.generatorSettings(generatorSettings);
@@ -255,7 +255,7 @@ public class CenterCleaner {
         @Override
         public void onStage(MatchCenter center, CenterValidationService.CenterValidationStage stage, int candidateIndex, int candidateCount) {
             String progressMessage = progressMessage(candidateIndex, candidateCount, formatStage(stage));
-            LegacyFoundationAdapter.sendActionBar(player, progressMessage);
+            PluginPlayers.sendActionBar(player, progressMessage);
             Chat.send(player, progressMessage);
         }
 
@@ -266,7 +266,7 @@ public class CenterCleaner {
                 return;
 
             lastActionBarMillis = now;
-            LegacyFoundationAdapter.sendActionBar(player, progressMessage(candidateIndex, candidateCount,
+            PluginPlayers.sendActionBar(player, progressMessage(candidateIndex, candidateCount,
                     formatStage(stage) + " " + sampledPoints + "/" + totalPoints));
         }
 
@@ -281,7 +281,7 @@ public class CenterCleaner {
         @Override
         public void onCandidateScored(CenterCandidateScore score, CenterCandidateScore bestScore, int candidateIndex, int candidateCount) {
             String progressMessage = progressMessage(candidateIndex, candidateCount, "目前最佳 " + formatScore(bestScore.getTotalScore()));
-            LegacyFoundationAdapter.sendActionBar(player, progressMessage);
+            PluginPlayers.sendActionBar(player, progressMessage);
             Chat.send(player, progressMessage);
         }
 

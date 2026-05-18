@@ -1,10 +1,13 @@
 package org.mcwonderland.uhc.command.uhc;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.application.world.PreviewWorldGenerationService;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 import org.mineacademy.fo.command.SimpleSubCommand;
@@ -13,6 +16,8 @@ import org.mineacademy.fo.command.SimpleSubCommand;
  * 2019-11-24 下午 12:50
  */
 public class RegenWorldCommand extends SimpleSubCommand {
+
+    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
 
     private final PreviewWorldGenerationService previewWorldGeneration = new PreviewWorldGenerationService();
 
@@ -70,17 +75,23 @@ public class RegenWorldCommand extends SimpleSubCommand {
                 " ",
                 "&7[&a中心搜尋&7] &f是否啟用 CenterCleaner 來搜尋較適合 UHC 的中心點？",
                 "&7啟用後會在同一張世界中評估候選中心，不會自動換 seed。");
-        LegacyFoundationAdapter.sendRunCommandComponent(getPlayer(),
+        getPlayer().sendMessage(runCommandComponent(
                 "&a[啟用 CenterCleaner]",
                 "/uhc regen confirm" + suffix,
-                "&7點擊後建立預覽世界並搜尋中心");
-        LegacyFoundationAdapter.sendRunCommandComponent(getPlayer(),
+                "&7點擊後建立預覽世界並搜尋中心"));
+        getPlayer().sendMessage(runCommandComponent(
                 "&c[不啟用，直接建立]",
                 "/uhc regen skip" + suffix,
-                "&7點擊後沿用舊預覽建立流程");
+                "&7點擊後沿用舊預覽建立流程"));
     }
 
     private void createWorld(boolean centerCleaner, String seed) {
         previewWorldGeneration.create(getPlayer(), centerCleaner, seed);
+    }
+
+    private Component runCommandComponent(String message, String command, String hover) {
+        return LEGACY_AMPERSAND.deserialize(message)
+                .clickEvent(ClickEvent.runCommand(command))
+                .hoverEvent(HoverEvent.showText(LEGACY_AMPERSAND.deserialize(hover)));
     }
 }

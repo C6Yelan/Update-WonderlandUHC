@@ -1,5 +1,7 @@
 package org.mcwonderland.uhc.game.timer.impl.countdown;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
 import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.api.event.timer.UHCStartedEvent;
 import org.mcwonderland.uhc.game.Game;
@@ -8,7 +10,6 @@ import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.timer.Countdown;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
@@ -47,7 +48,7 @@ public class StartCountdown extends Countdown {
             }
         }
 
-        LegacyFoundationAdapter.callEvent(new UHCStartedEvent());
+        PluginEvents.callEvent(new UHCStartedEvent());
     }
 
     private static void setupWorlds() {
@@ -76,7 +77,7 @@ public class StartCountdown extends Countdown {
 
     @Override
     public String getToggledBroadcast() {
-        Chat.broadcast(LegacyFoundationAdapter.replaceToArray(
+        Chat.broadcast(PluginText.replaceToArray(
                 Messages.CountDown.GAME_STARTED,
                 "{host}", Game.getGame().getHost()));
         Extra.sound(Sounds.Countdown.Start.RUN);

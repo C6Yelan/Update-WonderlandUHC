@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.scenario.impl.special;
 
 import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.core.rule.OreRuleSupport;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
@@ -71,7 +71,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
                     addBlockMines(e.getPlayer(), blockType);
             }
         } catch (RuntimeException | LinkageError ex) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     ex,
                     "Scenario 'Limitations' failed while handling a block break event.",
                     "The scenario was disabled for this run, but the block break flow will continue."
@@ -85,7 +85,7 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
             if (isEnabled())
                 disable();
         } catch (RuntimeException | LinkageError disableEx) {
-            LegacyFoundationAdapter.error(
+            PluginConsole.error(
                     disableEx,
                     "Scenario 'Limitations' could not be disabled after a runtime failure."
             );

@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.model.broadcast;
 
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mineacademy.fo.settings.YamlConfig;
@@ -31,7 +31,7 @@ public abstract class AbstractBroadcastSender extends YamlConfig {
     private List<String> getPlaceholderReplacedNewList(GameStartTimeInfo info) {
         List<String> list = GamePlaceholderReplacer.replace(broadCastMessageModel);
 
-        list = LegacyFoundationAdapter.replaceToList(
+        list = PluginText.replaceToList(
                 list,
                 "{host}", Game.getGame().getHost(),
                 "{ip}", info.getIp(),
@@ -45,7 +45,7 @@ public abstract class AbstractBroadcastSender extends YamlConfig {
 
     private void cleanColorCodes(List<String> list) {
         for (int i = 0; i < list.size(); i++)
-            list.set(i, LegacyFoundationAdapter.stripColors(list.get(i)));
+            list.set(i, PluginText.stripColors(list.get(i)));
     }
 
     protected abstract void send(List<String> messages);

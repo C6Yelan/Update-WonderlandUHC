@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.mcwonderland.uhc.application.world.MatchCenter;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.port.ChunkPregenerationPort;
 import org.popcraft.chunky.api.ChunkyAPI;
 import org.popcraft.chunky.api.event.task.GenerationCompleteEvent;
@@ -53,7 +53,7 @@ public final class ChunkyPregenerationAdapter implements ChunkPregenerationPort 
         if (!started)
             throw new IllegalStateException("Chunky did not start pregeneration for world: " + worldName);
 
-        LegacyFoundationAdapter.log("&7Chunky pregeneration started for world: &f" + worldName);
+        PluginConsole.log("&7Chunky pregeneration started for world: &f" + worldName);
     }
 
     @Override

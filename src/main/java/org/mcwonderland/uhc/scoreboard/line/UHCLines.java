@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.scoreboard.line;
 
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public abstract class UHCLines extends ScoreLines {
     @Override
     protected List<String> replaceGlobal(List<String> lines) {
         return replaceLines(lines,
-                "{online_players}", LegacyFoundationAdapter.getOnlinePlayers().size(),
+                "{online_players}", PluginPlayers.onlinePlayers().size(),
                 "{host}", Game.getGame().getHost());
     }
 }

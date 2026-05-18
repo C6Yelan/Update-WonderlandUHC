@@ -5,8 +5,8 @@ import github.scarsz.discordsrv.dependencies.jda.api.entities.Message;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import github.scarsz.discordsrv.util.DiscordUtil;
 import org.mcwonderland.uhc.Dependency;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.model.broadcast.AbstractBroadcastSender;
+import org.mcwonderland.uhc.model.broadcast.BroadcastDeliveryException;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -28,13 +28,13 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
     @Override
     protected void send(List<String> messages) {
         if (!DiscordSRV.isReady)
-            throw LegacyFoundationAdapter.failure("&cDiscordSRV 尚未完成啟動，請稍後再試。");
+            throw new BroadcastDeliveryException("&cDiscordSRV 尚未完成啟動，請稍後再試。");
 
         channelIds.forEach(channel -> {
             TextChannel textChannel = DiscordUtil.getTextChannelById(channel);
 
             if (textChannel == null)
-                throw LegacyFoundationAdapter.failure(invalidChannel);
+                throw new BroadcastDeliveryException(invalidChannel);
 
             String msg = getFormatterMessage(messages, textChannel);
 
@@ -47,7 +47,7 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
                                 Message.MentionType.EVERYONE))
                         .complete();
             } catch (RuntimeException e) {
-                throw LegacyFoundationAdapter.failure("&cDiscord公告發送失敗: " + e.getMessage());
+                throw new BroadcastDeliveryException("&cDiscord公告發送失敗: " + e.getMessage());
             }
         });
     }
