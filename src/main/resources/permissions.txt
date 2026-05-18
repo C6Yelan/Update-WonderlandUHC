@@ -9,7 +9,6 @@ wonderland.uhc.host
   wonderland.uhc.item.settings #獲得能開起設定介面的物品
   wonderland.uhc.moderator
   wonderland.uhc.command.border
-  wonderland.uhc.command.mlg
   wonderland.uhc.command.uhc.switchteam
   wonderland.uhc.command.uhc.splitteam
   wonderland.uhc.command.uhc.resetteam
@@ -30,7 +29,6 @@ wonderland.uhc.moderator
 
 wonderland.uhc.command.backpack
 wonderland.uhc.command.config
-wonderland.uhc.command.leave
 wonderland.uhc.command.scenarios
 wonderland.uhc.command.disableitems
 wonderland.uhc.command.sendcoords

@@ -9,8 +9,8 @@ import org.mcwonderland.uhc.util.Extra;
 
 class CreateCommand extends TeamSubCommand {
 
-    protected CreateCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected CreateCommand(String sublabel) {
+        super(sublabel);
 
         setDescription("創建隊伍。");
         setPermission(UHCPermission.COMMAND_TEAM_CREATE.toString());

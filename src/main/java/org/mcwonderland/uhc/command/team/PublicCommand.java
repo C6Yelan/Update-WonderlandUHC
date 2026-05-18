@@ -6,8 +6,8 @@ import org.mcwonderland.uhc.settings.CommandSettings;
 
 class PublicCommand extends TeamOwnerCommand {
 
-    protected PublicCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected PublicCommand(String sublabel) {
+        super(sublabel);
 
         setDescription("公開隊伍讓其他玩家自由加入。");
         setPermission(UHCPermission.COMMAND_TEAM_PUBLIC.toString());

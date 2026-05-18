@@ -12,8 +12,8 @@ import org.bukkit.entity.Player;
 
 class ChatCommand extends TeamSubCommand {
 
-    protected ChatCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected ChatCommand(String sublabel) {
+        super(sublabel);
 
         setUsage("[訊息]");
         setDescription("發對隊伍聊天訊息。");

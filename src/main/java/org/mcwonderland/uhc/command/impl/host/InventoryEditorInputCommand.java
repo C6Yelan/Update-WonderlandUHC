@@ -1,26 +1,54 @@
 package org.mcwonderland.uhc.command.impl.host;
 
-import org.mineacademy.fo.command.SimpleCommand;
+import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.settings.CommandSettings;
+import org.mcwonderland.uhc.util.Chat;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
 
-public class InventoryEditorInputCommand extends SimpleCommand {
+public class InventoryEditorInputCommand implements CommandExecutor {
+
+    public static final String FINISH_NAME = "finish";
+    public static final String TO_HEAD_NAME = "tohead";
 
     private final String input;
 
-    public InventoryEditorInputCommand(String label, String input) {
-        super(label);
-
+    private InventoryEditorInputCommand(String input) {
         this.input = input;
     }
 
-    @Override
-    protected void onCommand() {
-        checkConsole();
+    public static void register(WonderlandUHC plugin) {
+        PluginCommand finishCommand = plugin.getCommand(FINISH_NAME);
 
-        if (!getPlayer().isConversing()) {
-            tell("&c目前沒有正在等待的設定輸入。");
-            return;
+        if (finishCommand == null)
+            throw new IllegalStateException("Command /" + FINISH_NAME + " is not declared in plugin.yml");
+
+        finishCommand.setExecutor(new InventoryEditorInputCommand("finish"));
+
+        PluginCommand toHeadCommand = plugin.getCommand(TO_HEAD_NAME);
+
+        if (toHeadCommand == null)
+            throw new IllegalStateException("Command /" + TO_HEAD_NAME + " is not declared in plugin.yml");
+
+        toHeadCommand.setExecutor(new InventoryEditorInputCommand("tohead"));
+    }
+
+    @Override
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player player)) {
+            Chat.send(sender, CommandSettings.NO_CONSOLE);
+            return true;
         }
 
-        getPlayer().acceptConversationInput(input);
+        if (!player.isConversing()) {
+            Chat.send(player, "&c目前沒有正在等待的設定輸入。");
+            return true;
+        }
+
+        player.acceptConversationInput(input);
+        return true;
     }
 }

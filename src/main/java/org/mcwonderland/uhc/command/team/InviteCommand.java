@@ -6,7 +6,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.settings.CommandSettings;
@@ -17,8 +16,8 @@ class InviteCommand extends TeamOwnerCommand {
 
     private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
 
-    protected InviteCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected InviteCommand(String sublabel) {
+        super(sublabel);
 
         setMinArguments(1);
         setUsage("<玩家>");
@@ -32,7 +31,7 @@ class InviteCommand extends TeamOwnerCommand {
 
         Player player = getPlayer();
         UHCTeam team = getTeam();
-        UHCPlayer target = CommandHelper.findUHCPlayer(args[0]);
+        UHCPlayer target = findUHCPlayer(args[0]);
 
         checkInvitationValid(team, target);
 
@@ -73,5 +72,10 @@ class InviteCommand extends TeamOwnerCommand {
         return LEGACY_AMPERSAND.deserialize(message)
                 .clickEvent(ClickEvent.runCommand(command))
                 .hoverEvent(HoverEvent.showText(LEGACY_AMPERSAND.deserialize(hover)));
+    }
+
+    @Override
+    boolean completesPlayerName() {
+        return true;
     }
 }

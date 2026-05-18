@@ -4,7 +4,6 @@ import lombok.Getter;
 import org.mcwonderland.uhc.bootstrap.FeatureRegistry;
 import org.mcwonderland.uhc.bootstrap.PluginBootstrap;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
 import org.mcwonderland.uhc.practice.Practice;
 import org.mcwonderland.uhc.practice.SimplePractice;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
@@ -41,20 +40,17 @@ public class WonderlandUHC extends SimplePlugin {
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
         bootstrap.loadFiles();
         featureRegistry.registerListeners(this::registerEvents);
-        featureRegistry.registerCommandGroups(LegacyFoundationAdapter.commandGroupRegistrar(this::registerCommands));
-        featureRegistry.registerCommands(this::registerCommand);
+        featureRegistry.registerNativeCommands();
         bootstrap.createPluginAssets();
         featureRegistry.setupPractice(practice);
         featureRegistry.setupDiscordVoiceHook();
 
         bootstrap.scheduleDelayedStartupTasks(featureRegistry);
 
-        LegacyFoundationAdapter.setTellPrefix("");
     }
 
     @Override
     protected void onPluginReload() {
-        new FeatureRegistry(this).registerCommandGroups(LegacyFoundationAdapter.commandGroupRegistrar(this::registerCommands));
         scenarioManager.reloadAll();
         UHCGameSettingsSaver.reloadFromFile();
     }
@@ -66,7 +62,6 @@ public class WonderlandUHC extends SimplePlugin {
 
         bootstrap.checkDependencies();
 
-        bootstrap.registerPluginChannels();
         bootstrap.configureFoundationLibrary();
 
         featureRegistry.loadScoreboardThemes();

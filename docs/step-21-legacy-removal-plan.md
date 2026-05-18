@@ -392,7 +392,7 @@ rg -n "org\.mineacademy\.fo|LegacyFoundationAdapter|lib-foundation" src/main/jav
 後續 permission / validation 小切片實作結果：
 
 - `UHCPermission` 不再透過 Foundation `PlayerUtil.hasPerm` / `Valid.checkPermission`；權限判斷改用 Bukkit `Player#hasPermission(...)`，缺權限訊息改讀本地 `Messages.NO_PERMISSION`。
-- `Dependency` 不再提供 Foundation 風格 `check()` / `checkSoft()`；目前唯一使用點 `/reconnect` 改在 command 內檢查 DiscordSRV 是否 hooked，並用既有 command `returnTell(...)` 回覆缺 dependency 訊息。
+- `Dependency` 不再提供 Foundation 風格 `check()` / `checkSoft()`；`/reconnect` 改在 command 內檢查 DiscordSRV 是否 hooked，並用本地 `Chat.send(...)` 回覆缺 dependency 訊息。
 - `LegacyFoundationAdapter` 的 `hasPermission`、`checkPermission` 與 `checkBoolean` wrapper 已移除。
 - `rg -n "LegacyFoundationAdapter\\.(hasPermission|checkPermission|checkBoolean)|org\\.mineacademy\\.fo\\.PlayerUtil|org\\.mineacademy\\.fo\\.Valid|Dependency\\.[A-Z_]+\\.check" src/main/java src/test/java` 無命中。
 - 本切片不處理 `SimpleCommand` / command `returnTell(...)` 最終移除；這仍屬 command framework 切片。
@@ -449,7 +449,7 @@ rg -n "org\.mineacademy\.fo|LegacyFoundationAdapter|lib-foundation" src/main/jav
 - `Messages.Symbol#init()` 不再透過 `LegacyFoundationAdapter.configureTimeSymbols(...)` 寫 Foundation `TimeUtil` 全域欄位；改直接設定本地 `TimePlaceholderFormatter`。
 - `LegacyFoundationAdapter` 的 `configureTimeSymbols` wrapper 已移除。
 - `rg -n "LegacyFoundationAdapter\\.configureTimeSymbols|org\\.mineacademy\\.fo\\.TimeUtil|TimeUtil\\." src/main/java src/test/java` 無命中。
-- `WonderlandUHC#onPluginStart()` 的 `setTellPrefix("")` 暫時保留，因為目前 command framework 仍使用 Foundation `SimpleCommand#tell(...)`；此項應隨 21.3 command framework 移除時處理，不在本切片硬刪。
+- `WonderlandUHC#onPluginStart()` 的 `setTellPrefix("")` 已隨 21.3 command framework 收尾移除；command 訊息改由各 native command 直接使用既有 `Chat` / `Messages` / `CommandSettings` 輸出。
 
 切片限制：
 
@@ -470,18 +470,285 @@ rg -n "org\.mineacademy\.fo|LegacyFoundationAdapter|lib-foundation" src/main/jav
 - 移除 `SimpleCommand`、`SimpleSubCommand`、`SimpleCommandGroup` 依賴。
 - 保留既有 command label、permission、sender type、tab completion 與錯誤訊息語意。
 
+#### 21.3 只讀盤點：command framework 使用點
+
+更新日期：2026-05-16
+
+盤點分支：`step-21-legacy-removal`
+
+本段最初只整理文件，未修改程式碼；後續已逐批完成 production single command 遷移。最新掃描指令：
+
+```bash
+rg -n "SimpleCommand|SimpleSubCommand|SimpleCommandGroup|registerCommand|setTellPrefix|configureMenuClickSound" src/main/java/org/mcwonderland/uhc docs/step-21-legacy-removal-plan.md docs/steps.md
+rg -n "getPlayer\\(|getSender\\(|returnTell\\(|tell\\(|findPlayer\\(|checkBoolean\\(|checkConsole\\(|joinArgs\\(|rangeArgs\\(|tabComplete\\(|setUsage\\(|setDescription\\(|setPermission\\(|getLabel\\(" src/main/java/org/mcwonderland/uhc/command
+```
+
+目前 production single command 與 group command framework 都已離開 Foundation dynamic registration；`/uhc` 是最後一組已完成遷移的 group command。本段後續只保留 command slice 驗收與下一步切換，不再把 `/uhc` 列為待處理。`WonderlandUHC extends SimplePlugin` 與 `onPluginStart()` / `onReloadablesStart()` lifecycle 仍存在，需接續 settings / reload lifecycle 盤點後再處理，不能把本刀視為整個 21.3 lifecycle 完成。
+
+| 類型 | 目前數量 / 使用點 | 風險 |
+| --- | ---: | --- |
+| `SimpleCommand` import | 0 個檔案 | production single command 與舊測試 / 空指令已清出。 |
+| `SimpleSubCommand` import | 0 個檔案 | `/uhc`、`/team`、`/whitelist|/wl` 都已改走本地 native dispatch。 |
+| `SimpleCommandGroup` import | 0 個檔案 | Foundation group command registration path 已清空。 |
+| Foundation dynamic registration | 0 個入口 | `FeatureRegistry#registerCommands(...)` 與 `FeatureRegistry#registerCommandGroups(...)` 已移除。 |
+| `plugin.yml` static `commands:` | 主要正式指令都以 Bukkit/Paper native command entry 註冊 | command framework 不再需要 Foundation dynamic command registration；後續只剩 menu / settings / sound 等非 command 依賴。 |
+
+目前註冊入口：
+
+- `FeatureRegistry#registerCommands(...)` 已移除；production single command 與舊 `TEST_MODE` 測試指令都不再走 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前註冊 Bukkit native `/backpack|/bp`、`/border`、`/config|/cfg`、`/disableitems`、`/finish`、`/giveall`、`/practice`、`/reconnect`、`/respawn`、`/scenarios`、`/sendcoords|/scs`、`/setspawn`、`/spectoggle`、`/staff`、`/stats`、`/team`、`/tohead`、`/topkills|/killtop|/kt`、`/uhc`、`/viewheal|/h` 與 `/whitelist|/wl`。
+- `FeatureRegistry#registerCommandGroups(...)` 已移除，不再註冊 Foundation group commands。
+- `WonderlandUHC#onPluginStart()` 只註冊 native commands；不再透過 `LegacyFoundationAdapter.commandGroupRegistrar(...)` 註冊 group commands。
+- `WonderlandUHC#onPluginReload()` 不再重新註冊 command groups，避免 reload 時重複註冊 Bukkit command executor。
+
+目前 `LegacyFoundationAdapter` 中和 command / lifecycle 相關的殘留：
+
+| 方法 | 目前作用 | 本切片判斷 |
+| --- | --- | --- |
+| `setTellPrefix("")` | 已移除。 | command helper 已離開 Foundation，不再需要全域 Foundation tell prefix。 |
+| `commandGroupRegistrar(...)` | 已移除。 | group command 已改走 Bukkit/Paper native registration。 |
+| `configureMenuClickSound()` | 設定 Foundation `Menu` click sound。 | 屬於 21.5 menu framework，不應混進 command 切片。 |
+
+command helper 收斂方式：
+
+| helper / lifecycle | 收斂方式 | 注意 |
+| --- | --- | --- |
+| sender helper | 各 native command 直接使用 Bukkit `CommandSender` / `Player`；`/uhc` 與 `/team` 只保留 package-local 薄 helper。 | 不抽成全插件共用 command framework。 |
+| args helper | 缺參數、boolean、player name completion 在各 command 或 package-local helper 內處理。 | 不重寫 world / timer / menu 業務邏輯。 |
+| validation / message | 直接使用 `Chat`、`Messages`、`CommandSettings` 與既有文字。 | 只替換 Foundation helper，不順手改訊息模板。 |
+| metadata | 由 `plugin.yml` command entry、native executor 與本地 help 輸出承接。 | 指令 label / alias 需由實測與 Step 22 對照確認。 |
+| tab completion | 由 Bukkit `TabCompleter` 或 command 自身 `tabComplete(...)` 承接。 | 不追求一次補完所有 UX 差異。 |
+| group dispatch | `/uhc` 使用 `UHCCommand` + `UHCSubCommand`，`/team` 使用 `TeamCommand` + `TeamSubCommand`。 | 這些 helper 只服務各自 package，不升級成新框架。 |
+
+下一刀建議：
+
+1. 21.3 command framework 已完成最小替換，`SimpleCommand` / `SimpleSubCommand` / `SimpleCommandGroup` 與 dynamic registration path 已清空。
+2. 下一步不要再擴大 command 重構；優先只讀盤點 21.4 settings / YAML config lifecycle，因為 `WonderlandUHC extends SimplePlugin`、`onReloadablesStart()`、reload 與 Foundation settings lifecycle 仍綁在一起。
+3. `configureMenuClickSound()` 明確留到 21.5 menu framework，不在 command framework 收尾時順手處理。
+4. Step 22 再做完整 command UX 對照；若發現 regression，回到對應 command 檔案修正，不在本刀預先過度防禦。
+
+本輪 fallback leave 移除結果：
+
+- 刪除 `command/impl/LeaveCommand.java`，不再提供 `/leave` 指令。
+- 移除 `FeatureRegistry#registerCommands(...)` 中的 `/leave` 註冊，且不保留 `registerNativeCommands()` 過渡方法。
+- 刪除 lobby / spectator hotbar 的 `LeaveItem`，避免道具點擊後觸發不存在的指令。
+- `MatchStopService` 結束比賽時只刪 cache 並關閉伺服器，不再把玩家送往 fallback server。
+- 移除 `Extra#sendToFallbackServer(...)`、`Settings.BUNGEE_LOBBY`、`settings.yml` 的 `Bungee_Lobby`、`plugin.yml` / `permissions.txt` 的 `wonderland.uhc.command.leave`。
+- 移除只服務 BungeeCord outgoing channel 的 `PluginMessagingPort` / `PaperPluginMessagingPort` 與 `PluginBootstrap#registerPluginChannels()`。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、menu、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/setspawn` 第一個 native command 實作結果：
+
+- `command/impl/host/SetSpawnCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/setspawn` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 新增直接註冊 `/setspawn` 的 native command path，沒有建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/setspawn` command entry，讓 Bukkit/Paper 提供 native command registration。
+- console 執行使用 `commands.yml` 的 `No_Console` 訊息；玩家權限仍走 `UHCPermission.COMMAND_SET_SPAWN`；成功訊息改用 `Chat.send(player, CommandSettings.SetSpawn.SPAWN_SAVED)`，音效仍使用 `Sounds.Commands.SET_SPAWN`。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、menu、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/config|/cfg` native command 實作結果：
+
+- `command/impl/info/ConfigCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/config|/cfg` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 加入 `/config|/cfg` native command registration，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/config` command entry 與 `cfg` alias。
+- 保留 console 可執行的舊語意；權限檢查改用 `CommandSender#hasPermission(...)`，拒絕訊息沿用 `Messages.NO_PERMISSION`，輸出改用 `Chat.send(sender, GamePlaceholderReplacer.replace(...))`。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、menu、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/disableitems` native command 實作結果：
+
+- `command/impl/info/DisableItemsCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/disableitems` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems` 與 `/setspawn`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/disableitems` command entry。
+- 保留 player-only 舊語意；console 執行使用 `commands.yml` 的 `No_Console` 訊息；玩家權限仍走 `UHCPermission.COMMAND_DISABLEITEMS`；成功時仍直接開啟 `DisableItemListMenu`。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、其他 menu command、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/scenarios` native command 實作結果：
+
+- `command/impl/info/ScenariosCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/scenarios` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/scenarios` 與 `/setspawn`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/scenarios` command entry。
+- 保留 player-only 舊語意；console 執行使用 `commands.yml` 的 `No_Console` 訊息；玩家權限仍走 `UHCPermission.COMMAND_SCENARIOS`；成功時仍直接開啟 `EnabledScenariosMenu`。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、其他 menu command、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/finish` / `/tohead` native command 實作結果：
+
+- `command/impl/host/InventoryEditorInputCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/finish`、`/tohead` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/finish`、`/scenarios`、`/setspawn` 與 `/tohead`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/finish` 與 `/tohead` command entry。
+- 保留 player-only 舊語意；console 執行使用 `commands.yml` 的 `No_Console` 訊息；玩家不在 conversation 時仍顯示 `&c目前沒有正在等待的設定輸入。`；成功時仍送入固定 input `finish` 或 `tohead`，其中 `tohead` 會由 `InventoryEditButton` 將玩家主手普通金蘋果轉換為金頭顱。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、conversation 流程本身、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/staff` native command 實作結果：
+
+- `command/impl/host/StaffCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/staff` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/finish`、`/scenarios`、`/setspawn`、`/staff` 與 `/tohead`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/staff` command entry。
+- 保留 player-only 舊語意；console 執行使用 `commands.yml` 的 `No_Console` 訊息；玩家權限仍走 `UHCPermission.COMMAND_STAFF`；角色切換邏輯維持原本 STAFF / waiting player / non-waiting spectator 流程。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、staff role implementation、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/reconnect` native command 實作結果：
+
+- `command/impl/game/ReconnectCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/reconnect` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/finish`、`/reconnect`、`/scenarios`、`/setspawn`、`/staff` 與 `/tohead`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/reconnect` command entry。
+- 保留 player-only 舊語意；console 執行使用 `commands.yml` 的 `No_Console` 訊息；玩家權限仍走 `UHCPermission.COMMAND_RECONNECT`；DiscordSRV 未啟用與語音功能關閉分支由明確 early return 承接原本 `returnTell(...)` / `checkBoolean(...)` 行為。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、Discord voice hook implementation、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/topkills|/killtop|/kt` native command 實作結果：
+
+- `command/impl/info/TopKillsCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/topkills|/killtop|/kt` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/finish`、`/reconnect`、`/scenarios`、`/setspawn`、`/staff`、`/tohead` 與 `/topkills|/killtop|/kt`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/topkills` command entry 與 `killtop`、`kt` alias。
+- 保留 player-only 舊語意；console 執行使用 `commands.yml` 的 `No_Console` 訊息；玩家權限仍走 `UHCPermission.COMMAND_TOPKILLS`；遊戲未開始分支改用本地 `GameUtils.isGameStarted()` + `Messages.NOT_YET_STARTED`，排行榜排序、訊息模板與音效維持原本流程。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、stats model、scoreboard 或 Foundation `setTellPrefix("")`。
+
+本輪 `/viewheal|/h` native command 實作結果：
+
+- `command/impl/info/ViewHealCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/viewheal|/h` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/finish`、`/reconnect`、`/scenarios`、`/setspawn`、`/staff`、`/tohead`、`/topkills|/killtop|/kt` 與 `/viewheal|/h`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/viewheal` command entry、`h` alias 與基本 usage。
+- 保留 console 可查指定玩家血量的舊語意；權限改用 `CommandSender#hasPermission(...)`；玩家查找改用既有 `PluginPlayers.getByName(..., true)` 承接線上玩家與 vanished 過濾；找不到玩家訊息保留 Foundation 原本預設文字，未新增共用 command helper。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、stats model、health format 或 Foundation `setTellPrefix("")`。
+
+本輪 `/mlg` 移除結果：
+
+- 確認 `/mlg` 只是主持人把指定玩家傳送到自己位置並播放 MLG 音效的舊活動 / 測試指令，現行比賽流程不需要保留。
+- 刪除 `command/impl/host/MLGCommand.java`，不再提供 `/mlg` 指令。
+- `FeatureRegistry#registerCommands(...)` 與 `FeatureRegistry#registerNativeCommands()` 都不再註冊 `/mlg`。
+- 移除 `plugin.yml` 的 `/mlg` command entry、`wonderland.uhc.command.mlg` host child permission、`permissions.txt` 權限說明、`UHCPermission.COMMAND_MLG`、`Sounds.Commands.MLG` 與 `sounds.yml` 的 `Commands.Mlg` 設定。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、其他 host command 或 Foundation `setTellPrefix("")`。
+
+本輪 `/sendcoords|/scs` native command 實作結果：
+
+- `command/impl/game/SendCoordsCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/sendcoords|/scs` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/finish`、`/reconnect`、`/scenarios`、`/sendcoords|/scs`、`/setspawn`、`/staff`、`/tohead`、`/topkills|/killtop|/kt` 與 `/viewheal|/h`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/sendcoords` command entry 與 `scs` alias。
+- 保留 player-only、public permission、遊戲開始檢查、遊戲玩家檢查、隊伍座標訊息與隊伍音效流程；`CommandHelper` exception flow 改為本地 `GameUtils` + `Messages` early return，未新增共用 command helper。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、team model、座標格式或 Foundation `setTellPrefix("")`。
+
+本輪 `/spectoggle` native command 實作結果：
+
+- `command/impl/game/SpecToggleCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/spectoggle` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/config|/cfg`、`/disableitems`、`/finish`、`/reconnect`、`/scenarios`、`/sendcoords|/scs`、`/setspawn`、`/spectoggle`、`/staff`、`/tohead`、`/topkills|/killtop|/kt` 與 `/viewheal|/h`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/spectoggle` command entry。
+- 保留 player-only、public permission、遊戲開始檢查、spectator-only 檢查、`SPECTATE_MODE == DEFAULT` 限制、creative/spectator gamemode toggle、訊息與音效流程；`getLabel()` 改用 Bukkit 傳入的 `label`，未新增共用 command helper。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、spectator mode implementation、hotbar item 或 Foundation `setTellPrefix("")`。
+
+本輪 `/border` native command 實作結果：
+
+- `command/impl/host/BorderCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/border` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/border`、`/config|/cfg`、`/disableitems`、`/finish`、`/reconnect`、`/scenarios`、`/sendcoords|/scs`、`/setspawn`、`/spectoggle`、`/staff`、`/tohead`、`/topkills|/killtop|/kt` 與 `/viewheal|/h`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/border` command entry 與基本 usage。
+- 保留 player-only、host permission、遊戲開始檢查、`1..initialBorder` 數字範圍檢查與 `BorderShrinkRequestService#requestShrink(size)` 流程；Foundation `findNumber(...)` 改為本指令內的最小整數 parse，未新增共用 parser。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、border service、border mode implementation 或 Foundation `setTellPrefix("")`。
+
+本輪 `/giveall` native command 實作結果：
+
+- `command/impl/host/GiveAllCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor` + `TabCompleter`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/giveall` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/border`、`/config|/cfg`、`/disableitems`、`/finish`、`/giveall`、`/reconnect`、`/scenarios`、`/sendcoords|/scs`、`/setspawn`、`/spectoggle`、`/staff`、`/tohead`、`/topkills|/killtop|/kt` 與 `/viewheal|/h`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/giveall` command entry 與 usage。
+- 保留 console 可執行、moderator permission、遊戲開始檢查、物品名稱與數量驗證、發給所有 `RoleName.PLAYER`，以及離線 combat relog 玩家背包補發流程；Foundation `findMaterial(...)` / `findNumber(...)` / `completeLastWord(...)` 改為本指令內的 Bukkit `Material` parse 與最小 tab completion，未新增共用 parser。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、其他 tab completion、CombatRelog inventory 流程或 Foundation `setTellPrefix("")`。
+
+本輪 `/stats` native command 實作結果：
+
+- `command/impl/info/StatsCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/stats` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/border`、`/config|/cfg`、`/disableitems`、`/finish`、`/giveall`、`/reconnect`、`/scenarios`、`/sendcoords|/scs`、`/setspawn`、`/spectoggle`、`/staff`、`/stats`、`/tohead`、`/topkills|/killtop|/kt` 與 `/viewheal|/h`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/stats` command entry 與 usage。
+- 保留 player-only、public permission、`/stats` 查自己、`/stats <玩家>` 查線上非 vanished 玩家，以及直接開啟 `StatsMenu` 的流程；Foundation `findPlayer(...)` 改用既有 `PluginPlayers.getByName(..., true)`，找不到玩家訊息沿用 Foundation 預設文字，未新增共用 command helper。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、tab completion、StatsMenu、stats storage、GUI 設定或 Foundation `setTellPrefix("")`。
+
+本輪 `/practice` native command 實作結果：
+
+- `command/impl/game/PracticeCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/practice` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 目前直接註冊 `/border`、`/config|/cfg`、`/disableitems`、`/finish`、`/giveall`、`/practice`、`/reconnect`、`/scenarios`、`/sendcoords|/scs`、`/setspawn`、`/spectoggle`、`/staff`、`/stats`、`/tohead`、`/topkills|/killtop|/kt` 與 `/viewheal|/h`，仍未建立完整 command base 或 subcommand framework。
+- `plugin.yml` 補上 `/practice` command entry 與 usage。
+- 依委託人決策，舊版原本存在的 `/practice <玩家>` 不保留；新版只保留玩家執行 `/practice` 切換自己加入 / 退出練習模式。
+- 移除未使用的 `wonderland.uhc.host.practiceother` host child permission；保留 public `wonderland.uhc.command.practice` 權限。
+- 本刀未處理 `/uhc`、`/team`、`/whitelist`、practice world、practice inventory、死亡補裝、破壞方塊取消、SimplePractice 內的 `CompMaterial` 或 Foundation `setTellPrefix("")`。
+
+本輪 `/backpack|/bp` native command 實作結果：
+
+- `command/impl/game/BackPackCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/backpack|/bp` 交給 Foundation dynamic command registration。
+- `FeatureRegistry#registerNativeCommands()` 直接註冊 `/backpack|/bp`；`plugin.yml` 補上 `/backpack` command entry 與 `bp` alias。
+- 保留舊行為：主指令不額外檢查 `wonderland.uhc.command.backpack`；只有 `/backpack <玩家>` 檢查 `wonderland.uhc.host.seebackpack`；BackPack scenario 未啟用時仍 silent return；超過一個參數時仍走開自己背包的舊分支。
+- 本刀未處理 `ScenarioBackPack`、`UHCTeam` 背包資料、死亡掉落、隊伍資料結構、permission 文件整理或 Foundation `setTellPrefix("")`。
+
+本輪 `/respawn` native command 實作結果：
+
+- `command/impl/host/RespawnCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor` + `TabCompleter`。
+- `FeatureRegistry#registerCommands(...)` 不再把 `/respawn` 交給 Foundation dynamic command registration；目前 production single command 已不再依賴這個 registration path。
+- `FeatureRegistry#registerNativeCommands()` 直接註冊 `/respawn`；`plugin.yml` 補上 `/respawn` command entry 與 usage。
+- 保留 host permission、player-only、遊戲開始檢查、目標不可為現役玩家、玩家名稱補全、死亡資料還原、傳送、無敵時間、音效、廣播與 `UHCPlayerRespawnedEvent` 流程；只把 Foundation sender/helper 替換為 Bukkit executor 的明確 sender。
+- 本刀未處理 `DeathPlayer`、`RespawnHandler` 抽離、role flow、scenario respawn event 行為、重生傳送規則或 Foundation `setTellPrefix("")`。
+
+本輪測試 / 空指令清理結果：
+
+- 刪除 `command/TestCommand.java`，不再保留舊 `TEST_MODE` debug 指令。
+- 刪除 `command/impl/EmptyCommand.java`，移除未發現正式註冊點的舊 Foundation placeholder。
+- 移除 `FeatureRegistry#registerCommands(...)`；`WonderlandUHC#onPluginStart()` 不再呼叫 `featureRegistry.registerCommands(this::registerCommand)`。
+- 目前 single command dynamic registration path 已收掉；正式 single commands 全部走 `plugin.yml` + Bukkit native command executor。
+- 本刀未移除 `WonderlandUHC.TEST_MODE` 本身，因為它仍控制 `PluginBootstrap#applyTestModeSettings()` 的時間設定；是否移除 TEST_MODE 屬於後續 bootstrap / settings 清理，不混入 command framework 收尾。
+
+本輪 `/whitelist|/wl` native command 實作結果：
+
+- 刪除 `command/impl/host/whitelist/*CommandGroup` / `*SubCommand` 與 `add`、`remove`、`list`、`clear` 四個 Foundation subcommand 檔案，改由 `WhitelistCommand` 以 Bukkit `CommandExecutor` + `TabCompleter` 處理。
+- `FeatureRegistry#registerCommandGroups(...)` 不再註冊 `WhitelistCommandGroup("whitelist|wl")`；`FeatureRegistry#registerNativeCommands()` 直接註冊 `/whitelist|/wl`。
+- `plugin.yml` 補上 `/whitelist` command entry 與 `wl` alias。
+- 保留共用權限 `wonderland.uhc.command.whitelist`、`Game.getGame().getWhiteList()` / `PlayerCollection` 底層資料、`add/remove/list/clear` 語意、`CommandSettings.Whitelist.*` 訊息與 `Chat.broadcastWithPerm(...)` 廣播方式。
+- `/whitelist clear` 改用 `sender.getName()` 取代舊 `getPlayer().getName()`，避免 console 執行時取不到玩家；其餘流程不順手改白名單資料結構或登入檢查。
+- 本刀未處理 `/uhc`、`/team`、`PlayerCollection` 的 Foundation collection 依賴、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/team` native command 實作結果：
+
+- 刪除 `TeamCommandGroup` 對 Foundation `SimpleCommandGroup` 的繼承，改由 `TeamCommand` 以 Bukkit `CommandExecutor` + `TabCompleter` 註冊 `/team`。
+- 保留原本 11 個子指令檔案：`chat`、`create`、`disband`、`invite`、`join`、`leave`、`kick`、`list`、`promote`、`public`、`settings`，沒有把隊伍業務邏輯合併成大型 switch。
+- `TeamSubCommand` / `TeamOwnerCommand` 改成只服務 `/team` package 的本地薄 helper，承接 player-only、permission、usage、`tell(...)`、`returnTell(...)`、`checkBoolean(...)`、玩家查找、隊伍檢查與 owner 檢查；不抽成全插件共用 command framework。
+- `FeatureRegistry#registerCommandGroups(...)` 不再註冊 `TeamCommandGroup("team")`；`FeatureRegistry#registerNativeCommands()` 直接註冊 `/team`。
+- `plugin.yml` 補上 `/team` command entry；tab completion 先補第一層子指令與玩家目標子指令的第二層玩家名稱。
+- 原本 `/team promote` 舊檔案讀取 `args[0]` 但未宣告最小參數；本刀只補上 `<玩家>` usage 與最小參數檢查，避免缺參數時噴錯，不額外改 promote 邏輯。
+- 已用 `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 封裝通過，並部署到 Paper `1.21.11` 測試服啟動；console smoke test `/team`、`/team ?` 與 `/team create` player-only 回覆正常，latest.log 無啟動 / 指令錯誤命中。
+- 本刀未處理 `/uhc` group、`CommandHelper` 在 `/uhc` 的 Foundation exception 依賴、menu framework、settings lifecycle 或 Foundation `setTellPrefix("")`。
+
+本輪 `/uhc` native command 實作結果：
+
+- 刪除 `UHCMainCommandGroup`、`UHCCommandGroup` 與 `CommandHelper`，不再保留 Foundation group command bridge。
+- 新增 `command/uhc/UHCCommand.java` 與 `command/uhc/UHCSubCommand.java`，只服務 `/uhc` package 的本地 dispatch/helper；不抽成全插件共用 command framework。
+- 保留 `reload|rl`、`choose`、`edit`、`regen`、`resetteam`、`sethost`、`splitteam`、`switchteam`、`stop`、`tp`、`start`、`tutorial` 子指令。
+- 保留內部指令 label：SettingsBook 仍執行 `uhc edit`，`RegenWorldCommand` 仍輸出 `/uhc regen confirm` 與 `/uhc regen skip`。
+- `FeatureRegistry#registerCommandGroups(...)`、`LegacyFoundationAdapter.commandGroupRegistrar(...)` 與 `LegacyFoundationAdapter.setTellPrefix(...)` 已移除；`WonderlandUHC#onPluginStart()` 不再註冊 Foundation command groups。
+- `plugin.yml` 補上 `/uhc` command entry；`FeatureRegistry#registerNativeCommands()` 直接註冊 `/uhc`。
+- 本刀只替換 command framework，不修改 world selection、regeneration、start/stop、team split、host menu 或 timer 業務流程。
+- 已用 `scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 封裝通過，並部署到 Paper `1.21.11` 測試服啟動；console smoke test `/uhc`、`/uhc ?` 與 `/uhc edit` player-only 回覆正常，latest.log 無啟動 / 指令錯誤命中。
+
 建議拆法：
 
-1. 先建立最小 command registration path，承接現有 `plugin.yml` command。
-2. 先處理 command group 與 registration lifecycle，再分批遷移 command 實作。
-3. 以命令族群切片，例如 public/game commands、host commands、`/uhc` subcommands、team/whitelist subcommands。
-4. 每批命令只替換 framework，不順手改業務邏輯。
+1. production single command、舊測試 / 空指令、`/whitelist|/wl`、`/team` 與 `/uhc` 已完成 native 化或移除。
+2. command framework 切片到此收尾；下一步應先只讀盤點 21.4 settings / YAML config lifecycle 與 `SimplePlugin` lifecycle 解除順序。
+3. 21.5 menu framework 仍留到後面；不要在 command 收尾時順手處理 `configureMenuClickSound()` 或 menu click 行為。
+4. 後續不要為了「順手整理」重寫 world regeneration、start/stop、host menu、team split 或 timer lifecycle。
+5. 目前先接受各 command 的小量註冊樣板重複；player-only、permission、args、tab completion、訊息輸出不抽成新的全域 command framework。
 
 高風險點：
 
 - `checkConsole()`、`getPlayer()`、`args`、`tell()`、`returnTell()` 這些 Foundation command helper 需要保留語意。
 - tab completion 與 permission denial message 需對照舊行為。
-- reload registration 不得重複註冊或漏註冊。
+- reload 不再負責 command group re-registration；若後續修改 reload flow，需避免重複註冊 native executor。
 
 驗收：
 

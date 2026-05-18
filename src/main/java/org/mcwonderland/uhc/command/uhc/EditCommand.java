@@ -2,18 +2,18 @@ package org.mcwonderland.uhc.command.uhc;
 
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.menu.MainGui;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
 /**
  * 2019-11-24 下午 01:15
  */
-public class EditCommand extends SimpleSubCommand {
+public class EditCommand extends UHCSubCommand {
 
-    protected EditCommand(UHCMainCommandGroup parent, String subLabel) {
-        super(parent, subLabel);
+    protected EditCommand(String subLabel) {
+        super(subLabel);
 
         setDescription("開啟設定介面。");
         setPermission(UHCPermission.COMMAND_UHC_EDIT.toString());
+        setPlayerOnly(true);
     }
 
     @Override

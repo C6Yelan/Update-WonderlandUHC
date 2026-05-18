@@ -1,25 +1,42 @@
 package org.mcwonderland.uhc.command.impl.info;
 
 import org.mcwonderland.uhc.UHCPermission;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.settings.CommandSettings;
-import org.mineacademy.fo.command.SimpleCommand;
+import org.mcwonderland.uhc.settings.Messages;
+import org.mcwonderland.uhc.util.Chat;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 
 /**
  * 2019-12-02 下午 03:30
  */
-public class ConfigCommand extends SimpleCommand {
+public class ConfigCommand implements CommandExecutor {
 
-    public ConfigCommand(String label) {
-        super(label);
+    public static final String NAME = "config";
 
-        setMinArguments(0);
-        setDescription("查看遊戲相關設定。");
-        setPermission(UHCPermission.COMMAND_CONFIG.toString());
+    public static void register(WonderlandUHC plugin) {
+        PluginCommand command = plugin.getCommand(NAME);
+
+        if (command == null)
+            throw new IllegalStateException("Command /" + NAME + " is not declared in plugin.yml");
+
+        command.setExecutor(new ConfigCommand());
     }
 
     @Override
-    protected void onCommand() {
-        tell(GamePlaceholderReplacer.replace(CommandSettings.Config.MESSAGES));
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        String permission = UHCPermission.COMMAND_CONFIG.toString();
+
+        if (!sender.hasPermission(permission)) {
+            Chat.send(sender, Messages.NO_PERMISSION.replace("{permission}", permission));
+            return true;
+        }
+
+        Chat.send(sender, GamePlaceholderReplacer.replace(CommandSettings.Config.MESSAGES));
+        return true;
     }
 }

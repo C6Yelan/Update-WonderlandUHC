@@ -2,15 +2,14 @@ package org.mcwonderland.uhc.command.team;
 
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.settings.CommandSettings;
 
 class KickCommand extends TeamOwnerCommand {
 
-    protected KickCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected KickCommand(String sublabel) {
+        super(sublabel);
 
         setMinArguments(1);
         setUsage("<玩家>");
@@ -23,7 +22,7 @@ class KickCommand extends TeamOwnerCommand {
         checkModeAndGameStatus();
 
         UHCTeam team = getTeam();
-        UHCPlayer target = CommandHelper.findUHCPlayer(args[0]);
+        UHCPlayer target = findUHCPlayer(args[0]);
 
         checkExecuteSelf(target);
         checkInTeam(target);
@@ -33,5 +32,10 @@ class KickCommand extends TeamOwnerCommand {
                 "{player}", target.getName()));
 
         team.leave(target);
+    }
+
+    @Override
+    boolean completesPlayerName() {
+        return true;
     }
 }

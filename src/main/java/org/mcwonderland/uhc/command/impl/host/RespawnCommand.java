@@ -1,11 +1,16 @@
 package org.mcwonderland.uhc.command.impl.host;
 
-import org.mcwonderland.uhc.platform.player.PluginPlayers;
-import org.mcwonderland.uhc.platform.event.PluginEvents;
-import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 import org.mcwonderland.uhc.UHCPermission;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.api.event.player.UHCPlayerRespawnedEvent;
-import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
@@ -13,48 +18,92 @@ import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.model.Teleporter;
+import org.mcwonderland.uhc.platform.event.PluginEvents;
+import org.mcwonderland.uhc.platform.player.PluginPlayers;
+import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.mcwonderland.uhc.settings.CommandSettings;
+import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.*;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.mineacademy.fo.command.SimpleCommand;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 2019-11-27 下午 01:05
  */
-public class RespawnCommand extends SimpleCommand {
-    public RespawnCommand(String label) {
-        super(label);
+public class RespawnCommand implements CommandExecutor, TabCompleter {
 
-        setMinArguments(1);
-        setUsage("<玩家>");
-        setDescription("復活玩家。");
-        setPermission(UHCPermission.COMMAND_RESPAWN.toString());
+    public static final String NAME = "respawn";
+
+    private static final String PLAYER_NOT_ONLINE = "&cPlayer {player} &cis not online on this server.";
+
+    public static void register(WonderlandUHC plugin) {
+        PluginCommand command = plugin.getCommand(NAME);
+
+        if (command == null)
+            throw new IllegalStateException("Command /" + NAME + " is not declared in plugin.yml");
+
+        RespawnCommand executor = new RespawnCommand();
+        command.setExecutor(executor);
+        command.setTabCompleter(executor);
     }
 
     @Override
-    protected void onCommand() {
-        Player target = findPlayer(args[0]);
-        CommandHelper.checkGameStarted();
-        checkBoolean(!GameUtils.isGamingPlayer(target), CommandSettings.Respawn.IS_PLAYING);
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player moderator)) {
+            Chat.send(sender, CommandSettings.NO_CONSOLE);
+            return true;
+        }
 
-        new RespawnHandler(target).respawn();
+        if (!UHCPermission.COMMAND_RESPAWN.checkPerms(moderator))
+            return true;
+
+        if (args.length < 1)
+            return false;
+
+        Player target = PluginPlayers.getByName(args[0], true);
+
+        if (target == null) {
+            Chat.send(moderator, PLAYER_NOT_ONLINE.replace("{player}", args[0]));
+            return true;
+        }
+
+        if (!GameUtils.isGameStarted()) {
+            Chat.send(moderator, Messages.NOT_YET_STARTED);
+            return true;
+        }
+
+        if (GameUtils.isGamingPlayer(target)) {
+            Chat.send(moderator, CommandSettings.Respawn.IS_PLAYING);
+            return true;
+        }
+
+        new RespawnHandler(moderator, target).respawn();
+        return true;
     }
 
     @Override
-    protected List<String> tabComplete() {
-        if (args.length == 1)
-            return completeLastWord(PluginPlayers.playerNames());
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (args.length != 1)
+            return List.of();
 
-        return super.tabComplete();
+        String prefix = args[0].toLowerCase(Locale.ROOT);
+        List<String> completions = new ArrayList<>();
+
+        for (String name : PluginPlayers.playerNames()) {
+            if (name.toLowerCase(Locale.ROOT).startsWith(prefix))
+                completions.add(name);
+        }
+
+        return completions;
     }
 
     class RespawnHandler {
+
+        private final Player moderator;
         private final Player target;
         private final UHCPlayer targetUHCPlayer;
         private Location toTeleport;
@@ -62,7 +111,8 @@ public class RespawnCommand extends SimpleCommand {
         private int level = 0;
         private float exp = 0;
 
-        public RespawnHandler(Player target) {
+        public RespawnHandler(Player moderator, Player target) {
+            this.moderator = moderator;
             this.target = target;
             this.targetUHCPlayer = UHCPlayer.getUHCPlayer(target);
         }
@@ -84,7 +134,7 @@ public class RespawnCommand extends SimpleCommand {
 
             Chat.send(target, CommandSettings.Respawn.RESPAWNED);
             Chat.broadcast(CommandSettings.Respawn.BROADCAST
-                    .replace("{mod}", getPlayer().getName())
+                    .replace("{mod}", moderator.getName())
                     .replace("{player}", target.getName()));
             Extra.sound(target, Sounds.Commands.RESPAWN);
 

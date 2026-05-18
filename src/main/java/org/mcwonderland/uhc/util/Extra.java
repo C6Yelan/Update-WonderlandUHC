@@ -15,7 +15,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.mineacademy.fo.BungeeUtil;
 import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompAttribute;
 import org.mineacademy.fo.remain.CompProperty;
@@ -115,10 +114,6 @@ public class Extra {
 
     public static Integer getOnlinePlayers() {
         return PluginPlayers.onlinePlayers().size();
-    }
-
-    public static void sendToFallbackServer(Player p) {
-        BungeeUtil.connect(p, Settings.BUNGEE_LOBBY);
     }
 
     public static void copyHealth(LivingEntity entity, LivingEntity copyTo) {

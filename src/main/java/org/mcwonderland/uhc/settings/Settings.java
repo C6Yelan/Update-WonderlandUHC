@@ -36,7 +36,6 @@ public class Settings extends SimpleSettings {
     public static String SERIALIZATION;
 
     public static Boolean SOUNDS;
-    public static String BUNGEE_LOBBY;
     public static String RESTART_CMD;
 
     public static class Border {

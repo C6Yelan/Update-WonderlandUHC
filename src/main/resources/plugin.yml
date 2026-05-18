@@ -5,6 +5,66 @@ author: LU__LU
 softdepend: [ Chunky, DiscordSRV ]
 api-version: 1.21
 
+commands:
+  backpack:
+    aliases: [bp]
+    description: 開啟隊伍背包。
+    usage: /<command> [玩家]
+  border:
+    description: 強制收縮邊界。
+    usage: /<command> <大小>
+  config:
+    aliases: [cfg]
+    description: 查看遊戲相關設定。
+  disableitems:
+    description: 查看禁止使用的物品。
+  finish:
+    description: 完成目前等待中的設定輸入。
+  giveall:
+    description: 給予所有場上的玩家指定數量的物品。
+    usage: /<command> <物品類型> <數量>
+  practice:
+    description: 加入或退出練習模式。
+    usage: /<command>
+  reconnect:
+    description: 重新連結 Discord 語音頻道。
+  respawn:
+    description: 復活玩家。
+    usage: /<command> <玩家>
+  scenarios:
+    description: 查看本場使用的特殊模式。
+  sendcoords:
+    aliases: [scs]
+    description: 向隊友發送座標。
+  setspawn:
+    description: 設定大廳重生點。
+  spectoggle:
+    description: 切換觀戰模式。
+  staff:
+    description: 切換管理員模式。
+  stats:
+    description: 查看玩家數據。
+    usage: /<command> [玩家]
+  team:
+    description: 管理隊伍。
+    usage: /<command> <chat|create|disband|invite|join|leave|kick|list|promote|public|settings> [參數]
+  tohead:
+    description: 將主手普通金蘋果轉換為金頭顱。
+  topkills:
+    aliases: [killtop, kt]
+    description: 查看擊殺數排行榜。
+  uhc:
+    description: 管理 UHC 主流程。
+    usage: /<command> <reload|choose|edit|regen|resetteam|sethost|splitteam|switchteam|stop|tp|start|tutorial> [參數]
+  viewheal:
+    aliases: [h]
+    description: 查看玩家血量。
+    usage: /<command> <玩家>
+  whitelist:
+    aliases: [wl]
+    description: 管理本場遊戲白名單。
+    usage: /<command> <add|remove|list|clear> [玩家...]
+
 permissions:
   wonderland.uhc.admin:
     children:
@@ -17,7 +77,6 @@ permissions:
       wonderland.uhc.item.settings: true
       wonderland.uhc.moderator: true
       wonderland.uhc.command.border: true
-      wonderland.uhc.command.mlg: true
       wonderland.uhc.command.uhc.choose: true
       wonderland.uhc.command.uhc.splitteam: true
       wonderland.uhc.command.uhc.resetteam: true
@@ -32,7 +91,6 @@ permissions:
       wonderland.uhc.command.whitelist: true
       wonderland.uhc.command.setspawn: true
       wonderland.uhc.host.seebackpack: true
-      wonderland.uhc.host.practiceother: true
 
   wonderland.uhc.moderator:
     children:
@@ -49,8 +107,6 @@ permissions:
   wonderland.uhc.command.backpack:
     default: true
   wonderland.uhc.command.config:
-    default: true
-  wonderland.uhc.command.leave:
     default: true
   wonderland.uhc.command.scenarios:
     default: true

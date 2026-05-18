@@ -4,8 +4,8 @@ import org.mcwonderland.uhc.UHCPermission;
 
 class LeaveCommand extends TeamSubCommand {
 
-    protected LeaveCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected LeaveCommand(String sublabel) {
+        super(sublabel);
 
         setDescription("離開目前所處隊伍。");
         setPermission(UHCPermission.COMMAND_TEAM_LEAVE.toString());

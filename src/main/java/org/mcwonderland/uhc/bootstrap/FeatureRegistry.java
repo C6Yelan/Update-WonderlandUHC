@@ -2,13 +2,10 @@ package org.mcwonderland.uhc.bootstrap;
 
 import org.mcwonderland.uhc.platform.event.PluginEvents;
 import com.google.common.collect.Lists;
-import org.bukkit.command.Command;
 import org.bukkit.event.Listener;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.api.event.scenario.ScenarioInitEvent;
-import org.mcwonderland.uhc.command.TestCommand;
-import org.mcwonderland.uhc.command.impl.LeaveCommand;
 import org.mcwonderland.uhc.command.impl.game.BackPackCommand;
 import org.mcwonderland.uhc.command.impl.game.PracticeCommand;
 import org.mcwonderland.uhc.command.impl.game.ReconnectCommand;
@@ -17,7 +14,6 @@ import org.mcwonderland.uhc.command.impl.game.SpecToggleCommand;
 import org.mcwonderland.uhc.command.impl.host.BorderCommand;
 import org.mcwonderland.uhc.command.impl.host.GiveAllCommand;
 import org.mcwonderland.uhc.command.impl.host.InventoryEditorInputCommand;
-import org.mcwonderland.uhc.command.impl.host.MLGCommand;
 import org.mcwonderland.uhc.command.impl.host.RespawnCommand;
 import org.mcwonderland.uhc.command.impl.host.SetSpawnCommand;
 import org.mcwonderland.uhc.command.impl.host.StaffCommand;
@@ -27,9 +23,9 @@ import org.mcwonderland.uhc.command.impl.info.ScenariosCommand;
 import org.mcwonderland.uhc.command.impl.info.StatsCommand;
 import org.mcwonderland.uhc.command.impl.info.TopKillsCommand;
 import org.mcwonderland.uhc.command.impl.info.ViewHealCommand;
-import org.mcwonderland.uhc.command.impl.host.whitelist.WhitelistCommandGroup;
-import org.mcwonderland.uhc.command.team.TeamCommandGroup;
-import org.mcwonderland.uhc.command.uhc.UHCMainCommandGroup;
+import org.mcwonderland.uhc.command.impl.host.whitelist.WhitelistCommand;
+import org.mcwonderland.uhc.command.team.TeamCommand;
+import org.mcwonderland.uhc.command.uhc.UHCCommand;
 import org.mcwonderland.uhc.hook.voice.DiscordVoiceHook;
 import org.mcwonderland.uhc.listener.BooleanEvents;
 import org.mcwonderland.uhc.listener.ChatListener;
@@ -39,8 +35,6 @@ import org.mcwonderland.uhc.listener.GameSettingsScenarioListener;
 import org.mcwonderland.uhc.listener.InvViewListener;
 import org.mcwonderland.uhc.listener.StatsListener;
 import org.mcwonderland.uhc.listener.ToolListener;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter.CommandGroupRegistrar;
 import org.mcwonderland.uhc.model.tutorial.model.TutorialListener;
 import org.mcwonderland.uhc.practice.Practice;
 import org.mcwonderland.uhc.scenario.ScenarioListener;
@@ -74,40 +68,27 @@ public final class FeatureRegistry {
         ).forEach(registerListener);
     }
 
-    public void registerCommands(Consumer<Command> registerCommand) {
-        Lists.newArrayList(
-                new BackPackCommand("backpack|bp"),
-                new ConfigCommand("config|cfg"),
-                new DisableItemsCommand("disableitems"),
-                new GiveAllCommand("giveall"),
-                new InventoryEditorInputCommand("finish", "finish"),
-                new InventoryEditorInputCommand("tohead", "tohead"),
-                new LeaveCommand("leave"),
-                new MLGCommand("mlg"),
-                new RespawnCommand("respawn"),
-                new ScenariosCommand("scenarios"),
-                new SendCoordsCommand("sendcoords|scs"),
-                new SetSpawnCommand("setspawn"),
-                new BorderCommand("border"),
-                new SpecToggleCommand("spectoggle"),
-                new StaffCommand("staff"),
-                new StatsCommand("stats"),
-                new TopKillsCommand("topkills|killtop|kt"),
-                new ViewHealCommand("viewheal|h"),
-                new PracticeCommand("practice"),
-                new ReconnectCommand("reconnect")
-        ).forEach(registerCommand);
-
-        if (WonderlandUHC.TEST_MODE)
-            registerCommand.accept(new TestCommand("test"));
-    }
-
-    public void registerCommandGroups(CommandGroupRegistrar registerCommandGroup) {
-        Lists.newArrayList(
-                new UHCMainCommandGroup("uhc"),
-                new TeamCommandGroup("team"),
-                new WhitelistCommandGroup("whitelist|wl")
-        ).forEach(registerCommandGroup::register);
+    public void registerNativeCommands() {
+        ConfigCommand.register(plugin);
+        DisableItemsCommand.register(plugin);
+        InventoryEditorInputCommand.register(plugin);
+        ScenariosCommand.register(plugin);
+        SetSpawnCommand.register(plugin);
+        StaffCommand.register(plugin);
+        ReconnectCommand.register(plugin);
+        TopKillsCommand.register(plugin);
+        StatsCommand.register(plugin);
+        ViewHealCommand.register(plugin);
+        SendCoordsCommand.register(plugin);
+        SpecToggleCommand.register(plugin);
+        BackPackCommand.register(plugin);
+        RespawnCommand.register(plugin);
+        BorderCommand.register(plugin);
+        GiveAllCommand.register(plugin);
+        WhitelistCommand.register(plugin);
+        PracticeCommand.register(plugin);
+        TeamCommand.register(plugin);
+        UHCCommand.register(plugin);
     }
 
     public void registerDefaultScenarios() {

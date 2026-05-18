@@ -11,18 +11,28 @@ public class CommandSettings extends AutoLoadStaticConfig {
     }
 
     public static String CANT_EXECUTE_SELF;
+    public static String INVALID_ARGUMENT;
+    public static String LABEL_USAGE;
+    public static String NO_CONSOLE;
+    public static String RELOAD_FAIL;
+    public static String RELOAD_SUCCESS;
 
     public static void initSimpleLocalizationValues() {
         SimpleLocalization.Commands.COOLDOWN_WAIT = getString("Cooldown_Wait");
-        SimpleLocalization.Commands.INVALID_ARGUMENT = getString("Invalid_Argument");
+        INVALID_ARGUMENT = getString("Invalid_Argument");
+        SimpleLocalization.Commands.INVALID_ARGUMENT = INVALID_ARGUMENT;
         SimpleLocalization.Commands.INVALID_ARGUMENT_MULTILINE = getString("Invalid_Argument_Multiline");
         SimpleLocalization.Commands.INVALID_SUB_ARGUMENT = getString("Invalid_Sub_Argument");
         SimpleLocalization.Commands.LABEL_DESCRIPTION = getString("Label_Description");
-        SimpleLocalization.Commands.LABEL_USAGE = getString("Label_Usage");
+        LABEL_USAGE = getString("Label_Usage");
+        SimpleLocalization.Commands.LABEL_USAGE = LABEL_USAGE;
         SimpleLocalization.Commands.LABEL_USAGES = getString("Label_Usages");
-        SimpleLocalization.Commands.NO_CONSOLE = getString("No_Console");
-        SimpleLocalization.Commands.RELOAD_FAIL = getString("Reload_Fail");
-        SimpleLocalization.Commands.RELOAD_SUCCESS = getString("Reload_Success");
+        NO_CONSOLE = getString("No_Console");
+        SimpleLocalization.Commands.NO_CONSOLE = NO_CONSOLE;
+        RELOAD_FAIL = getString("Reload_Fail");
+        SimpleLocalization.Commands.RELOAD_FAIL = RELOAD_FAIL;
+        RELOAD_SUCCESS = getString("Reload_Success");
+        SimpleLocalization.Commands.RELOAD_SUCCESS = RELOAD_SUCCESS;
     }
 
     @Override

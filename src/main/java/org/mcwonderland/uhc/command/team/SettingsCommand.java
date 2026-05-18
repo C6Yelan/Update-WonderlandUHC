@@ -1,13 +1,12 @@
 package org.mcwonderland.uhc.command.team;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.menu.impl.game.TeamSettingsMenu;
 
 class SettingsCommand extends TeamOwnerCommand {
 
-    protected SettingsCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected SettingsCommand(String sublabel) {
+        super(sublabel);
 
         setDescription("開啟隊伍設定介面。");
         setPermission(UHCPermission.COMMAND_TEAM_SETTINGS.toString());
@@ -15,7 +14,7 @@ class SettingsCommand extends TeamOwnerCommand {
 
     @Override
     protected void onOwnerCommand() {
-        CommandHelper.checkWaiting();
+        checkWaiting();
 
         new TeamSettingsMenu(getTeam()).displayTo(getPlayer());
     }

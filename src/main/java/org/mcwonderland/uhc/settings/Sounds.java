@@ -23,7 +23,6 @@ public class Sounds extends AutoLoadStaticConfig {
         public SimpleSound TEAM_CREATED;
         public SimpleSound TEAM_INFO;
         public SimpleSound SEND_COORDS;
-        public SimpleSound MLG;
     }
 
     public static class Host {

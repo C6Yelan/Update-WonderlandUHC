@@ -12,11 +12,9 @@ import org.mcwonderland.uhc.menu.ButtonLocalization;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
-import org.mcwonderland.uhc.platform.paper.PaperPluginMessagingPort;
 import org.mcwonderland.uhc.platform.paper.PaperSchedulerPort;
 import org.mcwonderland.uhc.platform.paper.PaperWorldPort;
 import org.mcwonderland.uhc.port.PluginAssetPort;
-import org.mcwonderland.uhc.port.PluginMessagingPort;
 import org.mcwonderland.uhc.port.SchedulerPort;
 import org.mcwonderland.uhc.port.WorldPort;
 import org.mcwonderland.uhc.settings.Settings;
@@ -32,18 +30,16 @@ public final class PluginBootstrap {
 
     private final WonderlandUHC plugin;
     private final PluginAssetPort pluginAssets;
-    private final PluginMessagingPort pluginMessaging;
     private final SchedulerPort scheduler;
     private final WorldPort worlds;
 
     public PluginBootstrap(WonderlandUHC plugin) {
-        this(plugin, new PaperPluginAssetPort(), new PaperPluginMessagingPort(plugin), new PaperSchedulerPort(plugin), new PaperWorldPort());
+        this(plugin, new PaperPluginAssetPort(), new PaperSchedulerPort(plugin), new PaperWorldPort());
     }
 
-    PluginBootstrap(WonderlandUHC plugin, PluginAssetPort pluginAssets, PluginMessagingPort pluginMessaging, SchedulerPort scheduler, WorldPort worlds) {
+    PluginBootstrap(WonderlandUHC plugin, PluginAssetPort pluginAssets, SchedulerPort scheduler, WorldPort worlds) {
         this.plugin = plugin;
         this.pluginAssets = pluginAssets;
-        this.pluginMessaging = pluginMessaging;
         this.scheduler = scheduler;
         this.worlds = worlds;
     }
@@ -94,10 +90,6 @@ public final class PluginBootstrap {
     public void configureFoundationLibrary() {
         ButtonLocalization.load();
         LegacyFoundationAdapter.configureMenuClickSound();
-    }
-
-    public void registerPluginChannels() {
-        pluginMessaging.registerOutgoingChannel("BungeeCord");
     }
 
     public void createPluginAssets() {

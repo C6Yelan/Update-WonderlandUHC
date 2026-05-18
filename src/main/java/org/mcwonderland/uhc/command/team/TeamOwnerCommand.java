@@ -5,8 +5,8 @@ import org.mcwonderland.uhc.settings.CommandSettings;
 
 abstract class TeamOwnerCommand extends TeamSubCommand {
 
-    protected TeamOwnerCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected TeamOwnerCommand(String sublabel) {
+        super(sublabel);
     }
 
     @Override

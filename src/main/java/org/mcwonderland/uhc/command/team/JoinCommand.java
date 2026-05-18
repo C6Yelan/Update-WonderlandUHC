@@ -1,15 +1,14 @@
 package org.mcwonderland.uhc.command.team;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.command.CommandHelper;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.settings.CommandSettings;
 
 class JoinCommand extends TeamSubCommand {
 
-    protected JoinCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected JoinCommand(String sublabel) {
+        super(sublabel);
 
         setMinArguments(1);
         setUsage("<玩家>");
@@ -22,7 +21,7 @@ class JoinCommand extends TeamSubCommand {
         checkModeAndGameStatus();
 
         UHCPlayer uhcPlayer = getUhcPlayer();
-        UHCTeam team = getTeam(CommandHelper.findUHCPlayer(args[0]));
+        UHCTeam team = getTeam(findUHCPlayer(args[0]));
 
         checkFull(team);
 
@@ -30,5 +29,10 @@ class JoinCommand extends TeamSubCommand {
             checkBoolean(team.isInvited(uhcPlayer), CommandSettings.Team.Join.NO_INVITATION);
 
         team.join(uhcPlayer);
+    }
+
+    @Override
+    boolean completesPlayerName() {
+        return true;
     }
 }

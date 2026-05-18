@@ -1,36 +1,52 @@
 package org.mcwonderland.uhc.command.impl.host;
 
 import org.mcwonderland.uhc.UHCPermission;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.settings.CommandSettings;
+import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.GameUtils;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.command.SimpleCommand;
 
 /**
  * 2019-11-27 下午 01:05
  */
-public class StaffCommand extends SimpleCommand {
+public class StaffCommand implements CommandExecutor {
 
-    public StaffCommand(String label) {
-        super(label);
+    public static final String NAME = "staff";
 
-        setMinArguments(0);
-        setDescription("切換管理員模式。");
-        setPermission(UHCPermission.COMMAND_STAFF.toString());
+    public static void register(WonderlandUHC plugin) {
+        PluginCommand command = plugin.getCommand(NAME);
+
+        if (command == null)
+            throw new IllegalStateException("Command /" + NAME + " is not declared in plugin.yml");
+
+        command.setExecutor(new StaffCommand());
     }
 
     @Override
-    protected void onCommand() {
-        checkConsole();
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player player)) {
+            Chat.send(sender, CommandSettings.NO_CONSOLE);
+            return true;
+        }
 
-        Player player = getPlayer();
+        if (!UHCPermission.COMMAND_STAFF.checkPerms(player))
+            return true;
+
         UHCPlayer uhcPlayer = UHCPlayer.getUHCPlayer(player);
 
         if (uhcPlayer.getRoleName() != RoleName.STAFF)
             uhcPlayer.changeStaffRole();
         else
             removePlayerStaff(uhcPlayer);
+
+        return true;
     }
 
     private void removePlayerStaff(UHCPlayer uhcPlayer) {

@@ -1,32 +1,47 @@
 package org.mcwonderland.uhc.command.impl.host;
 
 import org.mcwonderland.uhc.UHCPermission;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.settings.spawn.Spawns;
+import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.command.SimpleCommand;
 
 /**
  * 2019-11-27 下午 01:05
  */
-public class SetSpawnCommand extends SimpleCommand {
+public class SetSpawnCommand implements CommandExecutor {
 
-    public SetSpawnCommand(String label) {
-        super(label);
+    public static final String NAME = "setspawn";
 
-        setMinArguments(0);
-        setDescription("設定大廳重生點。");
-        setPermission(UHCPermission.COMMAND_SET_SPAWN.toString());
+    public static void register(WonderlandUHC plugin) {
+        PluginCommand command = plugin.getCommand(NAME);
+
+        if (command == null)
+            throw new IllegalStateException("Command /" + NAME + " is not declared in plugin.yml");
+
+        command.setExecutor(new SetSpawnCommand());
     }
 
     @Override
-    protected void onCommand() {
-        Player player = getPlayer();
+    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (!(sender instanceof Player player)) {
+            Chat.send(sender, CommandSettings.NO_CONSOLE);
+            return true;
+        }
+
+        if (!UHCPermission.COMMAND_SET_SPAWN.checkPerms(player))
+            return true;
 
         Spawns.getLobbySpawn().updateLocation(player.getLocation());
-        tell(CommandSettings.SetSpawn.SPAWN_SAVED);
+        Chat.send(player, CommandSettings.SetSpawn.SPAWN_SAVED);
         Extra.sound(player, Sounds.Commands.SET_SPAWN);
+        return true;
     }
 }

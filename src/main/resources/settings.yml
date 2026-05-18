@@ -13,9 +13,6 @@ Locale: "en"
 
 #是否要開啟聲音
 Sounds: true
-#此功能是給大型伺服器有使用Bungeecord的伺服主使用的
-#如果你只是單純開伺服器，可完全忽略此選項
-Bungee_Lobby: "Lobby"
 #重新啟動伺服器的指令(遊戲自動關閉、地圖開始載入、地圖載入完成重開時...等等都會用到)
 Restart_Cmd: "restart"
 

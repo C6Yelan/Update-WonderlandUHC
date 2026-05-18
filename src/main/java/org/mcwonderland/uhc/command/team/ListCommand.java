@@ -10,8 +10,8 @@ import org.bukkit.entity.Player;
 
 class ListCommand extends TeamSubCommand {
 
-    protected ListCommand(TeamCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected ListCommand(String sublabel) {
+        super(sublabel);
 
         setUsage("[玩家]");
         setDescription("查看該玩家所處隊伍的資訊。");
@@ -47,5 +47,10 @@ class ListCommand extends TeamSubCommand {
         }
 
         Extra.sound(getPlayer(), Sounds.Commands.TEAM_INFO);
+    }
+
+    @Override
+    boolean completesPlayerName() {
+        return true;
     }
 }

@@ -10,23 +10,23 @@ import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
 /**
  * 2019-11-24 下午 12:50
  */
-public class RegenWorldCommand extends SimpleSubCommand {
+public class RegenWorldCommand extends UHCSubCommand {
 
     private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
 
     private final PreviewWorldGenerationService previewWorldGeneration = new PreviewWorldGenerationService();
 
-    protected RegenWorldCommand(UHCMainCommandGroup parent, String subLabel) {
-        super(parent, subLabel);
+    protected RegenWorldCommand(String subLabel) {
+        super(subLabel);
 
         setDescription("重載遊戲世界.");
         setUsage("{seed}");
         setPermission(UHCPermission.COMMAND_UHC_REGEN.toString());
+        setPlayerOnly(true);
     }
 
     @Override

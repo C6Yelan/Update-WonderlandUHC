@@ -22,7 +22,6 @@ Commands:
   Team_Created: CLICK 1.0F 1.0F
   Team_Info: BURP 1.0F 1.0F
   Send_Coords: ORB_PICKUP 1.0F 1.0F
-  Mlg: ORB_PICKUP 1.0F 1.0F
 Host:
   Start_Creating_World: LEVEL_UP 1.0F 1.0F
   World_Created: LEVEL_UP 1.0F 1.0F

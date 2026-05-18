@@ -4,19 +4,19 @@ import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.model.tutorial.UHCConfigTutorial;
 import org.mcwonderland.uhc.model.tutorial.UHCHostTutorial;
 import org.mcwonderland.uhc.model.tutorial.model.Tutorial;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
 import java.util.List;
 
-public class TutorialCommand extends SimpleSubCommand {
+public class TutorialCommand extends UHCSubCommand {
 
-    protected TutorialCommand(UHCMainCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected TutorialCommand(String sublabel) {
+        super(sublabel);
 
         setUsage("<config|host>");
         setMinArguments(1);
         setDescription("學習如何主持與設定UHC。");
         setPermission(UHCPermission.COMMAND_UHC_TUTORIAL.toString());
+        setPlayerOnly(true);
     }
 
     @Override
@@ -37,10 +37,10 @@ public class TutorialCommand extends SimpleSubCommand {
     }
 
     @Override
-    protected List<String> tabComplete() {
+    List<String> tabComplete(String[] args) {
         if (args.length == 1)
-            return completeLastWord("config", "host");
+            return completeLastWord(args, "config", "host");
 
-        return null;
+        return List.of();
     }
 }

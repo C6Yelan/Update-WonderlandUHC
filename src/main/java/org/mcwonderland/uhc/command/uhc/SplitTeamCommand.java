@@ -2,14 +2,13 @@ package org.mcwonderland.uhc.command.uhc;
 
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.util.TeamModifier;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
 import java.util.List;
 
-public class SplitTeamCommand extends SimpleSubCommand {
+public class SplitTeamCommand extends UHCSubCommand {
 
-    protected SplitTeamCommand(UHCMainCommandGroup parent, String sublabel) {
-        super(parent, sublabel);
+    protected SplitTeamCommand(String sublabel) {
+        super(sublabel);
 
         setUsage("[是否要先解散所有隊伍(true/false)]");
         setDescription("對玩家進行分隊。");
@@ -26,11 +25,11 @@ public class SplitTeamCommand extends SimpleSubCommand {
     }
 
     @Override
-    protected List<String> tabComplete() {
+    List<String> tabComplete(String[] args) {
 
         if (args.length == 1)
-            return completeLastWord("false", "true");
+            return completeLastWord(args, "false", "true");
 
-        return super.tabComplete();
+        return List.of();
     }
 }

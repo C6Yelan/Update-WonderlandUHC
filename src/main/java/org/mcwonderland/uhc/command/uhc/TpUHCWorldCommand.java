@@ -6,18 +6,18 @@ import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.mineacademy.fo.command.SimpleSubCommand;
 
 /**
  * 2019-11-24 下午 12:50
  */
-public class TpUHCWorldCommand extends SimpleSubCommand {
+public class TpUHCWorldCommand extends UHCSubCommand {
 
-    protected TpUHCWorldCommand(UHCMainCommandGroup parent, String subLabel) {
-        super(parent, subLabel);
+    protected TpUHCWorldCommand(String subLabel) {
+        super(subLabel);
 
         setDescription("傳送至UHC世界。");
         setPermission(UHCPermission.COMMAND_UHC_TP.toString());
+        setPlayerOnly(true);
     }
 
     @Override
