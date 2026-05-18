@@ -46,6 +46,9 @@ public class InteractListener implements Listener {
                 }
             }
         } else if (action == Action.RIGHT_CLICK_BLOCK) {
+            if (clickedBlock == null)
+                return;
+
             if (uhcPlayer.isDead()) {
                 if (type.toString().contains("CHEST")) {
                     e.setCancelled(true);
@@ -60,6 +63,9 @@ public class InteractListener implements Listener {
                     e.setCancelled(true);
             }
         } else if (action == Action.LEFT_CLICK_BLOCK) {
+            if (clickedBlock == null)
+                return;
+
             if (uhcPlayer.isDead()) {
                 Material fire = PluginMaterials.materialOf("FIRE");
                 e.setCancelled(Cuboid.getBlocksNearBy(clickedBlock, SelectMode.CUBE)

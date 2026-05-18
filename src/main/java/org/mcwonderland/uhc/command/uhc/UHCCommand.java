@@ -84,7 +84,7 @@ public class UHCCommand implements CommandExecutor, TabCompleter {
     private void sendNoArgsHeader(CommandSender sender) {
         Chat.send(sender,
                 "&8&m-----------------------------------------------------",
-                "&f  WonderlandUHC &7" + plugin.getDescription().getVersion(),
+                "&f  WonderlandUHC &7" + plugin.getPluginMeta().getVersion(),
                 " ",
                 "&7歡迎想自己開UHC的玩家加入 https://discord.gg/pJ3RkP5 購買插件。",
                 "&8&m-----------------------------------------------------");

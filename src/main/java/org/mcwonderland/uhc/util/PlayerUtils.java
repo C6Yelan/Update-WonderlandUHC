@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.util;
 
+import io.papermc.paper.datacomponent.DataComponentTypes;
 import lombok.experimental.UtilityClass;
 import org.bukkit.Sound;
 import org.bukkit.SoundCategory;
@@ -83,7 +84,7 @@ public class PlayerUtils {
     public void costPlayerToolDurability(Player p) {
         ItemStack itemInHand = PlayerHand.getMainHandItem(p);
 
-        if (itemInHand == null || !Extra.isDamageable(itemInHand.getType()))
+        if (itemInHand == null)
             return;
 
         ItemMeta itemMeta = itemInHand.getItemMeta();
@@ -116,7 +117,8 @@ public class PlayerUtils {
     }
 
     private boolean isItemReachedMaxDurability(ItemStack i, Damageable damageable) {
-        return damageable.getDamage() > i.getType().getMaxDurability();
+        Integer maxDamage = i.getData(DataComponentTypes.MAX_DAMAGE);
+        return maxDamage != null && damageable.getDamage() > maxDamage;
     }
 
     public double getArmorPoints(LivingEntity livingEntity) {
@@ -153,6 +155,7 @@ public class PlayerUtils {
         return getBukkitArmorPoints(itemStack.getType()) + getCustomArmorPoints(itemStack);
     }
 
+    @SuppressWarnings("null")
     private double getBukkitArmorPoints(Material material) {
         if (material == null)
             return 0;

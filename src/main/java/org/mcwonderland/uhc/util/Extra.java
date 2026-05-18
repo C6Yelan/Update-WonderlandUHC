@@ -108,10 +108,6 @@ public class Extra {
         player.setFlySpeed(0.2F);
     }
 
-    public static void playBlockBreakEffect(Location location, Material m) {
-        location.getWorld().playEffect(location, Effect.STEP_SOUND, m);
-    }
-
     public static Integer getOnlinePlayers() {
         return PluginPlayers.onlinePlayers().size();
     }
@@ -164,10 +160,6 @@ public class Extra {
 
     public static boolean isBetween(int var, int min, int max) {
         return var >= min && var <= max;
-    }
-
-    public static boolean isDamageable(Material m) {
-        return m.getMaxDurability() > 1;
     }
 
     public static Location getHighestSafeLocation(World w, int x, int z) {

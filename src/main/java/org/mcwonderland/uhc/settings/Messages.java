@@ -245,6 +245,7 @@ public class Messages extends PluginStaticConfig {
         public static String SECOND, SECONDS;
         public static String MINUTE, MINUTES;
 
+        @SuppressWarnings("unused")
         private static void init() {
             TimePlaceholderFormatter.configureSymbols(SECOND, SECONDS, MINUTE, MINUTES);
         }

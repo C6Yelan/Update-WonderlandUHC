@@ -30,7 +30,7 @@ import org.mcwonderland.uhc.util.InventorySaver;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
+import java.util.function.IntConsumer;
 
 public class MainSettingsMenu extends PluginMenu {
     private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
@@ -270,7 +270,7 @@ public class MainSettingsMenu extends PluginMenu {
         displayTo(player);
     }
 
-    private void startIntegerInput(Player player, String prompt, String savedMessage, Consumer<Integer> saveInput) {
+    private void startIntegerInput(Player player, String prompt, String savedMessage, IntConsumer saveInput) {
         startInput(player, prompt, (inputPlayer, input) -> {
             Integer number = parseInteger(input);
 
@@ -280,7 +280,7 @@ public class MainSettingsMenu extends PluginMenu {
             }
 
             inputSessions.remove(inputPlayer.getUniqueId());
-            saveInput.accept(number);
+            saveInput.accept(number.intValue());
             Chat.sendConversing(inputPlayer, savedMessage.replace("{number}", number + ""));
         });
     }

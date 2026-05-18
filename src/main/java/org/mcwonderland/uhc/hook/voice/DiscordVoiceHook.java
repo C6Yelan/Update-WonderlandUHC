@@ -20,6 +20,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 
+import java.util.Objects;
+
 public class DiscordVoiceHook {
     private static DiscordSRV discordSRV = DiscordSRV.getPlugin();
     private static Guild guild;
@@ -45,21 +47,39 @@ public class DiscordVoiceHook {
                 }
 
                 discordSRV = DiscordSRV.getPlugin();
-                guild = discordSRV.getJda().getGuildById(Settings.DiscordVoice.GUILD_ID);
+                String guildId = Settings.DiscordVoice.GUILD_ID;
+                if (guildId == null || guildId.isBlank()) {
+                    PluginConsole.log("&cDiscord voice setup failed: guild id is not configured.");
+                    return;
+                }
+
+                guild = discordSRV.getJda().getGuildById(guildId);
                 if (guild == null) {
-                    PluginConsole.log("&cDiscord voice setup failed: guild not found: " + Settings.DiscordVoice.GUILD_ID);
+                    PluginConsole.log("&cDiscord voice setup failed: guild not found: " + guildId);
                     return;
                 }
 
-                voiceCategory = guild.getCategoryById(Settings.DiscordVoice.VOICE_CATEGORY);
+                String voiceCategoryId = Settings.DiscordVoice.VOICE_CATEGORY;
+                if (voiceCategoryId == null || voiceCategoryId.isBlank()) {
+                    PluginConsole.log("&cDiscord voice setup failed: voice category id is not configured.");
+                    return;
+                }
+
+                voiceCategory = guild.getCategoryById(voiceCategoryId);
                 if (voiceCategory == null) {
-                    PluginConsole.log("&cDiscord voice setup failed: voice category not found: " + Settings.DiscordVoice.VOICE_CATEGORY);
+                    PluginConsole.log("&cDiscord voice setup failed: voice category not found: " + voiceCategoryId);
                     return;
                 }
 
-                lobbyVoice = guild.getVoiceChannelById(Settings.DiscordVoice.LOBBY_VOICE);
+                String lobbyVoiceId = Settings.DiscordVoice.LOBBY_VOICE;
+                if (lobbyVoiceId == null || lobbyVoiceId.isBlank()) {
+                    PluginConsole.log("&cDiscord voice setup failed: lobby voice channel id is not configured.");
+                    return;
+                }
+
+                lobbyVoice = guild.getVoiceChannelById(lobbyVoiceId);
                 if (lobbyVoice == null) {
-                    PluginConsole.log("&cDiscord voice setup failed: lobby voice channel not found: " + Settings.DiscordVoice.LOBBY_VOICE);
+                    PluginConsole.log("&cDiscord voice setup failed: lobby voice channel not found: " + lobbyVoiceId);
                     return;
                 }
 
@@ -76,13 +96,13 @@ public class DiscordVoiceHook {
     }
 
     public static VoiceChannel createHiddenChannel(String name) {
-        VoiceChannel channel = voiceCategory.createVoiceChannel(name).complete();
+        VoiceChannel channel = voiceCategory.createVoiceChannel(Objects.requireNonNull(name, "name")).complete();
         channel.putPermissionOverride(guild.getPublicRole()).setDeny(Permission.VOICE_CONNECT).queue();
         return channel;
     }
 
     public static void renameChannel(VoiceChannel channel, String newName) {
-        channel.getManager().setName(newName).queue();
+        channel.getManager().setName(Objects.requireNonNull(newName, "newName")).queue();
     }
 
     public static void moveVoiceChannel(UHCPlayer uhcPlayer, VoiceChannel channel) {
@@ -138,6 +158,9 @@ public class DiscordVoiceHook {
     }
 
     public static void moveToLobby(Member member) {
+        if (member == null || lobbyVoice == null)
+            return;
+
         guild.moveVoiceMember(member, lobbyVoice).queue(
                 ignored -> {
                 },

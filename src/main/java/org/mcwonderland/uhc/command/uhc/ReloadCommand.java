@@ -21,7 +21,7 @@ public class ReloadCommand extends UHCSubCommand {
             plugin.reload();
             Chat.send(sender, CommandSettings.RELOAD_SUCCESS
                     .replace("{plugin_name}", plugin.getName())
-                    .replace("{plugin_version}", plugin.getDescription().getVersion()));
+                    .replace("{plugin_version}", plugin.getPluginMeta().getVersion()));
         } catch (final Throwable t) {
             Chat.send(sender, CommandSettings.RELOAD_FAIL.replace("{error}", t.getMessage() != null ? t.getMessage() : "unknown"));
             t.printStackTrace();

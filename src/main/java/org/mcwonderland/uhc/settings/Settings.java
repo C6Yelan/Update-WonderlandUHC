@@ -30,6 +30,7 @@ public class Settings extends PluginStaticConfig {
         public static Integer BORDER_TIMER_AFTER_FIRST_SHRINK;
         public static TreeSet<Integer> BORDER_TP_SIZES;
 
+        @SuppressWarnings("unused")
         private static void init() {
             setPathPrefix("Border");
 
@@ -66,6 +67,7 @@ public class Settings extends PluginStaticConfig {
         public static Integer DEATH_KICK_SECONDS;
         public static SpectateMode SPECTATE_MODE;
 
+        @SuppressWarnings("unused")
         private static void init() {
             setPathPrefix("Spectator");
 
@@ -89,6 +91,7 @@ public class Settings extends PluginStaticConfig {
         public static String GOLDEN_HEAD_NAME;
         public static TabHealthType TAB_HEALTH_TYPE;
 
+        @SuppressWarnings("unused")
         private static void init() {
             setPathPrefix("Misc");
 
@@ -110,6 +113,7 @@ public class Settings extends PluginStaticConfig {
         public static List<Integer> ANNOUNCES_SECONDS;
         public static FreezeType FREEZE_TYPE;
 
+        @SuppressWarnings("unused")
         private static void init() {
             setPathPrefix("Game");
 

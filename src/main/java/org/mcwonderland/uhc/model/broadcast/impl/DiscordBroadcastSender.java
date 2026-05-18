@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.model.broadcast.BroadcastDeliveryException;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 2019-11-20 下午 07:49
@@ -36,7 +37,7 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
             if (textChannel == null)
                 throw new BroadcastDeliveryException(invalidChannel);
 
-            String msg = getFormatterMessage(messages, textChannel);
+            String msg = Objects.requireNonNull(getFormatterMessage(messages, textChannel), "message");
 
             try {
                 textChannel.sendMessage(msg)

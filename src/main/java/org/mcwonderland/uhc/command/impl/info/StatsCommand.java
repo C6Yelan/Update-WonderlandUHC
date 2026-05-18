@@ -10,7 +10,6 @@ import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.menu.impl.game.StatsMenu;
 import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.settings.CommandSettings;
-import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 
 /**

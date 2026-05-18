@@ -59,7 +59,7 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
         PluginScheduler.runLater(Apply_Within_Seconds * 20, () -> {
             try {
                 if (!uhcPlayer.isDead()) {
-                    costs.remove(uhcPlayer);
+                    costs.remove(uhcPlayer.getUniqueId());
                     updateHealth(uhcPlayer);
                 }
             } catch (RuntimeException | LinkageError ex) {
@@ -152,9 +152,10 @@ public class ScenarioArmorVsHealth extends ConfigBasedScenario implements Listen
             double currentMaxHealth = Extra.getMaxHealth(livingEntity);
             double updatedMaxHealth = calculateReducedMaxHealth(currentMaxHealth, difference);
             double appliedReduction = Math.max(0, currentMaxHealth - updatedMaxHealth);
+            UUID uuid = uhcPlayer.getUniqueId();
 
-            costs.put(uhcPlayer.getUniqueId(), armorPoints);
-            healthReductions.merge(uhcPlayer.getUniqueId(), appliedReduction, Double::sum);
+            costs.put(uuid, armorPoints);
+            healthReductions.put(uuid, healthReductions.getOrDefault(uuid, 0D) + appliedReduction);
 
             Extra.setMaxHealth(livingEntity, updatedMaxHealth);
         }

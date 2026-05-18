@@ -1543,6 +1543,23 @@ rg -n "PlayerLoginEvent|org\\.bukkit\\.ChatColor|MetadataValue|clearLoadedSectio
 - `rg -n "org\\.mineacademy\\.fo|LegacyFoundationAdapter|lib-foundation" src/main/java build.gradle` 為 0；DatouNMS / NMS / CraftBukkit gate 也為 0。
 - `bash scripts/package-plugin-1.21.sh` 通過；部署到 Paper `1.21.11` 測試服後用 `start.bat` 啟動到 `Done`，console `uhc reload` 成功，latest.log 未出現 `ERROR` / `Exception`。
 
+### 21.8 IDE deprecated cleanup 回歸盤點
+
+盤點結果（2026-05-17）：
+
+- Foundation / DatouNMS final gate 維持 0。
+- `PlayerLoginEvent` 仍集中在 `LoginListener` / `UHCLoginEvent`，牽涉完整 `Player`、權限 bypass、白名單、滿員與遊戲中加入時機；不應用 wrapper 或 suppress 藏 warning。
+- `org.bukkit.ChatColor` 仍集中在 team color model、scoreboard heart color 與 color picker；改動會碰 public API / YAML 相容 / menu 顯示，需獨立切片。
+- 多處 native command `getCommand(...)` 提示先依委託人先前決策暫緩，避免在 Step 21 收尾時重寫 command registration。
+- 可先處理低風險舊 API：`PlayerUtils#costPlayerToolDurability(...)` 的 `Material#getMaxDurability()` 與未使用的 `Extra#playBlockBreakEffect(...)` 舊 `playEffect` helper。
+
+執行結果（2026-05-17）：
+
+- `PlayerUtils#costPlayerToolDurability(...)` 改用 Paper `DataComponentTypes.MAX_DAMAGE` 讀取目前 item 最大耐久，移除 `Extra.isDamageable(Material)` 的 deprecated `Material#getMaxDurability()` 依賴。
+- `Extra#playBlockBreakEffect(...)` 無 production 使用點且仍依賴舊 `Effect.STEP_SOUND` / `World#playEffect(...)`，已刪除。
+- 本刀不處理 `PlayerLoginEvent`、`ChatColor` team model 或 command `getCommand(...)`，避免把登入、public API 或 command framework 混入低風險 warning cleanup。
+- `bash scripts/package-plugin-1.21.sh` 通過；部署到 Paper `1.21.11` 測試服後用 `start.bat` 啟動到 `Done`，console `uhc reload` 成功，latest.log 未出現 `ERROR` / `Exception`。
+
 ## 每個程式碼切片的固定驗證
 
 每個 Step 21 程式碼切片完成後都必須做：
