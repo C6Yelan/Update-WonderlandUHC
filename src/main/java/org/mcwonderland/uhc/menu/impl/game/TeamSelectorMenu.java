@@ -1,66 +1,34 @@
 package org.mcwonderland.uhc.menu.impl.game;
 
-import org.mcwonderland.uhc.platform.text.PluginText;
-import org.mcwonderland.uhc.platform.player.PluginPlayers;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.menu.button.Button;
-import org.mineacademy.fo.menu.config.ConfigMenuPagged;
-import org.mineacademy.fo.menu.model.InventoryDrawer;
-import org.mineacademy.fo.menu.model.ItemCreator;
-import org.mineacademy.fo.model.ConfigItem;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class TeamSelectorMenu extends ConfigMenuPagged<UHCTeam> {
+public class TeamSelectorMenu extends PluginPagedMenu<UHCTeam> {
 
-    private static Set<UUID> viewing = new HashSet<>();
-
-    private final ConfigItem availableItem = section.getConfigItem("Available");
-    private final ConfigItem fullItem = section.getConfigItem("Full");
-    private final Button createOwnTeamButton;
+    private static final String SECTION = "Team_Selector";
+    private static final String AVAILABLE_BUTTON = "Available";
+    private static final String FULL_BUTTON = "Full";
+    private static final String CREATE_OWN_TEAM_BUTTON = "Create_Your_Own";
 
     public static void updateMenu() {
-        TeamSelectorMenu newMenu = new TeamSelectorMenu();
-
-        viewing = viewing.stream().filter(uuid -> {
-            Player player = PluginPlayers.getByUniqueId(uuid);
-            if (player == null)
-                return false;
-            Menu menu = Menu.getMenu(player);
-            if (menu != null && menu.getClass() == TeamSelectorMenu.class) {
-                newMenu.displayTo(player);
-                return true;
-            }
-            return false;
-        }).collect(Collectors.toSet());
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getOpenInventory().getTopInventory().getHolder() instanceof TeamSelectorMenu)
+                new TeamSelectorMenu().displayTo(player);
+        }
     }
 
     public TeamSelectorMenu() {
-        super(null, UHCMenuSection.of("Team_Selector"), getOpenJoinTeams());
-
-        createOwnTeamButton = new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType click) {
-                player.closeInventory();
-                player.performCommand("team create");
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return section.getButtonItem("Create_Your_Own");
-            }
-        };
+        super(PluginMenuSection.of(SECTION), getOpenJoinTeams());
     }
 
     private static Iterable<UHCTeam> getOpenJoinTeams() {
@@ -69,28 +37,19 @@ public class TeamSelectorMenu extends ConfigMenuPagged<UHCTeam> {
 
     @Override
     protected ItemStack convertToItemStack(UHCTeam team) {
-        ConfigItem item = getItem(team);
-
-
-        return ItemCreator.of(
-                item.getMaterial(),
-                item.getName(),
-                PluginText.replaceToList(
-                        item.getLore(),
-                        "{slots}", team.getPlayersAmount(),
-                        "{max}", Game.getSettings().getTeamSettings().getTeamSize(),
-                        "{name}", team.getName(),
-                        "{color}", team.getColor(),
-                        "{character}", team.getSymbol(),
-                        "{players}", UHCPlayers.toNames(team.getPlayers())))
-                .make();
+        return getSection().getButtonItem(
+                getButtonName(team),
+                "{slots}", team.getPlayersAmount(),
+                "{max}", Game.getSettings().getTeamSettings().getTeamSize(),
+                "{name}", team.getName(),
+                "{color}", team.getColor(),
+                "{character}", team.getSymbol(),
+                "{players}", UHCPlayers.toNames(team.getPlayers())
+        );
     }
 
-    private ConfigItem getItem(UHCTeam team) {
-        if (team.isFull())
-            return fullItem;
-
-        return availableItem;
+    private String getButtonName(UHCTeam team) {
+        return team.isFull() ? FULL_BUTTON : AVAILABLE_BUTTON;
     }
 
     @Override
@@ -105,17 +64,25 @@ public class TeamSelectorMenu extends ConfigMenuPagged<UHCTeam> {
     }
 
     @Override
-    protected void onPostDisplay(InventoryDrawer drawer) {
-        super.onPostDisplay(drawer);
-        viewing.add(getViewer().getUniqueId());
+    protected ItemStack getItemAt(int slot) {
+        if (slot == getCreateOwnTeamButtonSlot())
+            return getSection().getButtonItem(CREATE_OWN_TEAM_BUTTON);
+
+        return super.getItemAt(slot);
     }
 
     @Override
-    public ItemStack getItemAt(int slot) {
+    protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        if (slot == getCreateOwnTeamButtonSlot()) {
+            player.closeInventory();
+            player.performCommand("team create");
+            return;
+        }
 
-        if (slot == getSize() - 5)
-            return createOwnTeamButton.getItem();
+        super.onClick(player, slot, click, clicked);
+    }
 
-        return super.getItemAt(slot);
+    private int getCreateOwnTeamButtonSlot() {
+        return getSection().getSize() - 5;
     }
 }

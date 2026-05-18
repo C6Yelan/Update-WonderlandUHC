@@ -1,11 +1,11 @@
 package org.mcwonderland.uhc.scenario.impl;
 
 import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import com.google.common.collect.Lists;
 import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.scenario.ScenarioName;
-import org.mineacademy.fo.menu.model.ItemCreator;
 
 import java.util.Collection;
 import java.util.List;
@@ -23,11 +23,7 @@ public abstract class ConfigBasedScenario extends AbstractScenario {
         config.loadFieldValues();
         onConfigReload();
 
-        setIcon(ItemCreator.of(new ItemStack(config.getMaterial()))
-                .name(config.getFancyName())
-                .lore(getDesc(config.getDescription()))
-                .hideTags(true)
-                .make());
+        setIcon(PluginItems.create(new ItemStack(config.getMaterial()), config.getFancyName(), getDesc(config.getDescription()), true));
     }
 
     private List<String> getDesc(List<String> description) {

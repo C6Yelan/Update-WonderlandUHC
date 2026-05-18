@@ -7,8 +7,6 @@ import org.mcwonderland.uhc.game.GameTimerRunnable;
 import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
-import org.mcwonderland.uhc.legacy.LegacyFoundationAdapter;
-import org.mcwonderland.uhc.menu.ButtonLocalization;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
@@ -95,11 +93,6 @@ public final class PluginBootstrap {
 
     public StatsStorage loadStatsStorage() {
         return new StatsStorageYaml();
-    }
-
-    public void configureFoundationLibrary() {
-        ButtonLocalization.load();
-        LegacyFoundationAdapter.configureMenuClickSound();
     }
 
     public void createPluginAssets() {

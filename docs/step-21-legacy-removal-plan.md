@@ -1095,14 +1095,360 @@ rg -n "\bSimpleLocation\b|SerializedMap|ConfigSerializable" src/main/java src/te
 3. 單獨處理 inventory editor 與 `finish` / `tohead` 輸入，避免和一般 menu click 混在一起。
 4. 最後處理 color picker 與 team color model。
 
+#### 21.5 只讀盤點：menu framework / tools 使用點
+
+更新日期：2026-05-17
+
+進入 21.5 前處理：
+
+- 21.4 settings / YAML config lifecycle 已整理成 4 個 logical commits，並 fast-forward merge 回 `update-to-1.21`。
+- `step-21-legacy-removal` 與 `update-to-1.21` 都已完成 `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean`。
+- 兩個分支都已部署到 Paper `1.21.11` 測試服，以 `start.bat` 啟動到 `Done`，console 執行 `uhc reload` 成功。
+- 臨時備份分支 `step-21-before-menu-framework-20260517` 已刪除；後續 21.5 直接在 `step-21-legacy-removal` 繼續。
+
+最新掃描指令：
+
+```bash
+rg -n "org\.mineacademy\.fo\.(menu|model\.SimpleSound|plugin\.SimplePlugin|model\.ItemCreator)|LegacyFoundationAdapter|ButtonLocalization|UHCMenuSection|ConfigMenu|ConfigMenuPagged|ConfigConfirmMenu|ColorMenu|InventoryDrawer|ItemPath|Tool" src/main/java/org/mcwonderland/uhc
+rg -n "extends (ConfigMenu|ConfigMenuPagged|ConfigConfirmMenu|ColorMenu|Tool)|Config(TimeEdit|SaveInput|Editor|InventoryEditor|NumberEdit)Button|ItemCreator|InventoryDrawer|ItemPath" src/main/java/org/mcwonderland/uhc/menu src/main/java/org/mcwonderland/uhc/tools
+rg -n "^([A-Za-z0-9_]+):" src/main/resources/gui.yml src/main/resources/items.yml
+```
+
+目前盤點結果：
+
+| 類型 | 目前使用點 | 判斷 |
+| --- | --- | --- |
+| menu config root | `ButtonLocalization extends YamlConfig`、`UHCMenuSection extends MenuSection`、`PluginBootstrap#configureFoundationLibrary()` | 這是 `gui.yml`、return button、menu click sound 與 `SimplePlugin.getInstance()` 的集中入口。可先做「本地 gui.yml / item reader」切片，但不應在同一刀重寫整個 menu base。 |
+| menu base | `menu/` 共有 26 個 Java 檔；其中 `ConfigMenu` 類型約 18 個，`ConfigMenuPagged` 類型 7 個，另有 `ConfigConfirmMenu` / `ColorMenu` | Foundation menu base 承接 open、parent/back、slot render、click dispatch、pagination、title/rows。需要替換，但不能一次改完 host settings 主流程。 |
+| config button | `ConfigClickableButton`、`ConfigOpenMenuButton`、`ConfigBooleanButton`、`ConfigChangeValueButton`、`ConfigLeftOrRightButton`、`ConfigMenuButton`、`ItemPath` | 多數 host menu 只是 thin button wrapper，應保留 inline 行為，不要抽成大型 command/menu action registry。 |
+| conversation button | `ConfigTimeEditButton`、`ConfigSaveInputButton`、`ConfigEditorButton`、`ConfigInventoryEditorButton`、`UHCNumberEditButton` | 高風險，因為它們牽涉 Bukkit conversation、`finish`、`tohead`、暫存 inventory、creative mode、保存後 restore。應獨立成後段切片。 |
+| pagination / item render | `PlayersMenu`、`TeamSelectorMenu`、`DisableItemListMenu`、`EnabledScenariosMenu`、`SavedSettingsMenu`、`SidebarThemeSettingsMenu`、`ScenarioSettingsMenu` | 需要保留 page slot、onPageClick、player head/skull owner、back/parent 行為。比 leaf `ConfigMenu` 更容易出 regression。 |
+| display override | `InventoryViewer#onDisplay(...)`、`TeamSelectorMenu#onPostDisplay(...)` 使用 Foundation `InventoryDrawer` | 這不是單純 button 替換，需先決定本地 drawer 或直接 Bukkit inventory 寫入方式。 |
+| item builder | `ItemCreator` 命中 `ButtonLocalization`、`PlayersMenu`、`TeamSelectorMenu`、`SavedSettingsMenu`、`ScenarioSettingsMenu`、`SidebarThemeSettingsMenu`、`ConfigBasedScenario` | 可用本地薄 item builder / gui item reader 承接，不需要建立完整 item DSL。`ConfigBasedScenario` 的 icon 可做低風險小切片。 |
+| tools | `UHCTool extends Tool`、12 個 `tools/` 檔、`ToolListener`、`DisableItemListener`、`ConfigItem.fromItemsFile(...)` | Foundation tool registry 與 menu framework 不完全相同，但同樣依賴 Foundation `Tool` / `ConfigItem`。應單獨切片，保留 lobby / spectator / staff hotbar 行為。 |
+| lifecycle blocker | `WonderlandUHC extends SimplePlugin`、`UHCMenuSection` 用 `SimplePlugin.getInstance()` | 在 menu / tool framework 還依賴 Foundation 前，不應先拔 `SimplePlugin` lifecycle；否則 startup / reload / menu registration 會混在同一個高風險 diff。 |
+
+建議 21.5 實作順序：
+
+1. **gui.yml / items.yml 本地讀取第一刀**：新增薄的 `gui.yml` / `items.yml` item reader，先替換 `ButtonLocalization` 的 `YamlConfig` 讀取與 `ConfigBasedScenario` 的 `ItemCreator` icon 建立；仍可暫留 Foundation menu API，不改 GUI click 行為。
+2. **tools registry 切片**：替換 `UHCTool extends Tool` 與 `Tool.getTool(...)` 使用點，保留 hotbar item、右鍵入口、丟棄/移動限制與 disabled item 判斷。
+3. **本地 menu base 最小切片**：只承接 `displayTo`、title、rows、slot item、click dispatch、parent/back、click sound；不要先做 host settings 全量重寫。
+4. **leaf / simple menu 切片**：先處理 `StatsMenu`、`EmptyMenu`、`DisableItemListMenu`、`EnabledScenariosMenu` 這類行為少的 menu，確認 pagination / basic button 模型可行。
+5. **host settings menu 切片**：再處理 `MainSettingsMenu`、`TeamModeSettingsMenu`、`BorderSettingsMenu`、`TimeSettingsMenu`、`ScoreboardSettingsMenu`、`BroadcastSettingsMenu`、`ScenarioSettingsMenu`、`SavedSettingsMenu`。
+6. **conversation / inventory editor 切片**：最後處理 `ConfigEditorButton` 類、`finish` / `tohead`、inventory backup/restore、creative mode、保存音效與返回流程。
+7. **color picker / team color 切片**：和 21.6 team color model 收斂銜接，不在第一批 menu base 內順手改。
+
+本輪刻意不做：
+
+- 不在盤點階段改程式碼。
+- 不先建立大型 GUI framework 或 action registry。
+- 不把 host settings、conversation input、inventory editor、team color、tools 全部塞進第一刀。
+- 不先移除 `SimplePlugin` lifecycle；需等 menu / tools framework 不再依賴 Foundation 後再處理。
+
+#### 21.5 進度更新
+
+更新日期：2026-05-17
+
+第一個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `gui.yml` item reader / scenario icon 第一刀 | 新增本地 `PluginItems`，只承接目前需要的 YAML `Type` / `Name` / `Lore` item 建立與 Bukkit item meta；`ButtonLocalization` 不再繼承 Foundation `YamlConfig` 或使用 Foundation `ItemCreator` 讀 `gui.yml` 的 `Leave` item；`ConfigBasedScenario` 不再用 Foundation `ItemCreator` 建立 scenario icon。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `PluginItems`、`ButtonLocalization`、item material 或 scenario icon 相關 exception。 |
+
+本刀刻意未處理：
+
+- `ButtonReturnBack` 與 `CompMaterial` 仍屬 Foundation menu API，留到本地 menu base / back button 切片。
+- 不處理 `ConfigMenu`、`ConfigMenuPagged`、pagination、host settings、inventory editor、conversation input 或 tools registry。
+- `PluginItems` 只支援目前 resource 內實際需要的 material aliases，沒有做完整 legacy material database 或 item DSL。
+- `items.yml` 的 tool hotbar item 讀取尚未切過來；下一刀再處理 `UHCTool` / `Tool.getTool(...)`。
+
+第二個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | tools registry 第一刀 | `UHCTool` 不再繼承 Foundation `Tool`，也不再使用 `ConfigItem.fromItemsFile(...)`；改由本地薄 registry 讀 `items.yml` 的 item / slot 並比對 hotbar item。`ToolListener` 接手右鍵 dispatch、背包點擊保護與丟棄保護；`DisableItemListener` 改用本地 `UHCTool` 判斷，避免 hotbar 工具被當成禁用物品。`WonderlandUHC#areToolsEnabled()` 回傳 `false`，不再讓 Foundation 自動註冊 `ToolsListener`。 | `rg` gate 確認 source 內無 Foundation `menu.tool`、`Tool.getTool(...)`、`ConfigItem.fromItemsFile(...)` 或 `extends Tool` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `UHCTool`、`ToolListener`、`PluginItems`、item slot/material 或 class loading 相關 exception。 |
+
+後續手動測試 `/staff` 時發現 `items.yml` 的 `Spectator.Random_Teleport.Type: ENDER_PORTAL_FRAME` 沒有被本地 `PluginItems` alias 承接，導致 spectator hotbar 初始化失敗；已補 `ENDER_PORTAL_FRAME -> END_PORTAL_FRAME`，避免 staff / spectator 工具載入時因舊材質名爆掉。
+
+本刀刻意未處理：
+
+- `TeamSelectorMenu`、`SavedSettingsMenu`、`SidebarThemeSettingsMenu` 內的 Foundation `ConfigItem` 屬於 menu item render，不混入 hotbar tools registry 切片。
+- 不重寫 lobby / spectator / staff tool 的既有右鍵行為，只替換底層 registry 與事件 dispatch。
+- 不新增工具 action registry、permission layer 或完整 item config model；目前 active tools 都維持原本單例與 inline 行為。
+
+第三個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | local fixed menu base / `StatsMenu` 第一刀 | 新增本地薄 `PluginMenu` / `PluginMenuListener` / `PluginMenuSection`，只承接固定 slot menu 的開啟、渲染、點擊取消與 click dispatch；`StatsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 `ConfigClickableButton` / `ConfigMenuButton` / `SimpleSound`，改讀 `gui.yml` 的 `Stats` section 與 4 個固定統計 item。 | `rg` gate 確認 `StatsMenu` 與本地 menu base 無 Foundation menu / `SimpleSound` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `PluginMenu`、`PluginMenuListener`、`PluginMenuSection`、`StatsMenu`、menu rows/button slot 或 item material 相關 exception。 |
+
+本刀刻意未處理：
+
+- 本地 `PluginMenu` 目前只服務固定 slot menu，尚未實作 parent/back、pagination、slot refresh、menu open/close API event 或 title animation。
+- Foundation `MenuListener`、Foundation menu classes 與 `LegacyFoundationAdapter#configureMenuClickSound()` 仍保留給尚未遷移的 menu。
+- `DisableItemListMenu` / `EnabledScenariosMenu` 的 read-only pagination 留到下一刀。
+- `/stats` 玩家端開啟與點擊不可拿走仍需進服手動確認；本輪已完成封裝、startup、reload 與 log gate。
+
+第四個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | local read-only pagination 第一刀 | 新增本地薄 `PluginPagedMenu`，只承接目前需要的 item snapshot、page size clamp、title page suffix、上一頁 / 下一頁按鈕與 click 後重開；`DisableItemListMenu` 與 `EnabledScenariosMenu` 不再繼承 Foundation `ConfigMenuPagged`，改用 `PluginMenuSection` / `PluginPagedMenu` 顯示既有 disabled item 與 enabled scenario icon。 | `rg` gate 確認兩個目標 menu 與 `PluginPagedMenu` 無 Foundation `ConfigMenuPagged` / `UHCMenuSection` / `org.mineacademy.fo.menu` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `PluginPagedMenu`、`DisableItemListMenu`、`EnabledScenariosMenu` 或 menu pagination 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不把 `PluginPagedMenu` 擴成完整 menu framework；尚未支援 parent/back、slot refresh、`onPostDisplay`、menu open/close API event 或 title animation。
+- 不切換到 `gui.yml` 的 `Next_Page` / `Previous_Page` localized button，因為舊 Foundation 對應設定目前是註解掉的；本刀保留實際運作中的 Foundation 預設 page button 文案與位置。
+- 不處理 `PlayersMenu`、`TeamSelectorMenu`、`ScenarioSettingsMenu`、`SavedSettingsMenu`、`SidebarThemeSettingsMenu` 等有點擊副作用或 parent/back 的分頁選單。
+- `/disableitems`、`/scenarios` 玩家端開啟與多頁翻頁仍需進服手動確認；本輪已完成封裝、startup、reload 與 log gate。
+
+第五個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `InventoryViewer` 第一刀 | `InventoryViewer` 不再繼承 Foundation `ConfigMenu`，也不再使用 `ConfigDummyButton` / `InventoryDrawer` / `SimpleReplacer`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `See_Inventory`。保留 staff 右鍵玩家入口、壓縮顯示目標玩家 storage / armor / extra contents，以及 slot `51` / `52` / `53` 的血量、飽食度、等級資訊。 | `rg` gate 確認 `InventoryViewer` 無 Foundation menu / `UHCMenuSection` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `InventoryViewer`、`See_Inventory` 或本地 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不新增 `PluginDrawer` 或 inventory viewer framework；壓縮顯示邏輯只留在 `InventoryViewer` 內。
+- 不處理 `PlayersMenu`、player head、spectator teleport、host settings、conversation input 或 inventory editor。
+- staff 玩家端右鍵其他玩家開啟畫面、底部資訊格與點擊不可拿走仍需進服手動確認；本輪已完成封裝、startup、reload 與 log gate。
+
+第六個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `PlayersMenu` 第一刀 | `PlayersMenu` 不再繼承 Foundation `ConfigMenuPagged`，也不再使用 Foundation `ItemCreator` / `CompMaterial`；改用本地 `PluginPagedMenu` / `PluginMenuSection` 顯示主世界或地獄的存活參賽玩家列表。保留玩家名稱排序、`PLAYER_HEAD` 顯示、online mode 時設定 head owner，以及點擊玩家頭後呼叫 `GameUtils.spectateTeleport(...)` 的行為。`OverworldPlayersItem` / `NetherPlayersItem` 改用本地 `PluginMenuSection`，不再依賴 `UHCMenuSection`。 | `rg` gate 確認三個目標檔無 Foundation menu / `UHCMenuSection` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `PlayersMenu`、`Players_Overworld`、`Players_Nether` 或 skull meta 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不新增共用 skull item helper；玩家頭顱建立邏輯只留在 `PlayersMenu` 內。
+- 不處理 `TeamSelectorMenu`、`ScenarioSettingsMenu`、`SavedSettingsMenu`、`SidebarThemeSettingsMenu` 或任何 host settings menu。
+- spectator 玩家端 hotbar 開啟主世界/地獄玩家列表、玩家頭顯示，以及點擊玩家頭傳送仍需進服手動確認；本輪已完成封裝、startup、reload 與 log gate。
+
+第七個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | dead `EmptyMenu` removal | `EmptyMenu` 沒有任何建立或引用點，且仍繼承 Foundation `ConfigMenu` 並使用空白 `UHCMenuSection.of("")`；本刀直接刪除該死碼，不新增替代 menu abstraction。`InventoryListener` 仍在 `PlayingState` 提供 spectator inventory 防護，並且目前仍需相容尚未遷移的 Foundation menu，因此不在本刀改動。 | `rg` gate 確認 source 內已無 `EmptyMenu` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `EmptyMenu`、class missing 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不調整 spectator inventory click policy。
+- 不新增 local menu open-state helper；避免為了刪除死碼而擴大 `PluginMenuListener` / `InventoryListener` 的行為面。
+- `InventoryListener` 的 Foundation `Menu.getMenu(player)` 使用點留到更多 menu 遷移完成後，再與本地 menu bottom-inventory policy 一起評估。
+
+第八個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `TeamSelectorMenu` 第一刀 | `TeamSelectorMenu` 不再繼承 Foundation `ConfigMenuPagged`，也不再使用 Foundation `Menu.getMenu(...)` / `Button` / `InventoryDrawer` / `ItemCreator` / `ConfigItem`；改用本地 `PluginPagedMenu` / `PluginMenuSection` 顯示 `Team_Selector`。保留 open-join team 列表、滿隊/可加入 item、點擊加入隊伍、底部 `Create_Your_Own` 按鈕執行 `team create`，以及 team join / leave / disband 時刷新已開啟隊伍選單。`PluginPagedMenu` 只放寬 `getItemAt(...)` / `onClick(...)` 讓子類可處理固定 slot，不新增完整 footer framework。 | `rg` gate 確認 `TeamSelectorMenu` / `PluginPagedMenu` 目標檔無 Foundation menu / `ConfigMenuPagged` / `ConfigItem` / `ItemCreator` / `InventoryDrawer` / `UHCMenuSection` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `TeamSelectorMenu`、`Team_Selector`、`PluginPagedMenu` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不處理 `TeamSettingsMenu`、`ColorPickerMenu`、conversation input 或 team setting persistence。
+- 不改 `/team` command 與 `UHCTeam` 核心 join / leave / disband 行為。
+- 不新增全域 menu registry；`TeamSelectorMenu.updateMenu()` 只掃描 online players 目前開啟的 top inventory holder。
+
+第九個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `SavedSettingsMenu` 第一刀 | `SavedSettingsMenu` 不再繼承 Foundation `ConfigMenuPagged`，也不再使用 Foundation `Menu` parent / `Button` / `ItemCreator` / `ConfigItem`；改用本地 `PluginPagedMenu` / `PluginMenuSection` 顯示 `Saves`。保留 saved settings 列表、左鍵載入後回 `MainSettingsMenu`、中鍵覆蓋記憶體中的既有設定、右鍵刪除並保存、底部 `Save_As` 另存並保存。為了保留舊 parent/back 入口，本刀只在 `SavedSettingsMenu` 內放 `Leave` 返回主設定頁，不新增通用 parent/back framework。`PluginMenuSection` 只新增按鈕 name / lore 讀取 accessor，讓 saved settings 預覽繼續走 `GamePlaceholderReplacer`。 | `rg` gate 確認 `SavedSettingsMenu` 目標檔無 Foundation menu / `ConfigMenuPagged` / `Button` / `ItemCreator` / `ConfigItem` / `UHCMenuSection` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `SavedSettingsMenu`、`Saves`、`savedgames`、`PluginMenuSection` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不改 `savedgames.db` 資料格式或 `SavedGameSettingsStore`。
+- 不修正既有中鍵覆蓋後未立即 `saveGameSettings(player)` / 未刷新 menu 的行為。
+- 不遷移 `MainSettingsMenu` 其他 host settings button，也不處理 conversation / inventory editor。
+
+第十個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `SidebarThemeSettingsMenu` 第一刀 | `SidebarThemeSettingsMenu` 不再繼承 Foundation `ConfigMenuPagged`，也不再使用 Foundation `Menu` parent / `ItemCreator` / `ConfigItem` / `UHCMenuSection`；改用本地 `PluginPagedMenu` / `PluginMenuSection` 顯示 `Sidebar_Theme_Selector`。保留 theme 列表、`{theme_name}`、`{theme_preview}`、lobby line preview 前的 `updateGlobalVariables()`，以及點擊 theme 後寫入 `Game.getSettings().getScoreboardSettings().setSidebarTheme(...)` 並回到 `ScoreboardSettingsMenu`。 | `rg` gate 確認 `SidebarThemeSettingsMenu` 目標檔無 Foundation menu / `ConfigMenuPagged` / `ItemCreator` / `ConfigItem` / `UHCMenuSection` / `getParent()` / `getInfo()` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `SidebarThemeSettingsMenu`、`Sidebar_Theme_Selector`、`ScoreboardSettingsMenu`、`SidebarTheme` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不遷移 `ScoreboardSettingsMenu` 本體、heart color selector 或 update tick button。
+- 不改 `SidebarTheme` / `ScoreLines` / scoreboard 更新邏輯。
+- 不新增通用 parent/back framework；theme 選定後只回到 `ScoreboardSettingsMenu`。
+
+21.5 第十一個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `ScenarioSettingsMenu` 第一刀 | `ScenarioSettingsMenu` 不再繼承 Foundation `ConfigMenuPagged`，也不再使用 Foundation `Menu` parent / `Button` / `ItemCreator` / `UHCMenuSection`；改用本地 `PluginPagedMenu` / `PluginMenuSection` 顯示 `Scenarios`。保留 scenario icon、啟用/停用狀態 lore、enabled glow、點擊 toggle、成功後廣播與播放音效、底部 `Clear_Scenarios` 清除全部並刷新 menu。因本地 `PluginPagedMenu` 不會自動重畫 clicked item，本刀在 toggle / clear 後只重開本 menu 以更新狀態。 | `rg` gate 確認 `ScenarioSettingsMenu` 目標檔無 Foundation menu / `ConfigMenuPagged` / `ItemCreator` / `UHCMenuSection` / `getParent()` / `getInfo()` / `restartMenu()` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `ScenarioSettingsMenu`、`Scenarios`、`Clear_Scenarios`、`ScenarioManager` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不改 `ScenarioManager` / `Scenario` / `ConfigBasedScenario` / scenario YAML。
+- 不新增通用 item builder；enabled glow 只在本 menu 內用 Bukkit item meta 處理。
+- 不處理 scenario 子設定 menu，因目前 `Scenario` 介面沒有對應 submenu 行為。
+
+21.5 第十二個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `ScoreboardSettingsMenu` / `ColorPickerMenu` 第一刀 | `ScoreboardSettingsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `ConfigClickableButton` / `ConfigChangeValueButton` / `SimpleReplacer` / `UHCMenuSection`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Scoreboard`。保留 `Themes` 開啟 sidebar theme selector、`Update_Ticks` 左鍵減 1 / 右鍵加 1 且最低 1、`Heart_Color` 開啟 color picker 並寫回 scoreboard heart color。`ColorPickerMenu` 不再繼承 Foundation `ColorMenu`，改用本地 `PluginPagedMenu<ChatColor>` 顯示 16 種 Bukkit `ChatColor` 對應羊毛，選色後回呼原本 menu。`TeamSettingsMenu` 只調整 color picker 返回方式，不遷移 team settings 本體。 | `rg` gate 確認 `ScoreboardSettingsMenu` / `ColorPickerMenu` 無 Foundation menu / `ConfigMenu` / `ConfigChangeValueButton` / `ColorMenu` / `UHCMenuSection` / `SimpleReplacer` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `ScoreboardSettingsMenu`、`ColorPickerMenu`、`Color_Picker`、`Heart_Color` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不遷移 `TeamSettingsMenu` 本體、team name / symbol conversation input 或 open join toggle。
+- 不改 `UHCScoreboardSettings` 的 `CompChatColor` model / 儲存格式。
+- 不新增通用 parent/back framework；color picker 只用呼叫端提供的返回動作回到原 menu。
+
+21.5 第十三個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `TeamSettingsMenu` 第一刀 | `TeamSettingsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `ConfigSaveInputButton` / `ConfigBooleanButton` / `ConfigClickableButton` / `SimpleReplacer` / `UHCMenuSection`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Team_Settings`。保留隊伍名稱輸入、隊伍徽章輸入、徽章重複檢查、隊伍顏色選擇、`team public` 自由加入切換與 `team ?` 說明入口。文字輸入只在 `TeamSettingsMenu` 內用短暫 input session 實作，並由既有 `ChatListener` 攔截，不新增通用 conversation framework，也不使用已 deprecated 的 Bukkit `ConversationFactory`。 | `rg` gate 確認 `TeamSettingsMenu` 無 Foundation menu / `ConfigMenu` / `ConfigSaveInputButton` / `ConfigBooleanButton` / `UHCMenuSection` / `SimpleReplacer` / Bukkit conversation API 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `TeamSettingsMenu`、`Team_Settings`、`ChatListener`、`TextInputSession` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不把文字輸入抽成全域 helper；等 `TimeSettingsMenu` / `BorderSettingsMenu` / `MainSettingsMenu` 的輸入型 menu 實作時，再判斷是否真的需要共用。
+- 不改 `UHCTeam` 資料模型、team public 指令、team color model 或 team persistence。
+- 不處理 inventory editor / number / time input button。
+
+21.5 第十四個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `StaffOptionsMenu` 第一刀 | 刪除只包 `UHCPlayer` / `StaffOptions` 的薄 Foundation base `StaffMenu`；`StaffOptionsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `ConfigBooleanButton` / `ConfigChangeValueButton` / `ConfigMenuButton` / `ItemPath` / `UHCMenuSection`。改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Staff_Options`，保留黃金 / 鑽石挖礦提示 toggle、顯示 spectator / staff toggle 後 `uhcPlayer.checkHide()`、移動 / 飛行速度左鍵減 1 / 右鍵加 1 且限制 1 到 5。狀態文字保留 Foundation 舊語意 `&aOn` / `&cOff`，避免本刀順手改 UI 文案。 | `rg` gate 確認 `StaffOptionsMenu` / `menu/impl/game/staff` 無 Foundation menu / `ConfigMenu` / `ConfigBooleanButton` / `ConfigChangeValueButton` / `StaffMenu` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `StaffOptionsMenu`、`StaffMenu`、`Staff_Options` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不改 `StaffOptions` model、staff hotbar item、role hide 邏輯、ore alert listener 或速度公式。
+- 不新增 boolean / number button 共用抽象；目前只在 `StaffOptionsMenu` 內 inline 處理。
+- 不改 staff options 狀態文字為 `Messages.ENABLED` / `Messages.DISABLED`，避免偏離舊 Foundation 顯示語意。
+
+21.5 第十五個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `BroadcastSettingsMenu` 第一刀 | `BroadcastSettingsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `ConfigClickableButton` / `ItemPath` / `UHCMenuSection`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Broadcast`。保留 `Discord` 按鈕、DiscordSRV soft dependency 檢查、缺少 DiscordSRV 時的提示、`GameStartTimeInputSession` 輸入流程、`DiscordBroadcastSender` 發送流程，以及只捕捉 `BroadcastDeliveryException` 回覆玩家的舊錯誤邊界。 | `rg` gate 確認 `BroadcastSettingsMenu` 無 Foundation menu / `ConfigMenu` / `ConfigClickableButton` / `ItemPath` / `UHCMenuSection` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `BroadcastSettingsMenu`、`Broadcast`、`GameStartTimeInputSession`、`DiscordBroadcastSender` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不改 `GameStartTimeInputSession`、`ChatListener`、`DiscordBroadcastSender` 或 `AbstractBroadcastSender`。
+- 不改 `broadcasts.yml` 格式、DiscordSRV channel lookup、mention 轉換或 allowed mentions。
+- 不新增 broadcast / menu helper 抽象。
+
+21.5 第十六個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `TimeSettingsMenu` 第一刀 | `TimeSettingsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `ConfigTimeEditButton` / `ConfigMenuButton` / `UHCMenuSection`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Times`。保留 `Damage`、`Final_Heal`、`Pvp`、`Border_Shrink`、`Disable_Nether` 五個時間按鈕，保留點擊後輸入秒 / 分:秒 / 時:分:秒、無效時間回 `Messages.Editor.Time.INVALID_TIME`、有效輸入後寫入 `UHCTimerSettings` 並 `CacheSaver.saveCache()`。`ChatListener` 只新增 `TimeSettingsMenu.handleInput(...)` / `clear(...)` 的必要轉接。 | `rg` gate 確認 `TimeSettingsMenu` 無 Foundation menu / `ConfigMenu` / `ConfigTimeEditButton` / `ConfigMenuButton` / `ItemPath` / `UHCMenuSection` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `TimeSettingsMenu`、`Times`、`ConfigTimeEditButton` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不改 `BorderSettingsMenu` 的收縮耗時計算器、數字輸入或 border type 切換。
+- 不把時間輸入抽成全域 conversation framework；目前只在 `TimeSettingsMenu` 內維持小型 session。
+- 不改時間設定資料模型、timer countdown 行為或 `gui.yml` / `messages.yml` 格式。
+
+21.5 第十七個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `BorderSettingsMenu` 第一刀 | `BorderSettingsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `UHCNumberEditButton` / `ConfigNumberEditButton` / `ConfigTimeEditButton` / `ConfigLeftOrRightButton` / `ConfigMenuButton` / `ItemPath` / `UHCMenuSection` / `SimpleReplacer`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Border`。保留 `Size`、`Nether_Size`、`Final_Size_Of_Shrink_Mode_Border` 整數輸入，`Border_Shrink_Speed` double 輸入，`Shrink_Calculator` 秒 / 分:秒 / 時:分:秒輸入後用 `BorderUtil.getShrinkSpeedPerSecond(...)` 寫回速度，`Border_Type` 左鍵 `MOVING` / 右鍵 `TIMER` 並廣播。所有有效輸入仍寫入 `UHCBorderSettings` 並 `CacheSaver.saveCache()`；`ChatListener` 只新增 `BorderSettingsMenu.handleInput(...)` / `clear(...)` 的必要轉接。 | `rg` gate 確認 `BorderSettingsMenu` 無 Foundation menu / `ConfigMenu` / `ConfigTimeEditButton` / `ConfigNumberEditButton` / `ConfigLeftOrRightButton` / `ItemPath` / `UHCMenuSection` / `SimpleReplacer` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `BorderSettingsMenu`、`Border`、`Shrink_Calculator`、`ConfigNumberEditButton`、`ConfigTimeEditButton` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不新增正數、上限或 NaN 防禦，數字解析仍貼近舊 Foundation `Integer.valueOf` / `Double.valueOf` 語意。
+- 不把 border / time / team 的 input session 抽成全域 conversation framework。
+- 不改 `BorderUtil`、`UHCBorderSettings`、border runtime、`gui.yml` 或 `messages.yml` 格式。
+
+21.5 第十八個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `TeamModeSettingsMenu` 第一刀 | `TeamModeSettingsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `ConfigChangeValueButton` / `ConfigBooleanButton` / `ConfigLeftOrRightButton` / `ConfigClickableButton` / `UHCMenuSection` / `SimpleReplacer`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Teams`。保留 `Size` 左鍵減 1 / 右鍵加 1 且最低 1、不新增最大值；保留 `Team_Fire` 點擊切換並廣播 `Team_Fire_Enabled_Player` / `Team_Fire_Disabled_Player`；保留 `Team_Split_Mode` 左鍵 `CHOSEN` / 右鍵 `RANDOM`，lore 仍顯示 enum `name()`。 | `rg` gate 確認 `TeamModeSettingsMenu` 無 Foundation menu / `ConfigMenu` / `ConfigChangeValueButton` / `ConfigBooleanButton` / `ConfigLeftOrRightButton` / `ConfigClickableButton` / `UHCMenuSection` / `SimpleReplacer` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `TeamModeSettingsMenu`、`Teams`、`Team_Fire`、`Team_Split_Mode` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不新增 `CacheSaver.saveCache()`，維持舊 menu 行為。
+- 不改 `TeamSplitMode` 顯示文字，仍使用 `CHOSEN` / `RANDOM`。
+- 不改 `UHCTeamSettings`、team runtime、`gui.yml` 或 `messages.yml` 格式。
+
+21.5 第十九個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `MainSettingsMenu` 第一刀 | `MainSettingsMenu` 不再繼承 Foundation `ConfigMenu`，也不再使用 Foundation `ConfigClickableButton` / `ConfigBooleanButton` / `ConfigChangeValueButton` / `ConfigEditorButton` / `ConfigInventoryEditorButton` / `UHCNumberEditButton` / `InventoryEditButton` / `UHCMenuSection` / `SimpleReplacer`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Main`。保留 Team / Border / Time / Scoreboard / Broadcast / Scenarios / Saves 入口，保留 whitelist / Nether / ender pearl damage toggle，保留 max players / title 輸入，保留 apple rate / initial experience 左右鍵調整，保留 start / generate map 按鈕判斷。inventory editor 的 custom inventory / practice inventory / custom drops / disable items 改由 `MainSettingsMenu` 內部短暫 session 接住，並讓 `/finish` / `/tohead` 轉交到本地 session；不新增全域 conversation framework。 | `rg` gate 確認本輪目標檔無 Foundation menu / `ConfigMenu` / `ConfigEditorButton` / `ConfigInventoryEditorButton` / `UHCNumberEditButton` / `InventoryEditButton` / `UHCMenuSection` / `SimpleReplacer` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `MainSettingsMenu`、inventory editor command、`ConfigInventoryEditorButton`、`UHCNumberEditButton` 或 menu 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不遷移 `CenterCleanerMenu`，`Generate_Map` 仍暫時開啟既有 center cleaner confirm menu。
+- 不刪除尚未確認無使用的 `UHCNumberEditButton` / `InventoryEditButton` dead class；等 21.5 最後掃描再清。
+- 不新增 title / number / inventory editor 的全域輸入抽象，也不補額外數值防禦。
+
+21.5 第二十個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `CenterCleanerMenu` 第一刀 | `CenterCleanerMenu` 不再繼承 Foundation `ConfigConfirmMenu`，也不再使用 Foundation `Menu` / `UHCMenuSection`；改用本地 `PluginMenu` / `PluginMenuSection` 顯示 `Center_Cleaner`。保留 `Agree` 點擊後呼叫 `PreviewWorldGenerationService.create(player, true, seed)`，`Disagree` 點擊後呼叫 `PreviewWorldGenerationService.create(player, false, seed)`，並維持點擊後關閉 inventory。`MainSettingsMenu` 的 `Generate_Map` 與 `MainGui#abrirCenterCleaner(...)` 改開本地 `CenterCleanerMenu`。 | `rg` gate 確認本輪目標檔無 Foundation menu / `ConfigConfirmMenu` / `UHCMenuSection` / `new CenterCleanerMenu(null)` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過。 |
+
+本刀刻意未處理：
+
+- 不改 `PreviewWorldGenerationService`、`CenterCleaner` 或 `/uhc regen` 指令流程。
+- 不新增通用 confirm menu base；目前只有這個 confirm menu 使用點，不值得抽象化。
+- 不補額外重入或世界生成防禦，維持舊點擊後直接建立預覽世界的語意。
+
+21.5 第二十一個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | dead Foundation menu wrapper removal | 刪除已無使用點的 `UHCNumberEditButton`、`InventoryEditButton`、`UHCMenuSection`。這三個檔案分別只包 Foundation `ConfigNumberEditButton`、`ConfigInventoryEditorButton` 與 `MenuSection`；實際 number input、inventory editor 與 menu section 讀取已在前面 host menu / 本地 menu 切片改由本地實作承接。 | `rg` gate 確認 `src/main/java` / `src/test/java` 已無 `UHCNumberEditButton`、`InventoryEditButton`、`UHCMenuSection` 命中。 |
+
+本刀刻意未處理：
+
+- 不新增替代 wrapper 或共用 editor abstraction；這三個類別已無呼叫點。
+- 不改 `MainSettingsMenu` 的本地 inventory editor session 或 number / title input 行為。
+- 不處理 `ButtonLocalization`、`LegacyFoundationAdapter.configureMenuClickSound()` 或 `InventoryListener` 的 Foundation menu 判斷。
+
+21.5 第二十二個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | Foundation return button / menu click sound cleanup | 刪除已無實際作用的 `ButtonLocalization` 與 `LegacyFoundationAdapter`，並移除 `WonderlandUHC#onReloadablesStart()` 對 `PluginBootstrap#configureFoundationLibrary()` 的呼叫。`ButtonLocalization` 只設定 Foundation `ButtonReturnBack`，`LegacyFoundationAdapter.configureMenuClickSound()` 只設定 Foundation `Menu.setSound(...)`；目前 menu 已改用本地 `PluginMenu` / `PluginPagedMenu`，不再讀這兩個 Foundation 全域設定。 | `rg` gate 確認 `src/main/java` / `src/test/java` 已無 `ButtonLocalization`、`LegacyFoundationAdapter`、`configureFoundationLibrary()`、`configureMenuClickSound()`、`ButtonReturnBack`、`Menu.setSound`、`SimpleSound` 命中。 |
+
+本刀刻意未處理：
+
+- 不清理 `gui.yml` 根部 `Leave` / `Next_Page` / `Previous_Page` / `First_Page` / `Last_Page` 資源殘留，避免混入 resource layout / 文案整理。
+- 不處理 `InventoryListener` 的 Foundation `Menu.getMenu(player)` spectator 防護判斷；它牽涉 inventory policy，需獨立盤點。
+- 不處理 `WonderlandUHC extends SimplePlugin` lifecycle；這是 Step 21 後段 lifecycle 收尾，不和 menu click sound 清理混在一起。
+
+21.5 第二十三個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | `InventoryListener` spectator menu 判斷 | `InventoryListener` 不再使用 Foundation `Menu.getMenu(player)` 判斷 spectator 是否正在看 menu；改用目前 top inventory holder 是否為本地 `PluginMenu`。保留原本規則：比賽中 spectator 若沒有開本地 plugin menu，inventory click 仍會被取消；minecart inventory open 防護不變。 | `rg` gate 確認 `InventoryListener` 無 Foundation `org.mineacademy.fo.menu` / `Menu.getMenu` 命中。 |
+
+本刀刻意未處理：
+
+- 不改 spectator inventory click policy，只替換 menu-open 判斷來源。
+- 不調整 `PluginMenuListener` 的 click / drag 行為。
+- 不處理 `WonderlandUHC extends SimplePlugin` lifecycle 或 `CompChatColor` 類型殘留。
+
+21.5 第二十四個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | scoreboard heart color `CompChatColor` 移除 | `UHCScoreboardSettings` 的 `heartColor` 不再使用 Foundation `CompChatColor`，改用既有 menu 流程已採用的 Bukkit `ChatColor`；`ScoreboardSettingsMenu` 選色後直接寫入 `ChatColor`。同時恢復讀取 `Scoreboard_Settings.Heart_Color`，支援既有保存值如 `red`、`&c`、`§c`，無效值維持預設紅色。 | `rg` gate 確認 production / test source 無 `CompChatColor` / `ChatColor.getByChar` 命中。 |
+
+本刀刻意未處理：
+
+- 不遷移 `ColorPickerMenu` 的 `ChatColor` 泛型與顏色清單。
+- 不調整 `UHCTeam`、team setting menu 或 public API 的 team color model；這仍屬 21.6 的 `ChatColor / legacy color model` 後續項。
+- 不改 scoreboard objective / sidebar 更新流程，只保留頭頂血量愛心顏色輸出效果。
+
 高風險點：
 
 - player head / skull owner。
 - back button / page button。
 - host settings persistence。
 - inventory editor command input。
-- `ButtonLocalization` / `gui.yml` material alias。
-- `TeamSettingsMenu` 與 `ScoreboardSettingsMenu` 的 color handling。
+- spectator inventory 防護與 legacy `gui.yml` 根部 page/back button 資源殘留。
 
 驗收：
 

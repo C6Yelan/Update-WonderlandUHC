@@ -1,81 +1,75 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
-import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.game.settings.sub.UHCScoreboardSettings;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
-import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.menu.button.config.ConfigClickableButton;
-import org.mineacademy.fo.menu.button.config.ConfigMenuButton;
-import org.mineacademy.fo.menu.button.config.value.ConfigChangeValueButton;
-import org.mineacademy.fo.menu.config.ConfigMenu;
-import org.mineacademy.fo.model.SimpleReplacer;
-import org.mineacademy.fo.remain.CompChatColor;
+import org.bukkit.inventory.ItemStack;
+import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.settings.sub.UHCScoreboardSettings;
+import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
+import org.mcwonderland.uhc.platform.menu.PluginMenu;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 
-public class ScoreboardSettingsMenu extends ConfigMenu {
+public class ScoreboardSettingsMenu extends PluginMenu {
+    private static final String SECTION = "Scoreboard";
+    private static final String THEMES_BUTTON = "Themes";
+    private static final String UPDATE_TICKS_BUTTON = "Update_Ticks";
+    private static final String HEART_COLOR_BUTTON = "Heart_Color";
 
-    private final ConfigMenuButton themesButton;
-    private final ConfigMenuButton updateTicksButton;
-    private final ConfigMenuButton heartColorButton;
+    private final UHCScoreboardSettings scoreboardSettings;
 
-    public ScoreboardSettingsMenu(Menu parent) {
-        super(UHCMenuSection.of("Scoreboard"), parent);
+    public ScoreboardSettingsMenu() {
+        super(PluginMenuSection.of(SECTION));
+        this.scoreboardSettings = Game.getSettings().getScoreboardSettings();
+    }
 
-        UHCScoreboardSettings scoreboardSettings = Game.getSettings().getScoreboardSettings();
+    @Override
+    protected ItemStack getItemAt(int slot) {
+        if (slot == getSection().getButtonSlot(THEMES_BUTTON))
+            return getSection().getButtonItem(THEMES_BUTTON, "{theme}", scoreboardSettings.getSidebarTheme().getName());
 
-        themesButton = new ConfigClickableButton(getButtonPath("Themes")) {
+        if (slot == getSection().getButtonSlot(UPDATE_TICKS_BUTTON))
+            return getSection().getButtonItem(UPDATE_TICKS_BUTTON, "{count}", scoreboardSettings.getScoreboardUpdateTick());
+
+        if (slot == getSection().getButtonSlot(HEART_COLOR_BUTTON))
+            return getSection().getButtonItem(HEART_COLOR_BUTTON, "{color}", scoreboardSettings.getHeartColor());
+
+        return super.getItemAt(slot);
+    }
+
+    @Override
+    protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        if (slot == getSection().getButtonSlot(THEMES_BUTTON)) {
+            new SidebarThemeSettingsMenu(player).displayTo(player);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(UPDATE_TICKS_BUTTON)) {
+            updateTicks(player, click);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(HEART_COLOR_BUTTON))
+            openChooseHeartColorMenu(player);
+    }
+
+    private void updateTicks(Player player, ClickType click) {
+        if (click == ClickType.LEFT)
+            scoreboardSettings.setScoreboardUpdateTick(Math.max(1, scoreboardSettings.getScoreboardUpdateTick() - 1));
+        else if (click == ClickType.RIGHT)
+            scoreboardSettings.setScoreboardUpdateTick(scoreboardSettings.getScoreboardUpdateTick() + 1);
+        else
+            return;
+
+        displayTo(player);
+    }
+
+    private void openChooseHeartColorMenu(Player player) {
+        new ColorPickerMenu(returningPlayer -> new ScoreboardSettingsMenu().displayTo(returningPlayer)) {
             @Override
-            protected void onClicked(Player player, Menu menu, ClickType click) {
-                new SidebarThemeSettingsMenu(menu, player).displayTo(player);
+            protected void onChooseColor(Player player, ChatColor chatColor) {
+                scoreboardSettings.setHeartColor(chatColor);
             }
-
-            @Override
-            protected SimpleReplacer replaceLore(SimpleReplacer unReplacedLore) {
-                return super.replaceLore(unReplacedLore)
-                        .replace("{theme}", scoreboardSettings.getSidebarTheme().getName());
-            }
-        };
-
-        updateTicksButton = new ConfigChangeValueButton(getButtonPath("Update_Ticks"), 1) {
-            @Override
-            protected void onChangingSize(Player player, Menu menu, int newCount) {
-                scoreboardSettings.setScoreboardUpdateTick(newCount);
-            }
-
-            @Override
-            protected int getOriginalSize() {
-                return scoreboardSettings.getScoreboardUpdateTick();
-            }
-
-            @Override
-            protected Integer getMinimum() {
-                return 1;
-            }
-        };
-
-        heartColorButton = new ConfigClickableButton(getButtonPath("Heart_Color")) {
-            @Override
-            protected void onClicked(Player player, Menu menu, ClickType click) {
-                openChooseHeartColorMenu(player);
-            }
-
-            @Override
-            protected SimpleReplacer replaceLore(SimpleReplacer unReplacedLore) {
-                return super.replaceLore(unReplacedLore)
-                        .replace("{color}", scoreboardSettings.getHeartColor());
-            }
-
-            private void openChooseHeartColorMenu(Player player) {
-                new ColorPickerMenu(ScoreboardSettingsMenu.this) {
-                    @Override
-                    protected void onChooseColor(Player player, ChatColor chatColor) {
-                        scoreboardSettings.setHeartColor(CompChatColor.getByChar(chatColor.getChar()));
-                    }
-                }.displayTo(player);
-            }
-        };
+        }.displayTo(player);
     }
 }

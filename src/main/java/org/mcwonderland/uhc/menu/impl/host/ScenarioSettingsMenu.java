@@ -1,56 +1,50 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
+import org.mcwonderland.uhc.platform.item.PluginItems;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.menu.button.Button;
-import org.mineacademy.fo.menu.config.ConfigMenuPagged;
-import org.mineacademy.fo.menu.model.ItemCreator;
+
+import java.util.List;
 
 /**
  * 2019-12-10 上午 01:00
  */
-public class ScenarioSettingsMenu extends ConfigMenuPagged<Scenario> {
+public class ScenarioSettingsMenu extends PluginPagedMenu<Scenario> {
+    private static final String SECTION = "Scenarios";
+    private static final String CLEAR_SCENARIOS_BUTTON = "Clear_Scenarios";
+    private static final int CLEAR_SCENARIOS_OFFSET = 9;
+
     private final ScenarioManager manager;
-    private final Button clearScenariosButton;
 
-    public ScenarioSettingsMenu(Menu parent, ScenarioManager manager) {
-        super(parent, UHCMenuSection.of("Scenarios"), manager.getScenarios());
+    public ScenarioSettingsMenu(ScenarioManager manager) {
+        super(PluginMenuSection.of(SECTION), manager.getScenarios());
         this.manager = manager;
-
-        clearScenariosButton = new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                manager.getEnabledScenarios().forEach(scenario -> manager.toggleScenario(scenario, false));
-                Game.getSettings().getScenarios().clear();
-                Extra.sound(player, Sounds.Host.CLEAR_ENABLED_SCENARIOS);
-                restartMenu();
-            }
-
-            @Override
-            public ItemStack getItem() {
-                return section.getButtonItem("Clear_Scenarios");
-            }
-        };
     }
 
     @Override
     protected ItemStack convertToItemStack(Scenario scenario) {
-        return ItemCreator.of(scenario.getIcon())
-                .lore("")
-                .lore(scenario.isEnabled() ? Messages.ENABLED : Messages.DISABLED)
-                .glow(scenario.isEnabled())
-                .hideTags(true)
-                .make();
+        ItemStack item = PluginItems.create(
+                scenario.getIcon(),
+                null,
+                List.of("", scenario.isEnabled() ? Messages.ENABLED : Messages.DISABLED),
+                true
+        );
+
+        if (scenario.isEnabled())
+            applyGlow(item);
+
+        return item;
     }
 
     @Override
@@ -65,18 +59,49 @@ public class ScenarioSettingsMenu extends ConfigMenuPagged<Scenario> {
                 .replace("{scenario}", scenario.getFancyName()));
 
         Extra.sound(Sounds.Host.SCENARIO_TOGGLED);
+        refreshMenu(player);
     }
 
     @Override
-    public ItemStack getItemAt(int slot) {
-        if (slot == getSize() - 9)
-            return clearScenariosButton.getItem();
+    protected ItemStack getItemAt(int slot) {
+        if (slot == getClearScenariosButtonSlot())
+            return getSection().getButtonItem(CLEAR_SCENARIOS_BUTTON);
 
         return super.getItemAt(slot);
     }
 
     @Override
-    protected String[] getInfo() {
-        return null;
+    protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        if (slot == getClearScenariosButtonSlot()) {
+            clearScenarios(player);
+            return;
+        }
+
+        super.onClick(player, slot, click, clicked);
+    }
+
+    private void clearScenarios(Player player) {
+        manager.getEnabledScenarios().forEach(scenario -> manager.toggleScenario(scenario, false));
+        Game.getSettings().getScenarios().clear();
+        Extra.sound(player, Sounds.Host.CLEAR_ENABLED_SCENARIOS);
+        refreshMenu(player);
+    }
+
+    private void refreshMenu(Player player) {
+        new ScenarioSettingsMenu(manager).displayTo(player);
+    }
+
+    private int getClearScenariosButtonSlot() {
+        return getSection().getSize() - CLEAR_SCENARIOS_OFFSET;
+    }
+
+    private void applyGlow(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+
+        if (meta == null)
+            return;
+
+        meta.setEnchantmentGlintOverride(Boolean.TRUE);
+        item.setItemMeta(meta);
     }
 }

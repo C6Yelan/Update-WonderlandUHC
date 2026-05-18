@@ -1,56 +1,44 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
-import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.game.settings.UHCGameSettings;
-import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
-import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.menu.button.Button;
-import org.mineacademy.fo.menu.config.ConfigMenuPagged;
-import org.mineacademy.fo.menu.model.ItemCreator;
-import org.mineacademy.fo.model.ConfigItem;
+import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.settings.UHCGameSettings;
+import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
+import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
+import org.mcwonderland.uhc.platform.item.PluginItems;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
+import org.mcwonderland.uhc.settings.UHCFiles;
 
 import java.util.List;
 
-public class SavedSettingsMenu extends ConfigMenuPagged<UHCGameSettings> {
+public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
+    private static final String SECTION = "Saves";
+    private static final String SAVE_AS_BUTTON = "Save_As";
+    private static final String SAVED_BUTTON = "Saved";
+    private static final int SAVE_AS_OFFSET = 9;
+    private static final int BACK_OFFSET = 1;
 
-    private final ConfigItem info;
-    private final Button saveAsButton;
-
-    protected SavedSettingsMenu(Menu parent, Player player) {
-        super(parent, UHCMenuSection.of("Saves"), UHCGameSettingsSaver.getSavedSettings(player));
-
-        info = section.getConfigItem("Saved");
-
-        saveAsButton = new Button() {
-            @Override
-            public void onClickedInMenu(Player player, Menu menu, ClickType clickType) {
-                UHCGameSettingsSaver.getSavedSettings(player).add(Game.getSettings().clone());
-                UHCGameSettingsSaver.saveGameSettings(player);
-
-                refreshMenu(player);
-            }
-
-
-            @Override
-            public ItemStack getItem() {
-                return section.getButtonItem("Save_As");
-            }
-        };
+    protected SavedSettingsMenu(Player player) {
+        super(PluginMenuSection.of(SECTION), UHCGameSettingsSaver.getSavedSettings(player));
     }
 
 
     @Override
     protected ItemStack convertToItemStack(UHCGameSettings settings) {
+        ItemStack baseItem = getSection().getButtonItem(
+                SAVED_BUTTON,
+                "{saved_game_title}", settings.getTitle()
+        );
 
-        return ItemCreator.of(info.getMaterial())
-                .name(info.getName().replace("{saved_game_title}", settings.getTitle()))
-                .lore(GamePlaceholderReplacer.replace(info.getLore(), settings))
-                .make();
+        return PluginItems.create(
+                baseItem,
+                getSection().getButtonName(SAVED_BUTTON).replace("{saved_game_title}", settings.getTitle()),
+                GamePlaceholderReplacer.replace(getSection().getButtonLore(SAVED_BUTTON), settings),
+                true
+        );
     }
 
     @Override
@@ -79,20 +67,34 @@ public class SavedSettingsMenu extends ConfigMenuPagged<UHCGameSettings> {
     }
 
     @Override
-    public ItemStack getItemAt(int slot) {
-        if (slot == getSize() - 9)
-            return saveAsButton.getItem();
+    protected ItemStack getItemAt(int slot) {
+        if (slot == getSaveAsButtonSlot())
+            return getSection().getButtonItem(SAVE_AS_BUTTON);
+
+        if (slot == getBackButtonSlot())
+            return PluginItems.fromConfig(UHCFiles.MENUS, "Leave");
 
         return super.getItemAt(slot);
     }
 
     @Override
-    protected String[] getInfo() {
-        return null;
+    protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        if (slot == getSaveAsButtonSlot()) {
+            saveCurrentSettings(player);
+            refreshMenu(player);
+            return;
+        }
+
+        if (slot == getBackButtonSlot()) {
+            refreshAndOpenMainMenu(player);
+            return;
+        }
+
+        super.onClick(player, slot, click, clicked);
     }
 
     private void refreshAndOpenMainMenu(Player player) {
-        new MainSettingsMenu(null).displayTo(player);
+        new MainSettingsMenu().displayTo(player);
     }
 
 
@@ -105,7 +107,20 @@ public class SavedSettingsMenu extends ConfigMenuPagged<UHCGameSettings> {
         UHCGameSettingsSaver.saveGameSettings(player);
     }
 
+    private void saveCurrentSettings(Player player) {
+        UHCGameSettingsSaver.getSavedSettings(player).add(Game.getSettings().clone());
+        UHCGameSettingsSaver.saveGameSettings(player);
+    }
+
     private void refreshMenu(Player player) {
-        new SavedSettingsMenu(getParent(), player).displayTo(player);
+        new SavedSettingsMenu(player).displayTo(player);
+    }
+
+    private int getSaveAsButtonSlot() {
+        return getSection().getSize() - SAVE_AS_OFFSET;
+    }
+
+    private int getBackButtonSlot() {
+        return getSection().getSize() - BACK_OFFSET;
     }
 }

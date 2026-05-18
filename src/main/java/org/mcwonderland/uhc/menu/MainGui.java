@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 
 public class MainGui {
     public static void abrirMenu(Player p) {
-        new MainSettingsMenu(null).displayTo(p);
+        new MainSettingsMenu().displayTo(p);
     }
 
     public static void abrirTeamList(Player p) {
@@ -16,7 +16,7 @@ public class MainGui {
     }
 
     public static void abrirCenterCleaner(Player p) {
-        new CenterCleanerMenu(null).displayTo(p);
+        new CenterCleanerMenu().displayTo(p);
     }
 
     public static void abrirStaffOptions(Player p) {

@@ -37,6 +37,7 @@ import org.mcwonderland.uhc.listener.StatsListener;
 import org.mcwonderland.uhc.listener.ToolListener;
 import org.mcwonderland.uhc.model.tutorial.model.TutorialListener;
 import org.mcwonderland.uhc.practice.Practice;
+import org.mcwonderland.uhc.platform.menu.PluginMenuListener;
 import org.mcwonderland.uhc.scenario.ScenarioListener;
 import org.mcwonderland.uhc.scoreboard.ScoreBoardUpdater;
 import org.mcwonderland.uhc.scoreboard.ScoreListener;
@@ -63,6 +64,7 @@ public final class FeatureRegistry {
                 new GameSettingsScenarioListener(plugin),
                 new StatsListener(),
                 new ToolListener(),
+                new PluginMenuListener(),
                 new ScoreListener(),
                 new ScenarioListener(plugin)
         ).forEach(registerListener);

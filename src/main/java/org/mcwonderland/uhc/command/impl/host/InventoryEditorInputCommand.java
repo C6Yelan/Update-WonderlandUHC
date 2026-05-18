@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.command.impl.host;
 
 import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.menu.impl.host.MainSettingsMenu;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.command.Command;
@@ -43,12 +44,10 @@ public class InventoryEditorInputCommand implements CommandExecutor {
             return true;
         }
 
-        if (!player.isConversing()) {
-            Chat.send(player, "&c目前沒有正在等待的設定輸入。");
+        if (MainSettingsMenu.handleInput(player, input))
             return true;
-        }
 
-        player.acceptConversationInput(input);
+        Chat.send(player, "&c目前沒有正在等待的設定輸入。");
         return true;
     }
 }

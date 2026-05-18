@@ -1,8 +1,8 @@
 package org.mcwonderland.uhc.tools.spectator;
 
 import lombok.Getter;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.mcwonderland.uhc.menu.impl.PlayersMenu;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.tools.UHCTool;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -18,7 +18,7 @@ public final class OverworldPlayersItem extends UHCTool {
 
     @Override
     protected void onRightClick(PlayerInteractEvent event) {
-        PlayersMenu menu = PlayersMenu.gamingPlayersMenu(UHCWorldUtils.getWorld(), UHCMenuSection.of("Players_Overworld"));
+        PlayersMenu menu = PlayersMenu.gamingPlayersMenu(UHCWorldUtils.getWorld(), PluginMenuSection.of("Players_Overworld"));
 
         menu.displayTo(event.getPlayer());
     }

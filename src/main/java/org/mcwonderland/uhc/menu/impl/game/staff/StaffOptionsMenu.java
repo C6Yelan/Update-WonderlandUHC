@@ -1,109 +1,102 @@
 package org.mcwonderland.uhc.menu.impl.game.staff;
 
-import org.mcwonderland.uhc.game.player.staff.OreAlert;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.menu.button.config.ConfigMenuButton;
-import org.mineacademy.fo.menu.button.config.value.ConfigBooleanButton;
-import org.mineacademy.fo.menu.button.config.value.ConfigChangeValueButton;
-import org.mineacademy.fo.menu.config.ItemPath;
+import org.bukkit.inventory.ItemStack;
+import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.game.player.staff.OreAlert;
+import org.mcwonderland.uhc.game.player.staff.StaffOptions;
+import org.mcwonderland.uhc.platform.menu.PluginMenu;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 
-public class StaffOptionsMenu extends StaffMenu {
+public class StaffOptionsMenu extends PluginMenu {
+    private static final String SECTION = "Staff_Options";
+    private static final String GOLD_ALERT_BUTTON = "Gold_Alert";
+    private static final String DIAMOND_ALERT_BUTTON = "Diamond_Alert";
+    private static final String TOGGLE_SPEC_SHOW_BUTTON = "Toggle_Spec_Show";
+    private static final String TOGGLE_STAFF_SHOW_BUTTON = "Toggle_Staff_Show";
+    private static final String MOVING_SPEED_BUTTON = "Moving_Speed";
+    private static final String ENABLED_STATUS = "&aOn";
+    private static final String DISABLED_STATUS = "&cOff";
 
-    private final ConfigMenuButton goldAlertButton, diamondAlertButton;
-    private final ConfigMenuButton toggleSpecShowButton, toggleStaffShowButton;
-    private final ConfigMenuButton movingSpeedButton;
+    private final UHCPlayer uhcPlayer;
+    private final StaffOptions staffOptions;
 
     public StaffOptionsMenu(Player player) {
-        super(player, UHCMenuSection.of("Staff_Options"), null);
-
-        goldAlertButton = new OreAlertButton(getButtonPath("Gold_Alert"), OreAlert.GOLD_ORE);
-        diamondAlertButton = new OreAlertButton(getButtonPath("Diamond_Alert"), OreAlert.DIAMOND_ORE);
-
-        toggleSpecShowButton = new ToggleShowButton(getButtonPath("Toggle_Spec_Show")) {
-            @Override
-            protected void onToggleHide(Player player, Menu menu, boolean newStatus) {
-                staffOption.setShowSpectator(newStatus);
-            }
-
-            @Override
-            protected boolean getBoolean() {
-                return staffOption.isShowSpectator();
-            }
-        };
-
-        toggleStaffShowButton = new ToggleShowButton(getButtonPath("Toggle_Staff_Show")) {
-            @Override
-            protected void onToggleHide(Player player, Menu menu, boolean newStatus) {
-                staffOption.setShowStaff(newStatus);
-            }
-
-            @Override
-            protected boolean getBoolean() {
-                return staffOption.isShowStaff();
-            }
-        };
-
-        movingSpeedButton = new ConfigChangeValueButton(getButtonPath("Moving_Speed"), 1) {
-
-            @Override
-            protected void onChangingSize(Player player, Menu menu, int newCount) {
-                staffOption.setSpeed(newCount);
-                player.setWalkSpeed(staffOption.getMCSpeed());
-                player.setFlySpeed(staffOption.getMCSpeed());
-            }
-
-            @Override
-            protected int getOriginalSize() {
-                return staffOption.getSpeed();
-            }
-
-            @Override
-            protected Integer getMinimum() {
-                return 1;
-            }
-
-            @Override
-            protected Integer getMaximum() {
-                return 5;
-            }
-        };
+        super(PluginMenuSection.of(SECTION));
+        this.uhcPlayer = UHCPlayer.getUHCPlayer(player);
+        this.staffOptions = uhcPlayer.getStaffOptions();
     }
 
-    private class OreAlertButton extends ConfigBooleanButton {
-        private final OreAlert oreAlert;
+    @Override
+    protected ItemStack getItemAt(int slot) {
+        if (slot == getSection().getButtonSlot(GOLD_ALERT_BUTTON))
+            return getSection().getButtonItem(GOLD_ALERT_BUTTON, "{status}", getStatus(staffOptions.hasOreAlert(OreAlert.GOLD_ORE)));
 
-        protected OreAlertButton(ItemPath itemPath, OreAlert oreAlert) {
-            super(itemPath);
+        if (slot == getSection().getButtonSlot(DIAMOND_ALERT_BUTTON))
+            return getSection().getButtonItem(DIAMOND_ALERT_BUTTON, "{status}", getStatus(staffOptions.hasOreAlert(OreAlert.DIAMOND_ORE)));
 
-            this.oreAlert = oreAlert;
-        }
+        if (slot == getSection().getButtonSlot(TOGGLE_SPEC_SHOW_BUTTON))
+            return getSection().getButtonItem(TOGGLE_SPEC_SHOW_BUTTON, "{status}", getStatus(staffOptions.isShowSpectator()));
 
-        @Override
-        protected final void onStatusChange(Player player, Menu menu, ClickType click, boolean newStatus) {
-            staffOption.toggleOreAlert(oreAlert);
-        }
+        if (slot == getSection().getButtonSlot(TOGGLE_STAFF_SHOW_BUTTON))
+            return getSection().getButtonItem(TOGGLE_STAFF_SHOW_BUTTON, "{status}", getStatus(staffOptions.isShowStaff()));
 
-        @Override
-        protected final boolean getBoolean() {
-            return staffOption.hasOreAlert(oreAlert);
-        }
+        if (slot == getSection().getButtonSlot(MOVING_SPEED_BUTTON))
+            return getSection().getButtonItem(MOVING_SPEED_BUTTON, "{count}", staffOptions.getSpeed());
+
+        return super.getItemAt(slot);
     }
 
-    private abstract class ToggleShowButton extends ConfigBooleanButton {
-
-        protected ToggleShowButton(ItemPath itemPath) {
-            super(itemPath);
+    @Override
+    protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        if (slot == getSection().getButtonSlot(GOLD_ALERT_BUTTON)) {
+            toggleOreAlert(player, OreAlert.GOLD_ORE);
+            return;
         }
 
-        @Override
-        protected final void onStatusChange(Player player, Menu menu, ClickType click, boolean newStatus) {
-            onToggleHide(player, menu, newStatus);
+        if (slot == getSection().getButtonSlot(DIAMOND_ALERT_BUTTON)) {
+            toggleOreAlert(player, OreAlert.DIAMOND_ORE);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(TOGGLE_SPEC_SHOW_BUTTON)) {
+            staffOptions.setShowSpectator(!staffOptions.isShowSpectator());
             uhcPlayer.checkHide();
+            displayTo(player);
+            return;
         }
 
-        protected abstract void onToggleHide(Player player, Menu menu, boolean newStatus);
+        if (slot == getSection().getButtonSlot(TOGGLE_STAFF_SHOW_BUTTON)) {
+            staffOptions.setShowStaff(!staffOptions.isShowStaff());
+            uhcPlayer.checkHide();
+            displayTo(player);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(MOVING_SPEED_BUTTON))
+            updateSpeed(player, click);
+    }
+
+    private void toggleOreAlert(Player player, OreAlert oreAlert) {
+        staffOptions.toggleOreAlert(oreAlert);
+        displayTo(player);
+    }
+
+    private void updateSpeed(Player player, ClickType click) {
+        if (click == ClickType.LEFT)
+            staffOptions.setSpeed(Math.max(1, staffOptions.getSpeed() - 1));
+        else if (click == ClickType.RIGHT)
+            staffOptions.setSpeed(Math.min(5, staffOptions.getSpeed() + 1));
+        else
+            return;
+
+        player.setWalkSpeed(staffOptions.getMCSpeed());
+        player.setFlySpeed(staffOptions.getMCSpeed());
+        displayTo(player);
+    }
+
+    private String getStatus(boolean enabled) {
+        return enabled ? ENABLED_STATUS : DISABLED_STATUS;
     }
 }

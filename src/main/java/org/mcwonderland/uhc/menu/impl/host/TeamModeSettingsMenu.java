@@ -1,81 +1,94 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.api.enums.TeamSplitMode;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.sub.UHCTeamSettings;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
+import org.mcwonderland.uhc.platform.menu.PluginMenu;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.settings.Messages;
-import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.ClickType;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.menu.button.config.ConfigClickableButton;
-import org.mineacademy.fo.menu.button.config.ConfigLeftOrRightButton;
-import org.mineacademy.fo.menu.button.config.value.ConfigBooleanButton;
-import org.mineacademy.fo.menu.button.config.value.ConfigChangeValueButton;
-import org.mineacademy.fo.menu.config.ConfigMenu;
-import org.mineacademy.fo.model.SimpleReplacer;
+import org.mcwonderland.uhc.util.Chat;
 
-public class TeamModeSettingsMenu extends ConfigMenu {
+public class TeamModeSettingsMenu extends PluginMenu {
+    private static final String SECTION = "Teams";
+    private static final String SIZE_BUTTON = "Size";
+    private static final String TEAM_FIRE_BUTTON = "Team_Fire";
+    private static final String TEAM_SPLIT_MODE_BUTTON = "Team_Split_Mode";
+    private static final String ENABLED_STATUS = "&aOn";
+    private static final String DISABLED_STATUS = "&cOff";
 
-    private final ConfigClickableButton sizeButton;
-    private final ConfigClickableButton teamFireButton;
-    private final ConfigClickableButton splitTypeButton;
+    public TeamModeSettingsMenu() {
+        super(PluginMenuSection.of(SECTION));
+    }
 
-    public TeamModeSettingsMenu(Menu parent) {
-        super(UHCMenuSection.of("Teams"), parent);
-
+    @Override
+    protected ItemStack getItemAt(int slot) {
         UHCTeamSettings teamSettings = Game.getSettings().getTeamSettings();
 
-        sizeButton = new ConfigChangeValueButton(getButtonPath("Size"), 1) {
+        if (slot == getSection().getButtonSlot(SIZE_BUTTON))
+            return getSection().getButtonItem(SIZE_BUTTON, "{count}", teamSettings.getTeamSize());
 
-            @Override
-            protected void onChangingSize(Player player, Menu menu, int newCount) {
-                teamSettings.setTeamSize(newCount);
-            }
+        if (slot == getSection().getButtonSlot(TEAM_FIRE_BUTTON))
+            return getSection().getButtonItem(TEAM_FIRE_BUTTON, "{status}", teamSettings.isAllowTeamFire() ? ENABLED_STATUS : DISABLED_STATUS);
 
+        if (slot == getSection().getButtonSlot(TEAM_SPLIT_MODE_BUTTON))
+            return getSection().getButtonItem(TEAM_SPLIT_MODE_BUTTON, "{type}", teamSettings.getTeamSplitMode().name());
 
-            @Override
-            protected int getOriginalSize() {
-                return teamSettings.getTeamSize();
-            }
+        return super.getItemAt(slot);
+    }
 
-            @Override
-            protected Integer getMinimum() {
-                return 1;
-            }
-        };
+    @Override
+    protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        UHCTeamSettings teamSettings = Game.getSettings().getTeamSettings();
 
-        teamFireButton = new ConfigBooleanButton(getButtonPath("Team_Fire")) {
+        if (slot == getSection().getButtonSlot(SIZE_BUTTON)) {
+            handleTeamSizeClick(player, click, teamSettings);
+            return;
+        }
 
-            @Override
-            protected void onStatusChange(Player player, Menu menu, ClickType click, boolean newStatus) {
-                teamSettings.setAllowTeamFire(newStatus);
+        if (slot == getSection().getButtonSlot(TEAM_FIRE_BUTTON)) {
+            toggleTeamFire(player, teamSettings);
+            return;
+        }
 
-                broadcast(newStatus ? Messages.Host.TEAM_FIRE_ENABLED_PLAYER : Messages.Host.TEAM_FIRE_DISABLED_PLAYER, player);
-            }
+        if (slot == getSection().getButtonSlot(TEAM_SPLIT_MODE_BUTTON))
+            handleSplitModeClick(player, click, teamSettings);
+    }
 
-            @Override
-            protected boolean getBoolean() {
-                return teamSettings.isAllowTeamFire();
-            }
-        };
+    private void handleTeamSizeClick(Player player, ClickType click, UHCTeamSettings teamSettings) {
+        if (click == ClickType.LEFT) {
+            teamSettings.setTeamSize(Math.max(1, teamSettings.getTeamSize() - 1));
+            displayTo(player);
+            return;
+        }
 
-        splitTypeButton = new ConfigLeftOrRightButton(getButtonPath("Team_Split_Mode")) {
-            @Override
-            protected void onLeftClick(Player player, Menu menu) {
-                teamSettings.setTeamSplitMode(TeamSplitMode.CHOSEN);
-            }
+        if (click == ClickType.RIGHT) {
+            teamSettings.setTeamSize(teamSettings.getTeamSize() + 1);
+            displayTo(player);
+        }
+    }
 
-            @Override
-            protected void onRightClick(Player player, Menu menu) {
-                teamSettings.setTeamSplitMode(TeamSplitMode.RANDOM);
-            }
+    private void toggleTeamFire(Player player, UHCTeamSettings teamSettings) {
+        boolean newStatus = !teamSettings.isAllowTeamFire();
 
-            @Override
-            protected SimpleReplacer replaceLore(SimpleReplacer unReplacedLore) {
-                return super.replaceLore(unReplacedLore)
-                        .replace("{type}", teamSettings.getTeamSplitMode().name());
-            }
-        };
+        teamSettings.setAllowTeamFire(newStatus);
+        Chat.broadcast((newStatus ? Messages.Host.TEAM_FIRE_ENABLED_PLAYER : Messages.Host.TEAM_FIRE_DISABLED_PLAYER)
+                .replace("{player}", player.getName()));
+        displayTo(player);
+    }
+
+    private void handleSplitModeClick(Player player, ClickType click, UHCTeamSettings teamSettings) {
+        if (click == ClickType.LEFT) {
+            teamSettings.setTeamSplitMode(TeamSplitMode.CHOSEN);
+            displayTo(player);
+            return;
+        }
+
+        if (click == ClickType.RIGHT) {
+            teamSettings.setTeamSplitMode(TeamSplitMode.RANDOM);
+            displayTo(player);
+        }
     }
 }

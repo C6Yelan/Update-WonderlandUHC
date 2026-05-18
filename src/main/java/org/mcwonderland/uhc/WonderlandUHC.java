@@ -49,6 +49,11 @@ public class WonderlandUHC extends SimplePlugin {
     }
 
     @Override
+    public boolean areToolsEnabled() {
+        return false;
+    }
+
+    @Override
     protected void onPluginReload() {
         scenarioManager.reloadAll();
         UHCGameSettingsSaver.reloadFromFile();
@@ -62,8 +67,6 @@ public class WonderlandUHC extends SimplePlugin {
         bootstrap.loadFiles();
         bootstrap.loadStaticConfiguration();
         bootstrap.checkDependencies();
-
-        bootstrap.configureFoundationLibrary();
 
         featureRegistry.loadScoreboardThemes();
         Spawns.reload();

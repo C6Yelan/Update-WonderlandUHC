@@ -1,11 +1,14 @@
 package org.mcwonderland.uhc.listener;
 
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.menu.tool.Tool;
+import org.bukkit.inventory.EquipmentSlot;
+import org.mcwonderland.uhc.tools.UHCTool;
 
 public class ToolListener implements Listener {
 
@@ -21,8 +24,18 @@ public class ToolListener implements Listener {
             e.setCancelled(true);
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+    public void onInteract(PlayerInteractEvent e) {
+        if (e.getHand() != EquipmentSlot.HAND)
+            return;
+
+        UHCTool tool = UHCTool.findTool(e.getItem());
+
+        if (tool != null)
+            tool.handleInteract(e);
+    }
 
     private boolean isTool(ItemStack itemStack) {
-        return Tool.getTool(itemStack) != null;
+        return UHCTool.isTool(itemStack);
     }
 }

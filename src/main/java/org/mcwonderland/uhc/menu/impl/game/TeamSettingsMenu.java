@@ -1,155 +1,205 @@
 package org.mcwonderland.uhc.menu.impl.game;
 
 import org.apache.commons.lang.StringUtils;
-import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.game.UHCTeam;
-import org.mcwonderland.uhc.menu.UHCMenuSection;
-import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
-import org.mcwonderland.uhc.settings.Messages;
-import org.mcwonderland.uhc.settings.Settings;
-import org.mcwonderland.uhc.util.Chat;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
-import org.mineacademy.fo.menu.Menu;
-import org.mineacademy.fo.menu.button.config.ConfigClickableButton;
-import org.mineacademy.fo.menu.button.config.ConfigMenuButton;
-import org.mineacademy.fo.menu.button.config.conversation.ConfigSaveInputButton;
-import org.mineacademy.fo.menu.button.config.value.ConfigBooleanButton;
-import org.mineacademy.fo.menu.config.ConfigMenu;
-import org.mineacademy.fo.model.SimpleReplacer;
+import org.bukkit.inventory.ItemStack;
+import org.mcwonderland.uhc.UHCPermission;
+import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.game.UHCTeam;
+import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
+import org.mcwonderland.uhc.platform.menu.PluginMenu;
+import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.settings.Messages;
+import org.mcwonderland.uhc.settings.Settings;
+import org.mcwonderland.uhc.util.Chat;
 
-public class TeamSettingsMenu extends ConfigMenu {
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
-    private final ConfigMenuButton nameEditButton;
-    private final ConfigMenuButton colorEditButton;
-    private final ConfigMenuButton charEditButton;
-    private final ConfigMenuButton openJoinButton;
-    private final ConfigMenuButton helpButton;
+public class TeamSettingsMenu extends PluginMenu {
+    private static final Map<UUID, TextInputSession> inputSessions = new ConcurrentHashMap<>();
+    private static final String SECTION = "Team_Settings";
+    private static final String NAME_BUTTON = "Name";
+    private static final String COLOR_BUTTON = "Color";
+    private static final String CHARACTER_BUTTON = "Character";
+    private static final String OPEN_JOIN_BUTTON = "Open_Join";
+    private static final String HELP_BUTTON = "Help";
+    private static final String ENABLED_STATUS = "&aOn";
+    private static final String DISABLED_STATUS = "&cOff";
+
+    private final UHCTeam team;
 
     public TeamSettingsMenu(UHCTeam team) {
-        super(UHCMenuSection.of("Team_Settings"), null);
+        super(PluginMenuSection.of(SECTION));
+        this.team = team;
+    }
 
-        nameEditButton = new ConfigSaveInputButton(getButtonPath("Name")) {
+    public static boolean handleInput(Player player, String input) {
+        TextInputSession session = inputSessions.get(player.getUniqueId());
 
+        if (session == null)
+            return false;
+
+        Bukkit.getScheduler().runTask(WonderlandUHC.getInstance(), () -> session.accept(player, input));
+        return true;
+    }
+
+    public static void clear(Player player) {
+        inputSessions.remove(player.getUniqueId());
+    }
+
+    @Override
+    protected ItemStack getItemAt(int slot) {
+        if (slot == getSection().getButtonSlot(NAME_BUTTON))
+            return getSection().getButtonItem(NAME_BUTTON, "{name}", team.getName());
+
+        if (slot == getSection().getButtonSlot(COLOR_BUTTON))
+            return getSection().getButtonItem(COLOR_BUTTON, "{color}", team.getColor());
+
+        if (slot == getSection().getButtonSlot(CHARACTER_BUTTON))
+            return getSection().getButtonItem(CHARACTER_BUTTON, "{character}", team.getSymbol());
+
+        if (slot == getSection().getButtonSlot(OPEN_JOIN_BUTTON))
+            return getSection().getButtonItem(OPEN_JOIN_BUTTON, "{status}", team.isOpenJoin() ? ENABLED_STATUS : DISABLED_STATUS);
+
+        if (slot == getSection().getButtonSlot(HELP_BUTTON))
+            return getSection().getButtonItem(HELP_BUTTON);
+
+        return super.getItemAt(slot);
+    }
+
+    @Override
+    protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        if (slot == getSection().getButtonSlot(NAME_BUTTON)) {
+            startNameInput(player);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(COLOR_BUTTON)) {
+            openColorPicker(player);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(CHARACTER_BUTTON)) {
+            startCharacterInput(player);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(OPEN_JOIN_BUTTON)) {
+            player.performCommand("team public");
+            displayTo(player);
+            return;
+        }
+
+        if (slot == getSection().getButtonSlot(HELP_BUTTON)) {
+            player.closeInventory();
+            player.performCommand("team ?");
+        }
+    }
+
+    private void startNameInput(Player player) {
+        if (!UHCPermission.TEAM_SETTINGS_NAME.checkPerms(player))
+            return;
+
+        startTextInput(
+                player,
+                Messages.Editor.Text.TeamName.MESSAGE,
+                input -> {
+                    team.setName(input);
+                    Chat.sendConversing(player, Messages.Editor.Text.TeamName.SAVED
+                            .replace("{player}", player.getName())
+                            .replace("{name}", team.getName()));
+                },
+                input -> true
+        );
+    }
+
+    private void openColorPicker(Player player) {
+        if (!UHCPermission.TEAM_SETTINGS_COLOR.checkPerms(player))
+            return;
+
+        new ColorPickerMenu(returningPlayer -> new TeamSettingsMenu(team).displayTo(returningPlayer)) {
             @Override
-            protected void onSaveInput(String input) {
-                team.setName(input);
+            protected void onChooseColor(Player player, ChatColor chatColor) {
+                team.setColor(chatColor);
+            }
+        }.displayTo(player);
+    }
+
+    private void startCharacterInput(Player player) {
+        if (!UHCPermission.TEAM_SETTINGS_CHARACTER.checkPerms(player))
+            return;
+
+        startTextInput(
+                player,
+                Messages.Editor.Text.TeamCharacter.MESSAGE
+                        .replace("{length}", Settings.Team.MAX_CHARACTER_LENGTH + ""),
+                input -> {
+                    team.setSymbol(StringUtils.left(input, Settings.Team.MAX_CHARACTER_LENGTH));
+                    Chat.sendConversing(player, Messages.Editor.Text.TeamCharacter.SAVED
+                            .replace("{player}", player.getName())
+                            .replace("{character}", team.getSymbol()));
+                },
+                input -> isCharacterInputAvailable(player, input)
+        );
+    }
+
+    private boolean isCharacterInputAvailable(Player player, String input) {
+        boolean used = UHCTeam.getTeams().stream()
+                .map(UHCTeam::getSymbol)
+                .anyMatch(symbol -> symbol.equalsIgnoreCase(input));
+
+        if (used)
+            Chat.sendConversing(player, Messages.Editor.Text.TeamCharacter.ALREADY_USED
+                    .replace("{symbol}", input));
+
+        return !used;
+    }
+
+    private void startTextInput(Player player, String message, Consumer<String> saveInput, Predicate<String> isInputValid) {
+        if (inputSessions.containsKey(player.getUniqueId())) {
+            Chat.send(player, "&c目前已有正在等待的設定輸入。");
+            return;
+        }
+
+        inputSessions.put(player.getUniqueId(), new TextInputSession(saveInput, isInputValid));
+        player.closeInventory();
+        Chat.sendConversing(player, message);
+    }
+
+    private static final class TextInputSession {
+        private final Consumer<String> saveInput;
+        private final Predicate<String> isInputValid;
+
+        private TextInputSession(Consumer<String> saveInput, Predicate<String> isInputValid) {
+            this.saveInput = saveInput;
+            this.isInputValid = isInputValid;
+        }
+
+        private void accept(Player player, String input) {
+            if (isCancelInput(input)) {
+                inputSessions.remove(player.getUniqueId());
+                Chat.sendConversing(player, "&c隊伍設定輸入已取消。");
+                return;
             }
 
-            @Override
-            protected String getMessage() {
-                return Messages.Editor.Text.TeamName.MESSAGE;
-            }
+            if (!isInputValid.test(input))
+                return;
 
-            @Override
-            protected String getSavedMessage(String input) {
-                return Messages.Editor.Text.TeamName.SAVED
-                        .replace("{player}", getPlayer().getName())
-                        .replace("{name}", team.getName());
-            }
+            inputSessions.remove(player.getUniqueId());
+            saveInput.accept(input);
+        }
 
-            @Override
-            protected SimpleReplacer replaceLore(SimpleReplacer unReplacedLore) {
-                return super.replaceLore(unReplacedLore)
-                        .replace("{name}", team.getName());
-            }
-
-            @Override
-            protected String getPermission() {
-                return UHCPermission.TEAM_SETTINGS_NAME.toString();
-            }
-        };
-
-        charEditButton = new ConfigSaveInputButton(getButtonPath("Character")) {
-            @Override
-            protected void onSaveInput(String input) {
-                team.setSymbol(getCharacterCut(input));
-            }
-
-            @Override
-            protected String getMessage() {
-                return Messages.Editor.Text.TeamCharacter.MESSAGE
-                        .replace("{length}", Settings.Team.MAX_CHARACTER_LENGTH + "");
-            }
-
-            @Override
-            protected String getSavedMessage(String input) {
-                return Messages.Editor.Text.TeamCharacter.SAVED
-                        .replace("{player}", getPlayer().getName())
-                        .replace("{character}", team.getSymbol());
-            }
-
-            private String getCharacterCut(String fullChar) {
-                return StringUtils.left(fullChar, Settings.Team.MAX_CHARACTER_LENGTH);
-            }
-
-            @Override
-            protected SimpleReplacer replaceLore(SimpleReplacer unReplacedLore) {
-                return super.replaceLore(unReplacedLore)
-                        .replace("{character}", team.getSymbol());
-            }
-
-            @Override
-            protected boolean isInputValid(String input) {
-                boolean used = UHCTeam.getTeams().stream().map(UHCTeam::getSymbol)
-                        .anyMatch(s -> s.equalsIgnoreCase(input));
-
-                if (used)
-                    Chat.sendConversing(getPlayer(), Messages.Editor.Text.TeamCharacter.ALREADY_USED
-                            .replace("{symbol}", input));
-
-                return !used;
-            }
-
-            @Override
-            protected String getPermission() {
-                return UHCPermission.TEAM_SETTINGS_CHARACTER.toString();
-            }
-        };
-
-        colorEditButton = new ConfigClickableButton(getButtonPath("Color")) {
-            @Override
-            protected void onClicked(Player player, Menu menu, ClickType click) {
-                new ColorPickerMenu(menu) {
-                    @Override
-                    protected void onChooseColor(Player player, ChatColor chatColor) {
-                        team.setColor(chatColor);
-                    }
-                }.displayTo(player);
-            }
-
-            @Override
-            protected SimpleReplacer replaceLore(SimpleReplacer unReplacedLore) {
-                return super.replaceLore(unReplacedLore)
-                        .replace("{color}", team.getColor());
-            }
-
-            @Override
-            protected String getPermission() {
-                return UHCPermission.TEAM_SETTINGS_COLOR.toString();
-            }
-        };
-
-        openJoinButton = new ConfigBooleanButton(getButtonPath("Open_Join")) {
-            @Override
-            protected void onStatusChange(Player player, Menu menu, ClickType click, boolean newStatus) {
-                player.performCommand("team public");
-            }
-
-            @Override
-            protected boolean getBoolean() {
-                return team.isOpenJoin();
-            }
-        };
-
-        helpButton = new ConfigClickableButton(getButtonPath("Help")) {
-            @Override
-            protected void onClicked(Player player, Menu menu, ClickType click) {
-                player.closeInventory();
-
-                player.performCommand("team ?");
-            }
-        };
+        private boolean isCancelInput(String input) {
+            return input.equalsIgnoreCase("quit")
+                    || input.equalsIgnoreCase("cancel")
+                    || input.equalsIgnoreCase("exit");
+        }
     }
 }

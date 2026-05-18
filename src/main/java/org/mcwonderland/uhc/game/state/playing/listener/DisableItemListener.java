@@ -4,6 +4,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Sounds;
+import org.mcwonderland.uhc.tools.UHCTool;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.ItemSimilarChecker;
@@ -19,7 +20,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.mineacademy.fo.menu.tool.Tool;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class DisableItemListener implements Listener {
     public void onInteract(PlayerInteractEvent e) {
         ItemStack item = e.getItem();
 
-        if (item == null || Tool.getTool(item) != null)
+        if (item == null || UHCTool.isTool(item))
             return;
 
         DisabledChecker.check(e, e.getPlayer(), item);
