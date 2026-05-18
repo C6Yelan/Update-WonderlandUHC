@@ -25,7 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -49,9 +49,9 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
     @FilePath(name = "Explode_After_Seconds")
     private Integer explodeAfterSeconds;
     @FilePath(name = "Warn_Sound")
-    private SimpleSound warnSound;
+    private PluginSound warnSound;
     @FilePath(name = "Warn_Sound_Danger")
-    private SimpleSound warnSoundDanger;
+    private PluginSound warnSoundDanger;
 
 
     public ScenarioTimeBomb(ScenarioName name) {

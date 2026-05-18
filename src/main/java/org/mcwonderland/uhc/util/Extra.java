@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.util;
 
 import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import org.mcwonderland.uhc.platform.player.PluginPlayers;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.settings.Settings;
@@ -15,7 +16,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.mineacademy.fo.model.SimpleSound;
 import org.mineacademy.fo.remain.CompAttribute;
 import org.mineacademy.fo.remain.CompProperty;
 
@@ -70,20 +70,20 @@ public class Extra {
         Bukkit.getServer().addRecipe(goldenHeadRecipe);
     }
 
-    public static void sound(Player player, SimpleSound sound) {
+    public static void sound(Player player, PluginSound sound) {
         sound.play(player);
     }
 
-    public static void sound(Collection<Player> players, SimpleSound sound) {
+    public static void sound(Collection<Player> players, PluginSound sound) {
         sound.play(players);
     }
 
-    public static void sound(Location location, SimpleSound sound) {
+    public static void sound(Location location, PluginSound sound) {
         sound.play(location);
     }
 
-    public static void sound(SimpleSound sound) {
-        sound.play(new ArrayList<>(Bukkit.getOnlinePlayers()));
+    public static void sound(PluginSound sound) {
+        sound.playOnlinePlayers();
     }
 
     public static void potion(Player p, PotionEffectType type, int duration, int amplifier, boolean displayEffect) {

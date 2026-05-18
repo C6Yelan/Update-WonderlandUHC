@@ -14,7 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -29,7 +29,7 @@ public class ScenarioBenchBlitz extends ConfigBasedScenario implements Listener 
     @FilePath(name = "Workbench_Created")
     private String workbenchCreated;
     @FilePath(name = "Workbench_Created_Sound")
-    private SimpleSound workbenchCreatedSound;
+    private PluginSound workbenchCreatedSound;
 
     public ScenarioBenchBlitz(ScenarioName name) {
         super(name);

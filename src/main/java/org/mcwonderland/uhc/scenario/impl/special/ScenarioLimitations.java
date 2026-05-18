@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.mineacademy.fo.collection.StrictMap;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,9 +32,9 @@ public class ScenarioLimitations extends ConfigBasedScenario implements Listener
     private String cantMineMore;
 
     @FilePath(name = "Reached_Limit_Sound")
-    private SimpleSound reachedLimitSound;
+    private PluginSound reachedLimitSound;
     @FilePath(name = "Cant_Mine_More_Sound")
-    private SimpleSound cantMineMoreSound;
+    private PluginSound cantMineMoreSound;
 
     @FilePath(name = "Limits.Diamond")
     private Integer diomandMax;

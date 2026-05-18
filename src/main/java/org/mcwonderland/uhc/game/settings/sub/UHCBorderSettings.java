@@ -2,22 +2,24 @@ package org.mcwonderland.uhc.game.settings.sub;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.bukkit.configuration.ConfigurationSection;
 import org.mcwonderland.uhc.game.border.BorderType;
-import org.mineacademy.fo.collection.SerializedMap;
-import org.mineacademy.fo.model.ConfigSerializable;
+
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 
 @Getter
 @Setter
-public class UHCBorderSettings implements ConfigSerializable, org.mcwonderland.uhc.api.game.UHCBorderSettings {
+public class UHCBorderSettings implements org.mcwonderland.uhc.api.game.UHCBorderSettings {
     private Integer initialBorder;
     private Integer initialNetherBorder;
     private Integer finalSizeOfShrinkModeBorder;
     private BorderType borderType;
     private Double borderShrinkSpeed;
 
-    @Override
-    public SerializedMap serialize() {
-        SerializedMap map = new SerializedMap();
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
 
         map.put("Initial_Border", initialBorder);
         map.put("Initial_Nether_Border", initialNetherBorder);
@@ -28,15 +30,32 @@ public class UHCBorderSettings implements ConfigSerializable, org.mcwonderland.u
         return map;
     }
 
-    public static UHCBorderSettings deserialize(SerializedMap map) {
+    public static UHCBorderSettings fromSection(ConfigurationSection section) {
         UHCBorderSettings uhcBorderSettings = new UHCBorderSettings();
 
-        uhcBorderSettings.initialBorder = map.getInteger("Initial_Border", 2000);
-        uhcBorderSettings.initialNetherBorder = map.getInteger("Initial_Nether_Border", 1000);
-        uhcBorderSettings.finalSizeOfShrinkModeBorder = map.getInteger("Final_Size_Of_Shrink_Mode_Border", 25);
-        uhcBorderSettings.borderType = map.get("Border_Type", BorderType.class, BorderType.TIMER);
-        uhcBorderSettings.borderShrinkSpeed = map.getDouble("Border_Shrink_Speed", 0.1);
+        uhcBorderSettings.initialBorder = integer(section, "Initial_Border", 2000);
+        uhcBorderSettings.initialNetherBorder = integer(section, "Initial_Nether_Border", 1000);
+        uhcBorderSettings.finalSizeOfShrinkModeBorder = integer(section, "Final_Size_Of_Shrink_Mode_Border", 25);
+        uhcBorderSettings.borderType = borderType(section);
+        uhcBorderSettings.borderShrinkSpeed = section == null ? 0.1 : section.getDouble("Border_Shrink_Speed", 0.1);
 
         return uhcBorderSettings;
+    }
+
+    private static int integer(ConfigurationSection section, String path, int fallback) {
+        return section == null ? fallback : section.getInt(path, fallback);
+    }
+
+    private static BorderType borderType(ConfigurationSection section) {
+        String name = section == null ? null : section.getString("Border_Type");
+
+        if (name == null || name.isBlank())
+            return BorderType.TIMER;
+
+        try {
+            return BorderType.valueOf(name.trim().toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ex) {
+            return BorderType.TIMER;
+        }
     }
 }

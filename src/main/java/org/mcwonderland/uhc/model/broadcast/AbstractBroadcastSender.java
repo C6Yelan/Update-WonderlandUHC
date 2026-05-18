@@ -1,26 +1,38 @@
 package org.mcwonderland.uhc.model.broadcast;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.settings.UHCFiles;
-import org.mineacademy.fo.settings.YamlConfig;
 
+import java.io.File;
 import java.util.List;
 
 /**
  * 2019-11-20 下午 07:50
  */
-public abstract class AbstractBroadcastSender extends YamlConfig {
+public abstract class AbstractBroadcastSender {
 
-    private List<String> broadCastMessageModel;
+    private final ConfigurationSection section;
+    private final List<String> broadCastMessageModel;
 
     protected AbstractBroadcastSender(String type) {
-        setPathPrefix(type);
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(broadcastsFile());
 
-        loadConfiguration(UHCFiles.BROADCAST);
+        this.section = configuration.getConfigurationSection(type);
         broadCastMessageModel = getStringList("Formatting");
+    }
+
+    protected final String getString(String path) {
+        return section == null ? null : section.getString(path);
+    }
+
+    protected final List<String> getStringList(String path) {
+        return section == null ? List.of() : section.getStringList(path);
     }
 
     public final void sendBroadcast(GameStartTimeInfo info) {
@@ -51,5 +63,9 @@ public abstract class AbstractBroadcastSender extends YamlConfig {
     protected abstract void send(List<String> messages);
 
     public abstract Dependency getDependency();
+
+    private static File broadcastsFile() {
+        return new File(WonderlandUHC.getInstance().getDataFolder(), UHCFiles.BROADCAST);
+    }
 
 }

@@ -360,9 +360,9 @@ rg -n "org\.mineacademy\.fo|LegacyFoundationAdapter|lib-foundation" src/main/jav
 後續 sound playback 小切片實作結果：
 
 - `LegacyFoundationAdapter` 的 `playSound`、`playGlobalSound`、`playItemBreakSound` wrapper 已移除。
-- 既有 `Extra.sound(...)` 保持為全專案播放入口，直接呼叫目前設定仍使用的 Foundation `SimpleSound#play(...)`；工具耐久破裂音改在 `PlayerUtils` 直接使用 Bukkit `Player#playSound(...)`。
+- 既有 `Extra.sound(...)` 在本切片先保持為全專案播放入口；當時仍沿用 Foundation `SimpleSound#play(...)`，後續 21.4 sound config / playback 切片已改為本地 `PluginSound`。工具耐久破裂音改在 `PlayerUtils` 直接使用 Bukkit `Player#playSound(...)`。
 - `rg -n "LegacyFoundationAdapter\.(playSound|playGlobalSound|playItemBreakSound)" src/main/java src/test/java` 無命中。
-- 重要未完成項：本切片只移除 adapter sound wrapper，尚未移除 Foundation `SimpleSound` dependency。`Sounds.java`、`SoundConfigParser`、`YamlConfigLoader`、scenario sound 欄位與 `sounds.yml` migration 仍需後續獨立盤點與實作，不能在 Step 21 收尾時誤判為已完成。
+- 後續完成狀態：本切片當時只移除 adapter sound wrapper，尚未移除 Foundation `SimpleSound` dependency；該 dependency 已於 21.4 sound config / playback 切片移除，只剩 21.5 menu click sound 簽名使用點。
 - 本切片不新增 `PluginSounds` 或其他播放 service，不處理 `sounds.yml`、`SimpleSound` 設定型別、`SoundConfigParser` 或 Foundation config parser。
 
 後續 version / old-server compatibility 小切片實作結果：
@@ -764,27 +764,321 @@ command helper 收斂方式：
 - 保留現有 YAML 檔案結構與設定 key，不做資料格式重設計。
 - reload 與 config cache 行為可被明確追蹤。
 
+#### 21.4 只讀盤點：settings / YAML / lifecycle 使用點
+
+更新日期：2026-05-17
+
+盤點分支：`step-21-legacy-removal`
+
+最新掃描指令：
+
+```bash
+rg -n "SimplePlugin|SimpleSettings|YamlStaticConfig|YamlConfig|YamlConfigLoader|SimpleLocalization|SimpleSound|ConfigSerializable|SerializedMap" src/main/java/org/mcwonderland/uhc
+rg -n "class .* extends (AutoLoadStaticConfig|SimpleSettings|YamlStaticConfig|YamlConfig)" src/main/java/org/mcwonderland/uhc
+rg -n "implements ConfigSerializable|SerializedMap" src/main/java/org/mcwonderland/uhc/game src/main/java/org/mcwonderland/uhc/model src/main/java/org/mcwonderland/uhc/stats src/main/java/org/mcwonderland/uhc/util
+```
+
+21.4 收尾後狀態：
+
+| 類型 | 目前使用點 | 判斷 |
+| --- | --- | --- |
+| Foundation source import | `rg -n "org\\.mineacademy\\.fo" src/main/java/org/mcwonderland/uhc` 仍有 `129` 行 | command、settings、非 menu YAML readers、sound config 與 serialization model 已清空；剩餘集中在 `SimplePlugin` lifecycle、21.5 menu framework / tool / `ItemCreator` 類使用點，尚不可移除 dependency。 |
+| plugin lifecycle | `WonderlandUHC extends SimplePlugin`，`getInstance()` 仍讀 `SimplePlugin.getInstance()` | 不再視為 21.4 settings / YAML 未完成項；需等 21.5 menu framework 解除後再處理正式 Bukkit/Paper lifecycle，避免先拔 lifecycle 造成 menu 行為回歸。 |
+| static config lifecycle | `Settings`、`Messages`、`CommandSettings`、`Sounds` 已改用本地 `PluginStaticConfig` 明確載入。 | 21.4 已完成；保留 public static 欄位語意、現有 YAML key 與既有後處理。 |
+| reflection loader | 舊 `util/YamlConfigLoader` 已移除。 | 21.4 已完成；未新增 schema registry、annotation framework 或通用 ORM。 |
+| command localization bridge | `CommandSettings` 已不再寫入 Foundation `SimpleLocalization.Commands.*`。 | command 已 native 化，主插件 command 訊息直接使用 `CommandSettings`；Foundation menu / conversation localization 不在本橋接範圍。 |
+| YAML object stores | `DeathMessageLoader`、`ScenarioConfig`、`StatsStorageYaml`、`WorldLoadingCacheStore`、`SavedGameSettingsStore`、`UHCSpawn`、`SidebarTheme`、`AbstractBroadcastSender` 已移除 Foundation `YamlConfig`。 | 21.4 非 menu YAML readers 已基本完成；`ButtonLocalization` / `gui.yml` 仍屬 21.5 menu framework，不混入本段。 |
+| serialized model | `UHCStats`、`UHCGameSettings`、5 個 sub-settings、`InventoryContent` 已改成本地資料讀寫；未使用的 `SimpleLocation` 已刪除。 | 主插件 source 已無 Foundation `SerializedMap` / `ConfigSerializable` 命中。 |
+| sound config | `Sounds`、`SoundConfigParser`、`Extra.sound(...)` 與 scenario `@FilePath` sound 欄位已改用本地 `PluginSound`。 | 21.4 已完成；剩餘 Foundation `SimpleSound` 只在 `StatsMenu#getClickSound()` 與 `LegacyFoundationAdapter#configureMenuClickSound()`，屬 21.5 menu click sound。 |
+| menu config | `ButtonLocalization` extends `YamlConfig`，`UHCMenuSection` 仍用 Foundation `MenuSection` / `SimplePlugin.getInstance()` 讀 `gui.yml` | 明確延後到 21.5 menu framework；21.4 不應順手拆 `gui.yml` menu 行為。 |
+
+目前啟動 / reload 責任分布：
+
+| 入口 | 目前作用 | 21.4 注意 |
+| --- | --- | --- |
+| `WonderlandUHC#onPluginStart()` | 建立 `PluginBootstrap` / `FeatureRegistry`、保存 resources、註冊 listeners / commands、setup practice / Discord voice、排程 delayed startup | 如果改成 `JavaPlugin#onEnable()`，要保留這些順序與 delayed startup 行為。 |
+| `WonderlandUHC#onReloadablesStart()` | 目前依賴 Foundation reloadables lifecycle；先保存 resources 並載入 `Settings` / `Messages` / `CommandSettings` / `Sounds`，再檢查 dependency、`configureFoundationLibrary()`、載入 scoreboard themes / spawns / stats、啟動 runtime task、套用 test mode | settings / YAML 顯式載入已完成；正式移除 `SimplePlugin` 前，仍需在 21.5 menu framework 解除後保留這些 startup phase 順序。 |
+| `WonderlandUHC#onPluginReload()` | `scenarioManager.reloadAll()` 與 `UHCGameSettingsSaver.reloadFromFile()`；Foundation reloadables lifecycle 仍會先跑 `onReloadablesStart()` 重新載入 static config / spawns / themes / stats。 | 21.4 已完成 settings / messages / commands / sounds / spawns / savedgames / sidebar / scenario config 的 reload 邊界；後續 lifecycle 移除時需保留同等順序。 |
+| `PluginBootstrap#configureFoundationLibrary()` | `ButtonLocalization.load()` 與 `LegacyFoundationAdapter.configureMenuClickSound()` | 這屬 21.5 menu framework；21.4 只記錄，不混改。 |
+| `PluginBootstrap#scheduleDelayedStartupTasks()` | delayed register scenarios、restore world loading cache、reload saved settings、log enabled banner | `CacheSaver` static 初始化目前會讀 `cache.db`；替換 store 時要避免 class-load 時序變成隱性錯誤。 |
+
 優先處理：
 
 | 檔案 / 類型 | 預期方向 |
 | --- | --- |
-| `Settings` / `CommandSettings` / `Messages` / `Sounds` | 使用 Bukkit `YamlConfiguration` 或既有本地 loader 讀取，先維持 public static 欄位語意。 |
-| `ButtonLocalization` | 若 menu 尚未移除 Foundation，先避免單獨拆；應與 menu 切片協調。 |
-| `UHCSpawn` / `Spawns` | 保留 spawn YAML 路徑與 reload 行為。 |
-| `WorldLoadingCacheStore` / `SavedGameSettingsStore` | 移除 `clearLoadedSections()` 與 Foundation file access。 |
-| `ScenarioConfig` / `StatsStorageYaml` / death message loader | 保留現有資料形狀，不藉此改 stats 或 scenario model。 |
+| `Settings` / `Messages` / `CommandSettings` | 第一刀建立明確 static config load / reload 流程，保留 public static 欄位、現有 YAML key、缺值行為與 `PluginText.colorize(...)` 等既有後處理。 |
+| `Sounds` / `SoundConfigParser` / `Extra.sound(...)` | 單獨一刀把 `SimpleSound` 換成本地 sound value 或直接 Bukkit sound playback；保留 `sounds.yml` 格式，不順手改倒數或 scenario 音效邏輯。 |
+| `UHCSpawn` / `Spawns` | 已移除 Foundation `YamlConfig` 讀寫；保留 `spawns.yml` 路徑、`Lobby` key、單行 `world x y z yaw pitch` 格式、未設定時回 world spawn 的行為與 reload 行為。 |
+| `WorldLoadingCacheStore` / `CacheSaver` | 已移除 `YamlConfig.clearLoadedSections()` 與 Foundation file access；保留 `cache.db` 中 `Host`、`Loading_Status`、`Settings`、`Match_Center.*` 形狀。 |
+| `SavedGameSettingsStore` / `UHCGameSettingsSaver` | 已移除 Foundation `YamlConfig` 讀寫；保留 `savedgames.db` 以 player UUID 儲存多組 `UHCGameSettings` 的形狀。 |
+| `StatsStorageYaml` / `UHCStats` | 保留 `stats.yml` 每 UUID 下的 `Game_Played`、`Kills`、`Wins` 形狀；不改成資料庫、不擴充統計模型。 |
+| `ScenarioConfig` / scenario `@FilePath` 欄位 | 已移除 Foundation `YamlConfig` 讀取；保留 `scenarios.yml` 既有 scenario key、`Type`、`Name`、`Description`、`@FilePath` 欄位、舊 material alias 與 sound alias。 |
+| `SidebarTheme` / `scoreboards.yml` | 已移除 Foundation `YamlConfig` 讀取；保留頂層 theme key、8 組 scoreboard line list 與 `Default` fallback 語意，不改 scoreboard line model；host menu 中的 theme selector UI 留 21.5 驗證。 |
+| `AbstractBroadcastSender` / `DiscordBroadcastSender` | 已移除 Foundation `YamlConfig` 讀取；保留 `broadcasts.yml` 的 `Discord.Formatting`、`Discord.Invalid_Channel`、`Discord.Channel_Ids` 與 DiscordSRV 發送流程。 |
+| `DeathMessageLoader` | 已移除 Foundation `YamlConfig` 讀取；保留 `messages.yml` death message 結構，不改死亡訊息行為。 |
+| `ButtonLocalization` / `UHCMenuSection` / `gui.yml` | 延後到 21.5 menu framework，不在 21.4 順手拆。 |
+
+建議拆法：
+
+1. 先只新增或改出一個很薄的 YAML 讀寫入口，負責「從 plugin data folder 載入 / 保存 `YamlConfiguration`」即可；不要建立 schema registry、annotation framework 或通用 ORM。
+2. 第一個程式碼切片只處理 `Settings`、`Messages`、`CommandSettings` 與 reload 呼叫順序，先讓 static config 不再靠 `SimpleSettings` / `YamlStaticConfig`。已完成。
+3. 第二刀處理 `Sounds` 與 `SimpleSound`，因為 sound 型別被 static config、scenario config、menu click sound 共同使用；但 menu click sound 設定本身仍留到 21.5。21.4 sound config 已完成，menu click sound 仍留 21.5。
+4. 第三刀處理 `SerializedMap` / `ConfigSerializable` 模型替換，再處理 `cache.db`、`savedgames.db`、`stats.yml` 這些需要 serialize / deserialize 的 store。已完成，未使用的 `SimpleLocation` 也已刪除。
+5. 第四刀處理較單純的 YAML readers：`UHCSpawn`、`SidebarTheme`、death message、broadcast sender、`ScenarioConfig`。每個 store 保留原檔案與 key，不做資料格式 migration。已完成。
+6. `WonderlandUHC extends SimplePlugin` 不在 21.4 硬拔；需等 21.5 menu framework 解除後，再把 Bukkit/Paper plugin lifecycle 正式化。
 
 切片限制：
 
 - 不把 YAML 轉資料庫。
 - 不改 config key 命名與檔案格式，除非 Step 21 移除 dependency 必要。
 - 不為了 generic warning 改動保存資料模型。
+- 不新增大型 config abstraction；只有多處共用且語意相同的檔案載入 / 保存可抽薄 helper。
+- 不在 21.4 處理 `gui.yml` menu layout、button click sound、inventory editor GUI 或 menu pagination；這些留 21.5。
 
 驗收：
 
 - 既有 config 檔案可讀。
-- host settings、scenario settings、saved game、stats、spawn、death message 至少完成啟動與基本讀取 smoke。
-- reload path 不因移除 Foundation 而 exception。
+- `/uhc reload` 不因移除 Foundation settings lifecycle 而 exception，且 reload 後 settings / messages / command strings / saved game cache 行為仍可用。
+- host settings、scenario settings、saved game、stats、spawn、death message、broadcast formatting、scoreboard theme 至少完成啟動與基本讀取 smoke。
+- `cache.db` 刪除 / 保存、`savedgames.db` 載入 / 保存、`stats.yml` 讀寫不改 YAML 形狀。
+- 每個程式碼切片完成後跑 `rg -n "SimpleSettings|YamlStaticConfig|YamlConfig|YamlConfigLoader|SimpleLocalization|SerializedMap|ConfigSerializable|SimpleSound" src/main/java/org/mcwonderland/uhc` 對照減量。
+
+#### 21.4 進度更新
+
+更新日期：2026-05-17
+
+第一個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | static config lifecycle 第一刀 | `Settings`、`Messages`、`CommandSettings` 不再繼承 `SimpleSettings` / `AutoLoadStaticConfig` / `YamlStaticConfig`。新增本地 `PluginStaticConfig`，只承接現有 public static 欄位、現有 YAML key 命名、`init()` 後處理與目前需要的型別讀取；`PluginBootstrap#loadStaticConfiguration()` 在 `onReloadablesStart()` 明確載入 resources 後呼叫。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪設定載入 exception。 |
+
+本刀刻意未處理：
+
+- `Sounds` 仍繼承 `AutoLoadStaticConfig`，並仍使用 Foundation `SimpleSound`；下一刀再獨立處理 sound value / playback。
+- `AutoLoadStaticConfig` 與 `util/YamlConfigLoader` 仍暫留給 `Sounds` 使用，不在本刀硬刪。
+- `CommandSettings` 已不再寫入 `SimpleLocalization.Commands.*`；native command 訊息直接使用 `CommandSettings`。
+- `WonderlandUHC` 仍 `extends SimplePlugin`；必須等 settings / YAML stores / sounds 都脫離 Foundation 後再改 plugin lifecycle。
+- `cache.db`、`savedgames.db`、`stats.yml`、`spawns.yml`、`scoreboards.yml`、death message、broadcast sender、`ScenarioConfig` 與 `gui.yml` 尚未在本刀處理。
+
+本輪搜尋結果：
+
+```bash
+rg -n "SimpleSettings|YamlStaticConfig|YamlConfigLoader|SimpleLocalization|SimpleSound|ConfigSerializable|SerializedMap" src/main/java/org/mcwonderland/uhc
+rg -n "class .* extends (AutoLoadStaticConfig|SimpleSettings|YamlStaticConfig|YamlConfig)" src/main/java/org/mcwonderland/uhc
+```
+
+`Settings` / `Messages` / `CommandSettings` 已不再命中 Foundation static config inheritance；`CommandSettings` 的 `SimpleLocalization` bridge 也已移除。剩餘命中集中在 `SimpleSound` menu click path 與 21.5 menu framework，符合後續拆分邊界。
+
+更新日期：2026-05-17
+
+第二個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | sound config / playback 第一刀 | 新增本地 `PluginSound` value，保留 `sounds.yml` / `scenarios.yml` 原有 `SOUND volume pitch` 與 `none` 格式；`SoundConfigParser` 改回傳 `PluginSound`，`Sounds` 改走 `PluginStaticConfig` 明確載入，`Extra.sound(...)` 與 scenario 的 `@FilePath` sound 欄位改用 `PluginSound`。`AutoLoadStaticConfig` 與舊 `YamlConfigLoader` 已移除。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 sound config / reload exception。 |
+
+本刀刻意未處理：
+
+- `StatsMenu#getClickSound()` 與 `LegacyFoundationAdapter#configureMenuClickSound()` 仍使用 Foundation `SimpleSound`，因為它們被 Foundation menu API 簽名綁住，留到 21.5 menu framework 移除時一起處理。
+- `ScenarioConfig` 仍繼承 Foundation `YamlConfig`；本刀只替換 scenario sound 欄位型別，scenario YAML reader 本體留在後續 YAML readers 切片。
+- `sounds.yml` 不做 key migration 或全量 alias 寫回，只保留既有格式與既有 alias parser。
+
+本輪搜尋結果：
+
+```bash
+rg -n "AutoLoadStaticConfig|YamlConfigLoader|org\\.mineacademy\\.fo\\.model\\.SimpleSound|SimpleSound" src/main/java/org/mcwonderland/uhc
+```
+
+`AutoLoadStaticConfig` / `YamlConfigLoader` 已無 source 殘留；`SimpleSound` 只剩 `StatsMenu` 與 `LegacyFoundationAdapter` 兩個 Foundation menu 簽名使用點，不屬於 21.4 sound config 切片。
+
+更新日期：2026-05-17
+
+第三個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | stats.yml 第一刀 | `StatsStorageYaml` 不再繼承 Foundation `YamlConfig`，改用 Bukkit `YamlConfiguration` 直接讀寫 `stats.yml`；`UHCStats` 移除 `ConfigSerializable` / `SerializedMap`，保留既有 `Game_Played`、`Kills`、`Wins` 三個累積統計 key，不保存本場 `kills` 或 `oreMined`。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 stats storage exception。 |
+
+本刀刻意未處理：
+
+- `cache.db` / `savedgames.db` 尚未處理，因為它們依賴完整 `UHCGameSettings` nested serialize / deserialize。
+- `UHCGameSettings` 與其 sub-settings、`InventoryContent` 在 stats.yml 第一刀當時仍使用 Foundation `SerializedMap` / `ConfigSerializable`；已於下一個資料模型切片完成替換。
+- 其他 `YamlConfig` readers，例如 `ScenarioConfig`、death message，仍留在後續 YAML reader 切片。
+- `ButtonLocalization` / `gui.yml` 仍屬 21.5 menu framework，不混入 21.4。
+
+本輪搜尋結果：
+
+```bash
+rg -n "SerializedMap|ConfigSerializable|YamlConfig" src/main/java/org/mcwonderland/uhc/stats
+```
+
+`stats` package 已無 Foundation `SerializedMap` / `ConfigSerializable` / `YamlConfig` 命中；剩餘資料模型命中集中在 `UHCGameSettings`、sub-settings、`InventoryContent` 與目前未使用的 `SimpleLocation`。
+
+更新日期：2026-05-17
+
+第四個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | cache.db / savedgames.db settings model 第一刀 | `UHCGameSettings`、5 個 sub-settings 與 `InventoryContent` 改成本地 `toMap()` / `fromSection(...)` / `fromMap(...)`，移除 Foundation `ConfigSerializable` / `SerializedMap`；`WorldLoadingCacheStore` 與 `SavedGameSettingsStore` 改用 Bukkit `YamlConfiguration` 直接讀寫，保留 `cache.db` 的 `Host`、`Loading_Status`、`Settings`、`Match_Center.*` 形狀，以及 `savedgames.db` 的 UUID -> settings list 形狀。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`，既有 `cache.db` 可被讀回；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 settings model / cache store exception。 |
+
+本刀刻意未處理：
+
+- `CacheSaver` / `UHCGameSettingsSaver` 仍作為 legacy facade 留給現有 call site，不在本刀重排主流程。
+- 尚未做主持選單人工保存測試；後續需用 GUI 改動 timer / border / inventory preset 後確認 `cache.db` / `savedgames.db` 寫回形狀仍一致。
+- `SimpleLocation` 後續已確認沒有實際引用並刪除，未改寫成新的資料模型。
+- 其他 `YamlConfig` readers，例如 `UHCSpawn`、`ScenarioConfig`、`SidebarTheme`、death message、broadcast sender，仍留在後續 YAML reader 切片。
+
+本輪搜尋結果：
+
+```bash
+rg -n "YamlConfig|SerializedMap|ConfigSerializable" src/main/java/org/mcwonderland/uhc/storage src/main/java/org/mcwonderland/uhc/game/settings src/main/java/org/mcwonderland/uhc/model/InventoryContent.java
+```
+
+上述範圍已無 Foundation `YamlConfig` / `SerializedMap` / `ConfigSerializable` 命中；後續 dead code cleanup 也已刪除未使用的 `SimpleLocation`，主插件 source 已無 `SerializedMap` / `ConfigSerializable` 命中。
+
+第五個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | spawns.yml reader 第一刀 | `UHCSpawn` 不再繼承 Foundation `YamlConfig`，改用 Bukkit `YamlConfiguration` 直接讀寫 `spawns.yml`；保留既有 `Lobby` key 與單行 `world x y z yaw pitch` 格式，讀取缺值或解析失敗時仍 fallback 到主世界 spawn 並讓 `isSet()` 維持 false；`/setspawn` 寫回仍使用 block 座標與整數 yaw / pitch。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 spawn reader exception。 |
+
+本刀刻意未處理：
+
+- `Spawns` 仍保留目前 static facade，因為 call site 很少，沒有必要為本刀抽新的 spawn service。
+- `/setspawn` 指令流程、權限、訊息與音效不改，只替換底層檔案讀寫。
+- 其他 `YamlConfig` readers，例如 `ScenarioConfig`、`SidebarTheme`、death message、broadcast sender，仍留在後續 YAML reader 切片。
+
+本輪搜尋結果：
+
+```bash
+rg -n "org\\.mineacademy\\.fo\\.settings\\.YamlConfig" src/main/java/org/mcwonderland/uhc/settings/spawn
+```
+
+`settings/spawn` package 已無 Foundation `YamlConfig` import。
+
+第六個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | scoreboards.yml theme reader 第一刀 | `SidebarTheme` 與內層 `ThemeLoader` 不再繼承 Foundation `YamlConfig`，改由 `SidebarTheme.loadThemes()` 使用 Bukkit `YamlConfiguration` 直接讀取 `scoreboards.yml`；保留頂層 theme key 順序、`Default` fallback 語意、8 組 scoreboard line list 與 host theme selector 使用的 `getAllThemes()` 行為。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 scoreboard theme reader exception。 |
+
+本刀刻意未處理：
+
+- `SidebarThemeSettingsMenu` 仍屬 21.5 menu framework，不在本刀改掉 Foundation menu / `ConfigMenuPagged`。
+- Scoreboard line model、placeholder replacement、`ScoreBoardUpdater` 流程不改。
+- 其他 `YamlConfig` readers，例如 `ScenarioConfig`、death message、broadcast sender，仍留在後續 YAML reader 切片。
+
+本輪搜尋結果：
+
+```bash
+rg -n "org\\.mineacademy\\.fo\\.settings\\.YamlConfig|extends YamlConfig" src/main/java/org/mcwonderland/uhc/scoreboard/SidebarTheme.java
+```
+
+`SidebarTheme.java` 已無 Foundation `YamlConfig` import / inheritance。
+
+第七個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | broadcasts.yml sender reader 第一刀 | `AbstractBroadcastSender` 不再繼承 Foundation `YamlConfig`，改用 Bukkit `YamlConfiguration` 直接讀取 `broadcasts.yml`；保留 `Discord` section、`Formatting`、`Invalid_Channel`、`Channel_Ids` 的相對讀取語意，`DiscordBroadcastSender` 的 DiscordSRV ready 檢查、mention 轉換、allowed mentions 與錯誤回報流程不改。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 broadcast sender reader exception。 |
+
+本刀刻意未處理：
+
+- `BroadcastSettingsMenu` 仍屬 21.5 menu framework，不在本刀改掉 Foundation menu / `ConfigMenu`。
+- DiscordSRV 發送流程、Conversation 輸入、公告 placeholder 與 active mention 行為不改。
+- 其他 `YamlConfig` readers，例如 `ScenarioConfig`、death message，仍留在後續 YAML reader 切片。
+
+本輪搜尋結果：
+
+```bash
+rg -n "org\\.mineacademy\\.fo\\.settings\\.YamlConfig|extends YamlConfig" src/main/java/org/mcwonderland/uhc/model/broadcast src/main/java/org/mcwonderland/uhc/model/broadcast/impl
+```
+
+`model/broadcast` package 已無 Foundation `YamlConfig` import / inheritance。
+
+第八個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | messages.yml death message reader 第一刀 | `DeathMessageLoader` 不再繼承 Foundation `YamlConfig`，改用 Bukkit `YamlConfiguration` 直接讀取 `messages.yml`；保留 `Game.PlayerDeath`、`Other`、`Player_Killed`、逗號分隔 DamageCause key 與無效 key 忽略語意。未使用的舊抽象類 `DeathMessages` 已刪除。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 death message / YAML reader exception。 |
+
+本刀刻意未處理：
+
+- `DeathMessageHandler` 的 placeholder、隨機挑選、killer / entity 判斷不改，避免把 reader 替換變成死亡訊息行為重寫。
+- `messages.yml` 內容與 key 不做 migration。
+- 實際死亡廣播人工測試留到 Step 22 最終對照；本刀只完成啟動、reload 與 reader 搜尋 gate。
+- 其他 `YamlConfig` readers，例如 `ScenarioConfig`，仍留在後續 YAML reader 切片；`ButtonLocalization` / `gui.yml` 仍屬 21.5 menu framework。
+
+本輪搜尋結果：
+
+```bash
+rg -n "org\\.mineacademy\\.fo\\.settings\\.YamlConfig|extends YamlConfig" src/main/java/org/mcwonderland/uhc/model/deathmsg
+```
+
+`model/deathmsg` package 已無 Foundation `YamlConfig` import / inheritance。
+
+第九個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | scenarios.yml scenario config reader 第一刀 | `ScenarioConfig` 不再繼承 Foundation `YamlConfig`，改用 Bukkit `YamlConfiguration` 直接讀取 `scenarios.yml`；保留 scenario name prefix、`Type`、`Name`、`Description`、`@FilePath` 反射填值、`Integer` / `Boolean` / `String` / `List<String>` / `Material` / `List<Material>` / `PluginSound` 讀取、舊 material alias 與 sound alias 行為。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 scenario isolation、scenario config、scenario material 或 scenario sound 相關 exception。 |
+
+本刀刻意未處理：
+
+- `ConfigBasedScenario` 的 `ItemCreator` icon 建立仍屬 21.5 menu / Foundation menu framework，不在本刀順手替換。
+- scenario 註冊流程、scenario 啟用 / 停用流程、scenario gameplay 行為不改。
+- `scenarios.yml` 內容與 key 不做 migration；舊 material / sound alias 仍保留以讀取既有設定。
+- 不新增通用 config framework；本刀只在 `ScenarioConfig` 內保留現有 reader 需要的少量讀值方法。
+
+本輪搜尋結果：
+
+```bash
+rg -n "org\\.mineacademy\\.fo\\.settings\\.YamlConfig|extends YamlConfig" src/main/java/org/mcwonderland/uhc/scenario/impl/ScenarioConfig.java src/main/java/org/mcwonderland/uhc/scenario
+```
+
+`scenario` package 已無 Foundation `YamlConfig` import / inheritance。
+
+第十個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | CommandSettings SimpleLocalization bridge cleanup | `CommandSettings` 不再 import 或寫入 Foundation `SimpleLocalization.Commands.*`；保留所有 public static command message 欄位，仍由本地 `PluginStaticConfig` 從 `commands.yml` 載入。native command helper 繼續直接使用 `CommandSettings.NO_CONSOLE`、`LABEL_USAGE`、`RELOAD_SUCCESS` 等欄位。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；console 執行 `sendcoords` 仍回覆 `commands.yml` 的 `No_Console` 訊息。 |
+
+本刀刻意未處理：
+
+- Foundation menu / conversation 仍可使用 Foundation 自己的 `SimpleLocalization.Menu` / `SimpleLocalization.Conversation` 預設值；這些屬於 21.5 menu framework 或 lifecycle 移除時處理，不由 `CommandSettings` bridge 承接。
+- 不改 `commands.yml` key、不改 command usage / tab completion、不改 native command helper。
+- 不在本刀移除 `SimplePlugin` lifecycle。
+
+本輪搜尋結果：
+
+```bash
+rg -n "SimpleLocalization|initSimpleLocalizationValues|COOLDOWN_WAIT" src/main/java/org/mcwonderland/uhc
+```
+
+主插件 source 已無 `SimpleLocalization` 命中。
+
+第十一個程式碼切片已完成：
+
+| 狀態 | 切片 | 實際處理 | 驗證 |
+| --- | --- | --- | --- |
+| 本輪完成 | SimpleLocation dead code cleanup | 刪除未使用的 `SimpleLocation`；不新增替代 map / section helper，因為 production / test source 都沒有使用點。主插件 source 已無 Foundation `SerializedMap` / `ConfigSerializable` 命中。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 cleanup 相關 exception。 |
+
+本刀刻意未處理：
+
+- 不新增 `Location` serializer helper，因為目前沒有使用者。
+- `RespawnCommand`、`StartCountdown`、`LobbyCountdown` 的 `org.mcwonderland.uhc.util.*` wildcard import 不在本刀順手改成 explicit import；它們不構成 `SimpleLocation` 使用點。
+- `SimpleSound` menu click path 與 21.5 menu framework 仍留到 21.5。
+
+本輪搜尋結果：
+
+```bash
+rg -n "\bSimpleLocation\b|SerializedMap|ConfigSerializable" src/main/java src/test/java
+```
+
+主插件 production / test source 已無 `SimpleLocation`、Foundation `SerializedMap`、Foundation `ConfigSerializable` 命中。
 
 ### 21.5 menu framework 移除
 

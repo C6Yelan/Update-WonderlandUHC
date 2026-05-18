@@ -1,92 +1,87 @@
 package org.mcwonderland.uhc.settings;
 
-import lombok.experimental.UtilityClass;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
-public class Sounds extends AutoLoadStaticConfig {
+public class Sounds extends PluginStaticConfig {
 
-    @Override
-    protected void onLoad() throws Exception {
-        loadConfiguration(UHCFiles.SOUNDS);
+    public static void load() {
+        loadStaticConfiguration(Sounds.class, UHCFiles.SOUNDS);
     }
 
-    @UtilityClass
     public static class Commands {
-        public SimpleSound SPEC_TOGGLE;
-        public SimpleSound RESPAWN;
-        public SimpleSound SET_SPAWN;
-        public SimpleSound STAFF_ON;
-        public SimpleSound STAFF_OFF;
-        public SimpleSound TOP_KILLS;
-        public SimpleSound TEAM_CHAT_ON;
-        public SimpleSound TEAM_CHAT_OFF;
-        public SimpleSound TEAM_CREATED;
-        public SimpleSound TEAM_INFO;
-        public SimpleSound SEND_COORDS;
+        public static PluginSound SPEC_TOGGLE;
+        public static PluginSound RESPAWN;
+        public static PluginSound SET_SPAWN;
+        public static PluginSound STAFF_ON;
+        public static PluginSound STAFF_OFF;
+        public static PluginSound TOP_KILLS;
+        public static PluginSound TEAM_CHAT_ON;
+        public static PluginSound TEAM_CHAT_OFF;
+        public static PluginSound TEAM_CREATED;
+        public static PluginSound TEAM_INFO;
+        public static PluginSound SEND_COORDS;
     }
 
     public static class Host {
-        public static SimpleSound START_CREATING_WORLD;
-        public static SimpleSound WORLD_CREATED;
-        public static SimpleSound INVENTORY_EDITED;
-        public static SimpleSound GOLDEN_HEAD_CREATED;
-        public static SimpleSound CLEAR_ENABLED_SCENARIOS;
-        public static SimpleSound SCENARIO_TOGGLED;
+        public static PluginSound START_CREATING_WORLD;
+        public static PluginSound WORLD_CREATED;
+        public static PluginSound INVENTORY_EDITED;
+        public static PluginSound GOLDEN_HEAD_CREATED;
+        public static PluginSound CLEAR_ENABLED_SCENARIOS;
+        public static PluginSound SCENARIO_TOGGLED;
     }
 
-    @UtilityClass
     public static class Game {
-        public SimpleSound INVINCIBLE_END;
-        public SimpleSound DEATH;
-        public SimpleSound ITEM_DISABLED;
-        public SimpleSound CANT_JOIN_NETHER;
-        public SimpleSound WIN;
+        public static PluginSound INVINCIBLE_END;
+        public static PluginSound DEATH;
+        public static PluginSound ITEM_DISABLED;
+        public static PluginSound CANT_JOIN_NETHER;
+        public static PluginSound WIN;
     }
 
-    @UtilityClass
     public static class Countdown {
 
         public static class Lobby {
-            public static SimpleSound START;
-            public static SimpleSound TICK;
-            public static SimpleSound RUN;
+            public static PluginSound START;
+            public static PluginSound TICK;
+            public static PluginSound RUN;
         }
 
         public static class Start {
-            public static SimpleSound TICK;
-            public static SimpleSound RUN;
+            public static PluginSound TICK;
+            public static PluginSound RUN;
         }
 
         public static class Border {
-            public static SimpleSound TICK;
-            public static SimpleSound RUN;
+            public static PluginSound TICK;
+            public static PluginSound RUN;
         }
 
         public static class Damage {
-            public static SimpleSound TICK;
-            public static SimpleSound RUN;
+            public static PluginSound TICK;
+            public static PluginSound RUN;
         }
 
         public static class Pvp {
-            public static SimpleSound TICK;
-            public static SimpleSound RUN;
+            public static PluginSound TICK;
+            public static PluginSound RUN;
         }
 
         public static class FinalHeal {
-            public static SimpleSound TICK;
-            public static SimpleSound RUN;
+            public static PluginSound TICK;
+            public static PluginSound RUN;
         }
 
         public static class NetherClose {
-            public static SimpleSound TICK;
-            public static SimpleSound RUN;
+            public static PluginSound TICK;
+            public static PluginSound RUN;
         }
     }
 
     public static class Tutorial {
-        public static SimpleSound FINISHED;
-        public static SimpleSound NEXT_SECTION;
-        public static SimpleSound CANCELLED;
+        public static PluginSound FINISHED;
+        public static PluginSound NEXT_SECTION;
+        public static PluginSound CANCELLED;
     }
 
 }

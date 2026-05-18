@@ -17,7 +17,10 @@ import org.mcwonderland.uhc.platform.paper.PaperWorldPort;
 import org.mcwonderland.uhc.port.PluginAssetPort;
 import org.mcwonderland.uhc.port.SchedulerPort;
 import org.mcwonderland.uhc.port.WorldPort;
+import org.mcwonderland.uhc.settings.CommandSettings;
+import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
+import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.stats.storages.StatsStorage;
 import org.mcwonderland.uhc.stats.storages.StatsStorageYaml;
@@ -46,6 +49,13 @@ public final class PluginBootstrap {
 
     public void loadFiles() {
         UHCFiles.getFileNames().forEach(this::saveResourceIfMissing);
+    }
+
+    public void loadStaticConfiguration() {
+        Settings.load();
+        Messages.load();
+        CommandSettings.load();
+        Sounds.load();
     }
 
     private void saveResourceIfMissing(String path) {

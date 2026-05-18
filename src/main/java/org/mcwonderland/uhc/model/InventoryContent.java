@@ -2,16 +2,17 @@ package org.mcwonderland.uhc.model;
 
 import com.google.common.collect.Lists;
 import org.mcwonderland.uhc.util.Extra;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.mineacademy.fo.collection.SerializedMap;
-import org.mineacademy.fo.model.ConfigSerializable;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
-public class InventoryContent implements ConfigSerializable {
+public class InventoryContent {
     private List<ItemStack> storage;
     private List<ItemStack> armor;
     private List<ItemStack> extra;
@@ -94,9 +95,8 @@ public class InventoryContent implements ConfigSerializable {
         }
     }
 
-    @Override
-    public SerializedMap serialize() {
-        SerializedMap map = new SerializedMap();
+    public Map<String, Object> toMap() {
+        Map<String, Object> map = new LinkedHashMap<>();
 
         map.put("Storage", storage);
         map.put("Armor", armor);
@@ -105,13 +105,50 @@ public class InventoryContent implements ConfigSerializable {
         return map;
     }
 
-    public static InventoryContent deserialize(SerializedMap map) {
+    public static InventoryContent fromSection(ConfigurationSection section) {
         InventoryContent inventoryContent = new InventoryContent();
 
-        inventoryContent.storage = map.getList("Storage", ItemStack.class);
-        inventoryContent.armor = map.getList("Armor", ItemStack.class);
-        inventoryContent.extra = map.getList("Extra", ItemStack.class);
+        if (section == null)
+            return inventoryContent;
+
+        inventoryContent.storage = itemStackList(section.getList("Storage", List.of()));
+        inventoryContent.armor = itemStackList(section.getList("Armor", List.of()));
+        inventoryContent.extra = itemStackList(section.getList("Extra", List.of()));
 
         return inventoryContent;
+    }
+
+    public static List<ItemStack> itemStackList(List<?> values) {
+        List<ItemStack> items = Lists.newArrayList();
+
+        for (Object value : values)
+            items.add(toItemStack(value));
+
+        return items;
+    }
+
+    private static ItemStack toItemStack(Object value) {
+        if (value == null)
+            return null;
+
+        if (value instanceof ItemStack item)
+            return item;
+
+        if (value instanceof ConfigurationSection section)
+            return toItemStack(section.getValues(false));
+
+        if (value instanceof Map<?, ?> map)
+            return ItemStack.deserialize(stringKeyMap(map));
+
+        throw new IllegalArgumentException("Unsupported item stack value: " + value.getClass().getName());
+    }
+
+    private static Map<String, Object> stringKeyMap(Map<?, ?> map) {
+        Map<String, Object> values = new LinkedHashMap<>();
+
+        for (Map.Entry<?, ?> entry : map.entrySet())
+            values.put(String.valueOf(entry.getKey()), entry.getValue());
+
+        return values;
     }
 }

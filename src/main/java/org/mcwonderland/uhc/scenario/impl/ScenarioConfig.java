@@ -1,12 +1,14 @@
 package org.mcwonderland.uhc.scenario.impl;
 
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.util.SoundConfigParser;
-import org.mineacademy.fo.model.SimpleSound;
-import org.mineacademy.fo.settings.YamlConfig;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class ScenarioConfig extends YamlConfig {
+public class ScenarioConfig {
 
     private static final Map<String, String> LEGACY_MATERIAL_ALIASES = Map.of(
             "COOKED_FISH", "COOKED_COD",
@@ -25,12 +27,12 @@ public class ScenarioConfig extends YamlConfig {
             "WORKBENCH", "CRAFTING_TABLE"
     );
 
-    private ConfigBasedScenario scenario;
+    private final ConfigBasedScenario scenario;
+    private final YamlConfiguration configuration;
 
     public ScenarioConfig(ConfigBasedScenario scenario) {
-        setPathPrefix(scenario.getName());
         this.scenario = scenario;
-        loadConfiguration(UHCFiles.SCENARIOS);
+        this.configuration = YamlConfiguration.loadConfiguration(scenariosFile());
     }
 
     public Material getMaterial() {
@@ -70,7 +72,7 @@ public class ScenarioConfig extends YamlConfig {
 
     private void setValueByType(Field field, String path) throws IllegalAccessException {
         Class<?> type = field.getType();
-        if (SimpleSound.class.isAssignableFrom(type))
+        if (PluginSound.class.isAssignableFrom(type))
             field.set(scenario, getScenarioSound(path));
         else if (Material.class.isAssignableFrom(type))
             field.set(scenario, getMaterialValue(path));
@@ -83,6 +85,46 @@ public class ScenarioConfig extends YamlConfig {
                 field.set(scenario, getList(path, typeClass));
         } else
             field.set(scenario, get(path, type));
+    }
+
+    private Object get(String path, Class<?> type) {
+        String fullPath = fullPath(path);
+
+        if (type == String.class)
+            return configuration.getString(fullPath);
+        if (type == Integer.class || type == int.class)
+            return configuration.getInt(fullPath);
+        if (type == Boolean.class || type == boolean.class)
+            return configuration.getBoolean(fullPath);
+
+        return configuration.get(fullPath);
+    }
+
+    private String getString(String path) {
+        return configuration.getString(fullPath(path));
+    }
+
+    private List<String> getStringList(String path) {
+        return configuration.getStringList(fullPath(path));
+    }
+
+    private Object getObject(String path) {
+        return configuration.get(fullPath(path));
+    }
+
+    private List<?> getList(String path) {
+        return configuration.getList(fullPath(path), List.of());
+    }
+
+    private List<?> getList(String path, Class<?> typeClass) {
+        if (typeClass == String.class)
+            return getStringList(path);
+
+        return getList(path);
+    }
+
+    private String fullPath(String path) {
+        return scenario.getName() + "." + path;
     }
 
     private Material getMaterialValue(String path) {
@@ -99,7 +141,7 @@ public class ScenarioConfig extends YamlConfig {
         return materials;
     }
 
-    private SimpleSound getScenarioSound(String path) {
+    private PluginSound getScenarioSound(String path) {
         Object sound = getObject(path);
 
         try {
@@ -145,6 +187,10 @@ public class ScenarioConfig extends YamlConfig {
             normalizedName = normalizedName.substring("MINECRAFT:".length());
 
         return normalizedName;
+    }
+
+    private static File scenariosFile() {
+        return new File(WonderlandUHC.getInstance().getDataFolder(), UHCFiles.SCENARIOS);
     }
 
 }

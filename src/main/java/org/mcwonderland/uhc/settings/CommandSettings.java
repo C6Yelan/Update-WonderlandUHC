@@ -1,13 +1,11 @@
 package org.mcwonderland.uhc.settings;
 
-import org.mineacademy.fo.settings.SimpleLocalization;
-
 import java.util.List;
 
-public class CommandSettings extends AutoLoadStaticConfig {
+public class CommandSettings extends PluginStaticConfig {
 
-    private static void init() {
-        initSimpleLocalizationValues();
+    public static void load() {
+        loadStaticConfiguration(CommandSettings.class, UHCFiles.COMMANDS);
     }
 
     public static String CANT_EXECUTE_SELF;
@@ -16,29 +14,6 @@ public class CommandSettings extends AutoLoadStaticConfig {
     public static String NO_CONSOLE;
     public static String RELOAD_FAIL;
     public static String RELOAD_SUCCESS;
-
-    public static void initSimpleLocalizationValues() {
-        SimpleLocalization.Commands.COOLDOWN_WAIT = getString("Cooldown_Wait");
-        INVALID_ARGUMENT = getString("Invalid_Argument");
-        SimpleLocalization.Commands.INVALID_ARGUMENT = INVALID_ARGUMENT;
-        SimpleLocalization.Commands.INVALID_ARGUMENT_MULTILINE = getString("Invalid_Argument_Multiline");
-        SimpleLocalization.Commands.INVALID_SUB_ARGUMENT = getString("Invalid_Sub_Argument");
-        SimpleLocalization.Commands.LABEL_DESCRIPTION = getString("Label_Description");
-        LABEL_USAGE = getString("Label_Usage");
-        SimpleLocalization.Commands.LABEL_USAGE = LABEL_USAGE;
-        SimpleLocalization.Commands.LABEL_USAGES = getString("Label_Usages");
-        NO_CONSOLE = getString("No_Console");
-        SimpleLocalization.Commands.NO_CONSOLE = NO_CONSOLE;
-        RELOAD_FAIL = getString("Reload_Fail");
-        SimpleLocalization.Commands.RELOAD_FAIL = RELOAD_FAIL;
-        RELOAD_SUCCESS = getString("Reload_Success");
-        SimpleLocalization.Commands.RELOAD_SUCCESS = RELOAD_SUCCESS;
-    }
-
-    @Override
-    protected void onLoad() throws Exception {
-        loadConfiguration(UHCFiles.COMMANDS);
-    }
 
     public static class Uhc {
         public static class Choose {

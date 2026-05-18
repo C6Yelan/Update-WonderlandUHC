@@ -1,6 +1,9 @@
 package org.mcwonderland.uhc.scoreboard;
 
 import lombok.Getter;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.scoreboard.line.GameLines;
 import org.mcwonderland.uhc.scoreboard.line.LobbyLines;
 import org.mcwonderland.uhc.scoreboard.line.SoloLines;
@@ -9,15 +12,21 @@ import org.mcwonderland.uhc.scoreboard.line.StartingLines;
 import org.mcwonderland.uhc.scoreboard.line.TeamsLines;
 import org.mcwonderland.uhc.scoreboard.line.UHCLines;
 import org.mcwonderland.uhc.settings.UHCFiles;
-import org.mineacademy.fo.settings.YamlConfig;
 
-import java.util.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
-public class SidebarTheme extends YamlConfig {
+public class SidebarTheme {
 
     private static final List<SidebarTheme> themes = new ArrayList<>();
 
+    private final String name;
     private final Set<UHCLines> lines = new HashSet<>();
 
     private UHCLines lobbyLines, startingLines;
@@ -40,28 +49,36 @@ public class SidebarTheme extends YamlConfig {
     }
 
     public static void loadThemes() {
-        new ThemeLoader().loadThemes();
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(scoreboardsFile());
+
+        themes.clear();
+
+        for (String key : configuration.getKeys(false))
+            themes.add(new SidebarTheme(key, configuration.getConfigurationSection(key)));
     }
 
     public SidebarTheme(String sectionPrefix) {
-        setPathPrefix(sectionPrefix);
-        loadConfiguration(UHCFiles.SCOREBOARDS);
-        loadScoreboardModels();
+        this(sectionPrefix, YamlConfiguration.loadConfiguration(scoreboardsFile()).getConfigurationSection(sectionPrefix));
+    }
+
+    private SidebarTheme(String name, ConfigurationSection section) {
+        this.name = name;
+        loadScoreboardModels(section);
     }
 
     public String getName() {
-        return getPathPrefix();
+        return name;
     }
 
-    private void loadScoreboardModels() {
-        lobbyLines = new LobbyLines(getStringList("Lobby"));
-        startingLines = new StartingLines(getStringList("Starting"));
-        spectatorSoloLines = new GameLines(getStringList("Spectator_Solo"));
-        spectatorTeamsLines = new GameLines(getStringList("Spectator_Teams"));
-        staffSoloLines = new StaffLines(getStringList("Staff_Solo"));
-        staffTeamsLines = new StaffLines(getStringList("Staff_Teams"));
-        playerSoloLines = new SoloLines(getStringList("Player_Solo"));
-        playerTeamsLines = new TeamsLines(getStringList("Player_Teams"));
+    private void loadScoreboardModels(ConfigurationSection section) {
+        lobbyLines = new LobbyLines(lines(section, "Lobby"));
+        startingLines = new StartingLines(lines(section, "Starting"));
+        spectatorSoloLines = new GameLines(lines(section, "Spectator_Solo"));
+        spectatorTeamsLines = new GameLines(lines(section, "Spectator_Teams"));
+        staffSoloLines = new StaffLines(lines(section, "Staff_Solo"));
+        staffTeamsLines = new StaffLines(lines(section, "Staff_Teams"));
+        playerSoloLines = new SoloLines(lines(section, "Player_Solo"));
+        playerTeamsLines = new TeamsLines(lines(section, "Player_Teams"));
 
         lines.addAll(Arrays.asList(
                 lobbyLines,
@@ -75,21 +92,11 @@ public class SidebarTheme extends YamlConfig {
         ));
     }
 
-    private static class ThemeLoader extends YamlConfig {
-        public ThemeLoader() {
-            loadConfiguration(UHCFiles.SCOREBOARDS);
+    private static List<String> lines(ConfigurationSection section, String path) {
+        return section == null ? List.of() : section.getStringList(path);
+    }
 
-            loadThemes();
-        }
-
-        private void loadThemes() {
-            themes.clear();
-
-            Set<String> themeNames = getKeys(false);
-
-            for (String key : themeNames) {
-                themes.add(new SidebarTheme(key));
-            }
-        }
+    private static File scoreboardsFile() {
+        return new File(WonderlandUHC.getInstance().getDataFolder(), UHCFiles.SCOREBOARDS);
     }
 }

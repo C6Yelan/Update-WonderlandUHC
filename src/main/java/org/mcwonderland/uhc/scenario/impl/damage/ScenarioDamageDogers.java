@@ -12,7 +12,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class ScenarioDamageDogers extends ConfigBasedScenario implements Listene
     @FilePath(name = "Death_Cause_This")
     private String deathCauseThis;
     @FilePath(name = "Death_Cause_This_Sound")
-    private SimpleSound deathCauseThisSound;
+    private PluginSound deathCauseThisSound;
 
     public ScenarioDamageDogers(ScenarioName name) {
         super(name);

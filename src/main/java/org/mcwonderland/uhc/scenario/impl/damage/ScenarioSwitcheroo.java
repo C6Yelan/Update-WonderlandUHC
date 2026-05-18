@@ -11,7 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 /**
  * 2019-12-07 下午 03:12
@@ -19,7 +19,7 @@ import org.mineacademy.fo.model.SimpleSound;
 public class ScenarioSwitcheroo extends ConfigBasedScenario implements Listener {
 
     @FilePath(name = "Switch_Sound")
-    private SimpleSound switchSound;
+    private PluginSound switchSound;
 
     public ScenarioSwitcheroo(ScenarioName name) {
         super(name);
@@ -46,7 +46,7 @@ public class ScenarioSwitcheroo extends ConfigBasedScenario implements Listener 
         sound(switchSound, p1, p2);
     }
 
-    private void sound(SimpleSound sound, LivingEntity... entities) {
+    private void sound(PluginSound sound, LivingEntity... entities) {
         for (LivingEntity entity : entities) {
             if (entity instanceof Player)
                 Extra.sound(( Player ) entity, sound);

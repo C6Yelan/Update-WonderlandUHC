@@ -4,13 +4,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.mcwonderland.uhc.core.rule.OreRuleSupport;
-import org.mineacademy.fo.collection.SerializedMap;
-import org.mineacademy.fo.model.ConfigSerializable;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class UHCStats implements ConfigSerializable {
+public class UHCStats {
 
     @Getter(AccessLevel.PRIVATE)
     public Map<Material, Integer> oreMined = new HashMap<>();
@@ -32,24 +30,4 @@ public class UHCStats implements ConfigSerializable {
         return amount;
     }
 
-    @Override
-    public SerializedMap serialize() {
-        SerializedMap map = new SerializedMap();
-
-        map.put("Game_Played", gamePlayed);
-        map.put("Kills", totalKills);
-        map.put("Wins", totalWins);
-
-        return map;
-    }
-
-    public static UHCStats deserialize(SerializedMap map) {
-        UHCStats uhcStats = new UHCStats();
-
-        uhcStats.gamePlayed = map.getInteger("Game_Played", 0);
-        uhcStats.totalKills = map.getInteger("Kills", 0);
-        uhcStats.totalWins = map.getInteger("Wins", 0);
-
-        return uhcStats;
-    }
 }

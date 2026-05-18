@@ -12,7 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,9 +30,9 @@ public class ScenarioFoodNeophobia extends ConfigBasedScenario implements Listen
     private String justCanEatMsg;
 
     @FilePath(name = "First_Eat_Sound")
-    private SimpleSound firstEatSound;
+    private PluginSound firstEatSound;
     @FilePath(name = "Just_Can_Eat_Sound")
-    private SimpleSound justCanEatSound;
+    private PluginSound justCanEatSound;
 
 
     public ScenarioFoodNeophobia(ScenarioName name) {

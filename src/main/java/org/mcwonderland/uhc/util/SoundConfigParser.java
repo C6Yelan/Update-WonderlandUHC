@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.util;
 
 import org.bukkit.Sound;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.Locale;
 import java.util.Map;
@@ -30,21 +30,24 @@ public final class SoundConfigParser {
     private SoundConfigParser() {
     }
 
-    public static SimpleSound parse(String soundLine) {
+    public static PluginSound parse(String soundLine) {
         String normalizedLine = normalizeSoundLine(soundLine);
 
         if ("none".equalsIgnoreCase(normalizedLine))
-            return new SimpleSound(normalizedLine);
+            return PluginSound.none();
 
         String[] parts = splitSoundLine(normalizedLine);
 
         if (parts.length == 1)
-            return new SimpleSound(resolveSound(parts[0]), 1F, 1.5F);
+            return PluginSound.of(resolveSound(parts[0]), 1F, 1.5F);
 
         if (parts.length != 3)
             throw new IllegalArgumentException("Malformed sound type, use format: 'sound' OR 'sound volume pitch'. Got: " + soundLine);
 
-        return new SimpleSound(resolveSound(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
+        if ("random".equalsIgnoreCase(parts[2]))
+            return PluginSound.ofRandomPitch(resolveSound(parts[0]), Float.parseFloat(parts[1]));
+
+        return PluginSound.of(resolveSound(parts[0]), Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
     }
 
     public static String normalizeSoundLine(String soundLine) {

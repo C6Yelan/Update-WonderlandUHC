@@ -38,7 +38,6 @@ public class WonderlandUHC extends SimplePlugin {
     public void onPluginStart() {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
-        bootstrap.loadFiles();
         featureRegistry.registerListeners(this::registerEvents);
         featureRegistry.registerNativeCommands();
         bootstrap.createPluginAssets();
@@ -60,6 +59,8 @@ public class WonderlandUHC extends SimplePlugin {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
 
+        bootstrap.loadFiles();
+        bootstrap.loadStaticConfiguration();
         bootstrap.checkDependencies();
 
         bootstrap.configureFoundationLibrary();

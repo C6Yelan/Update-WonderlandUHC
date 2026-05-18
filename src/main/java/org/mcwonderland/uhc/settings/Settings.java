@@ -5,8 +5,6 @@ import org.mcwonderland.uhc.game.SpectateMode;
 import org.mcwonderland.uhc.game.teleport.TeleportType;
 import org.mcwonderland.uhc.model.freeze.FreezeType;
 import org.mcwonderland.uhc.scoreboard.TabHealthType;
-import org.mineacademy.fo.settings.SimpleSettings;
-import org.mineacademy.fo.settings.YamlConfigLoader;
 
 import java.util.List;
 import java.util.TreeSet;
@@ -15,22 +13,10 @@ import java.util.stream.Collectors;
 /**
  * 2019-12-17 下午 12:01
  */
-public class Settings extends SimpleSettings {
+public class Settings extends PluginStaticConfig {
 
-    @Override
-    protected int getConfigVersion() {
-        return 0;
-    }
-
-    @Override
-    protected String getSettingsFileName() {
-        return UHCFiles.SETTINGS;
-    }
-
-    @Override
-    protected void preLoad() {
-        super.preLoad();
-        YamlConfigLoader.load(this.getClass());
+    public static void load() {
+        loadStaticConfiguration(Settings.class, UHCFiles.SETTINGS);
     }
 
     public static String SERIALIZATION;

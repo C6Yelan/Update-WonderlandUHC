@@ -1,30 +1,49 @@
 package org.mcwonderland.uhc.stats.storages;
 
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.stats.UHCStats;
-import org.mineacademy.fo.collection.SerializedMap;
-import org.mineacademy.fo.settings.YamlConfig;
 
+import java.io.File;
+import java.io.IOException;
 
-public class StatsStorageYaml extends YamlConfig implements StatsStorage {
+public class StatsStorageYaml implements StatsStorage {
+
+    private final File file;
+    private final YamlConfiguration configuration;
 
     public StatsStorageYaml() {
-        loadConfiguration(UHCFiles.STATS);
+        this.file = new File(WonderlandUHC.getInstance().getDataFolder(), UHCFiles.STATS);
+        this.configuration = YamlConfiguration.loadConfiguration(file);
     }
 
     @Override
     public UHCStats loadOrCreate(UHCPlayer uhcPlayer) {
-        String key = uhcPlayer.getUniqueId().toString();
-        SerializedMap map = isSet(key) ? getMap(key) : new SerializedMap();
+        String path = uhcPlayer.getUniqueId().toString();
+        UHCStats stats = new UHCStats();
 
-        UHCStats uhcStats = UHCStats.deserialize(map);
+        stats.gamePlayed = configuration.getInt(path + ".Game_Played", 0);
+        stats.totalKills = configuration.getInt(path + ".Kills", 0);
+        stats.totalWins = configuration.getInt(path + ".Wins", 0);
 
-        return uhcStats;
+        return stats;
     }
 
     @Override
     public void save(UHCPlayer uhcPlayer) {
-        set(uhcPlayer.getUniqueId().toString(), uhcPlayer.getStats());
+        String path = uhcPlayer.getUniqueId().toString();
+        UHCStats stats = uhcPlayer.getStats();
+
+        configuration.set(path + ".Game_Played", stats.gamePlayed);
+        configuration.set(path + ".Kills", stats.totalKills);
+        configuration.set(path + ".Wins", stats.totalWins);
+
+        try {
+            configuration.save(file);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Failed to save " + UHCFiles.STATS, ex);
+        }
     }
 }

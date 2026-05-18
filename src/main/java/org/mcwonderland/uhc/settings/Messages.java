@@ -7,10 +7,10 @@ import java.util.List;
 /**
  * 2019-12-13 上午 11:09
  */
-public class Messages extends AutoLoadStaticConfig {
-    @Override
-    protected void onLoad() throws Exception {
-        loadConfiguration(UHCFiles.MESSAGES);
+public class Messages extends PluginStaticConfig {
+
+    public static void load() {
+        loadStaticConfiguration(Messages.class, UHCFiles.MESSAGES);
     }
 
     public static String ENABLED, DISABLED;

@@ -10,7 +10,7 @@ import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.mineacademy.fo.model.SimpleSound;
+import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class ScenarioDoubleOrNothing extends ConfigBasedScenario implements Listener {
 
     @FilePath(name = "Nothing_Sound")
-    private SimpleSound nothingSound;
+    private PluginSound nothingSound;
     @FilePath(name = "Trigger_Blocks")
     private List<Material> triggerBlocks;
 
