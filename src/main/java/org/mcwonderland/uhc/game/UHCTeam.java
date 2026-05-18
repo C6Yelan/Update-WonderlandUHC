@@ -21,14 +21,13 @@ import org.mcwonderland.uhc.tools.Hotbars;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.GameUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.mcwonderland.uhc.platform.text.PluginColor;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -36,24 +35,7 @@ import java.util.stream.Collectors;
 @Setter
 public class UHCTeam {
     private static final Set<UHCTeam> teams = new HashSet<>();
-    private static final List<ChatColor> RANDOM_TEAM_COLORS = List.of(
-            ChatColor.BLACK,
-            ChatColor.DARK_BLUE,
-            ChatColor.DARK_GREEN,
-            ChatColor.DARK_AQUA,
-            ChatColor.DARK_RED,
-            ChatColor.DARK_PURPLE,
-            ChatColor.GOLD,
-            ChatColor.GRAY,
-            ChatColor.DARK_GRAY,
-            ChatColor.BLUE,
-            ChatColor.GREEN,
-            ChatColor.AQUA,
-            ChatColor.RED,
-            ChatColor.LIGHT_PURPLE,
-            ChatColor.YELLOW,
-            ChatColor.WHITE
-    );
+    private static final String LEGACY_BOLD = "\u00A7l";
 
     @Setter(AccessLevel.PRIVATE)
     private UHCPlayer owner;
@@ -61,7 +43,7 @@ public class UHCTeam {
     @Getter(AccessLevel.PRIVATE)
     private Set<UHCPlayer> invites = new HashSet<>();
     private boolean openJoin;
-    private ChatColor color;
+    private PluginColor color;
     private String name;
     private String symbol = "";
     private String chatFormat = "";
@@ -107,7 +89,7 @@ public class UHCTeam {
         owner = creator;
         name = Settings.Team.DEFAULT_NAME.replace("{player}", creator.getName());
         symbol = generateNonRepeatedSymbol();
-        color = Settings.Team.GIVE_DEFAULT_TEAM_RANDOM_COLOR ? getRandomColor() : ChatColor.WHITE;
+        color = Settings.Team.GIVE_DEFAULT_TEAM_RANDOM_COLOR ? getRandomColor() : PluginColor.WHITE;
         createBackpack();
 
         join(creator);
@@ -127,10 +109,10 @@ public class UHCTeam {
         return symbol;
     }
 
-    private ChatColor getRandomColor() {
-        int colorIndex = teams.size() % RANDOM_TEAM_COLORS.size();
+    private PluginColor getRandomColor() {
+        int colorIndex = teams.size() % PluginColor.SELECTABLE.size();
 
-        return RANDOM_TEAM_COLORS.get(colorIndex);
+        return PluginColor.SELECTABLE.get(colorIndex);
     }
 
     private void createBackpack() {
@@ -269,7 +251,7 @@ public class UHCTeam {
         prefix.append(color);
 
         if (Settings.Team.CHARACTER_BOLD_DEFAULT)
-            prefix.append(ChatColor.BOLD);
+            prefix.append(LEGACY_BOLD);
 
         prefix.append(symbol + color + " ");
 

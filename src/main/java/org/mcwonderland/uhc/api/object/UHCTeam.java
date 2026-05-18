@@ -1,10 +1,10 @@
 package org.mcwonderland.uhc.api.object;
 
-import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.platform.text.PluginColor;
 
 import java.util.Collection;
 import java.util.Set;
@@ -46,7 +46,7 @@ public interface UHCTeam {
 
     void setOpenJoin(boolean openJoin);
 
-    void setColor(org.bukkit.ChatColor color);
+    void setColor(PluginColor color);
 
     void setName(String name);
 
@@ -60,7 +60,7 @@ public interface UHCTeam {
 
     boolean isOpenJoin();
 
-    ChatColor getColor();
+    PluginColor getColor();
 
     String getName();
 

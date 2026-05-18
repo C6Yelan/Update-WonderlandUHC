@@ -25,7 +25,6 @@ import org.mcwonderland.uhc.util.PlayerUtils;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.UUID;
 
 @Getter
@@ -157,7 +156,7 @@ public final class SimpleScores {
     }
 
     private synchronized void fixNameColors(Team t, UHCTeam u) {
-        NamedTextColor color = toNamedTextColor(u);
+        NamedTextColor color = u.getColor().toNamedTextColor();
         if (color != null && !color.equals(t.color()))
             t.color(color);
     }
@@ -209,9 +208,5 @@ public final class SimpleScores {
 
     private Component toComponent(String text) {
         return LegacyComponentSerializer.legacySection().deserialize(text);
-    }
-
-    private NamedTextColor toNamedTextColor(UHCTeam team) {
-        return NamedTextColor.NAMES.value(team.getColor().name().toLowerCase(Locale.ROOT));
     }
 }

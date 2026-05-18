@@ -2,8 +2,8 @@ package org.mcwonderland.uhc.game.settings.sub;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.mcwonderland.uhc.platform.text.PluginColor;
 import org.mcwonderland.uhc.scoreboard.SidebarTheme;
 
 import java.util.LinkedHashMap;
@@ -13,11 +13,11 @@ import java.util.Map;
 @Getter
 @Setter
 public class UHCScoreboardSettings {
-    private static final ChatColor DEFAULT_HEART_COLOR = ChatColor.RED;
+    private static final PluginColor DEFAULT_HEART_COLOR = PluginColor.RED;
 
     private SidebarTheme sidebarTheme;
     private Integer scoreboardUpdateTick;
-    private ChatColor heartColor;
+    private PluginColor heartColor;
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -39,30 +39,7 @@ public class UHCScoreboardSettings {
         return settings;
     }
 
-    private static ChatColor parseHeartColor(String value) {
-        if (value == null || value.isBlank())
-            return DEFAULT_HEART_COLOR;
-
-        String normalized = value.trim();
-
-        if (normalized.length() == 2 && (normalized.charAt(0) == '&' || normalized.charAt(0) == ChatColor.COLOR_CHAR))
-            return parseLegacyColor(normalized.charAt(1));
-
-        try {
-            ChatColor color = ChatColor.valueOf(normalized.toUpperCase(Locale.ROOT));
-            return color.isColor() ? color : DEFAULT_HEART_COLOR;
-        } catch (IllegalArgumentException ex) {
-            return DEFAULT_HEART_COLOR;
-        }
-    }
-
-    private static ChatColor parseLegacyColor(char code) {
-        char normalizedCode = Character.toLowerCase(code);
-
-        for (ChatColor color : ChatColor.values())
-            if (color.isColor() && color.toString().charAt(1) == normalizedCode)
-                return color;
-
-        return DEFAULT_HEART_COLOR;
+    private static PluginColor parseHeartColor(String value) {
+        return PluginColor.parseOrDefault(value, DEFAULT_HEART_COLOR);
     }
 }

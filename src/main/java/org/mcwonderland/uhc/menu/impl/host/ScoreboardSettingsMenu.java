@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.menu.impl.host;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -9,6 +8,7 @@ import org.mcwonderland.uhc.game.settings.sub.UHCScoreboardSettings;
 import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.text.PluginColor;
 
 public class ScoreboardSettingsMenu extends PluginMenu {
     private static final String SECTION = "Scoreboard";
@@ -67,8 +67,8 @@ public class ScoreboardSettingsMenu extends PluginMenu {
     private void openChooseHeartColorMenu(Player player) {
         new ColorPickerMenu(returningPlayer -> new ScoreboardSettingsMenu().displayTo(returningPlayer)) {
             @Override
-            protected void onChooseColor(Player player, ChatColor chatColor) {
-                scoreboardSettings.setHeartColor(chatColor);
+            protected void onChooseColor(Player player, PluginColor color) {
+                scoreboardSettings.setHeartColor(color);
             }
         }.displayTo(player);
     }

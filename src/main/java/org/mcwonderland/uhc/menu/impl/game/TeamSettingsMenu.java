@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.menu.impl.game;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +11,7 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.text.PluginColor;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
@@ -126,8 +126,8 @@ public class TeamSettingsMenu extends PluginMenu {
 
         new ColorPickerMenu(returningPlayer -> new TeamSettingsMenu(team).displayTo(returningPlayer)) {
             @Override
-            protected void onChooseColor(Player player, ChatColor chatColor) {
-                team.setColor(chatColor);
+            protected void onChooseColor(Player player, PluginColor color) {
+                team.setColor(color);
             }
         }.displayTo(player);
     }

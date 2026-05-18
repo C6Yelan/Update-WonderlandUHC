@@ -1560,6 +1560,14 @@ rg -n "PlayerLoginEvent|org\\.bukkit\\.ChatColor|MetadataValue|clearLoadedSectio
 - 本刀不處理 `PlayerLoginEvent`、`ChatColor` team model 或 command `getCommand(...)`，避免把登入、public API 或 command framework 混入低風險 warning cleanup。
 - `bash scripts/package-plugin-1.21.sh` 通過；部署到 Paper `1.21.11` 測試服後用 `start.bat` 啟動到 `Done`，console `uhc reload` 成功，latest.log 未出現 `ERROR` / `Exception`。
 
+執行結果（2026-05-18）：
+
+- `ChatColor / legacy color model` 已改由本地薄 `PluginColor` enum 承接 16 色資料模型；`UHCTeam`、scoreboard heart color、`ColorPickerMenu`、team settings 與 scoreboard settings 不再 import Bukkit `ChatColor`。
+- `PluginColor` 只提供本步驟需要的 legacy 色碼輸出、Adventure `NamedTextColor`、color picker 羊毛材質與舊設定解析，不建立通用訊息格式框架。
+- `Scoreboard_Settings.Heart_Color` 仍可讀取 `red`、`&c`、`§c`，team prefix / placeholder 仍輸出 legacy 色碼以保留玩家可見行為。
+- 本刀不處理 `LegacyComponentSerializer`；舊色碼 / message format 相容層已轉交 Step 23。
+- `rg -n "org\\.bukkit\\.ChatColor|\\bChatColor\\b" src/main/java src/test/java` 為 0；`bash scripts/package-plugin-1.21.sh` 通過；部署到 Paper `1.21.11` 測試服後用 `start.bat` 啟動到 `Done`，console `uhc reload` 成功，latest.log 未出現 `ERROR` / `Exception`。
+
 ## 每個程式碼切片的固定驗證
 
 每個 Step 21 程式碼切片完成後都必須做：
