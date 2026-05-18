@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "purpose": "Current VS Code Java warnings, normalized and sorted for goal-driven cleanup.",
-  "total": 5,
+  "total": 0,
   "categoryOrder": [
     "00_refresh_ide_build_model",
     "01_low_risk_unused_import",
@@ -67,101 +67,10 @@
       "risk": "high",
       "recommendedAction": "Treat as a dedicated login-gate slice; do not hide with wrapper or suppress. Requires behavior analysis and server test.",
       "id": "05_high_risk_login_event_deprecation",
-      "count": 5,
-      "diagnostics": [
-        {
-          "resource": "/home/ayaya/projects/Minecraft-Update-Plugin/Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/state/share/login/LoginListener.java",
-          "owner": "_generated_diagnostic_collection_name_#5",
-          "code": "16778621",
-          "severity": 4,
-          "message": "The type PlayerLoginEvent is deprecated since version 1.21.6",
-          "source": "Java",
-          "startLineNumber": 21,
-          "startColumn": 31,
-          "endLineNumber": 21,
-          "endColumn": 47,
-          "tags": [
-            2
-          ],
-          "origin": "extHost2",
-          "relativePath": "src/main/java/org/mcwonderland/uhc/game/state/share/login/LoginListener.java",
-          "category": "05_high_risk_login_event_deprecation"
-        },
-        {
-          "resource": "/home/ayaya/projects/Minecraft-Update-Plugin/Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "owner": "_generated_diagnostic_collection_name_#5",
-          "code": "16778621",
-          "severity": 4,
-          "message": "The type PlayerLoginEvent is deprecated since version 1.21.6",
-          "source": "Java",
-          "startLineNumber": 13,
-          "startColumn": 19,
-          "endLineNumber": 13,
-          "endColumn": 35,
-          "tags": [
-            2
-          ],
-          "origin": "extHost2",
-          "relativePath": "src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "category": "05_high_risk_login_event_deprecation"
-        },
-        {
-          "resource": "/home/ayaya/projects/Minecraft-Update-Plugin/Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "owner": "_generated_diagnostic_collection_name_#5",
-          "code": "16778621",
-          "severity": 4,
-          "message": "The type PlayerLoginEvent is deprecated since version 1.21.6",
-          "source": "Java",
-          "startLineNumber": 19,
-          "startColumn": 26,
-          "endLineNumber": 19,
-          "endColumn": 42,
-          "tags": [
-            2
-          ],
-          "origin": "extHost2",
-          "relativePath": "src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "category": "05_high_risk_login_event_deprecation"
-        },
-        {
-          "resource": "/home/ayaya/projects/Minecraft-Update-Plugin/Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "owner": "_generated_diagnostic_collection_name_#5",
-          "code": "16778621",
-          "severity": 4,
-          "message": "The type PlayerLoginEvent is deprecated since version 1.21.6",
-          "source": "Java",
-          "startLineNumber": 30,
-          "startColumn": 38,
-          "endLineNumber": 30,
-          "endColumn": 54,
-          "tags": [
-            2
-          ],
-          "origin": "extHost2",
-          "relativePath": "src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "category": "05_high_risk_login_event_deprecation"
-        },
-        {
-          "resource": "/home/ayaya/projects/Minecraft-Update-Plugin/Update-WonderlandUHC/src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "owner": "_generated_diagnostic_collection_name_#5",
-          "code": "16778621",
-          "severity": 4,
-          "message": "The type PlayerLoginEvent is deprecated since version 1.21.6",
-          "source": "Java",
-          "startLineNumber": 34,
-          "startColumn": 25,
-          "endLineNumber": 34,
-          "endColumn": 41,
-          "tags": [
-            2
-          ],
-          "origin": "extHost2",
-          "relativePath": "src/main/java/org/mcwonderland/uhc/game/state/share/login/UHCLoginEvent.java",
-          "category": "05_high_risk_login_event_deprecation"
-        }
-      ],
-      "decision": "deferred",
-      "analysisNote": "PlayerLoginEvent replacement was checked against Paper 1.21.11 sources. The suggested PlayerConnectionValidateLoginEvent exposes a connection/profile but not a fully initialized Bukkit Player. Current checks use Player permissions, PlayerCollection.contains(Player), and game-state join gates, so replacing it would change login timing and player-visible allow/kick behavior. Do not hide these warnings with @SuppressWarnings or a wrapper; keep them visible until Step 22 Login Gate Migration redesigns and tests the login gate."
+      "count": 0,
+      "diagnostics": [],
+      "completed": true,
+      "completionNote": "Resolved in Step 22 by migrating the login gate from Bukkit PlayerLoginEvent to Paper PlayerConnectionValidateLoginEvent, using LoginSubject plus LuckPerms-backed pre-login permission checks. The source scan now has no PlayerLoginEvent production or test hits."
     }
   ],
   "resolved": [

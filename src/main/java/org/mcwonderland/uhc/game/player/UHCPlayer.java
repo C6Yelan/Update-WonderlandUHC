@@ -56,6 +56,22 @@ public class UHCPlayer {
         return uhcPlayer;
     }
 
+    public static UHCPlayer getExisting(UUID uniqueId, String playerName) {
+        if (uniqueId != null) {
+            UHCPlayer uhcPlayer = playersByUniqueId.get(uniqueId);
+            if (uhcPlayer != null)
+                return uhcPlayer;
+        }
+
+        if (playerName == null)
+            return null;
+
+        return allPlayers.stream()
+                .filter(uhcPlayer -> playerName.equalsIgnoreCase(uhcPlayer.getName()))
+                .findFirst()
+                .orElse(null);
+    }
+
     public static UHCPlayer getFromEntity(Entity entity) {
         if (entity instanceof Player)
             return getUHCPlayer(( Player ) entity);

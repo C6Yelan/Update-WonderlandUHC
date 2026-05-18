@@ -1210,6 +1210,8 @@ Step 21 已確認 `PlayerLoginEvent` 不是可用 wrapper 或 suppress 安全清
 
 詳細盤點、LuckPerms 權限策略、子切片順序與驗收 gate 記錄於 `docs/step-22-login-gate-plan.md`。Step 22 預設採用 LuckPerms 作為 pre-login bypass 權限查詢來源，讓 login gate 不再依賴 Bukkit `Player`；若後續不接受 LuckPerms 作為正式部署依賴，必須先回到該文件調整無 LuckPerms 時的拒絕 / 降級行為，再開始實作。
 
+目前進度（2026-05-18）：已確認採用 LuckPerms hard dependency、fail closed 權限查詢策略與獨立 `BYPASS_JOIN_FULL` 滿員 bypass。實作已導入 LuckPerms API、`plugin.yml` hard dependency、`LoginSubject` / `LoginPermissionService`、Paper `PlayerConnectionValidateLoginEvent` 入口、UUID / name based 白名單查詢，以及不建立新 `UHCPlayer` 的遊戲中登入判斷；`src/main/java` / `src/test/java` 已無 `PlayerLoginEvent` 命中。白名單、等待 host、滿員、遊戲中加入、既有參賽者重連與 LuckPerms bypass / explicit deny 真實玩家情境矩陣已通過；封裝、Paper `1.21.11` startup、`uhc reload` 與最終 log gate 已通過。
+
 本步驟不得做的事：
 
 1. 不用 `@SuppressWarnings("deprecation")` 當作完成。

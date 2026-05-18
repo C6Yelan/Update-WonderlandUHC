@@ -31,6 +31,7 @@ import java.util.UUID;
 public final class SimpleScores {
 
     private static final HashMap<UUID, SimpleScores> allScores = new HashMap<>();
+    private static boolean teamColorsSupported = true;
 
     private final Player player;
     private final Scoreboard scoreboard;
@@ -156,9 +157,21 @@ public final class SimpleScores {
     }
 
     private synchronized void fixNameColors(Team t, UHCTeam u) {
+        if (!teamColorsSupported)
+            return;
+
         NamedTextColor color = u.getColor().toNamedTextColor();
-        if (color != null && !color.equals(t.color()))
+        if (color == null)
+            return;
+
+        try {
             t.color(color);
+        } catch (IllegalStateException exception) {
+            if (!"Team colors must have hex values".equals(exception.getMessage()))
+                throw exception;
+
+            teamColorsSupported = false;
+        }
     }
 
     public synchronized void updateHeals() {

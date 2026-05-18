@@ -1,13 +1,13 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
 import org.mcwonderland.uhc.UHCPermission;
+import org.mcwonderland.uhc.api.enums.RoleName;
+import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.state.share.login.LoginListener;
 import org.mcwonderland.uhc.game.state.share.login.UHCLoginEvent;
 import org.mcwonderland.uhc.game.state.share.login.checker.LoginChecker;
 import org.mcwonderland.uhc.game.state.share.login.checker.WhitelistChecker;
 import org.mcwonderland.uhc.settings.Messages;
-import org.mcwonderland.uhc.util.GameUtils;
-import org.bukkit.entity.Player;
 
 public class PlayingLoginListener extends LoginListener {
 
@@ -22,10 +22,11 @@ public class PlayingLoginListener extends LoginListener {
 
         @Override
         protected void checkLogin(UHCLoginEvent e) {
-            Player player = e.getPlayer();
+            UHCPlayer uhcPlayer = e.getUhcPlayer();
+            boolean gamingPlayer = uhcPlayer != null && uhcPlayer.getRoleName() == RoleName.PLAYER;
 
-            if (!GameUtils.isGamingPlayer(player)
-                    && !UHCPermission.BYPASS_JOIN_STARTED.hasPerm(player))
+            if (!gamingPlayer
+                    && !e.hasPermission(UHCPermission.BYPASS_JOIN_STARTED))
                 disallow(Messages.Kick.GAME_STARTED);
         }
     }

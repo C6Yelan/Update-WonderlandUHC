@@ -49,6 +49,7 @@ repositories {
 
 dependencies {
     compileOnly 'com.discordsrv:discordsrv:1.30.5'
+    compileOnly 'net.luckperms:api:5.5'
 
     compileOnly name: 'Chunky-Bukkit-1.4.40'
 

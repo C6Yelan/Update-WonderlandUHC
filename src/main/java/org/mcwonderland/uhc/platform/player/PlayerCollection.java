@@ -5,6 +5,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class PlayerCollection extends HashSet<String> {
 
@@ -43,8 +44,13 @@ public class PlayerCollection extends HashSet<String> {
     }
 
     public boolean contains(Player player) {
-        return stream().anyMatch(entry -> entry.equalsIgnoreCase(player.getName())
-                || entry.equalsIgnoreCase(player.getUniqueId().toString()));
+        return contains(player.getUniqueId(), player.getName());
+    }
+
+    public boolean contains(UUID uniqueId, String playerName) {
+        String uniqueIdText = uniqueId == null ? null : uniqueId.toString();
+        return stream().anyMatch(entry -> equalsIgnoreCase(entry, playerName)
+                || equalsIgnoreCase(entry, uniqueIdText));
     }
 
     public boolean contains(String nameOrUuid) {
@@ -54,5 +60,9 @@ public class PlayerCollection extends HashSet<String> {
             return contains(player);
 
         return stream().anyMatch(entry -> entry.equalsIgnoreCase(nameOrUuid));
+    }
+
+    private boolean equalsIgnoreCase(String a, String b) {
+        return a != null && b != null && a.equalsIgnoreCase(b);
     }
 }

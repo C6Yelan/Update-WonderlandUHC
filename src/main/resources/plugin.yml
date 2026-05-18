@@ -2,6 +2,7 @@ main: org.mcwonderland.uhc.WonderlandUHC
 name: WonderlandUHC
 version: ${pluginVersion}
 author: LU__LU
+depend: [ LuckPerms ]
 softdepend: [ Chunky, DiscordSRV ]
 api-version: 1.21
 

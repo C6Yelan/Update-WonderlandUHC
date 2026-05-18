@@ -37,7 +37,7 @@ public class PreparingLoginListener extends LoginListener {
             LoadingStatus loadingStatus = CacheSaver.getLoadingStatus();
 
             if (loadingStatus.isWaitingForHost()
-                    && !UHCPermission.BYPASS_JOIN_CONFIGURING.hasPerm(e.getPlayer()))
+                    && !e.hasPermission(UHCPermission.BYPASS_JOIN_CONFIGURING))
                 disallow(Messages.Kick.WAITING_HOST);
         }
     }
@@ -50,7 +50,7 @@ public class PreparingLoginListener extends LoginListener {
             if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE) {
                 boolean full = PluginPlayers.onlinePlayers().size() >= Game.getSettings().getMaxPlayers();
 
-                if (full && !UHCPermission.BYPASS_JOIN_CONFIGURING.hasPerm(e.getPlayer()))
+                if (full && !e.hasPermission(UHCPermission.BYPASS_JOIN_FULL))
                     disallow(Messages.Kick.FULL);
             }
         }

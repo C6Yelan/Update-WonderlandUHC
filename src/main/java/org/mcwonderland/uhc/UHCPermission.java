@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.util.Chat;
 
 public enum UHCPermission {
     BYPASS_JOIN_CONFIGURING,
+    BYPASS_JOIN_FULL,
     BYPASS_JOIN_STARTED,
     BYPASS_JOIN_WHITELIST,
     BYPASS_KICK_DEATH,

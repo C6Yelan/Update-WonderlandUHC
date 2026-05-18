@@ -169,6 +169,56 @@ Step 22 預設採用 LuckPerms 讓登入 gate 轉型成不依賴 Bukkit `Player`
 - `docs/steps.md` Step 22 進度更新。
 - 程式碼變更後依專案規則完成封裝、Paper `1.21.11` startup、`/uhc reload` 與 login gate 情境測試。
 
+## 目前進度
+
+更新日期：2026-05-18
+
+已確認決策：
+
+- LuckPerms 採 hard dependency；測試服與正式部署缺少 LuckPerms 時不做隱性降級。
+- 測試服已安裝 `LuckPerms-Bukkit-5.5.0.jar`，來源為 Modrinth Bukkit/Paper release，SHA-1 為 `7ac3319812ed36ba099dd258e512b7f07b4e4d4a`。
+- LuckPerms user load / permission query 失敗時採 fail closed，不因權限查詢失敗放行需要 bypass 的玩家。
+- 滿員 bypass 修正為獨立 `BYPASS_JOIN_FULL`，對應既有 `plugin.yml` 權限 `wonderland.uhc.bypass.join.full`。
+
+已完成實作：
+
+- `build.gradle` 新增 LuckPerms API `compileOnly` dependency。
+- `plugin.yml` 新增 `depend: [ LuckPerms ]`，保留 `Chunky` / `DiscordSRV` softdepend。
+- 新增 `LoginSubject` / `LoginPermissionService` 與薄 `LuckPermsLoginPermissionService`。
+- `LoginListener` 改監聽 Paper `PlayerConnectionValidateLoginEvent`，不再監聽 Bukkit `PlayerLoginEvent`。
+- `UHCLoginEvent` 不再建立新的 `UHCPlayer`；遊戲中重連 / 參賽者判斷改讀既有 `UHCPlayer`。
+- `WhitelistChecker` 改用 UUID / name 查詢，不再依賴 `PlayerCollection.contains(Player)`。
+- `PreparingLoginListener` 的滿員 gate 改用 `BYPASS_JOIN_FULL`。
+- `LuckPermsLoginPermissionService` 以 LuckPerms explicit allow / deny 為主；若 LuckPerms 沒有明確節點，才 fallback 到 Bukkit OP 名單，保留舊版 OP 管理繞過語意。
+
+已通過驗證：
+
+```bash
+rg -n "org\\.bukkit\\.event\\.player\\.PlayerLoginEvent|PlayerLoginEvent" src/main/java src/test/java
+bash scripts/package-plugin-1.21.sh
+bash scripts/deploy-to-windows-server.sh --server-dir "/mnt/c/Users/a0919/OneDrive/桌面/Minecraft local server/paper-1.21.11" --port 25567 --skip-build
+```
+
+Paper `1.21.11` 測試服已用 `start.bat` 啟動到 `Done`，`LuckPerms 5.5.0`、`Chunky`、`DiscordSRV` 與 `WonderlandUHC` 都有載入；console 執行 `uhc reload` 成功，`latest.log` 未出現 `ERROR`、`Exception`、`NoClassDefFoundError` 或 LuckPerms 查詢失敗訊息。
+
+真實玩家 login gate 驗收紀錄：
+
+- `C6Yelan` 為 Bukkit OP，LuckPerms 未明確 deny 時，可在 UHC 白名單開啟時進入；LuckPerms 明確設定 `wonderland.uhc.bypass.join.whitelist false` 時，會被 `目前白名單是開啟狀態。` 擋下。
+- `_SnYe` 非 OP、無 whitelist bypass 且不在 UHC 白名單時，會被 `目前白名單是開啟狀態。` 擋下。
+- `_SnYe` 具有 `wonderland.uhc.bypass.join.whitelist true` 時，可在白名單開啟時進入；改由 UHC 白名單放行時也可正常進入。
+- game state 為 configuring / waiting host 時，無 `wonderland.uhc.bypass.join.configuring` 會被 `遊戲設定中，請稍做等待。` 擋下；設定為 `true` 後可進入。
+- game state 為 done 且 `Max_Players: 1` 時，第二位玩家無 `wonderland.uhc.bypass.join.full` 會被 `遊戲人數已滿。` 擋下；設定為 `true` 後可進入。
+- game state 為 playing 時，非參賽玩家無 `wonderland.uhc.bypass.join.started` 會被 `遊戲已經開始了。` 擋下；設定為 `true` 後可進入。受限於測試帳號數量，started bypass 放行案例使用同一個測試帳號反覆登入，因此 join 後訊息會走既有重連 / 隊伍流程，但 login gate 的 deny / allow 已被驗收。
+- 遊戲中既有參賽者斷線重連可成功進入，未被 game started gate 擋下。
+
+驗收期間觀察到 `HorriblePlayerLoginEventHack` 提示 `LuckPerms` / `DiscordSRV` 仍監聽 `PlayerLoginEvent`；這是外部插件行為，`WonderlandUHC` production source 已無 `PlayerLoginEvent` 命中。`[Discord語音] 語音連線失敗` 訊息來自 DiscordSRV account link / voice reconnect 流程，非 Step 22 login gate 拒絕。
+
+Step 22 login gate 情境矩陣已完成；最後一次封裝、部署、Paper `1.21.11` startup、`/uhc reload` 與 log gate 已通過。
+
+驗收期間附帶修正：
+
+- Paper `1.21.11` 啟動後玩家登入暴露 `SimpleScores` team color setter 相容問題；本步驟只加入最小 fail-safe，避免 scoreboard 初始化因 `Team colors must have hex values` 中斷，不擴大成 scoreboard / team color model migration。完整 message / color format 收斂仍留在 Step 23。
+
 ## 不屬於 Step 22
 
 - `LegacyComponentSerializer` / `&` / `§` 訊息格式收斂：交給 Step 23。
