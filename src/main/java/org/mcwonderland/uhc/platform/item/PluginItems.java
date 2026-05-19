@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public final class PluginItems {
     private static final String MINI_MESSAGE_FORMAT_TAGS = "black|dark_blue|dark_green|dark_aqua|dark_red|dark_purple|gold|gray|dark_gray|blue|green|aqua|red|light_purple|yellow|white|obfuscated|bold|strikethrough|underlined|italic|reset|#[0-9a-f]{6}";
     private static final Pattern MINI_MESSAGE_FORMAT_PATTERN = Pattern.compile("(?i)</?(" + MINI_MESSAGE_FORMAT_TAGS + ")>");
-    private static final Map<String, String> LEGACY_MATERIAL_ALIASES = Map.of(
+    private static final Map<String, String> MATERIAL_NAME_ALIASES = Map.of(
             "CARROT_STICK", "CARROT_ON_A_STICK",
             "DIODE", "REPEATER",
             "EMPTY_MAP", "MAP",
@@ -135,7 +135,7 @@ public final class PluginItems {
         if (normalizedName.startsWith("MINECRAFT:"))
             normalizedName = normalizedName.substring("MINECRAFT:".length());
 
-        return LEGACY_MATERIAL_ALIASES.getOrDefault(normalizedName, normalizedName);
+        return MATERIAL_NAME_ALIASES.getOrDefault(normalizedName, normalizedName);
     }
 
     private static YamlConfiguration loadConfiguration(String fileName) {

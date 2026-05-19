@@ -26,14 +26,14 @@ public enum PluginColor {
 
     public static final List<PluginColor> SELECTABLE = List.of(values());
 
-    private static final char LEGACY_COLOR_CHAR = '\u00A7';
+    private static final char SECTION_COLOR_CHAR = '\u00A7';
 
-    private final char legacyCode;
+    private final char sectionCode;
     private final NamedTextColor textColor;
     private final Material woolMaterial;
 
-    PluginColor(char legacyCode, NamedTextColor textColor, Material woolMaterial) {
-        this.legacyCode = legacyCode;
+    PluginColor(char sectionCode, NamedTextColor textColor, Material woolMaterial) {
+        this.sectionCode = sectionCode;
         this.textColor = textColor;
         this.woolMaterial = woolMaterial;
     }
@@ -44,8 +44,8 @@ public enum PluginColor {
 
         String normalized = value.trim();
 
-        if (normalized.length() == 2 && (normalized.charAt(0) == '&' || normalized.charAt(0) == LEGACY_COLOR_CHAR))
-            return fromLegacyCodeOrDefault(normalized.charAt(1), fallback);
+        if (normalized.length() == 2 && (normalized.charAt(0) == '&' || normalized.charAt(0) == SECTION_COLOR_CHAR))
+            return fromSectionCodeOrDefault(normalized.charAt(1), fallback);
 
         try {
             return valueOf(normalized.toUpperCase(Locale.ROOT));
@@ -62,20 +62,20 @@ public enum PluginColor {
         return woolMaterial;
     }
 
-    public String legacyColor() {
-        return String.valueOf(LEGACY_COLOR_CHAR) + legacyCode;
+    public String sectionColor() {
+        return String.valueOf(SECTION_COLOR_CHAR) + sectionCode;
     }
 
     @Override
     public String toString() {
-        return legacyColor();
+        return sectionColor();
     }
 
-    private static PluginColor fromLegacyCodeOrDefault(char code, PluginColor fallback) {
+    private static PluginColor fromSectionCodeOrDefault(char code, PluginColor fallback) {
         char normalizedCode = Character.toLowerCase(code);
 
         for (PluginColor color : values())
-            if (color.legacyCode == normalizedCode)
+            if (color.sectionCode == normalizedCode)
                 return color;
 
         return fallback;

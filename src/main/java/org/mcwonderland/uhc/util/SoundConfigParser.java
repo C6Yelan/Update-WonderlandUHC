@@ -8,7 +8,7 @@ import java.util.Map;
 
 public final class SoundConfigParser {
 
-    private static final Map<String, String> LEGACY_SOUND_ALIASES = Map.ofEntries(
+    private static final Map<String, String> SOUND_NAME_ALIASES = Map.ofEntries(
             Map.entry("ANVIL_USE", "BLOCK_ANVIL_USE"),
             Map.entry("BURP", "ENTITY_PLAYER_BURP"),
             Map.entry("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG"),
@@ -82,7 +82,7 @@ public final class SoundConfigParser {
         if (normalizedName.startsWith("MINECRAFT:"))
             normalizedName = normalizedName.substring("MINECRAFT:".length());
 
-        return LEGACY_SOUND_ALIASES.getOrDefault(normalizedName, normalizedName);
+        return SOUND_NAME_ALIASES.getOrDefault(normalizedName, normalizedName);
     }
 
     private static String[] splitSoundLine(String soundLine) {

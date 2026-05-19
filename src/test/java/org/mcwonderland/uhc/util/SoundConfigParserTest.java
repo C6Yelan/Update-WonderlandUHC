@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class SoundConfigParserTest {
 
     @Test
-    public void legacySoundNamesResolveToModernBukkitSounds() {
+    public void soundAliasesResolveModernBukkitSounds() {
         assertEquals("ENTITY_GENERIC_DRINK 1.0F 1.0F", SoundConfigParser.normalizeSoundLine("DRINK 1.0F 1.0F"));
         assertEquals("ENTITY_PLAYER_LEVELUP 1.0F 1.0F", SoundConfigParser.normalizeSoundLine("LEVEL_UP 1.0F 1.0F"));
         assertEquals("ENTITY_PLAYER_BURP 1.0F 1.0F", SoundConfigParser.normalizeSoundLine("BURP 1.0F 1.0F"));

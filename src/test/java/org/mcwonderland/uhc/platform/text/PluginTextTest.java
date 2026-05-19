@@ -15,12 +15,12 @@ import static org.junit.Assert.assertNull;
 public class PluginTextTest {
 
     @Test
-    public void toComponentKeepsLegacyAmpersandLiteral() {
+    public void toComponentKeepsAmpersandColorCodesLiteral() {
         assertEquals("&AHello &cWorld", PlainTextComponentSerializer.plainText().serialize(PluginText.toComponent("&AHello &cWorld")));
     }
 
     @Test
-    public void toComponentReadsMiniMessageWhenNoLegacyCodes() {
+    public void toComponentReadsMiniMessageWhenNoAmpersandCodes() {
         assertEquals("Hello World", PlainTextComponentSerializer.plainText().serialize(PluginText.toComponent("<green>Hello <white>World")));
     }
 
@@ -42,7 +42,7 @@ public class PluginTextTest {
     }
 
     @Test
-    public void toComponentKeepsMiniMessageWhenPlaceholderValueHasLegacyColor() {
+    public void toComponentKeepsMiniMessageWhenPlaceholderValueHasAmpersandColor() {
         String message = PluginText.replaceToString("<gray>[{team}]</gray>", "{team}", "&aWonderland");
 
         assertEquals("[&aWonderland]", PlainTextComponentSerializer.plainText().serialize(PluginText.toComponent(message)));

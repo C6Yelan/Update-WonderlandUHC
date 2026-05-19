@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class ScenarioConfig {
 
-    private static final Map<String, String> LEGACY_MATERIAL_ALIASES = Map.of(
+    private static final Map<String, String> MATERIAL_NAME_ALIASES = Map.of(
             "COOKED_FISH", "COOKED_COD",
             "ENCHANTMENT_TABLE", "ENCHANTING_TABLE",
             "MUSHROOM_SOUP", "MUSHROOM_STEW",
@@ -177,7 +177,7 @@ public class ScenarioConfig {
     static String normalizeMaterialName(String materialName) {
         String normalizedName = normalizeNamespacedValue(materialName);
 
-        return LEGACY_MATERIAL_ALIASES.getOrDefault(normalizedName, normalizedName);
+        return MATERIAL_NAME_ALIASES.getOrDefault(normalizedName, normalizedName);
     }
 
     private static String normalizeNamespacedValue(String value) {

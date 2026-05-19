@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 @Setter
 public class UHCTeam {
     private static final Set<UHCTeam> teams = new HashSet<>();
-    private static final String LEGACY_BOLD = "\u00A7l";
+    private static final String SECTION_BOLD = "\u00A7l";
 
     @Setter(AccessLevel.PRIVATE)
     private UHCPlayer owner;
@@ -249,7 +249,7 @@ public class UHCTeam {
         prefix.append(color);
 
         if (Settings.Team.CHARACTER_BOLD_DEFAULT)
-            prefix.append(LEGACY_BOLD);
+            prefix.append(SECTION_BOLD);
 
         prefix.append(symbol + color + " ");
 

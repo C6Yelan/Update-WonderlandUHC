@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
 public class ScenarioConfigTest {
 
     @Test
-    public void materialAliasesResolveLegacyScenarioValues() {
+    public void materialAliasesResolveConfiguredScenarioValues() {
         assertEquals(Material.CRAFTING_TABLE, ScenarioConfig.parseMaterial("WORKBENCH", "Bench_Blitz", "Type"));
         assertEquals(Material.COBWEB, ScenarioConfig.parseMaterial("WEB", "Silk_Web", "Type"));
         assertEquals(Material.MUSHROOM_STEW, ScenarioConfig.parseMaterial("MUSHROOM_SOUP", "Soup", "Type"));
