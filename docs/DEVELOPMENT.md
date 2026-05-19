@@ -115,6 +115,12 @@ Java 注意事項：
 
 目前 1.21.11 server 可放入升級線 jar 做 smoke test；預期結果是 Paper server 進入 `Done` 並嘗試載入 WonderlandUHC，但插件仍會在 Foundation/NMS/SnakeYAML 相容性處停用。升級收斂完成前，這個 smoke test 用來確認 build/platform baseline，不能視為完整遊戲流程驗收。
 
+## 訊息格式維護
+
+Step 24 後，repo 預設訊息 resource 使用 MiniMessage。新增或修改文字設定時，請使用 `<red>...</red>`、`<bold>...</bold>` 這類 MiniMessage tag，不再新增 legacy `&c` / `§c` 色碼。`{placeholder}` 名稱、換行、click / hover 事件掛載流程、scoreboard line 長度限制與 item lore 語意要沿用既有呼叫點，不要為單一訊息新增全域 registry 或 YAML DSL。
+
+Runtime 不再 dual-read，也不再提供 legacy 設定檔轉換工具。若既有伺服器 data folder 仍含 `&` / `§` 色碼，請直接重置 resource 或人工改成 MiniMessage。
+
 ## 自動化可行性
 
 目前保留的腳本已自動化到「封裝、部署 jar」：

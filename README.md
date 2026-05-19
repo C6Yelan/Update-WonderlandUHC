@@ -17,6 +17,12 @@
 2. 參考教學影片系列安裝插件 [連結](https://www.youtube.com/playlist?list=PL86KqzDo7_n0Vkthb9I85hfS390i-4NPb)
 3. 開心遊玩！
 
+## 訊息格式
+
+升級線的預設訊息設定已改用 Adventure MiniMessage，例如 `<red>錯誤</red>`、`<gold><bold>標題</bold></gold>`。新增或修改 `commands.yml`、`messages.yml`、`gui.yml`、`items.yml`、`scoreboards.yml`、`scenarios.yml`、`settings.yml` 等文字時，必須使用 MiniMessage，並保留既有 `{placeholder}` 名稱。
+
+正式執行期不再支援舊 `&` / `§` 色碼格式，也不提供 legacy 設定檔轉換工具；既有伺服器 data folder 需要直接重置或人工改成 MiniMessage。
+
 ## 回報 Bug
 麻煩至 [issue](https://github.com/MCWonderland/WonderlandUHC/issues) 處回報 Bug，麻煩在回報過程請盡量提供完整敘述，若能**附上圖片**輔助說明，將能加速我們開發者更快抓到問題來源！
 
