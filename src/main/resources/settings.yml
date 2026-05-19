@@ -159,43 +159,15 @@ Game:
     - 60
     - 180
     - 300
-#舊版附魔系統
-#以UHC來說，許多伺服器會嚮往能夠有1.7附魔系統，因為1.7會隱藏附魔屬性
-#並且介面上顯示的等級，就等於你得花費的等級(顯示30等，就真的得花30等附魔一次)，而不像1.8以後只是扣3等加上3顆青金石而已
-#1.7附魔系統不但可以增加附魔的神秘與刺激性，更能讓玩家無法一直附魔(等級扣很重)，避免玩家裝備到最後太OP
-#當然，如果你希望保持正常的附魔系統，直接將以下選項全部關閉即可
-OldEnchant:
-  #當你打開附魔台介面，是否要自動填滿青金石?
-  Lapis: false
-  #是否要隱藏附魔屬性?讓玩家不知道會附到甚麼
-  Hide_Enchant: false
-  #讓玩家可以刷附魔選項，每次物品重新放上去，都會生成不同的附魔選項
-  Random_Enchant: false
-  #是否要讓螢幕上顯示的附魔數字，等於玩家附魔所要花費的等級?
-  Old_Enchant_Cost: false
-
 #中心點清理系統的相關數值(如果你不理解每個數值會造成甚麼影響，保持原樣即可！)
 CenterCleaner:
-  #以下舊版 pass/fail 掃描設定保留作為相容欄位；1.21 中心搜尋流程不再依賴 0,0 固定範圍白名單。
   #測試中心搜尋時，是否在每個候選中心開始評估時將主持人傳送到該中心預覽?
   Preview_During_Search: false
   #測試中心搜尋時，是否將每個候選中心的評分細節輸出到主持人聊天列?
   Debug_Search_Output: false
   #中心搜尋最多要評估幾個候選中心? 搜尋會在候選數用完後結束。
   Search_Candidate_Count: 15
-  #舊版 pass/fail 掃描欄位：1.21 中心搜尋流程目前不讀取，先保留給舊設定相容與後續設定遷移。
-  #是否允許中心點出現一些不方便PvP的生態域?(例如高山、沼澤....等等)
-  Allow_Bad_Biome: false
-  #偵測範圍 (100 指的是 x與z -100 ~ 100)
-  Range: 100
-  #以00為中心，方圓多少格內不能出現河流(方便PvP)
-  Check_River_In: 50
-  #以00為中心，方圓200格內地形高度最多能到多少?(避免中心點凹凸不平，或是出現高山)
-  Max_High: 90
-  #有些生態域雖然不是很方便PvP，卻也好像沒那麼差勁
-  #以下數值是偵測方圓200格內這種生態域的「方塊」(在MC中每個方塊其實都是屬於某種生態域)共能有多少個?
-  Bad_Biome_Limit: 13000
-  #生態域大小 (只在 1.12(含) 以前有用)
+  #自訂世界 generator settings JSON；只在伺服器版本支援時生效。
   Generator_Settings: '{"coordinateScale":684.412,"heightScale":684.412,"lowerLimitScale":512.0,"upperLimitScale":512.0,"depthNoiseScaleX":200.0,"depthNoiseScaleZ":200.0,"depthNoiseScaleExponent":0.5,"mainNoiseScaleX":80.0,"mainNoiseScaleY":160.0,"mainNoiseScaleZ":80.0,"baseSize":8.5,"stretchY":12.0,"biomeDepthWeight":1.0,"biomeDepthOffset":0.0,"biomeScaleWeight":1.0,"biomeScaleOffset":0.0,"seaLevel":63,"useCaves":true,"useDungeons":true,"dungeonChance":8,"useStrongholds":true,"useVillages":true,"useMineShafts":true,"useTemples":true,"useMonuments":true,"useRavines":true,"useWaterLakes":true,"waterLakeChance":4,"useLavaLakes":true,"lavaLakeChance":80,"useLavaOceans":false,"fixedBiome":-1,"biomeSize":2,"riverSize":4,"dirtSize":33,"dirtCount":10,"dirtMinHeight":0,"dirtMaxHeight":256,"gravelSize":33,"gravelCount":8,"gravelMinHeight":0,"gravelMaxHeight":256,"graniteSize":33,"graniteCount":10,"graniteMinHeight":0,"graniteMaxHeight":80,"dioriteSize":33,"dioriteCount":10,"dioriteMinHeight":0,"dioriteMaxHeight":80,"andesiteSize":33,"andesiteCount":10,"andesiteMinHeight":0,"andesiteMaxHeight":80,"coalSize":17,"coalCount":20,"coalMinHeight":0,"coalMaxHeight":128,"ironSize":9,"ironCount":20,"ironMinHeight":0,"ironMaxHeight":64,"goldSize":9,"goldCount":2,"goldMinHeight":0,"goldMaxHeight":32,"redstoneSize":8,"redstoneCount":8,"redstoneMinHeight":0,"redstoneMaxHeight":16,"diamondSize":8,"diamondCount":1,"diamondMinHeight":0,"diamondMaxHeight":16,"lapisSize":7,"lapisCount":1,"lapisCenterHeight":16,"lapisSpread":16}'
 
 ChunkLoading:

@@ -268,15 +268,6 @@ public class Messages extends PluginStaticConfig {
         public static String REQUIRES_LINKED_ACCOUNT;
     }
 
-    public static class Updater {
-        public static String CHECKING_UPDATES, UP_TO_DATE;
-        public static List<String> SUCCESS;
-
-        public static class Failed {
-            public static List<String> INTERNET, FILE_NOT_FOUND, IO_EXCEPTION;
-        }
-    }
-
     public static class Motd {
         public static String CONFIGURING;
         public static String WAITING;

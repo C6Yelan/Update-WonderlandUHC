@@ -122,13 +122,6 @@ public class Settings extends PluginStaticConfig {
         }
     }
 
-    public static class OldEnchant {
-        public static Boolean LAPIS;
-        public static Boolean HIDE_ENCHANT;
-        public static Boolean RANDOM_ENCHANT;
-        public static Boolean OLD_ENCHANT_COST;
-    }
-
     public static class CenterCleaner {
         public static Boolean PREVIEW_DURING_SEARCH;
         public static Boolean DEBUG_SEARCH_OUTPUT;
