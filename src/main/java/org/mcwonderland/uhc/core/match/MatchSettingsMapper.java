@@ -2,9 +2,9 @@ package org.mcwonderland.uhc.core.match;
 
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 
-public final class LegacyMatchSettingsMapper {
+public final class MatchSettingsMapper {
 
-    private LegacyMatchSettingsMapper() {
+    private MatchSettingsMapper() {
     }
 
     public static MatchSettings fromGameSettings(UHCGameSettings settings) {

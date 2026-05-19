@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Settings;
@@ -53,7 +53,7 @@ public final class SimpleScores {
 
         allScores.put(player.getUniqueId(), scores);
 
-        if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE)
+        if (WorldLoadingCacheState.getLoadingStatus() == LoadingStatus.DONE)
             updateFirstPreventDataMissing(scores);
     }
 

@@ -8,15 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * Legacy static facade kept for existing call sites.
- */
-public final class UHCGameSettingsSaver {
+public final class SavedGameSettingsCache {
 
     private static SavedGameSettingsStore store = new SavedGameSettingsStore();
     private static final Map<UUID, List<UHCGameSettings>> savedSettings = new HashMap<>();
 
-    private UHCGameSettingsSaver() {
+    private SavedGameSettingsCache() {
     }
 
     public static void reloadFromFile() {

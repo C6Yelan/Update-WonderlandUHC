@@ -4,7 +4,7 @@ import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
@@ -129,8 +129,8 @@ public final class ChunkPregenerationService {
     }
 
     private void saveAndRestart() {
-        CacheSaver.setLoadingStatus(LoadingStatus.DONE);
-        CacheSaver.saveCache();
+        WorldLoadingCacheState.setLoadingStatus(LoadingStatus.DONE);
+        WorldLoadingCacheState.saveCache();
         Extra.restartServer();
     }
 }

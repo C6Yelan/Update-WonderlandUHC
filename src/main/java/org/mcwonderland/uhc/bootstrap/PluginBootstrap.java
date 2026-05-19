@@ -4,9 +4,9 @@ import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameTimerRunnable;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
-import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
+import org.mcwonderland.uhc.game.settings.SavedGameSettingsCache;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.platform.paper.PaperPluginAssetPort;
@@ -103,7 +103,7 @@ public final class PluginBootstrap {
         scheduler.runLater(1, () -> {
             featureRegistry.registerDefaultScenarios();
             restoreWorldLoadingStatus();
-            UHCGameSettingsSaver.reloadFromFile();
+            SavedGameSettingsCache.reloadFromFile();
             logPluginEnabledMessage();
         });
     }
@@ -114,7 +114,7 @@ public final class PluginBootstrap {
     }
 
     public boolean isWorldLoadingDone() {
-        return CacheSaver.getLoadingStatus() == LoadingStatus.DONE;
+        return WorldLoadingCacheState.getLoadingStatus() == LoadingStatus.DONE;
     }
 
     public void applyTestModeSettings() {
@@ -126,16 +126,16 @@ public final class PluginBootstrap {
     }
 
     public void restoreWorldLoadingStatus() {
-        LoadingStatus loadingStatus = CacheSaver.getLoadingStatus();
-        Game.getGame().setHost(CacheSaver.getHost());
+        LoadingStatus loadingStatus = WorldLoadingCacheState.getLoadingStatus();
+        Game.getGame().setHost(WorldLoadingCacheState.getHost());
 
         if (!loadingStatus.shouldKeepGeneratedWorlds()) {
             BorderUtil.removeUHCWorldWBBorders();
             Extra.deleteWorld(UHCWorldUtils.getWorldName());
             Extra.deleteWorld(UHCWorldUtils.getNetherName());
         } else {
-            Game.changeSettings(CacheSaver.getSettings());
-            Game.getGame().setMatchCenter(CacheSaver.getMatchCenter());
+            Game.changeSettings(WorldLoadingCacheState.getSettings());
+            Game.getGame().setMatchCenter(WorldLoadingCacheState.getMatchCenter());
             createUhcWorldIfNotExist();
             checkNetherWorld();
             BorderUtil.setInitialBorders();

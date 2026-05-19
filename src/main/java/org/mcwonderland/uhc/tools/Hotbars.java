@@ -2,7 +2,7 @@ package org.mcwonderland.uhc.tools;
 
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.game.UHCTeam;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.tools.lobby.SettingsBook;
 import org.mcwonderland.uhc.tools.lobby.TeamSettingsItem;
@@ -21,7 +21,7 @@ public class Hotbars {
         if (UHCPermission.ITEM_SETTINGS.hasPerm(p))
             SettingsBook.getInstance().set(p);
 
-        if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE) {
+        if (WorldLoadingCacheState.getLoadingStatus() == LoadingStatus.DONE) {
             UHCTeam team = UHCTeam.getTeam(p);
             if (team != null) {
                 if (team.getOwner().getName().equals(p.getName()))

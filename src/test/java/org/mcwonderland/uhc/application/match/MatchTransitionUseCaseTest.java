@@ -30,6 +30,24 @@ public class MatchTransitionUseCaseTest {
     }
 
     @Test
+    public void transitionsCanBeSelectedFromSourceState() {
+        assertSame(MatchTransition.START_TELEPORTING, MatchTransition.fromSourceState(MatchState.WAITING));
+        assertSame(MatchTransition.FINISH_TELEPORTING, MatchTransition.fromSourceState(MatchState.TELEPORTING));
+        assertSame(MatchTransition.START_PLAYING, MatchTransition.fromSourceState(MatchState.PRE_START));
+        assertSame(MatchTransition.END_MATCH, MatchTransition.fromSourceState(MatchState.PLAYING));
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void endedMatchStateHasNoTransition() {
+        MatchTransition.fromSourceState(MatchState.ENDING);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void transitionSelectionRequiresSourceState() {
+        MatchTransition.fromSourceState(null);
+    }
+
+    @Test
     public void transitionFailsWhenCurrentStateDoesNotMatch() {
         UhcMatch match = UhcMatch.create();
         MatchTransitionUseCase useCase = new MatchTransitionUseCase();

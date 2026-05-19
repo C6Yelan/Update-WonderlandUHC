@@ -23,4 +23,15 @@ public enum MatchTransition {
     public MatchState getTargetState() {
         return targetState;
     }
+
+    public static MatchTransition fromSourceState(MatchState sourceState) {
+        if (sourceState == null)
+            throw new IllegalArgumentException("sourceState cannot be null.");
+
+        for (MatchTransition transition : values())
+            if (transition.sourceState == sourceState)
+                return transition;
+
+        throw new IllegalStateException("Match state " + sourceState + " does not have a transition.");
+    }
 }

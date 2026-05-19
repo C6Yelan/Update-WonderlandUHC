@@ -9,10 +9,10 @@ import java.util.LinkedHashSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class LegacyMatchSettingsMapperTest {
+public class MatchSettingsMapperTest {
 
     @Test
-    public void mapsLegacySettingsToMatchSettings() {
+    public void mapsGameSettingsToMatchSettings() {
         LinkedHashSet<String> scenarios = new LinkedHashSet<>();
         scenarios.add("cutclean");
         scenarios.add("noclean");
@@ -21,15 +21,15 @@ public class LegacyMatchSettingsMapperTest {
         teamSettings.setTeamSize(4);
         teamSettings.setAllowTeamFire(true);
 
-        UHCGameSettings legacySettings = new UHCGameSettings();
-        legacySettings.setTitle("Custom UHC");
-        legacySettings.setMaxPlayers(64);
-        legacySettings.setTeamSettings(teamSettings);
-        legacySettings.setUsingNether(true);
-        legacySettings.setGenerator("default");
-        legacySettings.setScenarios(scenarios);
+        UHCGameSettings gameSettings = new UHCGameSettings();
+        gameSettings.setTitle("Custom UHC");
+        gameSettings.setMaxPlayers(64);
+        gameSettings.setTeamSettings(teamSettings);
+        gameSettings.setUsingNether(true);
+        gameSettings.setGenerator("default");
+        gameSettings.setScenarios(scenarios);
 
-        MatchSettings settings = LegacyMatchSettingsMapper.fromGameSettings(legacySettings);
+        MatchSettings settings = MatchSettingsMapper.fromGameSettings(gameSettings);
 
         assertEquals("Custom UHC", settings.getTitle());
         assertEquals(64, settings.getMaxPlayers());
@@ -41,14 +41,14 @@ public class LegacyMatchSettingsMapperTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void legacySettingsCannotBeNull() {
-        LegacyMatchSettingsMapper.fromGameSettings(null);
+    public void gameSettingsCannotBeNull() {
+        MatchSettingsMapper.fromGameSettings(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void legacyTeamSettingsCannotBeNull() {
-        UHCGameSettings legacySettings = new UHCGameSettings();
+    public void gameTeamSettingsCannotBeNull() {
+        UHCGameSettings gameSettings = new UHCGameSettings();
 
-        LegacyMatchSettingsMapper.fromGameSettings(legacySettings);
+        MatchSettingsMapper.fromGameSettings(gameSettings);
     }
 }

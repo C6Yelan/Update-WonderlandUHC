@@ -5,10 +5,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.storage.WorldLoadingCache;
 import org.mcwonderland.uhc.storage.WorldLoadingCacheStore;
 
-/**
- * Legacy static facade kept for existing call sites.
- */
-public final class CacheSaver {
+public final class WorldLoadingCacheState {
 
     private static final WorldLoadingCacheStore store = new WorldLoadingCacheStore();
     private static UHCGameSettings settings;
@@ -20,7 +17,7 @@ public final class CacheSaver {
         loadCache(store.load());
     }
 
-    private CacheSaver() {
+    private WorldLoadingCacheState() {
     }
 
     public static UHCGameSettings getSettings() {
@@ -28,7 +25,7 @@ public final class CacheSaver {
     }
 
     public static void setSettings(UHCGameSettings settings) {
-        CacheSaver.settings = settings;
+        WorldLoadingCacheState.settings = settings;
     }
 
     public static LoadingStatus getLoadingStatus() {
@@ -36,7 +33,7 @@ public final class CacheSaver {
     }
 
     public static void setLoadingStatus(LoadingStatus loadingStatus) {
-        CacheSaver.loadingStatus = loadingStatus;
+        WorldLoadingCacheState.loadingStatus = loadingStatus;
     }
 
     public static String getHost() {
@@ -44,7 +41,7 @@ public final class CacheSaver {
     }
 
     public static void setHost(String host) {
-        CacheSaver.host = host;
+        WorldLoadingCacheState.host = host;
     }
 
     public static MatchCenter getMatchCenter() {
@@ -52,7 +49,7 @@ public final class CacheSaver {
     }
 
     public static void setMatchCenter(MatchCenter matchCenter) {
-        CacheSaver.matchCenter = matchCenter;
+        WorldLoadingCacheState.matchCenter = matchCenter;
     }
 
     public static void saveCache() {

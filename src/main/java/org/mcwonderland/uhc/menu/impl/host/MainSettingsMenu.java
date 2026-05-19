@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.application.match.MatchStartRequestService;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.platform.PlayerHand;
@@ -137,7 +137,7 @@ public class MainSettingsMenu extends PluginMenu {
         if (slot == getSection().getButtonSlot(SAVES_BUTTON))
             return getSection().getButtonItem(SAVES_BUTTON);
 
-        if (CacheSaver.getLoadingStatus() != LoadingStatus.DONE) {
+        if (WorldLoadingCacheState.getLoadingStatus() != LoadingStatus.DONE) {
             if (slot == getSection().getButtonSlot(GENERATE_MAP_BUTTON))
                 return getSection().getButtonItem(GENERATE_MAP_BUTTON);
         } else if (slot == getSection().getButtonSlot(START_BUTTON))
@@ -246,7 +246,7 @@ public class MainSettingsMenu extends PluginMenu {
             return;
         }
 
-        if (CacheSaver.getLoadingStatus() != LoadingStatus.DONE) {
+        if (WorldLoadingCacheState.getLoadingStatus() != LoadingStatus.DONE) {
             if (slot == getSection().getButtonSlot(GENERATE_MAP_BUTTON))
                 new CenterCleanerMenu().displayTo(player);
             return;
@@ -342,7 +342,7 @@ public class MainSettingsMenu extends PluginMenu {
 
         settings.setUsingNether(newStatus);
         Game.changeSettings(settings);
-        CacheSaver.saveCache();
+        WorldLoadingCacheState.saveCache();
         Chat.broadcast((newStatus ? Messages.Host.NETHER_ENABLED_PLAYER : Messages.Host.NETHER_DISABLED_PLAYER)
                 .replace("{player}", player.getName()));
         displayTo(player);

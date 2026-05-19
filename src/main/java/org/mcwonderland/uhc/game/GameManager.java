@@ -9,7 +9,7 @@ import org.mcwonderland.uhc.api.event.timer.GameEndEvent;
 import org.mcwonderland.uhc.core.match.MatchState;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.model.freeze.FreezeMode;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -73,7 +73,7 @@ public class GameManager {
         Game.getGame().endMatch();
         broadcastWinning(team);
         PluginEvents.callEvent(new GameEndEvent());
-        CacheSaver.deleteCache();
+        WorldLoadingCacheState.deleteCache();
     }
 
     private static void broadcastWinning(UHCTeam winner) {

@@ -21,7 +21,7 @@ import org.mcwonderland.uhc.application.world.CenterTerrainSample;
 import org.mcwonderland.uhc.application.world.CenterValidationService;
 import org.mcwonderland.uhc.application.world.CenterWorldSampleReader;
 import org.mcwonderland.uhc.application.world.MatchCenter;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.settings.Messages;
@@ -61,7 +61,7 @@ public class CenterCleaner {
 
                 WorldCreator creator = new WorldCreator(worldName);
                 applySeed(creator, seed);
-                applyLegacyGeneratorSettings(creator, centerCleanerEnabled);
+                applyConfiguredGeneratorSettings(creator, centerCleanerEnabled);
 
                 World uhcWorld = creator.createWorld();
 
@@ -93,7 +93,7 @@ public class CenterCleaner {
         }
     }
 
-    private static void applyLegacyGeneratorSettings(WorldCreator creator, boolean centerCleanerEnabled) {
+    private static void applyConfiguredGeneratorSettings(WorldCreator creator, boolean centerCleanerEnabled) {
         String generatorSettings = Settings.CenterCleaner.GENERATOR_SETTINGS;
 
         if (!centerCleanerEnabled
@@ -132,9 +132,9 @@ public class CenterCleaner {
     }
 
     private static void saveWorldReadyCache(Player player) {
-        CacheSaver.setLoadingStatus(LoadingStatus.WORLD_READY);
-        CacheSaver.setHost(player.getName());
-        CacheSaver.saveCache();
+        WorldLoadingCacheState.setLoadingStatus(LoadingStatus.WORLD_READY);
+        WorldLoadingCacheState.setHost(player.getName());
+        WorldLoadingCacheState.saveCache();
     }
 
     private static boolean previewDuringSearch() {

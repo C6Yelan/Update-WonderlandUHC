@@ -4,7 +4,7 @@ import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import org.bukkit.entity.Player;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.util.Extra;
@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 public final class PreviewWorldSelectionService {
 
     public void select(@Nullable Player host) {
-        if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE)
+        if (WorldLoadingCacheState.getLoadingStatus() == LoadingStatus.DONE)
             return;
 
         saveCaches(host);
@@ -23,12 +23,12 @@ public final class PreviewWorldSelectionService {
     }
 
     private void saveCaches(@Nullable Player host) {
-        CacheSaver.setLoadingStatus(LoadingStatus.GENERATING);
+        WorldLoadingCacheState.setLoadingStatus(LoadingStatus.GENERATING);
 
         if (host != null)
-            CacheSaver.setHost(host.getName());
+            WorldLoadingCacheState.setHost(host.getName());
 
-        CacheSaver.saveCache();
+        WorldLoadingCacheState.saveCache();
     }
 
     private void kickPlayers() {

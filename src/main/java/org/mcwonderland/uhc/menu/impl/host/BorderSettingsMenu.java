@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
@@ -201,7 +201,7 @@ public class BorderSettingsMenu extends PluginMenu {
     }
 
     private static void saveCurrentSettings() {
-        CacheSaver.saveCache();
+        WorldLoadingCacheState.saveCache();
     }
 
     private Integer parseInteger(String input) {

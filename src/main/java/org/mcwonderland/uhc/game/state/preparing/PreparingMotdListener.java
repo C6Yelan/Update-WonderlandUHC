@@ -1,7 +1,7 @@
 package org.mcwonderland.uhc.game.state.preparing;
 
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.state.share.MotdListener;
 import org.mcwonderland.uhc.platform.text.PluginText;
@@ -12,7 +12,7 @@ public class PreparingMotdListener extends MotdListener {
 
     @Override
     protected String getMotd() {
-        LoadingStatus loadingStatus = CacheSaver.getLoadingStatus();
+        LoadingStatus loadingStatus = WorldLoadingCacheState.getLoadingStatus();
 
         if (loadingStatus == LoadingStatus.DONE)
             return PluginText.replaceToString(

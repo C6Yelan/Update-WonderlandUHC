@@ -2,7 +2,7 @@ package org.mcwonderland.uhc.game.state.share.join;
 
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
@@ -17,7 +17,7 @@ public class DefaultJoinMessage implements JoinBehavior {
         Player player = e.getPlayer();
         Game game = e.getGame();
 
-        if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE) {
+        if (WorldLoadingCacheState.getLoadingStatus() == LoadingStatus.DONE) {
             Chat.send(player, PluginText.replaceToArray(
                     Messages.Lobby.WELCOME_MSG,
                     "{player}", player.getName(),

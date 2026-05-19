@@ -5,7 +5,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
-import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
+import org.mcwonderland.uhc.game.settings.SavedGameSettingsCache;
 import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
@@ -23,7 +23,7 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
     private static final int BACK_OFFSET = 1;
 
     protected SavedSettingsMenu(Player player) {
-        super(PluginMenuSection.of(SECTION), UHCGameSettingsSaver.getSavedSettings(player));
+        super(PluginMenuSection.of(SECTION), SavedGameSettingsCache.getSavedSettings(player));
     }
 
 
@@ -62,7 +62,7 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
     }
 
     private void replaceSettings(Player player, UHCGameSettings settings) {
-        List<UHCGameSettings> savedSettings = UHCGameSettingsSaver.getSavedSettings(player);
+        List<UHCGameSettings> savedSettings = SavedGameSettingsCache.getSavedSettings(player);
 
         savedSettings.set(savedSettings.indexOf(settings), Game.getSettings());
     }
@@ -104,13 +104,13 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
     }
 
     private void deleteSavedSettings(Player player, UHCGameSettings settings) {
-        UHCGameSettingsSaver.getSavedSettings(player).remove(settings);
-        UHCGameSettingsSaver.saveGameSettings(player);
+        SavedGameSettingsCache.getSavedSettings(player).remove(settings);
+        SavedGameSettingsCache.saveGameSettings(player);
     }
 
     private void saveCurrentSettings(Player player) {
-        UHCGameSettingsSaver.getSavedSettings(player).add(Game.getSettings().clone());
-        UHCGameSettingsSaver.saveGameSettings(player);
+        SavedGameSettingsCache.getSavedSettings(player).add(Game.getSettings().clone());
+        SavedGameSettingsCache.saveGameSettings(player);
     }
 
     private void refreshMenu(Player player) {

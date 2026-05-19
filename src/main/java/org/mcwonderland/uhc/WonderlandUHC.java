@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcwonderland.uhc.bootstrap.FeatureRegistry;
 import org.mcwonderland.uhc.bootstrap.PluginBootstrap;
-import org.mcwonderland.uhc.game.settings.UHCGameSettingsSaver;
+import org.mcwonderland.uhc.game.settings.SavedGameSettingsCache;
 import org.mcwonderland.uhc.practice.Practice;
 import org.mcwonderland.uhc.practice.SimplePractice;
 import org.mcwonderland.uhc.scenario.ScenarioManager;
@@ -80,7 +80,7 @@ public class WonderlandUHC extends JavaPlugin {
 
     private void reloadRuntimeState() {
         scenarioManager.reloadAll();
-        UHCGameSettingsSaver.reloadFromFile();
+        SavedGameSettingsCache.reloadFromFile();
     }
 
     private void startReloadableRuntime() {

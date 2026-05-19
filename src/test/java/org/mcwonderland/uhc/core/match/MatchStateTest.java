@@ -43,7 +43,7 @@ public class MatchStateTest {
     }
 
     @Test
-    public void statesAdvanceInLegacyLifecycleOrder() {
+    public void statesAdvanceInMatchLifecycleOrder() {
         assertSame(MatchState.TELEPORTING, MatchState.WAITING.nextState());
         assertSame(MatchState.PRE_START, MatchState.TELEPORTING.nextState());
         assertSame(MatchState.PLAYING, MatchState.PRE_START.nextState());

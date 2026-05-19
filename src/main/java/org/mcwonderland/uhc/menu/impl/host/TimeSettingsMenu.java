@@ -6,7 +6,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.sub.UHCTimerSettings;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
@@ -115,7 +115,7 @@ public class TimeSettingsMenu extends PluginMenu {
     }
 
     private static void saveCurrentSettings() {
-        CacheSaver.saveCache();
+        WorldLoadingCacheState.saveCache();
     }
 
     private static final class TimeInputSession {

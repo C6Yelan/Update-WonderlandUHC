@@ -5,7 +5,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.application.world.PreviewWorldGenerationService;
-import org.mcwonderland.uhc.game.settings.CacheSaver;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
@@ -29,7 +29,7 @@ public class RegenWorldCommand extends UHCSubCommand {
 
     @Override
     protected void onCommand() {
-        if (CacheSaver.getLoadingStatus() == LoadingStatus.DONE) {
+        if (WorldLoadingCacheState.getLoadingStatus() == LoadingStatus.DONE) {
             tell(Messages.Host.NOT_GENERATING);
             return;
         }

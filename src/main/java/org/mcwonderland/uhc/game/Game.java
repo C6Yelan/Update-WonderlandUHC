@@ -10,7 +10,7 @@ import org.mcwonderland.uhc.application.match.MatchTransition;
 import org.mcwonderland.uhc.application.match.MatchTransitionResult;
 import org.mcwonderland.uhc.application.match.MatchTransitionUseCase;
 import org.mcwonderland.uhc.application.world.MatchCenter;
-import org.mcwonderland.uhc.core.match.LegacyMatchSettingsMapper;
+import org.mcwonderland.uhc.core.match.MatchSettingsMapper;
 import org.mcwonderland.uhc.core.match.MatchRepository;
 import org.mcwonderland.uhc.core.match.MatchSettings;
 import org.mcwonderland.uhc.core.match.UhcMatch;
@@ -61,7 +61,7 @@ public class Game {
 
         this.currentState = this.states.remove();
         this.currentState.init();
-        this.matchRepository.setActiveMatch(UhcMatch.create(LegacyMatchSettingsMapper.fromGameSettings(this.settings)));
+        this.matchRepository.setActiveMatch(UhcMatch.create(MatchSettingsMapper.fromGameSettings(this.settings)));
     }
 
     public static UHCGameSettings getSettings() {
@@ -69,7 +69,7 @@ public class Game {
     }
 
     public static void changeSettings(UHCGameSettings newSettings) {
-        MatchSettings matchSettings = LegacyMatchSettingsMapper.fromGameSettings(newSettings);
+        MatchSettings matchSettings = MatchSettingsMapper.fromGameSettings(newSettings);
 
         game.settings = newSettings;
         game.matchCenter = game.withCurrentBorderSize(game.matchCenter);
@@ -110,7 +110,10 @@ public class Game {
     }
 
     public void nextState() {
-        MatchTransition transition = LegacyGameStateTransitions.transitionFor(this.currentState.getName());
+        if (this.states.isEmpty())
+            throw new IllegalStateException("Game does not have a queued state after " + this.currentState.getName() + ".");
+
+        MatchTransition transition = MatchTransition.fromSourceState(this.getActiveMatch().getState());
 
         this.currentState.end();
         this.currentState = states.remove();
