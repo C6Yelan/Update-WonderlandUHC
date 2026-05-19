@@ -10,6 +10,8 @@ import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.text.PluginColor;
 
+import java.util.Locale;
+
 public class ScoreboardSettingsMenu extends PluginMenu {
     private static final String SECTION = "Scoreboard";
     private static final String THEMES_BUTTON = "Themes";
@@ -32,7 +34,7 @@ public class ScoreboardSettingsMenu extends PluginMenu {
             return getSection().getButtonItem(UPDATE_TICKS_BUTTON, "{count}", scoreboardSettings.getScoreboardUpdateTick());
 
         if (slot == getSection().getButtonSlot(HEART_COLOR_BUTTON))
-            return getSection().getButtonItem(HEART_COLOR_BUTTON, "{color}", scoreboardSettings.getHeartColor());
+            return getSection().getButtonItem(HEART_COLOR_BUTTON, "{color}", scoreboardSettings.getHeartColor().name().toLowerCase(Locale.ROOT));
 
         return super.getItemAt(slot);
     }

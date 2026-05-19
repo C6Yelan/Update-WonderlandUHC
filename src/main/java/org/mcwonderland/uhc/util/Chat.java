@@ -21,9 +21,7 @@ public class Chat {
     }
 
     public void sendConversing(Player sender, String... messages) {
-        for (String message : messages) {
-            sender.sendRawMessage(PluginText.colorize(message));
-        }
+        send(sender, messages);
     }
 
     public void broadcast(String... messages) {

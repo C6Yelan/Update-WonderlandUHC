@@ -63,9 +63,11 @@ public class RolePlayerEvents implements RoleEventHandler {
 
             CombatRelog.setCombatRelog(uhcPlayer);
 
-            e.quitMessage(PluginText.toComponent(Messages.Game.PLAYER_DISCONNECT
-                    .replace("{player}", uhcPlayer.getTeam().getChatFormat() + uhcPlayer.getName())
-                    .replace("{time}", relogInMinutes + "")));
+            e.quitMessage(PluginText.toComponent(PluginText.replaceToString(
+                    Messages.Game.PLAYER_DISCONNECT,
+                    "{player}", uhcPlayer.getTeam().getChatFormat() + uhcPlayer.getName(),
+                    "{time}", relogInMinutes
+            )));
         }
     }
 

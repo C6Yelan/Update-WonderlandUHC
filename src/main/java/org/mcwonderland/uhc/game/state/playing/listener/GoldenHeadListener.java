@@ -21,9 +21,9 @@ public class GoldenHeadListener implements Listener {
     public void onEatGoldenHead(PlayerItemConsumeEvent e) {
         ItemStack item = e.getItem();
         Player player = e.getPlayer();
-        String name = getItemName(item);
+        Component name = getItemName(item);
 
-        if (name != null && name.equalsIgnoreCase(Settings.Misc.GOLDEN_HEAD_NAME)) {
+        if (name.equals(goldenHeadName())) {
             PluginScheduler.runLater(1, () -> {
                 if (!player.isOnline() || player.isDead())
                     return;
@@ -37,12 +37,16 @@ public class GoldenHeadListener implements Listener {
         }
     }
 
-    private String getItemName(ItemStack item) {
+    private Component getItemName(ItemStack item) {
         if (item == null || item.getItemMeta() == null)
-            return "";
+            return Component.empty();
 
         ItemMeta meta = item.getItemMeta();
         Component displayName = meta.displayName();
-        return displayName == null ? "" : PluginText.toLegacyString(displayName);
+        return displayName == null ? Component.empty() : displayName;
+    }
+
+    private Component goldenHeadName() {
+        return PluginText.toComponent(Settings.Misc.GOLDEN_HEAD_NAME);
     }
 }

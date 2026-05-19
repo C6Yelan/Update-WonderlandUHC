@@ -105,7 +105,7 @@ public class TimeSettingsMenu extends PluginMenu {
     private void startTimeInput(Player player, String prompt, String savedMessage, IntConsumer saveInput,
                                 IntSupplier currentTime) {
         if (inputSessions.containsKey(player.getUniqueId())) {
-            Chat.send(player, "&c目前已有正在等待的設定輸入。");
+            Chat.send(player, "<red>目前已有正在等待的設定輸入。</red>");
             return;
         }
 

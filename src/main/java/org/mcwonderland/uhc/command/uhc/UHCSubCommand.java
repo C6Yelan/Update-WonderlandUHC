@@ -16,7 +16,7 @@ import java.util.Locale;
 
 abstract class UHCSubCommand {
 
-    private static final String PLAYER_NOT_ONLINE = "&cPlayer {player} &cis not online on this server.";
+    private static final String PLAYER_NOT_ONLINE = "<red>Player {player} is not online on this server.</red>";
 
     private final List<String> labels;
     private String usage = "";
@@ -184,7 +184,7 @@ abstract class UHCSubCommand {
 
     private void tellUsage() {
         Chat.send(sender, CommandSettings.LABEL_USAGE);
-        Chat.send(sender, "&c/" + label + " " + getPrimaryLabel() + getUsageSuffix());
+        Chat.send(sender, "<red>/" + label + " " + getPrimaryLabel() + getUsageSuffix() + "</red>");
     }
 
     private static final class UHCCommandFailure extends RuntimeException {

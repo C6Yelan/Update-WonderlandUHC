@@ -1,10 +1,11 @@
 package org.mcwonderland.uhc.game.state.playing.listener;
 
-import org.mcwonderland.uhc.game.player.UHCPlayers;
-import org.mcwonderland.uhc.game.state.share.MotdListener;
-import org.mcwonderland.uhc.settings.Messages;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.mcwonderland.uhc.game.player.UHCPlayers;
+import org.mcwonderland.uhc.game.state.share.MotdListener;
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.settings.Messages;
 
 public class PlayingMotdListener extends MotdListener {
 
@@ -15,7 +16,9 @@ public class PlayingMotdListener extends MotdListener {
 
     @Override
     protected String getMotd() {
-        return Messages.Motd.PLAYING
-                .replace("{remaining}", UHCPlayers.countOf(uhcPlayer -> !uhcPlayer.isDead()) + "");
+        return PluginText.replaceToString(
+                Messages.Motd.PLAYING,
+                "{remaining}", UHCPlayers.countOf(uhcPlayer -> !uhcPlayer.isDead())
+        );
     }
 }

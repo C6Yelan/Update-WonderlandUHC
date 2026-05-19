@@ -94,14 +94,14 @@ public class GamePlaceholderReplacer {
                 builder.append("\n  - " + scenario.getFancyName());
         });
 
-        replace("{scenarios}", builder.toString());
+        replace("{scenarios}", PluginText.formatted(builder.toString()));
     }
 
     private void replaceItems() {
         UHCItemSettings itemSettings = settings.getItemSettings();
 
-        replace("{start-items}", formatItems(itemSettings.getCustomInventoryItems().getAllItems()));
-        replace("{custom-drops}", formatItems(itemSettings.getCustomDrops()));
+        replace("{start-items}", PluginText.formatted(formatItems(itemSettings.getCustomInventoryItems().getAllItems())));
+        replace("{custom-drops}", PluginText.formatted(formatItems(itemSettings.getCustomDrops())));
         replace("{disabled-items}", "disableitems");
     }
 
@@ -109,7 +109,7 @@ public class GamePlaceholderReplacer {
         Object replacement = to instanceof Boolean ? replaceBoolean(( Boolean ) to) : to;
 
         if (messages.contains(from))
-            messages = messages.replace(from, replacement.toString());
+            messages = PluginText.replaceToString(messages, from, replacement);
 
         return this;
     }
@@ -154,11 +154,11 @@ public class GamePlaceholderReplacer {
 
     private String getDisplayName(ItemMeta meta) {
         Component displayName = meta.displayName();
-        return displayName == null ? "" : PluginText.toLegacyString(displayName);
+        return displayName == null ? "" : PluginText.toMiniMessageString(displayName);
     }
 
 
-    private String replaceBoolean(boolean bool) {
-        return bool ? Messages.ENABLED : Messages.DISABLED;
+    private Object replaceBoolean(boolean bool) {
+        return PluginText.formatted(bool ? Messages.ENABLED : Messages.DISABLED);
     }
 }

@@ -54,8 +54,8 @@ public class MainSettingsMenu extends PluginMenu {
     private static final String SAVES_BUTTON = "Saves";
     private static final String GENERATE_MAP_BUTTON = "Generate_Map";
     private static final String START_BUTTON = "Start";
-    private static final String ENABLED_STATUS = "&aOn";
-    private static final String DISABLED_STATUS = "&cOff";
+    private static final Object ENABLED_STATUS = PluginText.formatted("<green>On</green>");
+    private static final Object DISABLED_STATUS = PluginText.formatted("<red>Off</red>");
     private static final String FINISH_INPUT = "finish";
     private static final String TO_HEAD_INPUT = "tohead";
 
@@ -284,19 +284,23 @@ public class MainSettingsMenu extends PluginMenu {
 
     private void startTitleInput(Player player, UHCGameSettings settings) {
         startInput(player, Messages.Editor.Text.Title.MESSAGE, (inputPlayer, input) -> {
-            String newTitle = PluginText.colorize(input);
-            String broadcastMessage = Messages.Editor.Text.Title.SAVED.replace("{title}", newTitle);
+            String newTitle = input;
+            String broadcastMessage = PluginText.replaceToString(
+                    Messages.Editor.Text.Title.SAVED,
+                    "{title}", newTitle,
+                    "{player}", inputPlayer.getName()
+            );
 
             inputSessions.remove(inputPlayer.getUniqueId());
             settings.setTitle(newTitle);
-            Chat.broadcast(broadcastMessage.replace("{player}", inputPlayer.getName()));
+            Chat.broadcast(broadcastMessage);
             Chat.sendConversing(inputPlayer, broadcastMessage);
         });
     }
 
     private void startInventoryEdit(Player player, InventorySaver.SaveType saveType, String prompt, String savedMessage) {
         if (inputSessions.containsKey(player.getUniqueId())) {
-            Chat.send(player, "&c目前已有正在等待的設定輸入。");
+            Chat.send(player, "<red>目前已有正在等待的設定輸入。</red>");
             return;
         }
 
@@ -346,7 +350,7 @@ public class MainSettingsMenu extends PluginMenu {
 
     private void startInput(Player player, String prompt, InputSession session) {
         if (inputSessions.containsKey(player.getUniqueId())) {
-            Chat.send(player, "&c目前已有正在等待的設定輸入。");
+            Chat.send(player, "<red>目前已有正在等待的設定輸入。</red>");
             return;
         }
 

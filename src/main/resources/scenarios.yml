@@ -1,71 +1,71 @@
 Armor_Vs_Health:
   Type: DIAMOND_CHESTPLATE
-  Name: "&c裝備的代價&7(ArmorVsHealth)"
+  Name: "<red>裝備的代價</red><gray>(ArmorVsHealth)</gray>"
   Description:
     - "玩家的裝備值每增加半格，最大血量便會扣除半格"
     - "且扣除的血量不會在玩家脫裝後恢復。"
   Apply_Within_Seconds_After_Respawned: 10
   Warn_Msg:
-    - "&4&m――――――――――――――――――――――――――――――――――――――――――――"
+    - "<dark_red><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></dark_red>"
     - " "
-    - "&c裝備代價的效果將會於 {fancy-time} 後生效"
-    - "&c請在時間內重新配置你的裝備。"
+    - "<red>裝備代價的效果將會於 {fancy-time} 後生效</red>"
+    - "<red>請在時間內重新配置你的裝備。</red>"
     - " "
-    - "&4&m――――――――――――――――――――――――――――――――――――――――――――"
+    - "<dark_red><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></dark_red>"
 Absorption_Less:
   Type: GOLD_NUGGET
-  Name: "&c無吸收&7(Absorptionless)"
+  Name: "<red>無吸收</red><gray>(Absorptionless)</gray>"
   Description:
     - "吃下金蘋果時，玩家將不會獲得額外的吸收血量。"
 Backpack:
   Type: ENDER_CHEST
-  Name: "&b隊伍背包&7(BackPack)"
+  Name: "<aqua>隊伍背包</aqua><gray>(BackPack)</gray>"
   Description:
     - "玩家可透過 /{cmd} 指令與隊友共享資源。"
-  Cant_Use_Msg: "&c本場次並沒有開啟隊伍背包，因此本指令無法使用。"
+  Cant_Use_Msg: "<red>本場次並沒有開啟隊伍背包，因此本指令無法使用。</red>"
   #隊伍背包的大小 (必須為 9 的倍數)
   Size: 27
 Bench_Blitz:
   Type: CRAFTING_TABLE
-  Name: "&2匠魂之心&7(BenchBlitz)"
+  Name: "<dark_green>匠魂之心</dark_green><gray>(BenchBlitz)</gray>"
   Description:
     - "整場遊戲，玩家只能製作一個工作台。"
-  Workbench_Created: "&7[&2匠魂之心&7] &c由於匠魂之心模式的限制，你無法製作超過一個工作台。"
+  Workbench_Created: "<gray>[<dark_green>匠魂之心</dark_green>]</gray> <red>由於匠魂之心模式的限制，你無法製作超過一個工作台。</red>"
   Workbench_Created_Sound: LEVEL_UP 1.0F 2.0F
 Blood_Diamonds:
   Type: DIAMOND
-  Name: "&4血鑽石&7(BloodDiamond)"
+  Name: "<dark_red>血鑽石</dark_red><gray>(BloodDiamond)</gray>"
   Description:
     - "每挖掘一個鑽石礦，玩家皆會扣除 {heal} 滴血。"
   #挖掘鑽石礦要扣除的血量
   Damage: 1
 Bow_Less:
   Type: BOW
-  Name: "&c無弓箭模式&7(Bowless)"
+  Name: "<red>無弓箭模式</red><gray>(Bowless)</gray>"
   Description:
     - "弓箭將無法使用。"
 Cut_Clean:
   Type: IRON_INGOT
-  Name: "&e礦物免燒&7(CutClean)"
+  Name: "<yellow>礦物免燒</yellow><gray>(CutClean)</gray>"
   Description:
     - "礦物將直接以錠的形式掉落，生物也會直接掉落烤熟的食物。"
 Damage_Dogers:
   Type: TNT
-  Name: "&4犧牲者&7(DamageDogers)"
+  Name: "<dark_red>犧牲者</dark_red><gray>(DamageDogers)</gray>"
   Description:
     - "遊戲中前 {amount} 位受到傷害的玩家，將會立即死亡。"
   #共有多少人要成為犧牲者
   Amount: 3
-  Death_Cause_This: "&7[&4犧牲者&7] &4&l{player} &c&l成為了本場次的犧牲者，目前犧牲者仍然還缺 &4&l{amount} &c&l位。"
+  Death_Cause_This: "<gray>[<dark_red>犧牲者</dark_red>]</gray> <dark_red><bold>{player}</bold></dark_red> <red><bold>成為了本場次的犧牲者，目前犧牲者仍然還缺 </bold></red><dark_red><bold>{amount}</bold></dark_red> <red><bold>位。</bold></red>"
   Death_Cause_This_Sound: CLICK 1.0F 1.0F
 Diamond_Less:
   Type: DIAMOND_ORE
-  Name: "&c無鑽石模式&7(DiamondLess)"
+  Name: "<red>無鑽石模式</red><gray>(DiamondLess)</gray>"
   Description:
     - "你無法挖掘鑽石，但可以透過箱子找到的鑽石製作物品。"
 Double_Or_Nothing:
   Type: BONE
-  Name: "&e得失參半&7(DoubleOrNothing)"
+  Name: "<yellow>得失參半</yellow><gray>(DoubleOrNothing)</gray>"
   Description:
     - "以下方塊可能會掉落以雙倍數量掉落，或者一無所有。"
     - "{materials}"
@@ -76,66 +76,66 @@ Double_Or_Nothing:
   Nothing_Sound: CHICKEN_EGG_POP 1.0F 1.0F
 Fast_Obsidian:
   Type: OBSIDIAN
-  Name: "&e脆弱黑石&7(FastObsidian)"
+  Name: "<yellow>脆弱黑石</yellow><gray>(FastObsidian)</gray>"
   Description:
     - "黑曜石的挖掘速度將會提升。"
 Fast_Smelting:
   Type: FURNACE
-  Name: "&e快速燒烤&7(FastSmelting)"
+  Name: "<yellow>快速燒烤</yellow><gray>(FastSmelting)</gray>"
   Description:
     - "熔爐燒製的速度將會加倍。"
 Fire_Less:
   Type: FLINT_AND_STEEL
-  Name: "&6抗火&7(Fireless)"
+  Name: "<gold>抗火</gold><gray>(Fireless)</gray>"
   Description:
     - "岩漿及任何火焰不會對玩家產生任何傷害。"
 Food_Neophobia:
   Type: COOKED_COD
-  Name: "&2貫徹始終&7(Foodneophobia)"
+  Name: "<dark_green>貫徹始終</dark_green><gray>(Foodneophobia)</gray>"
   Description:
     - "玩家整場遊戲，只能食用第一次吃下的東西。"
     - "(藥水，金蘋果，牛奶除外)"
-  First_Eat: "&7[&2貫徹始終&7] &c&l注意，貫徹始終模式的效果，從今以後你只能食用 &6&l{foodtype}&c&l。"
-  Just_Can_Eat: "&7[&2貫徹始終&7] &c由於本場的貫徹始終效果限制，你無法食用其他類別食物，你只能食用 &6{foodtype}&c。"
+  First_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red><bold>注意，貫徹始終模式的效果，從今以後你只能食用 </bold></red><gold><bold>{foodtype}</bold></gold><red><bold>。</bold></red>"
+  Just_Can_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red>由於本場的貫徹始終效果限制，你無法食用其他類別食物，你只能食用 </red><gold>{foodtype}</gold><red>。</red>"
   First_Eat_Sound: NOTE_BASS 1.0F 1.0F
   Just_Can_Eat_Sound: CLICK 1.0F 1.0F
 Gold_Less:
   Type: GOLD_ORE
-  Name: "&c無黃金模式&7(Goldless)"
+  Name: "<red>無黃金模式</red><gray>(Goldless)</gray>"
   Description:
     - "你無法挖掘黃金，但可以透過箱子找到的黃金製作物品。"
 Hasty_Boys:
   Type: GOLDEN_PICKAXE
-  Name: "&e工具人&7(HastyBoys)"
+  Name: "<yellow>工具人</yellow><gray>(HastyBoys)</gray>"
   Description:
     - "所有工具在合成時，都會自帶效率III。"
 Horse_Less:
   Type: SADDLE
-  Name: "&c時速限制&7(Horseless)"
+  Name: "<red>時速限制</red><gray>(Horseless)</gray>"
   Description:
     - "你無法騎馬。"
 Iron_Man:
   Type: IRON_CHESTPLATE
-  Name: "&b鋼鐵人&7(IronMan)"
+  Name: "<aqua>鋼鐵人</aqua><gray>(IronMan)</gray>"
   Description:
     - "只要在最終回血之前沒有受傷，即可增加額外的 {heal} 滴血。(最大血量)"
   #鋼鐵人要額外給予多少血量
   Extra_Heal: 4
-  Damage_Before_Final_Heal: "&7[&b鋼鐵人&7] &c&l由於你在最終回血前受傷了，因此你錯失了成為鋼鐵人的機會。"
+  Damage_Before_Final_Heal: "<gray>[<aqua>鋼鐵人</aqua>]</gray> <red><bold>由於你在最終回血前受傷了，因此你錯失了成為鋼鐵人的機會。</bold></red>"
 Less_Bow_Damage:
   Type: BOW
-  Name: "&b弓箭減傷&7(LessBowDamage)"
+  Name: "<aqua>弓箭減傷</aqua><gray>(LessBowDamage)</gray>"
   Description:
     - "弓箭的傷害將會降低 {percent}%。"
   #減傷程度 (%)
   Decrease_Percent: 50
 Limitations:
   Type: BARRIER
-  Name: "&2礦物限量&7(Limitations)"
+  Name: "<dark_green>礦物限量</dark_green><gray>(Limitations)</gray>"
   Description:
     - "每場遊戲，你最多只能挖掘 {diamond-limit} 個鑽石、{gold-limit} 個黃金及 {iron-limit} 個鐵礦。"
-  Reached_Limit: "&7[&2礦物限量&7] &c抱歉，你最多只能挖掘 {amount} 個 {block}。"
-  Cant_Mine_More: "&7[&2礦物限量&7] &c&l你已達到 &6&l{block} &c&l的挖掘上限 ({amount}個)，從現在起你將無法再從此方塊獲得任何掉落物。"
+  Reached_Limit: "<gray>[<dark_green>礦物限量</dark_green>]</gray> <red>抱歉，你最多只能挖掘 {amount} 個 {block}。</red>"
+  Cant_Mine_More: "<gray>[<dark_green>礦物限量</dark_green>]</gray> <red><bold>你已達到 </bold></red><gold><bold>{block}</bold></gold> <red><bold>的挖掘上限 ({amount}個)，從現在起你將無法再從此方塊獲得任何掉落物。</bold></red>"
   Reached_Limit_Sound: CLICK 1.0F 1.0F
   Cant_Mine_More_Sound: NOTE_BASS 1.0F 1.0F
   #礦物的限制數量
@@ -145,76 +145,76 @@ Limitations:
     Diamond: 16
 Lucky_Leaves:
   Type: DEAD_BUSH
-  Name: "&e藏金於樹&7(LuckyLeaves)"
+  Name: "<yellow>藏金於樹</yellow><gray>(LuckyLeaves)</gray>"
   Description:
     - "金蘋果將有 {percent}% 的機率從樹上掉落。"
   #金蘋果掉落機率
   Golden_Apple_Percent: 1
 No_Clean:
   Type: APPLE
-  Name: "&b撿頭防止機制&7(NoClean)"
+  Name: "<aqua>撿頭防止機制</aqua><gray>(NoClean)</gray>"
   Description:
     - "每擊殺一位玩家，玩家都會擁有 {fancy-time} 的無敵時間。"
   #無敵時間
   Invincible_Seconds: 15
 No_Enchant:
   Type: ENCHANTING_TABLE
-  Name: "&c符文殺手&7(NoEnchant)"
+  Name: "<red>符文殺手</red><gray>(NoEnchant)</gray>"
   Description:
     - "玩家將無法附魔。"
 No_Fall:
   Type: FEATHER
-  Name: "&e掉落免傷&7(NoFall)"
+  Name: "<yellow>掉落免傷</yellow><gray>(NoFall)</gray>"
   Description:
     - "玩家將不會受到任何摔落傷害。"
 Potion_Less:
   Type: POTION
-  Name: "&c無藥水模式&7(Potionless)"
+  Name: "<red>無藥水模式</red><gray>(Potionless)</gray>"
   Description:
     - "你無法使用/製作任何藥水。"
 Rod_Less:
   Type: FISHING_ROD
-  Name: "&c無釣竿模式&7(Rodless)"
+  Name: "<red>無釣竿模式</red><gray>(Rodless)</gray>"
   Description:
     - "玩家將無法使用釣竿。"
 Shift_Kill:
   Type: LEATHER_BOOTS
-  Name: "&b殺手之心&7(ShiftKill)"
+  Name: "<aqua>殺手之心</aqua><gray>(ShiftKill)</gray>"
   Description:
     - "玩家若沒有在蹲下的狀態擊殺他人"
     - "將會扣除當時血量一半的生命值。"
 Silk_Web:
   Type: COBWEB
-  Name: "&e絲綢之網&7(SilkWeb)"
+  Name: "<yellow>絲綢之網</yellow><gray>(SilkWeb)</gray>"
   Description:
     - "使用剪刀破壞蜘蛛網將會直接掉落蜘蛛網。"
     - "(如果關閉，使用任何工具挖掘都只會掉落線)"
 Soup:
   Type: MUSHROOM_STEW
-  Name: "&b濃湯&7(Soup)"
+  Name: "<aqua>濃湯</aqua><gray>(Soup)</gray>"
   Description:
     - "右鍵點擊蘑菇湯，將會立即回復 {heal} 滴血。"
   #一碗湯能恢復多少血量
   Regen_Health: 7
 Swap_Inventory:
   Type: IRON_CHESTPLATE
-  Name: "&b生死之交&7(SwapInventory)"
+  Name: "<aqua>生死之交</aqua><gray>(SwapInventory)</gray>"
   Description:
     - "玩家將會與被擊殺的人交換裝備及背包物品。"
 Switcheroo:
   Type: ENDER_PEARL
-  Name: "&b飄疑不定&7(Switcheroo)"
+  Name: "<aqua>飄疑不定</aqua><gray>(Switcheroo)</gray>"
   Description:
     - "玩家將會與被射中的人交換位置。"
   Switch_Sound: ENDERMAN_TELEPORT 1.0F 1.0F
 Timber:
   Type: OAK_SAPLING
-  Name: "&e快速伐木&7(Timber)"
+  Name: "<yellow>快速伐木</yellow><gray>(Timber)</gray>"
   Description:
     - "只需挖掘一塊木頭，整棵樹就會直接被破壞。"
 Time_Bomb:
   Type: CHEST
-  Name: "&b死亡棺材&7(TimeBomb)"
+  Name: "<aqua>死亡棺材</aqua><gray>(TimeBomb)</gray>"
   Description:
     - "玩家死亡時，會將所有物品裝入大箱子中"
     - "並於 {fancy-time} 後爆炸。"
@@ -224,31 +224,31 @@ Time_Bomb:
   Explode_Blocks: false
   #爆炸威力
   Explosion_Power: 3
-  Exploded: "&8[&c死亡棺材&8] &7{player} &7的棺材爆炸了。"
+  Exploded: "<dark_gray>[<red>死亡棺材</red>]</dark_gray> <gray>{player} 的棺材爆炸了。</gray>"
   Warn_Sound: LEVEL_UP 2.0F 2.0F
   Warn_Sound_Danger: LEVEL_UP 2.0F 5.0F
 Triple_Arrow:
   Type: ARROW
-  Name: "&b三矢弓模式&7(TripleArrow)"
+  Name: "<aqua>三矢弓模式</aqua><gray>(TripleArrow)</gray>"
   Description:
     - "一次射擊會同時發射三發箭矢。"
 Triple_Ores:
   Type: LAPIS_ORE
-  Name: "&e三倍礦物&7(TripleOres)"
+  Name: "<yellow>三倍礦物</yellow><gray>(TripleOres)</gray>"
   Description:
     - "礦物掉落量將乘以 3 倍。"
 Vanilla_Plus:
   Type: FLINT
-  Name: "&e豐收&7(VanillaPlus)"
+  Name: "<yellow>豐收</yellow><gray>(VanillaPlus)</gray>"
   Description:
     - "礫石掉落碎石的機率將會加倍。"
 Vein_Miners:
   Type: DIAMOND_PICKAXE
-  Name: "&e連鎖挖礦&7(VeinMiners)"
+  Name: "<yellow>連鎖挖礦</yellow><gray>(VeinMiners)</gray>"
   Description:
     - "只要挖掘一個礦物，與其相連的礦物也會跟著被破壞。"
 Fragile_Rods:
   Type: FISHING_ROD
-  Name: "&c腐蝕釣竿&7(FragileRods)"
+  Name: "<red>腐蝕釣竿</red><gray>(FragileRods)</gray>"
   Description:
     - "只要釣竿「甩出去」，就會扣一次耐久度"

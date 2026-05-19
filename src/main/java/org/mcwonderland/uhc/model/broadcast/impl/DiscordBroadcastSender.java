@@ -7,6 +7,7 @@ import github.scarsz.discordsrv.util.DiscordUtil;
 import org.mcwonderland.uhc.Dependency;
 import org.mcwonderland.uhc.model.broadcast.AbstractBroadcastSender;
 import org.mcwonderland.uhc.model.broadcast.BroadcastDeliveryException;
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 import java.util.EnumSet;
 import java.util.List;
@@ -29,7 +30,7 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
     @Override
     protected void send(List<String> messages) {
         if (!DiscordSRV.isReady)
-            throw new BroadcastDeliveryException("&cDiscordSRV 尚未完成啟動，請稍後再試。");
+            throw new BroadcastDeliveryException("<red>DiscordSRV 尚未完成啟動，請稍後再試。</red>");
 
         channelIds.forEach(channel -> {
             TextChannel textChannel = DiscordUtil.getTextChannelById(channel);
@@ -48,7 +49,9 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
                                 Message.MentionType.EVERYONE))
                         .complete();
             } catch (RuntimeException e) {
-                throw new BroadcastDeliveryException("&cDiscord公告發送失敗: " + e.getMessage());
+                throw new BroadcastDeliveryException(PluginText.replaceToString(
+                        "<red>Discord公告發送失敗: {error}</red>",
+                        "{error}", e.getMessage()));
             }
         });
     }

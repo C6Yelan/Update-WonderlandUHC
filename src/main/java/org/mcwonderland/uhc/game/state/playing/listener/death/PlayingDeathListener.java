@@ -96,8 +96,7 @@ public class PlayingDeathListener implements Listener {
             return;
 
         Integer seconds = Settings.Spectator.DEATH_KICK_SECONDS;
-        Chat.send(player, Messages.Spectator.NO_PERM_TO_SPEC
-                .replace("{time}", "" + seconds));
+        Chat.send(player, PluginText.replaceTimeToString(Messages.Spectator.NO_PERM_TO_SPEC, seconds));
 
         PluginScheduler.runLater(seconds * 20, () -> {
             PluginPlayers.kick(

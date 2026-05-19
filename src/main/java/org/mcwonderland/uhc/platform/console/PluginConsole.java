@@ -1,18 +1,17 @@
 package org.mcwonderland.uhc.platform.console;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.regex.Pattern;
 import java.util.logging.Level;
 
 public final class PluginConsole {
     private static final String LOG_PREFIX = "[WonderlandUHC]";
     private static final String CONSOLE_LINE = "!-----------------------------------------------------!";
     private static final String CONSOLE_LINE_SMOOTH = "______________________________________________________________";
-    private static final char LEGACY_COLOR_CHAR = '\u00A7';
-    private static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("(?i)" + LEGACY_COLOR_CHAR + "[0-9A-FK-ORX]");
 
     private PluginConsole() {
     }
@@ -29,12 +28,12 @@ public final class PluginConsole {
         if (messages == null || messages.length == 0)
             return;
 
-        log("&7" + CONSOLE_LINE);
+        log("<gray>" + CONSOLE_LINE + "</gray>");
 
         for (String message : messages)
-            log(" &c" + message);
+            log(" <red>" + message + "</red>");
 
-        log("&7" + CONSOLE_LINE);
+        log("<gray>" + CONSOLE_LINE + "</gray>");
     }
 
     public static void error(Throwable throwable, String... messages) {
@@ -45,7 +44,7 @@ public final class PluginConsole {
         Bukkit.getLogger().log(Level.SEVERE, LOG_PREFIX + " " + error, unwrapped);
 
         if (messages == null || messages.length == 0)
-            logFramed("&c" + error);
+            logFramed("<red>" + error + "</red>");
         else
             logFramed(replaceError(messages, error));
     }
@@ -69,11 +68,8 @@ public final class PluginConsole {
                 continue;
             }
 
-            String colorized = colorize(message);
-
-            for (String part : colorized.split("\n")) {
-                String line = (prefix(addPrefix) + part).trim();
-                console.sendMessage(line);
+            for (String part : message.split("\n")) {
+                console.sendMessage(Component.text(prefix(addPrefix)).append(PluginText.toComponent(part)));
             }
         }
     }
@@ -82,21 +78,8 @@ public final class PluginConsole {
         return addPrefix ? LOG_PREFIX + " " : "";
     }
 
-    private static String colorize(String message) {
-        char[] chars = message.toCharArray();
-
-        for (int i = 0; i < chars.length - 1; i++) {
-            if (chars[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx".indexOf(chars[i + 1]) > -1) {
-                chars[i] = LEGACY_COLOR_CHAR;
-                chars[i + 1] = Character.toLowerCase(chars[i + 1]);
-            }
-        }
-
-        return new String(chars);
-    }
-
     private static String stripColors(String message) {
-        return LEGACY_COLOR_PATTERN.matcher(colorize(message)).replaceAll("");
+        return PluginText.stripColors(message);
     }
 
     private static Throwable unwrap(Throwable throwable) {

@@ -14,8 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public final class PluginItems {
+    private static final String MINI_MESSAGE_FORMAT_TAGS = "black|dark_blue|dark_green|dark_aqua|dark_red|dark_purple|gold|gray|dark_gray|blue|green|aqua|red|light_purple|yellow|white|obfuscated|bold|strikethrough|underlined|italic|reset|#[0-9a-f]{6}";
+    private static final Pattern MINI_MESSAGE_FORMAT_PATTERN = Pattern.compile("(?i)</?(" + MINI_MESSAGE_FORMAT_TAGS + ")>");
     private static final Map<String, String> LEGACY_MATERIAL_ALIASES = Map.of(
             "CARROT_STICK", "CARROT_ON_A_STICK",
             "DIODE", "REPEATER",
@@ -78,7 +81,7 @@ public final class PluginItems {
             return item;
 
         if (name != null && !name.isEmpty())
-            meta.displayName(PluginText.toComponent("&r&f" + name));
+            meta.displayName(PluginText.toComponent(itemNameText(name)));
 
         if (lore != null && !lore.isEmpty())
             meta.lore(toLoreComponents(lore));
@@ -98,10 +101,22 @@ public final class PluginItems {
                 continue;
 
             for (String subLine : line.split("\n"))
-                components.add(PluginText.toComponent("&7" + subLine));
+                components.add(PluginText.toComponent(itemLoreText(subLine)));
         }
 
         return components;
+    }
+
+    private static String itemNameText(String name) {
+        return usesMiniMessage(name) ? name : "<reset><white>" + name + "</white>";
+    }
+
+    private static String itemLoreText(String lore) {
+        return usesMiniMessage(lore) ? lore : "<gray>" + lore + "</gray>";
+    }
+
+    private static boolean usesMiniMessage(String text) {
+        return MINI_MESSAGE_FORMAT_PATTERN.matcher(text).find();
     }
 
     private static Material parseMaterial(String materialName, String fileName, String path) {

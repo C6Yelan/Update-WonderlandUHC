@@ -21,12 +21,12 @@ public class UHCConfigTutorial extends Tutorial {
         @Override
         protected String[] getMessages() {
             return new String[]{
-                    "&6&l歡迎來到WonderlandUHC教學 - 設定部分",
+                    "<gold><bold>歡迎來到WonderlandUHC教學 - 設定部分</bold></gold>",
                     " ",
                     "以下將會教你如何從頭開始，完整設定出屬於自己的UHC。",
-                    "在進行過程中，你隨時可以輸入 &b&lexit &f來停止教學",
+                    "在進行過程中，你隨時可以輸入 <aqua><bold>exit</bold></aqua> <white>來停止教學</white>",
                     " ",
-                    "&e如果你已經準備好了，請輸入任意字元前往下個教學…"
+                    "<yellow>如果你已經準備好了，請輸入任意字元前往下個教學…</yellow>"
             };
         }
 
@@ -41,15 +41,15 @@ public class UHCConfigTutorial extends Tutorial {
         @Override
         protected String[] getMessages() {
             return new String[]{
-                    "首先，請透過輸入 &e/uhc edit &f來開啟設定介面。",
+                    "首先，請透過輸入 <yellow>/uhc edit</yellow> <white>來開啟設定介面。</white>",
                     " ",
                     "你會發現，設定介面有許多功能",
-                    "請你花個時間，&6由左上往右下一一點擊每個物品&f，並查看其功能使用方式。",
+                    "請你花個時間，<gold>由左上往右下一一點擊每個物品</gold><white>，並查看其功能使用方式。</white>",
                     " ",
-                    "了解插件的使用方式&6&l相當重要&f，在嘗試的過程來了解如何使用插件，&b&l日後遊戲主持起來方能得心應手",
-                    "還請你在此階段要&d&l保持耐心&f，仔細的閱讀每個物品的說明文字並嘗試調整看看。",
+                    "了解插件的使用方式<gold><bold>相當重要</bold></gold><white>，在嘗試的過程來了解如何使用插件，</white><aqua><bold>日後遊戲主持起來方能得心應手</bold></aqua>",
+                    "還請你在此階段要<light_purple><bold>保持耐心</bold></light_purple><white>，仔細的閱讀每個物品的說明文字並嘗試調整看看。</white>",
                     " ",
-                    "&e了解每個設定物品的用途後，請輸入任意字元前往下個教學..."
+                    "<yellow>了解每個設定物品的用途後，請輸入任意字元前往下個教學...</yellow>"
             };
         }
 
@@ -64,12 +64,12 @@ public class UHCConfigTutorial extends Tutorial {
         @Override
         protected String[] getMessages() {
             return new String[]{
-                    "&9到這裡有任何問題嗎?",
+                    "<blue>到這裡有任何問題嗎?</blue>",
                     " ",
-                    "如果不是很了解某些功能如何使用，歡迎至&b插件Discord社群&f向他人尋求協助。",
-                    "連結: &3https://discord.gg/pJ3RkP5",
+                    "如果不是很了解某些功能如何使用，歡迎至<aqua>插件Discord社群</aqua><white>向他人尋求協助。</white>",
+                    "連結: <dark_aqua>https://discord.gg/pJ3RkP5</dark_aqua>",
                     " ",
-                    "&e加入社群後，請輸入任意字元前往下個教學..."
+                    "<yellow>加入社群後，請輸入任意字元前往下個教學...</yellow>"
             };
         }
 
@@ -84,15 +84,15 @@ public class UHCConfigTutorial extends Tutorial {
         @Override
         protected String[] getMessages() {
             return new String[]{
-                    "接著，這邊想跟你隆重介紹設定頁面裡的&e&l模板功能",
+                    "接著，這邊想跟你隆重介紹設定頁面裡的<yellow><bold>模板功能</bold></yellow>",
                     " ",
-                    "如同該設定物品的說明文字所述，此功能可以&a儲存你設定好的模板&f，並於日後&a一鍵載入現在的設定&f。",
+                    "如同該設定物品的說明文字所述，此功能可以<green>儲存你設定好的模板</green><white>，並於日後</white><green>一鍵載入現在的設定</green><white>。</white>",
                     "如果你還未嘗試過，不仿現在使用看看吧！",
                     " ",
-                    "先使用 &e/uhc edit &f，再&e點擊模板物品&f來進入頁面",
-                    "最後點擊介面左下角的&2另存新檔&f物品來儲存模板。",
+                    "先使用 <yellow>/uhc edit</yellow> <white>，再</white><yellow>點擊模板物品</yellow><white>來進入頁面</white>",
+                    "最後點擊介面左下角的<dark_green>另存新檔</dark_green><white>物品來儲存模板。</white>",
                     " ",
-                    "&e嘗試過模板功能後，請輸入任意字元前往下個教學..."
+                    "<yellow>嘗試過模板功能後，請輸入任意字元前往下個教學...</yellow>"
             };
         }
 
@@ -107,12 +107,12 @@ public class UHCConfigTutorial extends Tutorial {
         @Override
         protected String[] getMessages() {
             return new String[]{
-                    "&e不錯！到目前為止你已經設定完你的第一場遊戲了",
+                    "<yellow>不錯！到目前為止你已經設定完你的第一場遊戲了</yellow>",
                     " ",
-                    "然而你現在所在的地方是&c大廳世界&f，並不能拿來玩UHC。",
-                    "所以請你&b點擊設定頁面右下角的物品&f，或是使用 &e/uhc regen &f來創建遊戲世界。",
+                    "然而你現在所在的地方是<red>大廳世界</red><white>，並不能拿來玩UHC。</white>",
+                    "所以請你<aqua>點擊設定頁面右下角的物品</aqua><white>，或是使用 </white><yellow>/uhc regen</yellow> <white>來創建遊戲世界。</white>",
                     " ",
-                    "&e世界創建完畢後，請輸入任意字元前往下個教學..."
+                    "<yellow>世界創建完畢後，請輸入任意字元前往下個教學...</yellow>"
             };
         }
 
@@ -127,13 +127,13 @@ public class UHCConfigTutorial extends Tutorial {
         @Override
         protected String[] getMessages() {
             return new String[]{
-                    "&6你滿意現在的世界嗎?",
+                    "<gold>你滿意現在的世界嗎?</gold>",
                     " ",
-                    "如果覺得中心點&c不夠平整，可以依照上面的文字所述，&6&l輸入指令重新生成世界&f，直到滿意為止。",
+                    "如果覺得中心點<red>不夠平整</red><white>，可以依照上面的文字所述，</white><gold><bold>輸入指令重新生成世界</bold></gold><white>，直到滿意為止。</white>",
                     " ",
-                    "&4&l注意！&c&l找到合適的世界後，別急著輸入指令載入地圖，這邊有些事情還沒交代給你，麻煩繼續把教學看完。",
+                    "<dark_red><bold>注意！</bold></dark_red><red><bold>找到合適的世界後，別急著輸入指令載入地圖，這邊有些事情還沒交代給你，麻煩繼續把教學看完。</bold></red>",
                     " ",
-                    "&e若已找到合適的世界，請輸入任意字元前往下個教學..."
+                    "<yellow>若已找到合適的世界，請輸入任意字元前往下個教學...</yellow>"
             };
         }
 
@@ -148,11 +148,11 @@ public class UHCConfigTutorial extends Tutorial {
         @Override
         protected String[] getMessages() {
             return new String[]{
-                    "&6&l恭喜你設定完成！現在可輸入指令開始生成地圖了。",
+                    "<gold><bold>恭喜你設定完成！現在可輸入指令開始生成地圖了。</bold></gold>",
                     " ",
-                    "屆時地圖載入完畢後，別忘了輸入 &b&l/uhc toturial host &f繼續下階段的教學！",
+                    "屆時地圖載入完畢後，別忘了輸入 <aqua><bold>/uhc toturial host</bold></aqua> <white>繼續下階段的教學！</white>",
                     " ",
-                    "&e&l本教學已告一段落。"
+                    "<yellow><bold>本教學已告一段落。</bold></yellow>"
             };
         }
 

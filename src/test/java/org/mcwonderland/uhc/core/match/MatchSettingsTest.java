@@ -16,7 +16,7 @@ public class MatchSettingsTest {
     public void defaultsProvideMinimalMatchSettings() {
         MatchSettings settings = MatchSettings.defaults();
 
-        assertEquals("&a&lWonderland&f&lUHC", settings.getTitle());
+        assertEquals("<green><bold>Wonderland</bold></green><white><bold>UHC</bold></white>", settings.getTitle());
         assertEquals(100, settings.getMaxPlayers());
         assertEquals(1, settings.getTeamSize());
         assertFalse(settings.isAllowTeamFire());

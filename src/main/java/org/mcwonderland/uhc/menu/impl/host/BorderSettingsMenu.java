@@ -191,7 +191,7 @@ public class BorderSettingsMenu extends PluginMenu {
 
     private void startInput(Player player, String prompt, InputSession session) {
         if (inputSessions.containsKey(player.getUniqueId())) {
-            Chat.send(player, "&c目前已有正在等待的設定輸入。");
+            Chat.send(player, "<red>目前已有正在等待的設定輸入。</red>");
             return;
         }
 

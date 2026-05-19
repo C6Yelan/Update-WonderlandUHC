@@ -213,8 +213,8 @@ public class ScenarioTimeBomb extends ConfigBasedScenario implements Listener {
 
         try {
             PluginConsole.logNoPrefix(
-                    "&e[WonderlandUHC] Scenario 'Time_Bomb' stored " + storedDropCount + " of " + originalDropCount + " death drops.",
-                    "&e[WonderlandUHC] Overflow drops were released at the death location."
+                    "<yellow>[WonderlandUHC] Scenario 'Time_Bomb' stored " + storedDropCount + " of " + originalDropCount + " death drops.</yellow>",
+                    "<yellow>[WonderlandUHC] Overflow drops were released at the death location.</yellow>"
             );
         } catch (RuntimeException | LinkageError ignored) {
         }

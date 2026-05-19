@@ -32,7 +32,7 @@ public class TutorialCommand extends UHCSubCommand {
                 return new UHCHostTutorial(getPlayer());
         }
 
-        returnTell("&c找不到此教學。");
+        returnTell("<red>找不到此教學。</red>");
         return null;
     }
 

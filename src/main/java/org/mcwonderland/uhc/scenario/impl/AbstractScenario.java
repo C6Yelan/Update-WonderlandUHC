@@ -86,7 +86,7 @@ public abstract class AbstractScenario implements Scenario {
             return name;
 
         Component displayName = icon.getItemMeta().displayName();
-        return displayName == null ? name : PluginText.toLegacyString(displayName);
+        return displayName == null ? name : PluginText.toMiniMessageString(displayName);
     }
 
     protected void onReload() {

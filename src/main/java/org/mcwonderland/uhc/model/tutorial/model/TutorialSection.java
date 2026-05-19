@@ -6,7 +6,7 @@ import org.mcwonderland.uhc.util.Chat;
 public abstract class TutorialSection {
 
     public static final TutorialSection END_TUTORIAL = null;
-    private static final String BOX_LINE = "&8-----------------------------------------------------";
+    private static final String BOX_LINE = "<dark_gray>-----------------------------------------------------</dark_gray>";
 
     protected void show(Player player) {
         Chat.send(player, BOX_LINE);

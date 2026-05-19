@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.model.broadcast.GameStartTimeInputSession;
 import org.mcwonderland.uhc.model.broadcast.impl.DiscordBroadcastSender;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 
@@ -37,9 +38,11 @@ public class BroadcastSettingsMenu extends PluginMenu {
 
     private void startDiscordBroadcast(Player player) {
         if (!Dependency.DISCORD_SRV.isHooked()) {
-            Chat.send(player, Messages.Dependency.REQUIRE_SOFT_DEPENDENCY
-                    .replace("{plugin}", Dependency.DISCORD_SRV.getPluginName())
-                    .replace("{url}", Dependency.DISCORD_SRV.getDownloadUrl()));
+            Chat.send(player, PluginText.replaceToString(
+                    Messages.Dependency.REQUIRE_SOFT_DEPENDENCY,
+                    "{plugin}", Dependency.DISCORD_SRV.getPluginName(),
+                    "{url}", Dependency.DISCORD_SRV.getDownloadUrl()
+            ));
             return;
         }
 
@@ -47,7 +50,7 @@ public class BroadcastSettingsMenu extends PluginMenu {
         GameStartTimeInputSession.start(player, info -> {
             try {
                 sender.sendBroadcast(info);
-                Chat.send(player, "&aDiscord 公告已送出。");
+                Chat.send(player, "<green>Discord 公告已送出。</green>");
             } catch (BroadcastDeliveryException e) {
                 Chat.send(player, e.getMessage());
             }

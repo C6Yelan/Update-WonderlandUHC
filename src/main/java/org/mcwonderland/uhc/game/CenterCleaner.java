@@ -104,10 +104,10 @@ public class CenterCleaner {
 
     private static void startCenterSearch(Player player, World world) {
         Chat.send(player, message(Messages.CenterCleaner.SEARCH_STARTED,
-                "&7[&a中心搜尋&7] &f正在評估同一張世界中的候選中心..."));
+                "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>正在評估同一張世界中的候選中心...</white>"));
         Location spawn = world.getSpawnLocation();
-        Chat.send(player, "&7[&a中心搜尋&7] &f搜尋基準: 世界重生點 X &a" + spawn.getBlockX() + " &fZ &a" + spawn.getBlockZ()
-                + " &7候選數 &a" + searchCandidateCount());
+        Chat.send(player, "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>搜尋基準: 世界重生點 X </white><green>" + spawn.getBlockX() + "</green><white> Z </white><green>" + spawn.getBlockZ()
+                + "</green> <gray>候選數 </gray><green>" + searchCandidateCount() + "</green>");
 
         new CenterSearchTask(player, world, initialBorderSize()).runTaskTimer(WonderlandUHC.getInstance(), 1L, 1L);
     }
@@ -155,13 +155,13 @@ public class CenterCleaner {
 
         if (score == null) {
             Chat.send(player, message(Messages.CenterCleaner.SEARCH_CANCELLED,
-                    "&7[&a中心搜尋&7] &c搜尋已取消，沒有可用結果。"));
+                    "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <red>搜尋已取消，沒有可用結果。</red>"));
             return;
         }
 
         MatchCenter center = score.getCenter();
         Chat.send(player, message(Messages.CenterCleaner.SEARCH_RESULT,
-                "&7[&a中心搜尋&7] &f結果: &a{status} &7分數: &f{score} &7中心: &fX {x}, Z {z} &7原因: &f{reasons}")
+                "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>結果: </white><green>{status}</green> <gray>分數: </gray><white>{score}</white> <gray>中心: </gray><white>X {x}, Z {z}</white> <gray>原因: </gray><white>{reasons}</white>")
                 .replace("{status}", result.getStatus().name())
                 .replace("{score}", formatScore(score.getTotalScore()))
                 .replace("{x}", center.getX() + "")
@@ -170,13 +170,13 @@ public class CenterCleaner {
 
         if (result.getStatus() == CenterSearchStatus.TIME_LIMITED)
             Chat.send(player, message(Messages.CenterCleaner.SEARCH_TIME_LIMITED,
-                    "&7[&a中心搜尋&7] &e搜尋達到時間限制，已使用目前最佳結果。"));
+                    "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <yellow>搜尋達到時間限制，已使用目前最佳結果。</yellow>"));
 
         Chat.send(player, result.shouldPregenerate()
-                ? message(Messages.CenterCleaner.SEARCH_RECOMMENDED, "&7[&a中心搜尋&7] &a此中心可作為目前預覽地圖。")
-                : message(Messages.CenterCleaner.SEARCH_NOT_RECOMMENDED, "&7[&a中心搜尋&7] &e此中心不建議直接跑圖，但已保留目前最佳結果供主持人預覽。"));
+                ? message(Messages.CenterCleaner.SEARCH_RECOMMENDED, "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <green>此中心可作為目前預覽地圖。</green>")
+                : message(Messages.CenterCleaner.SEARCH_NOT_RECOMMENDED, "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <yellow>此中心不建議直接跑圖，但已保留目前最佳結果供主持人預覽。</yellow>"));
         Chat.send(player, message(Messages.CenterCleaner.SEARCH_REGEN_HINT,
-                "&7如果不滿意目前預覽世界，可使用 &6/uhc regen &7重新搜尋，或使用 &6/uhc regen <seed> &7手動指定 seed。"));
+                "<gray>如果不滿意目前預覽世界，可使用 </gray><gold>/uhc regen</gold><gray> 重新搜尋，或使用 </gray><gold>/uhc regen <seed></gold><gray> 手動指定 seed。</gray>"));
     }
 
     private static String formatScore(double score) {
@@ -272,7 +272,7 @@ public class CenterCleaner {
 
         private static String progressMessage(int candidateIndex, int candidateCount, String stageText) {
             return message(Messages.CenterCleaner.SEARCH_PROGRESS,
-                    "&7中心搜尋: &f{current}&7/&f{total} &8- &a{stage}")
+                    "<gray>中心搜尋: </gray><white>{current}</white><gray>/</gray><white>{total}</white> <dark_gray>-</dark_gray> <green>{stage}</green>")
                     .replace("{current}", candidateIndex + "")
                     .replace("{total}", candidateCount + "")
                     .replace("{stage}", stageText);
@@ -407,7 +407,7 @@ public class CenterCleaner {
             player.teleport(previewLocation(world, center));
             player.setGameMode(GameMode.CREATIVE);
             Chat.send(player, message(Messages.CenterCleaner.SEARCH_PREVIEW,
-                    "&7[&a中心搜尋&7] &f已傳送到候選中心 &a{current}&7/&a{total}&7: &fX {x}, Z {z}")
+                    "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>已傳送到候選中心 </white><green>{current}</green><gray>/</gray><green>{total}</green><gray>: </gray><white>X {x}, Z {z}</white>")
                     .replace("{current}", (candidateIndex + 1) + "")
                     .replace("{total}", candidates.size() + "")
                     .replace("{x}", center.getX() + "")
@@ -523,36 +523,36 @@ public class CenterCleaner {
                 return;
 
             MatchCenter center = score.getCenter();
-            Chat.send(player, "&8&m--------------------------------------------------");
-            Chat.send(player, "&7[&a中心計算&7] &f候選 &a" + (candidateIndex + 1) + "&7/&a" + candidates.size()
-                    + " &7X &f" + center.getX() + " &7Z &f" + center.getZ()
-                    + " &7狀態 &f" + score.getStatus().name()
-                    + " &7總分 &f" + formatScore(score.getTotalScore()));
+            Chat.send(player, "<dark_gray><strikethrough>--------------------------------------------------</strikethrough></dark_gray>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>候選 </white><green>" + (candidateIndex + 1) + "</green><gray>/</gray><green>" + candidates.size()
+                    + "</green> <gray>X </gray><white>" + center.getX() + "</white> <gray>Z </gray><white>" + center.getZ()
+                    + "</white> <gray>狀態 </gray><white>" + score.getStatus().name()
+                    + "</white> <gray>總分 </gray><white>" + formatScore(score.getTotalScore()) + "</white>");
             if (quickRejected)
-                Chat.send(player, "&7[&a中心計算&7] &e正中心點為海洋生態域，已略過外圍詳掃。");
-            Chat.send(player, "&7[&a中心計算&7] &f加權1 &7水域 &b" + formatWeighted(score.getWaterScore(), CenterCandidateScore.waterWeight())
-                    + " &7地形 &6" + formatWeighted(score.getTerrainScore(), CenterCandidateScore.terrainWeight())
-                    + " &7區塊 &e" + formatWeighted(score.getSectionBalanceScore(), CenterCandidateScore.sectionBalanceWeight()));
-            Chat.send(player, "&7[&a中心計算&7] &f加權2 &7中心 &a" + formatWeighted(score.getCenterScore(), CenterCandidateScore.centerWeight())
-                    + " &7森林 &2" + formatWeighted(score.getForestScore(), CenterCandidateScore.forestWeight()));
-            Chat.send(player, "&7[&a中心計算&7] &f水域 &7海洋 &f" + formatPercent(score.getOceanRatio())
-                    + " &7河流/沼澤 &f" + formatPercent(score.getRiverRatio())
-                    + " &7總水域 &f" + formatPercent(score.getWaterRatio())
-                    + " &7中心水域 &f" + formatPercent(score.getCenterWaterRatio())
-                    + " &7中心大片水域 &f" + formatPercent(score.getCenterLargeWaterRatio()));
-            Chat.send(player, "&7[&a中心計算&7] &f水域分布 &7單區總水最高 &f" + formatPercent(score.getMaxSectionWaterRatio())
-                    + " &7相鄰總水最高 &f" + formatPercent(score.getMaxAdjacentSectionWaterRatio())
-                    + " &7單區大片水域 &f" + formatPercent(score.getMaxSectionLargeWaterRatio())
-                    + " &7相鄰大片水域 &f" + formatPercent(score.getMaxAdjacentSectionLargeWaterRatio()));
-            Chat.send(player, "&7[&a中心計算&7] &f地形 &7森林 &f" + formatPercent(score.getForestRatio())
-                    + " &7密林 &f" + formatPercent(score.getDenseForestRatio())
-                    + " &7高地 &f" + formatPercent(score.getHighlandRatio())
-                    + " &7極端高地 &f" + formatPercent(score.getExtremeHighlandRatio()));
-            Chat.send(player, "&7[&a中心計算&7] &f中心 &7可站立 &f" + formatPercent(score.getStandableRatio())
-                    + " &7斷崖 &f" + formatPercent(score.getCliffRatio())
-                    + " &7高度差 &f" + score.getCenterHeightSpread()
-                    + " &7低品質區塊 &f" + score.getLowSectionCount());
-            Chat.send(player, "&7[&a中心計算&7] &f扣分原因 &7" + formatReasons(score.getReasons()));
+                Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <yellow>正中心點為海洋生態域，已略過外圍詳掃。</yellow>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>加權1 </white><gray>水域 </gray><aqua>" + formatWeighted(score.getWaterScore(), CenterCandidateScore.waterWeight())
+                    + "</aqua> <gray>地形 </gray><gold>" + formatWeighted(score.getTerrainScore(), CenterCandidateScore.terrainWeight())
+                    + "</gold> <gray>區塊 </gray><yellow>" + formatWeighted(score.getSectionBalanceScore(), CenterCandidateScore.sectionBalanceWeight()) + "</yellow>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>加權2 </white><gray>中心 </gray><green>" + formatWeighted(score.getCenterScore(), CenterCandidateScore.centerWeight())
+                    + "</green> <gray>森林 </gray><dark_green>" + formatWeighted(score.getForestScore(), CenterCandidateScore.forestWeight()) + "</dark_green>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>水域 </white><gray>海洋 </gray><white>" + formatPercent(score.getOceanRatio())
+                    + "</white> <gray>河流/沼澤 </gray><white>" + formatPercent(score.getRiverRatio())
+                    + "</white> <gray>總水域 </gray><white>" + formatPercent(score.getWaterRatio())
+                    + "</white> <gray>中心水域 </gray><white>" + formatPercent(score.getCenterWaterRatio())
+                    + "</white> <gray>中心大片水域 </gray><white>" + formatPercent(score.getCenterLargeWaterRatio()) + "</white>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>水域分布 </white><gray>單區總水最高 </gray><white>" + formatPercent(score.getMaxSectionWaterRatio())
+                    + "</white> <gray>相鄰總水最高 </gray><white>" + formatPercent(score.getMaxAdjacentSectionWaterRatio())
+                    + "</white> <gray>單區大片水域 </gray><white>" + formatPercent(score.getMaxSectionLargeWaterRatio())
+                    + "</white> <gray>相鄰大片水域 </gray><white>" + formatPercent(score.getMaxAdjacentSectionLargeWaterRatio()) + "</white>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>地形 </white><gray>森林 </gray><white>" + formatPercent(score.getForestRatio())
+                    + "</white> <gray>密林 </gray><white>" + formatPercent(score.getDenseForestRatio())
+                    + "</white> <gray>高地 </gray><white>" + formatPercent(score.getHighlandRatio())
+                    + "</white> <gray>極端高地 </gray><white>" + formatPercent(score.getExtremeHighlandRatio()) + "</white>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>中心 </white><gray>可站立 </gray><white>" + formatPercent(score.getStandableRatio())
+                    + "</white> <gray>斷崖 </gray><white>" + formatPercent(score.getCliffRatio())
+                    + "</white> <gray>高度差 </gray><white>" + score.getCenterHeightSpread()
+                    + "</white> <gray>低品質區塊 </gray><white>" + score.getLowSectionCount() + "</white>");
+            Chat.send(player, "<gray>[</gray><green>中心計算</green><gray>]</gray> <white>扣分原因 </white><gray>" + formatReasons(score.getReasons()) + "</gray>");
         }
 
         private MatchCenter currentCenter() {

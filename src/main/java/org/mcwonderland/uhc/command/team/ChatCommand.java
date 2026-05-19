@@ -54,12 +54,14 @@ class ChatCommand extends TeamSubCommand {
     }
 
     private void sendTeamChat(UHCTeam team, UHCPlayer uhcPlayer) {
-        String msg = PluginText.colorize(joinArgs(0, args.length));
+        String msg = joinArgs(0, args.length);
 
-        team.sendMessage(Messages.ChatFormat.TEAM_CHAT
-                .replace("{teamname}", team.getName())
-                .replace("{color}", team.getColor() + "")
-                .replace("{player}", uhcPlayer.getName())
-                .replace("{msg}", msg));
+        team.sendMessage(PluginText.replaceToString(
+                Messages.ChatFormat.TEAM_CHAT,
+                "{teamname}", team.getName(),
+                "{color}", team.getColor(),
+                "{player}", uhcPlayer.getName(),
+                "{msg}", msg
+        ));
     }
 }

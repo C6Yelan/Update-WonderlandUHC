@@ -1,10 +1,13 @@
 package org.mcwonderland.uhc.platform.menu;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.platform.item.PluginItems;
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +52,12 @@ public abstract class PluginPagedMenu<T> extends PluginMenu {
     @Override
     protected final String getTitle() {
         String title = getSection().getTitle();
-        return hasMultiplePages() ? title + " &8" + currentPage + "/" + getTotalPages() : title;
+        if (!hasMultiplePages())
+            return title;
+
+        Component titleWithPage = PluginText.toComponent(title)
+                .append(Component.text(" " + currentPage + "/" + getTotalPages(), NamedTextColor.DARK_GRAY));
+        return PluginText.toMiniMessageString(titleWithPage);
     }
 
     @Override
@@ -87,14 +95,14 @@ public abstract class PluginPagedMenu<T> extends PluginMenu {
 
     private ItemStack createPreviousButton() {
         boolean canGo = currentPage > 1;
-        String name = canGo ? "&8<< &fPage " + (currentPage - 1) : "&7First Page";
+        String name = canGo ? "<dark_gray><< </dark_gray><white>Page " + (currentPage - 1) + "</white>" : "<gray>First Page</gray>";
 
         return PluginItems.create(canGo ? Material.LIME_DYE : Material.GRAY_DYE, name, List.of());
     }
 
     private ItemStack createNextButton() {
         boolean canGo = currentPage < getTotalPages();
-        String name = canGo ? "Page " + (currentPage + 1) + " &8>>" : "&7Last Page";
+        String name = canGo ? "<white>Page " + (currentPage + 1) + " </white><dark_gray>>></dark_gray>" : "<gray>Last Page</gray>";
 
         return PluginItems.create(canGo ? Material.LIME_DYE : Material.GRAY_DYE, name, List.of());
     }

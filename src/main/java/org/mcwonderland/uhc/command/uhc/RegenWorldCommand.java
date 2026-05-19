@@ -71,16 +71,16 @@ public class RegenWorldCommand extends UHCSubCommand {
 
         Chat.send(getPlayer(),
                 " ",
-                "&7[&a中心搜尋&7] &f是否啟用 CenterCleaner 來搜尋較適合 UHC 的中心點？",
-                "&7啟用後會在同一張世界中評估候選中心，不會自動換 seed。");
+                "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>是否啟用 CenterCleaner 來搜尋較適合 UHC 的中心點？</white>",
+                "<gray>啟用後會在同一張世界中評估候選中心，不會自動換 seed。</gray>");
         getPlayer().sendMessage(runCommandComponent(
-                "&a[啟用 CenterCleaner]",
+                "<green>[啟用 CenterCleaner]</green>",
                 "/uhc regen confirm" + suffix,
-                "&7點擊後建立預覽世界並搜尋中心"));
+                "<gray>點擊後建立預覽世界並搜尋中心</gray>"));
         getPlayer().sendMessage(runCommandComponent(
-                "&c[不啟用，直接建立]",
+                "<red>[不啟用，直接建立]</red>",
                 "/uhc regen skip" + suffix,
-                "&7點擊後沿用舊預覽建立流程"));
+                "<gray>點擊後沿用舊預覽建立流程</gray>"));
     }
 
     private void createWorld(boolean centerCleaner, String seed) {

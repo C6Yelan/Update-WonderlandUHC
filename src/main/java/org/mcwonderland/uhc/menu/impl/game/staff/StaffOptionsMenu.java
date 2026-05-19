@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.game.player.staff.OreAlert;
 import org.mcwonderland.uhc.game.player.staff.StaffOptions;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.text.PluginText;
 
 public class StaffOptionsMenu extends PluginMenu {
     private static final String SECTION = "Staff_Options";
@@ -16,8 +17,8 @@ public class StaffOptionsMenu extends PluginMenu {
     private static final String TOGGLE_SPEC_SHOW_BUTTON = "Toggle_Spec_Show";
     private static final String TOGGLE_STAFF_SHOW_BUTTON = "Toggle_Staff_Show";
     private static final String MOVING_SPEED_BUTTON = "Moving_Speed";
-    private static final String ENABLED_STATUS = "&aOn";
-    private static final String DISABLED_STATUS = "&cOff";
+    private static final Object ENABLED_STATUS = PluginText.formatted("<green>On</green>");
+    private static final Object DISABLED_STATUS = PluginText.formatted("<red>Off</red>");
 
     private final UHCPlayer uhcPlayer;
     private final StaffOptions staffOptions;
@@ -96,7 +97,7 @@ public class StaffOptionsMenu extends PluginMenu {
         displayTo(player);
     }
 
-    private String getStatus(boolean enabled) {
+    private Object getStatus(boolean enabled) {
         return enabled ? ENABLED_STATUS : DISABLED_STATUS;
     }
 }

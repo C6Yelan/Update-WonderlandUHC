@@ -74,18 +74,18 @@ public class TeamCommand implements CommandExecutor, TabCompleter {
     }
 
     private void sendHelp(CommandSender sender, String label) {
-        Chat.send(sender, "&8&m-----------------------------------------------------");
+        Chat.send(sender, "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>");
 
         for (TeamSubCommand subcommand : subcommands.values()) {
             if (!subcommand.hasPermission(sender))
                 continue;
 
-            Chat.send(sender, "&6/" + label + " " + subcommand.getSublabel()
+            Chat.send(sender, "<gold>/" + label + " " + subcommand.getSublabel()
                     + subcommand.getUsageSuffix()
-                    + " &e- " + subcommand.getDescription());
+                    + "</gold> <yellow>- " + subcommand.getDescription() + "</yellow>");
         }
 
-        Chat.send(sender, "&8&m-----------------------------------------------------");
+        Chat.send(sender, "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>");
     }
 
     @Override

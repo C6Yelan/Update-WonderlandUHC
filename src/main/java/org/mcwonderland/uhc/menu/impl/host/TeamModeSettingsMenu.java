@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.sub.UHCTeamSettings;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 
@@ -16,8 +17,8 @@ public class TeamModeSettingsMenu extends PluginMenu {
     private static final String SIZE_BUTTON = "Size";
     private static final String TEAM_FIRE_BUTTON = "Team_Fire";
     private static final String TEAM_SPLIT_MODE_BUTTON = "Team_Split_Mode";
-    private static final String ENABLED_STATUS = "&aOn";
-    private static final String DISABLED_STATUS = "&cOff";
+    private static final Object ENABLED_STATUS = PluginText.formatted("<green>On</green>");
+    private static final Object DISABLED_STATUS = PluginText.formatted("<red>Off</red>");
 
     public TeamModeSettingsMenu() {
         super(PluginMenuSection.of(SECTION));

@@ -83,26 +83,26 @@ public class UHCCommand implements CommandExecutor, TabCompleter {
 
     private void sendNoArgsHeader(CommandSender sender) {
         Chat.send(sender,
-                "&8&m-----------------------------------------------------",
-                "&f  WonderlandUHC &7" + plugin.getPluginMeta().getVersion(),
+                "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>",
+                "<white>  WonderlandUHC </white><gray>" + plugin.getPluginMeta().getVersion() + "</gray>",
                 " ",
-                "&7歡迎想自己開UHC的玩家加入 https://discord.gg/pJ3RkP5 購買插件。",
-                "&8&m-----------------------------------------------------");
+                "<gray>歡迎想自己開UHC的玩家加入 https://discord.gg/pJ3RkP5 購買插件。</gray>",
+                "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>");
     }
 
     private void sendHelp(CommandSender sender, String label) {
-        Chat.send(sender, "&8&m-----------------------------------------------------");
+        Chat.send(sender, "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>");
 
         for (UHCSubCommand subcommand : uniqueSubcommands()) {
             if (!subcommand.hasPermission(sender))
                 continue;
 
-            Chat.send(sender, "&6/" + label + " " + subcommand.getPrimaryLabel()
+            Chat.send(sender, "<gold>/" + label + " " + subcommand.getPrimaryLabel()
                     + subcommand.getUsageSuffix()
-                    + " &e- " + subcommand.getDescription());
+                    + "</gold> <yellow>- " + subcommand.getDescription() + "</yellow>");
         }
 
-        Chat.send(sender, "&8&m-----------------------------------------------------");
+        Chat.send(sender, "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>");
     }
 
     @Override

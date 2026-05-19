@@ -57,7 +57,7 @@ public class UHCGameSettings implements Cloneable, org.mcwonderland.uhc.api.game
     public static UHCGameSettings fromSection(ConfigurationSection section) {
         UHCGameSettings settings = new UHCGameSettings();
 
-        settings.title = string(section, "Title", "&a&lWonderland&f&lUHC");
+        settings.title = string(section, "Title", "<green><bold>Wonderland</bold></green><white><bold>UHC</bold></white>");
         settings.maxPlayers = integer(section, "Max_Players", 100);
         settings.appleRate = integer(section, "Apple_Rate", 2);
         settings.initialExperience = integer(section, "Initial_Experience", 1);

@@ -20,7 +20,7 @@ public class ViewHealCommand implements CommandExecutor {
 
     public static final String NAME = "viewheal";
 
-    private static final String PLAYER_NOT_ONLINE = "&cPlayer {player} &cis not online on this server.";
+    private static final String PLAYER_NOT_ONLINE = "<red>Player {player} is not online on this server.</red>";
 
     public static void register(WonderlandUHC plugin) {
         PluginCommand command = plugin.getCommand(NAME);

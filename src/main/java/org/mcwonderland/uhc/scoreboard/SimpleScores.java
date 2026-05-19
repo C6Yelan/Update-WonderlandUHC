@@ -4,6 +4,7 @@ import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -185,7 +186,8 @@ public final class SimpleScores {
         if (nameHeal == null && Settings.Misc.USE_BELOW_NAME_HEALTH) {
             nameHeal = scoreboard.registerNewObjective("namehealth", Criteria.HEALTH, toComponent("namehealth"));
             nameHeal.setDisplaySlot(DisplaySlot.BELOW_NAME);
-            nameHeal.displayName(toComponent(Game.getSettings().getScoreboardSettings().getHeartColor() + "§l❤"));
+            nameHeal.displayName(Component.text("❤", Game.getSettings().getScoreboardSettings().getHeartColor().toNamedTextColor())
+                    .decorate(TextDecoration.BOLD));
         }
     }
 

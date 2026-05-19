@@ -4,6 +4,7 @@ import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.model.deathmsg.DeathMessageHandler;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.stats.UHCStats;
@@ -53,18 +54,22 @@ class UHCDeathDataHandler {
     private void sendKilledMessage() {
         UHCTeam killerUTeam = killer.getTeam();
 
-        Chat.send(deathPlayer.getPlayer(), Messages.Game.YOU_HAVE_BEEN_KILLED
-                .replace("{killer}", killerUTeam.getChatFormat() + killer.getName())
-                .replace("{heal}", "" + Extra.formatHealth(killer.getPlayer().getHealth()))
-                .replace("{team}", killerUTeam.getName())
-                .replace("{character}", killerUTeam.getSymbol()));
+        Chat.send(deathPlayer.getPlayer(), PluginText.replaceToString(
+                Messages.Game.YOU_HAVE_BEEN_KILLED,
+                "{killer}", killerUTeam.getChatFormat() + killer.getName(),
+                "{heal}", Extra.formatHealth(killer.getPlayer().getHealth()),
+                "{team}", killerUTeam.getName(),
+                "{character}", killerUTeam.getSymbol()
+        ));
     }
 
     private void checkTeamEliminated() {
         UHCTeam deathPlayerUTeam = deathPlayer.getTeam();
 
         if (deathPlayerUTeam.isEliminate())
-            Chat.broadcast(Messages.Game.TEAM_ELIMINATED
-                    .replace("{team}", deathPlayerUTeam.getName()));
+            Chat.broadcast(PluginText.replaceToString(
+                    Messages.Game.TEAM_ELIMINATED,
+                    "{team}", deathPlayerUTeam.getName()
+            ));
     }
 }

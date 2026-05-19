@@ -8,62 +8,62 @@ Lobby:
   Options:
     Type: BOOK
     Slot: 0
-    Name: "&e遊戲設定"
+    Name: "<yellow>遊戲設定</yellow>"
     Lore:
-      - "&7包含大大小小的遊戲設定可供調整。"
+      - "<gray>包含大大小小的遊戲設定可供調整。</gray>"
   Leave:
     Type: REDSTONE
     Slot: 8
-    Name: "&c回到大廳"
+    Name: "<red>回到大廳</red>"
     Lore:
-      - "&7返回大廳伺服器。"
+      - "<gray>返回大廳伺服器。</gray>"
   Teams:
     Type: PAPER
     Slot: 2
-    Name: "&6隊伍選擇器"
+    Name: "<gold>隊伍選擇器</gold>"
     Lore:
-      - "&7加入已公開的隊伍當中。"
+      - "<gray>加入已公開的隊伍當中。</gray>"
   Team_Settings:
     Type: REDSTONE_TORCH_ON
     Slot: 4
-    Name: "&a隊伍設定"
+    Name: "<green>隊伍設定</green>"
     Lore:
-      - "&7編輯隊伍方面相關數值。"
+      - "<gray>編輯隊伍方面相關數值。</gray>"
 Spectator:
   Overworld_Players:
     Type: PAPER
     Slot: 0
-    Name: "&b主世界存活玩家"
+    Name: "<aqua>主世界存活玩家</aqua>"
     Lore:
-      - "&7查看所有位於主世界的存活玩家。"
+      - "<gray>查看所有位於主世界的存活玩家。</gray>"
   Nether_Players:
     Type: NETHER_STALK
     Slot: 1
-    Name: "&c地獄存活玩家"
+    Name: "<red>地獄存活玩家</red>"
     Lore:
-      - "&7查看所有位於地獄的存活玩家。"
+      - "<gray>查看所有位於地獄的存活玩家。</gray>"
   Random_Teleport:
     Type: ENDER_PORTAL_FRAME
     Slot: 2
-    Name: "&e傳送到隨機玩家"
+    Name: "<yellow>傳送到隨機玩家</yellow>"
     Lore:
-      - "&7隨機傳送至一位存活玩家。"
+      - "<gray>隨機傳送至一位存活玩家。</gray>"
   Toggle_Gamemode:
     Type: CARROT_STICK
     Slot: 3
-    Name: "&6切換到觀察者模式"
+    Name: "<gold>切換到觀察者模式</gold>"
     Lore:
-      - "&7功能與 /gamemode spectator 相同。"
+      - "<gray>功能與 /gamemode spectator 相同。</gray>"
   Teleport_Zerozero:
     Type: BOWL
     Slot: 4
-    Name: "&b傳送至中心點"
+    Name: "<aqua>傳送至中心點</aqua>"
     Lore:
-      - "&7傳送至遊戲主世界的目前比賽中心。"
+      - "<gray>傳送至遊戲主世界的目前比賽中心。</gray>"
 Staff_Addon:
   Staff_Options:
     Type: COMPARATOR
     Slot: 7
-    Name: "&c管理員設定"
+    Name: "<red>管理員設定</red>"
     Lore:
-      - "&7包含一切方便管理遊戲的小工具。"
+      - "<gray>包含一切方便管理遊戲的小工具。</gray>"

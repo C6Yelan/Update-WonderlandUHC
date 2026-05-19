@@ -30,7 +30,7 @@ public abstract class AbstractPractice implements Practice {
     @Override
     public final void join(Player player) {
         if (!GameUtils.isWaiting()) {
-            Chat.send(player, "&c現在無法加入練習模式。");
+            Chat.send(player, "<red>現在無法加入練習模式。</red>");
             return;
         }
 
@@ -45,7 +45,7 @@ public abstract class AbstractPractice implements Practice {
     @Override
     public final void quit(Player player) {
         if (!isInPractice(player)) {
-            Chat.send(player, "&c你並未在練習模式中。");
+            Chat.send(player, "<red>你並未在練習模式中。</red>");
             return;
         }
 

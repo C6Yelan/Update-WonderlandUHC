@@ -17,7 +17,7 @@ import java.util.List;
 
 public abstract class TeamSubCommand {
 
-    private static final String PLAYER_NOT_ONLINE = "&cPlayer {player} &cis not online on this server.";
+    private static final String PLAYER_NOT_ONLINE = "<red>Player {player} is not online on this server.</red>";
 
     private final String sublabel;
     private String usage = "";
@@ -151,7 +151,7 @@ public abstract class TeamSubCommand {
 
     private void tellUsage() {
         Chat.send(sender, CommandSettings.LABEL_USAGE);
-        Chat.send(sender, "&c/" + label + " " + sublabel + getUsageSuffix());
+        Chat.send(sender, "<red>/" + label + " " + sublabel + getUsageSuffix() + "</red>");
     }
 
     protected final UHCTeam getTeam() {

@@ -13,6 +13,7 @@ import org.mcwonderland.uhc.game.UHCTeam;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.listener.VoiceListener;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
@@ -49,37 +50,37 @@ public class DiscordVoiceHook {
                 discordSRV = DiscordSRV.getPlugin();
                 String guildId = Settings.DiscordVoice.GUILD_ID;
                 if (guildId == null || guildId.isBlank()) {
-                    PluginConsole.log("&cDiscord voice setup failed: guild id is not configured.");
+                    PluginConsole.log("<red>Discord voice setup failed: guild id is not configured.</red>");
                     return;
                 }
 
                 guild = discordSRV.getJda().getGuildById(guildId);
                 if (guild == null) {
-                    PluginConsole.log("&cDiscord voice setup failed: guild not found: " + guildId);
+                    PluginConsole.log("<red>Discord voice setup failed: guild not found: " + guildId + "</red>");
                     return;
                 }
 
                 String voiceCategoryId = Settings.DiscordVoice.VOICE_CATEGORY;
                 if (voiceCategoryId == null || voiceCategoryId.isBlank()) {
-                    PluginConsole.log("&cDiscord voice setup failed: voice category id is not configured.");
+                    PluginConsole.log("<red>Discord voice setup failed: voice category id is not configured.</red>");
                     return;
                 }
 
                 voiceCategory = guild.getCategoryById(voiceCategoryId);
                 if (voiceCategory == null) {
-                    PluginConsole.log("&cDiscord voice setup failed: voice category not found: " + voiceCategoryId);
+                    PluginConsole.log("<red>Discord voice setup failed: voice category not found: " + voiceCategoryId + "</red>");
                     return;
                 }
 
                 String lobbyVoiceId = Settings.DiscordVoice.LOBBY_VOICE;
                 if (lobbyVoiceId == null || lobbyVoiceId.isBlank()) {
-                    PluginConsole.log("&cDiscord voice setup failed: lobby voice channel id is not configured.");
+                    PluginConsole.log("<red>Discord voice setup failed: lobby voice channel id is not configured.</red>");
                     return;
                 }
 
                 lobbyVoice = guild.getVoiceChannelById(lobbyVoiceId);
                 if (lobbyVoice == null) {
-                    PluginConsole.log("&cDiscord voice setup failed: lobby voice channel not found: " + lobbyVoiceId);
+                    PluginConsole.log("<red>Discord voice setup failed: lobby voice channel not found: " + lobbyVoiceId + "</red>");
                     return;
                 }
 
@@ -109,7 +110,7 @@ public class DiscordVoiceHook {
         Player player = uhcPlayer.getPlayer();
         if (channel == null) {
             Chat.send(player, Messages.DiscordVoice.MOVE_FAILED);
-            PluginConsole.log("&cDiscord voice move failed for " + player.getName() + ": target channel is not available.");
+            PluginConsole.log("<red>Discord voice move failed for " + player.getName() + ": target channel is not available.</red>");
             return;
         }
 
@@ -126,12 +127,15 @@ public class DiscordVoiceHook {
             return;
         }
 
-        String movedMsg = Messages.DiscordVoice.MOVED.replace("{channel}", channel.getName());
+        String movedMsg = PluginText.replaceToString(
+                Messages.DiscordVoice.MOVED,
+                "{channel}", channel.getName()
+        );
         guild.moveVoiceMember(member, channel).queue(
                 aVoid -> Chat.send(player, movedMsg),
                 error -> {
                     Chat.send(player, Messages.DiscordVoice.MOVE_FAILED);
-                    PluginConsole.log("&cDiscord voice move failed for " + player.getName() + ": " + error.getMessage());
+                    PluginConsole.log("<red>Discord voice move failed for " + player.getName() + ": " + error.getMessage() + "</red>");
                 });
     }
 
@@ -164,7 +168,7 @@ public class DiscordVoiceHook {
         guild.moveVoiceMember(member, lobbyVoice).queue(
                 ignored -> {
                 },
-                error -> PluginConsole.log("&cDiscord voice lobby move failed for " + member.getEffectiveName() + ": " + error.getMessage()));
+                error -> PluginConsole.log("<red>Discord voice lobby move failed for " + member.getEffectiveName() + ": " + error.getMessage() + "</red>"));
     }
 
 }

@@ -39,7 +39,7 @@ public final class MatchSettings {
     }
 
     public static MatchSettings defaults() {
-        return new MatchSettings("&a&lWonderland&f&lUHC", 100, 1, false, false, "", Collections.<String>emptySet());
+        return new MatchSettings("<green><bold>Wonderland</bold></green><white><bold>UHC</bold></white>", 100, 1, false, false, "", Collections.<String>emptySet());
     }
 
     public String getTitle() {

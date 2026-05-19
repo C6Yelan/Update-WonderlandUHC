@@ -47,7 +47,7 @@ public class InventoryEditorInputCommand implements CommandExecutor {
         if (MainSettingsMenu.handleInput(player, input))
             return true;
 
-        Chat.send(player, "&c目前沒有正在等待的設定輸入。");
+        Chat.send(player, "<red>目前沒有正在等待的設定輸入。</red>");
         return true;
     }
 }

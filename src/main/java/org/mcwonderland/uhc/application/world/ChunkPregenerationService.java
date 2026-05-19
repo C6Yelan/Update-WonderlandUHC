@@ -8,6 +8,7 @@ import org.mcwonderland.uhc.game.settings.CacheSaver;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.port.ChunkPregenerationPort;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -31,7 +32,10 @@ public final class ChunkPregenerationService {
         String worldName = world.getName();
         int radius = pregenerationRadius(world);
         int borderSize = pregenerationBorderSize(world);
-        PluginConsole.log(Messages.Console.CHUNK_LOAD_STARTED.replace("{world}", worldName));
+        PluginConsole.log(PluginText.replaceToString(
+                Messages.Console.CHUNK_LOAD_STARTED,
+                "{world}", worldName
+        ));
         pregeneration.startSquarePregeneration(
                 worldName,
                 UHCWorldUtils.getBorderCenter(world, borderSize),
@@ -45,10 +49,11 @@ public final class ChunkPregenerationService {
         if (!WorldUtils.isUHCWorld(world))
             return;
 
-        PluginConsole.logNoPrefix(Messages.Console.CHUNK_LOAD_FINISHED
-                .replace("{world}", world.getName())
-                .replace("{number}", "" + totalChunks)
-        );
+        PluginConsole.logNoPrefix(PluginText.replaceToString(
+                Messages.Console.CHUNK_LOAD_FINISHED,
+                "{world}", world.getName(),
+                "{number}", totalChunks
+        ));
 
         UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
 
@@ -62,7 +67,7 @@ public final class ChunkPregenerationService {
         World world = Bukkit.getWorld(worldName);
 
         if (world == null) {
-            PluginConsole.log("&cChunk pregeneration finished for unloaded world: " + worldName);
+            PluginConsole.log("<red>Chunk pregeneration finished for unloaded world: " + worldName + "</red>");
             return;
         }
 
@@ -82,7 +87,7 @@ public final class ChunkPregenerationService {
     }
 
     private void buildBorders(World world, int size) {
-        PluginConsole.logNoPrefix("&eGenerating Border...");
+        PluginConsole.logNoPrefix("<yellow>Generating Border...</yellow>");
 
         generateBorder(world, size);
 
@@ -90,7 +95,7 @@ public final class ChunkPregenerationService {
             for (int i = 0; i < Settings.Border.BEDROCK_BORDER_HEIGHT - 1; i++)
                 generateBorder(world, size);
 
-            PluginConsole.logNoPrefix("&eBorder Generated!");
+            PluginConsole.logNoPrefix("<yellow>Border Generated!</yellow>");
             onBorderGenerated(world);
         });
     }

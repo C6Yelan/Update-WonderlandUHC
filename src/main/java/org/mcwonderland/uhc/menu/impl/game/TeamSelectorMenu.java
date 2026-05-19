@@ -11,6 +11,7 @@ import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
 
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class TeamSelectorMenu extends PluginPagedMenu<UHCTeam> {
@@ -42,7 +43,7 @@ public class TeamSelectorMenu extends PluginPagedMenu<UHCTeam> {
                 "{slots}", team.getPlayersAmount(),
                 "{max}", Game.getSettings().getTeamSettings().getTeamSize(),
                 "{name}", team.getName(),
-                "{color}", team.getColor(),
+                "{color}", team.getColor().name().toLowerCase(Locale.ROOT),
                 "{character}", team.getSymbol(),
                 "{players}", UHCPlayers.toNames(team.getPlayers())
         );

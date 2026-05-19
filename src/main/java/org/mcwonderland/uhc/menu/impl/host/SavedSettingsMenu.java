@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.UHCFiles;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
 
         return PluginItems.create(
                 baseItem,
-                getSection().getButtonName(SAVED_BUTTON).replace("{saved_game_title}", settings.getTitle()),
+                PluginText.replaceToString(getSection().getButtonName(SAVED_BUTTON), "{saved_game_title}", settings.getTitle()),
                 GamePlaceholderReplacer.replace(getSection().getButtonLore(SAVED_BUTTON), settings),
                 true
         );

@@ -53,7 +53,7 @@ public final class ChunkyPregenerationAdapter implements ChunkPregenerationPort 
         if (!started)
             throw new IllegalStateException("Chunky did not start pregeneration for world: " + worldName);
 
-        PluginConsole.log("&7Chunky pregeneration started for world: &f" + worldName);
+        PluginConsole.log("<gray>Chunky pregeneration started for world: </gray><white>" + worldName + "</white>");
     }
 
     @Override

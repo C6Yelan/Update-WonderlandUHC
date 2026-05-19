@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.events.UHCBlockBreakEvent;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.player.staff.OreAlert;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.stats.UHCStats;
 import org.mcwonderland.uhc.util.Chat;
@@ -50,10 +51,12 @@ public class StatsListener implements Listener {
 
             Collection<UHCPlayer> staffs = getStaffsToggleAlertFor(alert);
 
-            staffs.forEach(uhcPlayer -> Chat.send(uhcPlayer.getPlayer(), Messages.Staff.MINED_ALERT
-                    .replace("{player}", miner.getName())
-                    .replace("{block}", alert.colorizedName())
-                    .replace("{amount}", amount + "")));
+            staffs.forEach(uhcPlayer -> Chat.send(uhcPlayer.getPlayer(), PluginText.replaceToString(
+                    Messages.Staff.MINED_ALERT,
+                    "{player}", miner.getName(),
+                    "{block}", alert.formattedName(),
+                    "{amount}", amount
+            )));
         }
 
         private Collection<UHCPlayer> getStaffsToggleAlertFor(OreAlert alert) {

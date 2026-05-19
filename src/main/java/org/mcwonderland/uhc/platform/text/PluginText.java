@@ -1,7 +1,8 @@
 package org.mcwonderland.uhc.platform.text;
 
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
 
 import java.text.DecimalFormat;
@@ -12,52 +13,43 @@ import java.util.regex.Pattern;
 
 public final class PluginText {
     private static final String DELIMITER = "\n";
-    private static final char LEGACY_COLOR_CHAR = '\u00A7';
-    private static final LegacyComponentSerializer LEGACY_SECTION = LegacyComponentSerializer.legacySection();
-    private static final LegacyComponentSerializer LEGACY_AMPERSAND = LegacyComponentSerializer.legacyAmpersand();
-    private static final Pattern LEGACY_COLOR_PATTERN = Pattern.compile("(?i)" + LEGACY_COLOR_CHAR + "[0-9A-FK-ORX]");
+    private static final String MINI_MESSAGE_FORMAT_TAGS = "black|dark_blue|dark_green|dark_aqua|dark_red|dark_purple|gold|gray|dark_gray|blue|green|aqua|red|light_purple|yellow|white|obfuscated|bold|strikethrough|underlined|italic|reset|#[0-9a-f]{6}";
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final PlainTextComponentSerializer PLAIN_TEXT = PlainTextComponentSerializer.plainText();
+    private static final Pattern MINI_MESSAGE_FORMAT_PATTERN = Pattern.compile("(?i)</?(" + MINI_MESSAGE_FORMAT_TAGS + ")>");
     private static final DecimalFormat FIVE_DIGITS = new DecimalFormat("#.#####");
 
     private PluginText() {
-    }
-
-    public static String colorize(String message) {
-        if (message == null)
-            return null;
-
-        char[] chars = message.toCharArray();
-
-        for (int i = 0; i < chars.length - 1; i++) {
-            if (chars[i] == '&' && "0123456789AaBbCcDdEeFfKkLlMmNnOoRrXx".indexOf(chars[i + 1]) > -1) {
-                chars[i] = LEGACY_COLOR_CHAR;
-                chars[i + 1] = Character.toLowerCase(chars[i + 1]);
-            }
-        }
-
-        return new String(chars);
     }
 
     public static String stripColors(String message) {
         if (message == null)
             return null;
 
-        return LEGACY_COLOR_PATTERN.matcher(colorize(message)).replaceAll("");
+        return PLAIN_TEXT.serialize(toComponent(message));
     }
 
     public static Component toComponent(String message) {
-        return LEGACY_SECTION.deserialize(colorize(message));
+        if (hasMiniMessageFormatTag(message))
+            return MINI_MESSAGE.deserialize(message);
+
+        return Component.text(message);
     }
 
     public static Component toNullableComponent(String message) {
         return message == null ? null : toComponent(message);
     }
 
-    public static String toLegacyString(Component component) {
-        return LEGACY_SECTION.serialize(component);
+    public static Component toMiniMessageComponent(String message) {
+        return MINI_MESSAGE.deserialize(message);
     }
 
-    public static String toLegacyAmpersandString(Component component) {
-        return LEGACY_AMPERSAND.serialize(component);
+    public static String toMiniMessageString(Component component) {
+        return MINI_MESSAGE.serialize(component);
+    }
+
+    public static Object formatted(String value) {
+        return new FormattedText(value);
     }
 
     public static String[] replaceToArray(String message, Object... replacements) {
@@ -156,7 +148,7 @@ public final class PluginText {
 
         for (int i = 0; i < replacements.length - 1; i += 2) {
             String placeholder = String.valueOf(replacements[i]);
-            String value = String.valueOf(replacements[i + 1]);
+            Object value = replacements[i + 1];
 
             replaced = replacePlaceholder(replaced, placeholder, value);
         }
@@ -164,16 +156,48 @@ public final class PluginText {
         return replaced;
     }
 
-    private static String replacePlaceholder(String message, String placeholder, String value) {
+    private static boolean hasMiniMessageFormatTag(String message) {
+        return MINI_MESSAGE_FORMAT_PATTERN.matcher(message).find();
+    }
+
+    private static String replacePlaceholder(String message, String placeholder, Object value) {
         String key = normalizePlaceholder(placeholder);
-        String colorized = colorize(value);
-        boolean emptyColorless = stripColors(colorized).isEmpty();
+        String replacement = formatPlaceholderValue(message, value);
+        boolean emptyColorless = plainPlaceholderValue(value).isEmpty();
 
         return message
-                .replace("{" + key + "}", colorized)
-                .replace("{" + key + "+}", emptyColorless ? "" : colorized + " ")
-                .replace("{+" + key + "}", emptyColorless ? "" : " " + colorized)
-                .replace("{+" + key + "+}", emptyColorless ? "" : " " + colorized + " ");
+                .replace("{" + key + "}", replacement)
+                .replace("{" + key + "+}", emptyColorless ? "" : replacement + " ")
+                .replace("{+" + key + "}", emptyColorless ? "" : " " + replacement)
+                .replace("{+" + key + "+}", emptyColorless ? "" : " " + replacement + " ");
+    }
+
+    private static String formatPlaceholderValue(String message, Object value) {
+        String text = placeholderValue(value);
+
+        if (value instanceof FormattedText)
+            return text;
+
+        if (hasMiniMessageFormatTag(message))
+            return MINI_MESSAGE.escapeTags(text);
+
+        return text;
+    }
+
+    private static String placeholderValue(Object value) {
+        if (value instanceof FormattedText formatted)
+            return formatted.value();
+
+        return String.valueOf(value);
+    }
+
+    private static String plainPlaceholderValue(Object value) {
+        String text = placeholderValue(value);
+
+        if (value instanceof FormattedText)
+            return PLAIN_TEXT.serialize(toComponent(text));
+
+        return text;
     }
 
     private static String normalizePlaceholder(String placeholder) {
@@ -207,5 +231,18 @@ public final class PluginText {
             valueStrings.add(String.valueOf(value));
 
         return String.join(separator, valueStrings);
+    }
+
+    private static final class FormattedText {
+
+        private final String value;
+
+        private FormattedText(String value) {
+            this.value = value == null ? "" : value;
+        }
+
+        private String value() {
+            return value;
+        }
     }
 }

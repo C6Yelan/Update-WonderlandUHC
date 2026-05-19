@@ -12,10 +12,12 @@ import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.text.PluginColor;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Chat;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,8 +32,8 @@ public class TeamSettingsMenu extends PluginMenu {
     private static final String CHARACTER_BUTTON = "Character";
     private static final String OPEN_JOIN_BUTTON = "Open_Join";
     private static final String HELP_BUTTON = "Help";
-    private static final String ENABLED_STATUS = "&aOn";
-    private static final String DISABLED_STATUS = "&cOff";
+    private static final Object ENABLED_STATUS = PluginText.formatted("<green>On</green>");
+    private static final Object DISABLED_STATUS = PluginText.formatted("<red>Off</red>");
 
     private final UHCTeam team;
 
@@ -60,7 +62,7 @@ public class TeamSettingsMenu extends PluginMenu {
             return getSection().getButtonItem(NAME_BUTTON, "{name}", team.getName());
 
         if (slot == getSection().getButtonSlot(COLOR_BUTTON))
-            return getSection().getButtonItem(COLOR_BUTTON, "{color}", team.getColor());
+            return getSection().getButtonItem(COLOR_BUTTON, "{color}", team.getColor().name().toLowerCase(Locale.ROOT));
 
         if (slot == getSection().getButtonSlot(CHARACTER_BUTTON))
             return getSection().getButtonItem(CHARACTER_BUTTON, "{character}", team.getSymbol());
@@ -112,9 +114,11 @@ public class TeamSettingsMenu extends PluginMenu {
                 Messages.Editor.Text.TeamName.MESSAGE,
                 input -> {
                     team.setName(input);
-                    Chat.sendConversing(player, Messages.Editor.Text.TeamName.SAVED
-                            .replace("{player}", player.getName())
-                            .replace("{name}", team.getName()));
+                    Chat.sendConversing(player, PluginText.replaceToString(
+                            Messages.Editor.Text.TeamName.SAVED,
+                            "{player}", player.getName(),
+                            "{name}", team.getName()
+                    ));
                 },
                 input -> true
         );
@@ -138,13 +142,17 @@ public class TeamSettingsMenu extends PluginMenu {
 
         startTextInput(
                 player,
-                Messages.Editor.Text.TeamCharacter.MESSAGE
-                        .replace("{length}", Settings.Team.MAX_CHARACTER_LENGTH + ""),
+                PluginText.replaceToString(
+                        Messages.Editor.Text.TeamCharacter.MESSAGE,
+                        "{length}", Settings.Team.MAX_CHARACTER_LENGTH
+                ),
                 input -> {
                     team.setSymbol(StringUtils.left(input, Settings.Team.MAX_CHARACTER_LENGTH));
-                    Chat.sendConversing(player, Messages.Editor.Text.TeamCharacter.SAVED
-                            .replace("{player}", player.getName())
-                            .replace("{character}", team.getSymbol()));
+                    Chat.sendConversing(player, PluginText.replaceToString(
+                            Messages.Editor.Text.TeamCharacter.SAVED,
+                            "{player}", player.getName(),
+                            "{character}", team.getSymbol()
+                    ));
                 },
                 input -> isCharacterInputAvailable(player, input)
         );
@@ -156,15 +164,17 @@ public class TeamSettingsMenu extends PluginMenu {
                 .anyMatch(symbol -> symbol.equalsIgnoreCase(input));
 
         if (used)
-            Chat.sendConversing(player, Messages.Editor.Text.TeamCharacter.ALREADY_USED
-                    .replace("{symbol}", input));
+            Chat.sendConversing(player, PluginText.replaceToString(
+                    Messages.Editor.Text.TeamCharacter.ALREADY_USED,
+                    "{symbol}", input
+            ));
 
         return !used;
     }
 
     private void startTextInput(Player player, String message, Consumer<String> saveInput, Predicate<String> isInputValid) {
         if (inputSessions.containsKey(player.getUniqueId())) {
-            Chat.send(player, "&c目前已有正在等待的設定輸入。");
+            Chat.send(player, "<red>目前已有正在等待的設定輸入。</red>");
             return;
         }
 
@@ -185,7 +195,7 @@ public class TeamSettingsMenu extends PluginMenu {
         private void accept(Player player, String input) {
             if (isCancelInput(input)) {
                 inputSessions.remove(player.getUniqueId());
-                Chat.sendConversing(player, "&c隊伍設定輸入已取消。");
+                Chat.sendConversing(player, "<red>隊伍設定輸入已取消。</red>");
                 return;
             }
 

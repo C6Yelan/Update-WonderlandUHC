@@ -3,10 +3,11 @@ package org.mcwonderland.uhc.game;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.platform.PlayerHand;
-import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.Location;
@@ -83,7 +84,7 @@ public class CombatRelog {
         Villager villager = (( Villager ) player.getWorld().spawnEntity(location, EntityType.VILLAGER));
         Extra.noAIAndSilent(villager);
         villager.setCustomNameVisible(true);
-        villager.customName(PluginText.toComponent(UHCTeam.getTeam(player).getPrefix() + player.getName()));
+        villager.customName(relogName(UHCTeam.getTeam(player), player.getName()));
         villager.setProfession(Villager.Profession.LIBRARIAN);
 
         villager.getEquipment().setItemInMainHand(PlayerHand.getMainHandItem(player));
@@ -97,6 +98,15 @@ public class CombatRelog {
         relogEntities.put(villager.getUniqueId(), relog);
 
         return relog;
+    }
+
+    private static Component relogName(UHCTeam team, String playerName) {
+        Component symbol = Component.text(team.getSymbol(), team.getColor().toNamedTextColor());
+
+        if (Settings.Team.CHARACTER_BOLD_DEFAULT)
+            symbol = symbol.decorate(TextDecoration.BOLD);
+
+        return symbol.append(Component.text(" " + playerName, team.getColor().toNamedTextColor()));
     }
 
     public InventoryContent getInventoryContent() {

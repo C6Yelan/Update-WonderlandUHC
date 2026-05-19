@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.hook.voice.DiscordVoiceHook;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
@@ -39,9 +40,11 @@ public class ReconnectCommand implements CommandExecutor {
             return true;
 
         if (!Dependency.DISCORD_SRV.isHooked()) {
-            Chat.send(player, Messages.Dependency.REQUIRE_SOFT_DEPENDENCY
-                    .replace("{plugin}", Dependency.DISCORD_SRV.getPluginName())
-                    .replace("{url}", Dependency.DISCORD_SRV.getDownloadUrl()));
+            Chat.send(player, PluginText.replaceToString(
+                    Messages.Dependency.REQUIRE_SOFT_DEPENDENCY,
+                    "{plugin}", Dependency.DISCORD_SRV.getPluginName(),
+                    "{url}", Dependency.DISCORD_SRV.getDownloadUrl()
+            ));
             return true;
         }
 

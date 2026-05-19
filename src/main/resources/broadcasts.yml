@@ -4,7 +4,7 @@ Discord:
   #Discord公告功能
   #如果擁有DiscordSRV插件，就可以讓系統自動幫你發送UHC通知至Discord。
   #教學影片: https://youtu.be/c7e4xqmoiDA
-  Invalid_Channel: "&c抱歉，此Discord頻道並不存在，或是機器人尚未加入該頻道所屬的Discord伺服器"
+  Invalid_Channel: "<red>抱歉，此Discord頻道並不存在，或是機器人尚未加入該頻道所屬的Discord伺服器</red>"
   #要在哪些頻道發送公告?
   Channel_Ids:
     - "xxxxxxxxxxxxxxxxxx"

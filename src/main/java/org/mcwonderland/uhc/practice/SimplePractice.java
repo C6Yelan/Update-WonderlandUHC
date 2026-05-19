@@ -50,7 +50,7 @@ public class SimplePractice extends AbstractPractice {
 
 
     private void cleanWorld() {
-        PluginConsole.logFramed("&e正在優化練習模式的世界...");
+        PluginConsole.logFramed("<yellow>正在優化練習模式的世界...</yellow>");
 
         int radius = (Settings.Practice.WORLD_SIZE + 10) / 2;
 
@@ -69,7 +69,7 @@ public class SimplePractice extends AbstractPractice {
                 .filter(entity -> !(entity instanceof Player))
                 .forEach(Entity::remove);
 
-        PluginConsole.logFramed("&e優化完畢！");
+        PluginConsole.logFramed("<yellow>優化完畢！</yellow>");
     }
 
     private void applyPracticeWorldRules() {

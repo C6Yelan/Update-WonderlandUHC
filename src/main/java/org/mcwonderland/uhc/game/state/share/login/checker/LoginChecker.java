@@ -1,6 +1,5 @@
 package org.mcwonderland.uhc.game.state.share.login.checker;
 
-import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.game.state.share.login.UHCLoginEvent;
 
 public abstract class LoginChecker {
@@ -15,6 +14,6 @@ public abstract class LoginChecker {
     protected abstract void checkLogin(UHCLoginEvent e);
 
     protected void disallow(String message) {
-        event.disallow(PluginText.colorize(message));
+        event.disallow(message);
     }
 }

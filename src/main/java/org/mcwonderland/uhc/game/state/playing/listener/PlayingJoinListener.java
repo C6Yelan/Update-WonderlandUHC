@@ -5,6 +5,7 @@ import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.state.share.join.ClearBehavior;
 import org.mcwonderland.uhc.game.state.share.join.JoinListener;
 import org.mcwonderland.uhc.game.state.share.join.UHCJoinEvent;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.util.Chat;
 import org.bukkit.entity.Player;
@@ -26,6 +27,9 @@ public class PlayingJoinListener extends JoinListener {
         uhcPlayer.applyRoleStuff();
         uhcPlayer.getEventHandler().onGamingJoin(e);
 
-        Chat.broadcast(Messages.Game.PLAYER_RECONNECT.replace("{player}", uhcPlayer.getTeam().getChatFormat() + player.getName()));
+        Chat.broadcast(PluginText.replaceToString(
+                Messages.Game.PLAYER_RECONNECT,
+                "{player}", uhcPlayer.getTeam().getChatFormat() + player.getName()
+        ));
     }
 }

@@ -105,7 +105,7 @@ Misc:
   #(伺服器簡介就是你在伺服器列表會看到每個伺服器的那個文字)
   Change_Motd: true
   #金頭顱物品名稱
-  Golden_Head_Name: "&6&l金頭顱"
+  Golden_Head_Name: "<gold><bold>金頭顱</bold></gold>"
   #Tab血量顯示方式
   #以下共有兩種方式，分別為:
   #  1."dummy" -> 會以"數字"的方式顯示玩家血量

@@ -74,13 +74,13 @@ public final class PluginBootstrap {
     }
 
     private void logDependencyReport(DependencyReport report) {
-        PluginConsole.log("&7Dependency status:");
+        PluginConsole.log("<gray>Dependency status:</gray>");
 
         for (DependencyReport.Entry entry : report.getEntries()) {
-            String status = entry.isAvailable() ? "&aAvailable" : entry.isDisabled() ? "&eDisabled" : "&cUnavailable";
-            String reason = entry.getReason().isEmpty() ? "" : " &7(" + entry.getReason() + ")";
+            String status = entry.isAvailable() ? "<green>Available</green>" : entry.isDisabled() ? "<yellow>Disabled</yellow>" : "<red>Unavailable</red>";
+            String reason = entry.getReason().isEmpty() ? "" : " <gray>(" + entry.getReason() + ")</gray>";
 
-            PluginConsole.log("&7- &f" + entry.getDependency().getPluginName() + "&7: " + status + reason);
+            PluginConsole.log("<gray>- </gray><white>" + entry.getDependency().getPluginName() + "</white><gray>: </gray>" + status + reason);
         }
     }
 
@@ -167,10 +167,10 @@ public final class PluginBootstrap {
                 "\\  /\\  / (_) | | | | (_| |  __/ |  | | (_| | | | | (_| | | |_| | | | | \\__/\\",
                 " \\/  \\/ \\___/|_| |_|\\__,_|\\___|_|  |_|\\__,_|_| |_|\\__,_|  \\___/\\_| |_/\\____/",
                 "                                                  ",
-                "&3Author: &fLU__LU",
-                "&3Version: &f" + plugin.getPluginMeta().getVersion(),
+                "<dark_aqua>Author: </dark_aqua><white>LU__LU</white>",
+                "<dark_aqua>Version: </dark_aqua><white>" + plugin.getPluginMeta().getVersion() + "</white>",
                 "",
-                "&3Enjoy your own UHC time!",
+                "<dark_aqua>Enjoy your own UHC time!</dark_aqua>",
                 PluginConsole.consoleLineSmooth());
     }
 }
