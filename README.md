@@ -73,7 +73,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 
 ## 回報問題
 
-若在遊玩中遇到bug，請優先至[Issues](https://github.com/C6Yelan/Update-WonderlandUHC/issues)回報問題，並附上盡可能詳細的敘述與影像資源！\
+若在遊玩中遇到bug，請優先至[Issues](https://github.com/C6Yelan/Update-WonderlandUHC/issues)回報問題，並附上盡可能詳細的敘述與影像資源！
 **※原作者已不再更新此插件，請不要將問題回報給原作者，以免給原作者造成困擾！**
 
 ## Fork作者、原作者與原專案背景介紹
@@ -82,8 +82,8 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 - [SnYe 玥雪](https://github.com/SnYe-SnowYue)：設計新版中心點篩選系統，設計宣傳網頁，接手後續插件更新
 ### 原作者
 #### LU__LU / 魯魯
-- Github個人檔案:[點此前往](https://github.com/lulu2002)\
-- 原專案連結：<https://github.com/MCWonderland/WonderlandUHC>\
+- Github個人檔案:[點此前往](https://github.com/lulu2002)
+- 原專案連結：<https://github.com/MCWonderland/WonderlandUHC>
 ### 原專案背景介紹
 原專案前身為魯大頭UHC，於2019年以付費形式發布，本fork的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援。
 
