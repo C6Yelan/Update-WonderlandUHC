@@ -1,3 +1,8 @@
+# 文字格式說明:
+# - 玩家可見文字使用 MiniMessage，例如 <red>文字</red>、<bold>粗體</bold>、<#ffcc00>自訂顏色</#ffcc00>。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {player}、{time} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+
 No_Permission: "<red>抱歉，你沒有權限使用此功能。</red>"
 Not_Yet_Started: "<red>由於遊戲尚未開始，因此你無法使用此功能。</red>"
 Use_Only_While_Waiting: "<red>此指令只能於大廳等待時使用。</red>"

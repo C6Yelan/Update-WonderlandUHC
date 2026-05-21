@@ -1,3 +1,8 @@
+# 文字設定格式說明:
+# - settings.yml 中少量玩家可見名稱可使用 MiniMessage，例如 <gold><bold>金頭顱</bold></gold>。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {player} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+
 #非常感謝你願意花錢投資此插件，魯魯感謝你!
 #由於此插件的功能實在相當多樣，能夠調整的東西也不少，以下將會在每種選項完整介紹它的用處
 #即使你不懂英文，也能夠明白每個選項的用途

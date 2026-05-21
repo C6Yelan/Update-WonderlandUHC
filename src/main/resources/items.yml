@@ -1,3 +1,8 @@
+# 物品文字格式說明:
+# - Name、Lore 可使用 MiniMessage，例如 <yellow>物品名稱</yellow>、<gray>說明文字</gray>。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {player} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+
 #物品設定(在各式各樣的設定介面)
 #Type -> 物品ID
 #Slot -> 在背包中的位置(記得，數字是從0開始，所以假裝我有一個介面是27個，位置就是從0~26)

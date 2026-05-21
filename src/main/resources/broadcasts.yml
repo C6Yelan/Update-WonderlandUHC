@@ -1,3 +1,9 @@
+# 公告文字格式說明:
+# - Invalid_Channel 這類遊戲內錯誤訊息使用 MiniMessage。
+# - Discord.Formatting 會送到 Discord，Minecraft 顏色會在發送前移除；請使用 Discord markdown 與 placeholder。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {host}、{join_time}、{scenarios} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+
 Discord:
   #Discord公告功能
   #如果擁有DiscordSRV插件，就可以讓系統自動幫你發送UHC通知至Discord。

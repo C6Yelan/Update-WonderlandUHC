@@ -1,3 +1,9 @@
+# Scenario 文字格式說明:
+# - Name、Description、Warn_Msg 與其他玩家可見訊息可使用 MiniMessage。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {player}、{amount}、{fancy-time} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+# - *_Sound 欄位不是文字格式，請維持「音效 音量 音調」。
+
 Armor_Vs_Health:
   Type: DIAMOND_CHESTPLATE
   Name: "<red>裝備的代價</red><gray>(ArmorVsHealth)</gray>"

@@ -1,3 +1,8 @@
+# GUI 文字格式說明:
+# - Title、Name、Lore 可使用 MiniMessage，例如 <green>文字</green>、<bold>粗體</bold>。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {status}、{number} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+
 Leave:
   Type: REDSTONE
   Name: "<red>回到上一頁</red>"

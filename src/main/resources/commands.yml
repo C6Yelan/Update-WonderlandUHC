@@ -1,3 +1,8 @@
+# 文字格式說明:
+# - 指令回覆文字使用 MiniMessage，例如 <red>文字</red>、<green><bold>成功</bold></green>。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {label}、{player} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+
 No_Console: "<red>不好意思，只有玩家才能執行此指令。</red>"
 Invalid_Argument: "<red>無法辨識的指令參數，請輸入</red> <gold>/{label} ?</gold> <red>來獲得指令參數列表。</red>"
 Label_Usage: "<red>使用方式:</red>"

@@ -1,3 +1,8 @@
+# 記分板文字格式說明:
+# - 每一行可使用 MiniMessage，例如 <white>文字</white>、<green>{placeholder}</green>。
+# - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
+# - {online_players}、{game_time} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
+
 #記分板方面你可以自行更改所有的風格
 #目前下方共有兩種已啟用的預設風格；你也可以依照文件最下方的註解範例新增其他樣式。
 
