@@ -9,7 +9,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 ### 插件教學資源
 如果您不清楚Minecraft伺服器的安裝方式、看不懂底下的敘述，可以通過下列方法學習
 - 觀看包含安裝伺服器的完整教學影片：[前往插件教學影片清單](https://www.youtube.com/watch?v=muiqzpNwOAk&list=PL86KqzDo7_n0Vkthb9I85hfS390i-4NPb)
-- 若安裝插件後，不熟悉遊戲內操作，可在遊戲裡輸入`/uhc tutorial`，獲取遊戲內UHC主持教學若
+- 若安裝插件後，不熟悉遊戲內操作，可在遊戲裡輸入`/uhc tutorial`，獲取遊戲內UHC主持教學
 
 ### 文字安裝步驟
 1. 準備 Paper `1.21.11` 伺服器[(也可以點我下載)](https://fill-ui.papermc.io/projects/paper/version/1.21.11)，並使用 Java `21` 啟動
