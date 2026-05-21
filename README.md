@@ -33,7 +33,8 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 | DiscordSRV | 可選 |啟用Discord群組公告功能及語音系統 |
 
 注意事項：
-**未安裝Chunky不會阻止伺服器啟動和插件啟用，但無法開始UHC世界跑圖，這會導致插件無法進入準備開始的狀態，因此使用插件時，請務必檢查是否已安裝Chunky！**(此狀況可能於未來修正)
+**未安裝Chunky不會阻止伺服器啟動和插件啟用，但無法開始UHC世界跑圖，這會導致插件無法進入準備開始的狀態，因此使用插件時，請務必檢查是否已安裝Chunky！**
+(此狀況可能於未來修正)
 
 ## 插件運作流程
 
@@ -55,7 +56,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 <gray>玩家: </gray><green>{player}</green>
 ```
 
-修改 `commands.yml`、`messages.yml`、`gui.yml`、`items.yml`、`scoreboards.yml`、`scenarios.yml`、`settings.yml` 等文件時，請使用MiniMessage格式，並保留 `{placeholder}` 名稱。
+修改 `commands.yml`、`messages.yml`、`gui.yml`、`items.yml`、`scoreboards.yml`、`scenarios.yml`、`settings.yml` 等文件時，請使用MiniMessage格式，並保留 `{placeholder}` 名稱
 
 詳細摘要見 [docs/text-format.md](docs/text-format.md)
 
@@ -85,6 +86,6 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 - Github個人檔案:[點此前往](https://github.com/lulu2002)
 - 原專案連結：<https://github.com/MCWonderland/WonderlandUHC>
 ### 原專案背景介紹
-原專案前身為魯大頭UHC，於2019年以付費形式發布，本fork的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援。
+原專案前身為魯大頭UHC，於2019年以付費形式發布，本fork的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援
 
 本fork保留原專案作者、開源脈絡與 GPL-3.0 授權。若需要理解本 fork 的維護背景與協作方式，請參考 [docs/maintenance-context.md](docs/maintenance-context.md)
