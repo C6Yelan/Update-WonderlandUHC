@@ -6,59 +6,59 @@
 
 #音效參數:
 #  音效  音量  音調
-# DRINK 1.0F 1.0F
+# ENTITY_GENERIC_DRINK 1.0F 1.0F
 
 #備註:
 #  特殊模式(Scenario) 的音效放在 scenarios.yml 裡面，參數與設定方式與這邊相同。
 Commands:
-  Spec_Toggle: DRINK 1.0F 1.0F
-  Respawn: LEVEL_UP 1.0F 1.0F
-  Set_Spawn: LEVEL_UP 1.0F 1.0F
-  Staff_On: BURP 1.0F 1.0F
-  Staff_Off: ENDERMAN_TELEPORT 1.0F 1.0F
-  Top_Kills: ORB_PICKUP 1.0F 1.0F
-  Team_Chat_On: BURP 1.0F 1.0F
-  Team_Chat_Off: NOTE_BASS 1.0F 1.0F
-  Team_Created: CLICK 1.0F 1.0F
-  Team_Info: BURP 1.0F 1.0F
-  Send_Coords: ORB_PICKUP 1.0F 1.0F
+  Spec_Toggle: ENTITY_GENERIC_DRINK 1.0F 1.0F
+  Respawn: ENTITY_PLAYER_LEVELUP 1.0F 1.0F
+  Set_Spawn: ENTITY_PLAYER_LEVELUP 1.0F 1.0F
+  Staff_On: ENTITY_PLAYER_BURP 1.0F 1.0F
+  Staff_Off: ENTITY_ENDERMAN_TELEPORT 1.0F 1.0F
+  Top_Kills: ENTITY_EXPERIENCE_ORB_PICKUP 1.0F 1.0F
+  Team_Chat_On: ENTITY_PLAYER_BURP 1.0F 1.0F
+  Team_Chat_Off: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
+  Team_Created: UI_BUTTON_CLICK 1.0F 1.0F
+  Team_Info: ENTITY_PLAYER_BURP 1.0F 1.0F
+  Send_Coords: ENTITY_EXPERIENCE_ORB_PICKUP 1.0F 1.0F
 Host:
-  Start_Creating_World: LEVEL_UP 1.0F 1.0F
-  World_Created: LEVEL_UP 1.0F 1.0F
+  Start_Creating_World: ENTITY_PLAYER_LEVELUP 1.0F 1.0F
+  World_Created: ENTITY_PLAYER_LEVELUP 1.0F 1.0F
   Inventory_Edited: ENTITY_PLAYER_SPLASH 1.0F 1.0F
-  Golden_Head_Created: DRINK 1.0F 1.0F
-  Clear_Enabled_Scenarios: DIG_SAND 1.0F 1.0F
-  Scenario_Toggled: NOTE_PLING 1.0F 1.0F
+  Golden_Head_Created: ENTITY_GENERIC_DRINK 1.0F 1.0F
+  Clear_Enabled_Scenarios: BLOCK_SAND_BREAK 1.0F 1.0F
+  Scenario_Toggled: BLOCK_NOTE_BLOCK_PLING 1.0F 1.0F
 Game:
-  Invincible_End: NOTE_BASS 1.0F 1.0F
-  Death: FIREWORK_LARGE_BLAST 1.0F 1.0F
-  Item_Disabled: NOTE_BASS 1.0F 1.0F
-  Cant_Join_Nether: NOTE_BASS 1.0F 1.0F
-  Win: WITHER_DEATH 1.0F 1.0F
+  Invincible_End: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
+  Death: ENTITY_FIREWORK_ROCKET_LARGE_BLAST 1.0F 1.0F
+  Item_Disabled: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
+  Cant_Join_Nether: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
+  Win: ENTITY_WITHER_DEATH 1.0F 1.0F
 Countdown:
   Lobby:
-    Start: LEVEL_UP 1.0F 1.0F
-    Tick: CHICKEN_EGG_POP 1.0F 1.0F
-    Run: NOTE_PLING 1.0F 1.0F
+    Start: ENTITY_PLAYER_LEVELUP 1.0F 1.0F
+    Tick: ENTITY_CHICKEN_EGG 1.0F 1.0F
+    Run: BLOCK_NOTE_BLOCK_PLING 1.0F 1.0F
   Start:
     Tick: none
-    Run: LEVEL_UP 1.0F 1.0F
+    Run: ENTITY_PLAYER_LEVELUP 1.0F 1.0F
   Border:
-    Tick: NOTE_STICKS 1.0F 1.0F
+    Tick: BLOCK_NOTE_BLOCK_HAT 1.0F 1.0F
     Run: none
   Damage:
     Tick: none
-    Run: ANVIL_USE 1.0F 1.0F
+    Run: BLOCK_ANVIL_USE 1.0F 1.0F
   Pvp:
     Tick: none
-    Run: NOTE_PLING 1.0F 1.0F
+    Run: BLOCK_NOTE_BLOCK_PLING 1.0F 1.0F
   FinalHeal:
     Tick: none
-    Run: EAT 1.0F 1.0F
+    Run: ENTITY_GENERIC_EAT 1.0F 1.0F
   NetherClose:
     Tick: none
-    Run: DOOR_CLOSE 1.0F 1.0F
+    Run: BLOCK_WOODEN_DOOR_CLOSE 1.0F 1.0F
 Tutorial:
-  Finished: LEVEL_UP 1.0F 1.0F
-  Next_Section: CLICK 1.0F 1.0F
-  Cancelled: NOTE_BASS 1.0F 1.0F
+  Finished: ENTITY_PLAYER_LEVELUP 1.0F 1.0F
+  Next_Section: UI_BUTTON_CLICK 1.0F 1.0F
+  Cancelled: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F

@@ -340,7 +340,7 @@ rg -n "Click|Hover|click|hover|\{click-|runCommand|showText|ClickEvent|HoverEven
 
 已完成：
 
-- `items.yml` 的 lobby、spectator、staff addon hotbar item `Name` / `Lore` 已轉成 MiniMessage，保留原本黃色 / 紅色 / 金色 / 綠色 / aqua 名稱與灰色 lore。
+- `items.yml` 的 lobby、spectator、staff addon hotbar item `Name` / `Lore` 已轉成 MiniMessage，保留原本黃色 / 紅色 / 金色 / 綠色 / aqua 名稱與灰色 lore。後續 resource cleanup 已移除不再被讀取的 `Lobby.Leave`，並將 `gui.yml` / `items.yml` 舊材質名改成 Bukkit 1.21 material 名稱，移除 `PluginItems` material alias map。
 - `PluginItems` 僅在 item Name / Lore 已含 MiniMessage tag 時跳過舊版 `&r&f` / `&7` 預設前綴，避免 MiniMessage 被 legacy prefix 污染；legacy 與純文字 item 仍保留原本預設名稱 / lore 顏色行為。
 - 本刀不處理 `Golden_Head_Name`，也不處理 GUI menu resource。
 
@@ -572,7 +572,7 @@ Divider: "<gray><strikethrough>--------------------</strikethrough></gray>"
 | `src/main/resources/scoreboards.yml` | 160 | 130 | scoreboard line、title、placeholder、strikethrough divider、長度切割。 |
 | `src/main/resources/settings.yml` | 1 | 1 | `Golden_Head_Name` 同時是顯示與 golden head 判斷來源。 |
 
-目前未在 `biomes.yml`、`sounds.yml`、`spawns.yml`、`stats.yml` 找到 legacy 色碼命中。
+目前未在 `sounds.yml`、`spawns.yml`、`stats.yml` 找到 legacy 色碼命中；`biomes.yml` 已作為未使用 legacy resource 移除。
 
 ## 必須保留的格式需求
 
@@ -1490,9 +1490,24 @@ Resource 只轉換 `Default.Lobby`：
 
 目前 `Messages.Updater.Failed` default resource 沒有實際使用點；本刀只完成預設 resource 格式遷移，不新增 updater presenter，也不補不存在的更新流程。至此 `messages.yml` default resource 已無 legacy `&` / `§` 色碼；剩餘 legacy 命中集中在 `gui.yml`。
 
+### 2026-05-21 messages.yml resource cleanup
+
+後續 resource cleanup 已移除 `messages.yml` 中不再被讀取的殘留訊息：
+
+- `Error`
+- `Kick.Thanks_For_Playing`
+- `Game.World_Border_Reached`
+- `Game.Closing_Server_Msg`
+- `Console.Biome_Replaced`
+- `Console.Biome_Not_Exist`
+- `Console.Can_Not_Replace_Biome`
+- `Dependency.Require_Dependency`
+
+其中 `Error` 與 `Game.World_Border_Reached` 已沒有 `Messages` 欄位；其他項目則同步移除 `Messages.java` 內未使用的 public static 欄位，避免 `PluginStaticConfig` 在載入時要求不存在的 key。
+
 ### 2026-05-19 第九十二刀：gui.yml pagination controls
 
-本刀只轉換 `gui.yml` 檔案最上方的通用 `Leave`、`Next_Page`、`First_Page`、`Previous_Page`、`Last_Page`。
+本刀只轉換 `gui.yml` 檔案最上方的通用 `Leave`、`Next_Page`、`First_Page`、`Previous_Page`、`Last_Page`。後續 resource cleanup 已移除不再被讀取的分頁按鈕 `Next_Page`、`First_Page`、`Previous_Page`、`Last_Page`，保留仍被使用的 `Leave`；也移除分頁 / 動態模板按鈕中不再被讀取的 `Slot: -1` placeholder。
 
 保留內容：
 

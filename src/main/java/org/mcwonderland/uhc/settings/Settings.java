@@ -18,8 +18,6 @@ public class Settings extends PluginStaticConfig {
         loadStaticConfiguration(Settings.class, UHCFiles.SETTINGS);
     }
 
-    public static String SERIALIZATION;
-
     public static Boolean SOUNDS;
     public static String RESTART_CMD;
 

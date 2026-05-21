@@ -4,28 +4,8 @@ import org.bukkit.Sound;
 import org.mcwonderland.uhc.platform.sound.PluginSound;
 
 import java.util.Locale;
-import java.util.Map;
 
 public final class SoundConfigParser {
-
-    private static final Map<String, String> SOUND_NAME_ALIASES = Map.ofEntries(
-            Map.entry("ANVIL_USE", "BLOCK_ANVIL_USE"),
-            Map.entry("BURP", "ENTITY_PLAYER_BURP"),
-            Map.entry("CHICKEN_EGG_POP", "ENTITY_CHICKEN_EGG"),
-            Map.entry("CLICK", "UI_BUTTON_CLICK"),
-            Map.entry("DIG_SAND", "BLOCK_SAND_BREAK"),
-            Map.entry("DOOR_CLOSE", "BLOCK_WOODEN_DOOR_CLOSE"),
-            Map.entry("DRINK", "ENTITY_GENERIC_DRINK"),
-            Map.entry("EAT", "ENTITY_GENERIC_EAT"),
-            Map.entry("ENDERMAN_TELEPORT", "ENTITY_ENDERMAN_TELEPORT"),
-            Map.entry("FIREWORK_LARGE_BLAST", "ENTITY_FIREWORK_ROCKET_LARGE_BLAST"),
-            Map.entry("LEVEL_UP", "ENTITY_PLAYER_LEVELUP"),
-            Map.entry("NOTE_BASS", "BLOCK_NOTE_BLOCK_BASS"),
-            Map.entry("NOTE_PLING", "BLOCK_NOTE_BLOCK_PLING"),
-            Map.entry("NOTE_STICKS", "BLOCK_NOTE_BLOCK_HAT"),
-            Map.entry("ORB_PICKUP", "ENTITY_EXPERIENCE_ORB_PICKUP"),
-            Map.entry("WITHER_DEATH", "ENTITY_WITHER_DEATH")
-    );
 
     private SoundConfigParser() {
     }
@@ -82,7 +62,7 @@ public final class SoundConfigParser {
         if (normalizedName.startsWith("MINECRAFT:"))
             normalizedName = normalizedName.substring("MINECRAFT:".length());
 
-        return SOUND_NAME_ALIASES.getOrDefault(normalizedName, normalizedName);
+        return normalizedName;
     }
 
     private static String[] splitSoundLine(String soundLine) {

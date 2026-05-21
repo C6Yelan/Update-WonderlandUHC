@@ -15,17 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class ScenarioConfig {
-
-    private static final Map<String, String> MATERIAL_NAME_ALIASES = Map.of(
-            "COOKED_FISH", "COOKED_COD",
-            "ENCHANTMENT_TABLE", "ENCHANTING_TABLE",
-            "MUSHROOM_SOUP", "MUSHROOM_STEW",
-            "WEB", "COBWEB",
-            "WORKBENCH", "CRAFTING_TABLE"
-    );
 
     private final ConfigBasedScenario scenario;
     private final YamlConfiguration configuration;
@@ -170,14 +161,8 @@ public class ScenarioConfig {
         return materials;
     }
 
-    static String normalizeSoundLine(String soundLine) {
-        return SoundConfigParser.normalizeSoundLine(soundLine);
-    }
-
     static String normalizeMaterialName(String materialName) {
-        String normalizedName = normalizeNamespacedValue(materialName);
-
-        return MATERIAL_NAME_ALIASES.getOrDefault(normalizedName, normalizedName);
+        return normalizeNamespacedValue(materialName);
     }
 
     private static String normalizeNamespacedValue(String value) {

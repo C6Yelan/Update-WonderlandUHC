@@ -36,7 +36,7 @@ rg -n "org\.mineacademy|Foundation|Datou|DaTou|NMS|PacketListener|PacketEvents|c
 - `LegacyGameStateTransitions` 已由正式 `MatchTransition.fromSourceState(...)` 取代；`Game.nextState()` 仍保留既有 `GameState` queue，只改 transition 決策來源。
 - `LegacyMatchSettingsMapper` 已改名為正式 `MatchSettingsMapper`，保留既有 `UHCGameSettings` 到 `MatchSettings` 欄位映射。
 - `CenterCleaner.applyLegacyGeneratorSettings(...)` 已改名為 `applyConfiguredGeneratorSettings(...)`，不改 `WorldCreator.generatorSettings(...)` 套用條件。
-- material / sound 設定值 alias 已改成正式 `MATERIAL_NAME_ALIASES` / `SOUND_NAME_ALIASES` 命名；保留既有 data folder 可讀性，不把舊值直接改成啟動錯誤。
+- material 設定值 alias 已改成正式 `MATERIAL_NAME_ALIASES` 命名；sound alias 先前曾改成 `SOUND_NAME_ALIASES` 保留既有 data folder 可讀性，後續資源精簡已將預設 `sounds.yml` / `scenarios.yml` 改為 1.21 原生 sound 名稱並移除 sound alias 行為。
 - `PluginColor` / `UHCTeam` 的 `§` team prefix 輸出已改用 section-code 命名；保留 Step 21 已接受的玩家可見 team prefix 行為。
 - unused `update` package、`Messages.Updater`、`Settings.OldEnchant`、預設 `messages.yml` updater section、預設 `settings.yml` OldEnchant section 與未讀取的 CenterCleaner pass/fail resource 欄位已移除。
 - production unused 的 `LegacyMatchStateMapper` 與對應測試已刪除。
@@ -52,7 +52,7 @@ rg -n "org\.mineacademy|Foundation|Datou|DaTou|NMS|PacketListener|PacketEvents|c
 | unused state mapper | `src/main/java/org/mcwonderland/uhc/core/match/LegacyMatchStateMapper.java` | 初次盤點時只被自己的 test 使用，沒有 production call site。 | 第一刀已刪除 class 與 test。 |
 | generator method naming | `src/main/java/org/mcwonderland/uhc/game/CenterCleaner.java` `applyConfiguredGeneratorSettings(...)` | 已由 `applyLegacyGeneratorSettings(...)` 改名而來；實際只在 center cleaner 關閉時套用 `Settings.CenterCleaner.GENERATOR_SETTINGS` 到 `WorldCreator.generatorSettings(...)`。 | 第四刀已處理。不改 generator settings 行為。 |
 | material alias support | `src/main/java/org/mcwonderland/uhc/platform/item/PluginItems.java`、`src/main/java/org/mcwonderland/uhc/scenario/impl/ScenarioConfig.java` | 已改成正式 `MATERIAL_NAME_ALIASES` 命名；仍接受既有 Material 別名，例如 `WORKBENCH`、`WEB`、`MUSHROOM_SOUP`、`CARROT_STICK`。這是資料值 alias，不是 message format parser。 | 第五刀已處理命名 residue；不移除 alias 行為，避免既有 data folder 舊值直接失效。若未來要移除，需另開行為變更步驟。 |
-| sound alias support | `src/main/java/org/mcwonderland/uhc/util/SoundConfigParser.java` | 已改成正式 `SOUND_NAME_ALIASES` 命名；仍接受既有 Sound 別名，例如 `LEVEL_UP`、`ORB_PICKUP`、`NOTE_PLING`。這會影響既有 `sounds.yml` / scenario sound 設定可讀性。 | 第五刀已處理命名 residue；不移除 alias 行為。 |
+| sound alias support | `src/main/java/org/mcwonderland/uhc/util/SoundConfigParser.java` | 後續資源精簡已將預設 `sounds.yml` / `scenarios.yml` 寫成 1.21 原生 Bukkit sound 名稱，並移除 `SOUND_NAME_ALIASES` 舊名轉換。 | 已移除 alias 行為；既有外部設定若仍使用 `LEVEL_UP`、`ORB_PICKUP`、`NOTE_PLING` 等舊名，需改為新版 sound 名稱。 |
 | section-code color support | `src/main/java/org/mcwonderland/uhc/platform/text/PluginColor.java`、`src/main/java/org/mcwonderland/uhc/game/UHCTeam.java` | `PluginColor` 仍可讀 `&c` / `§c`，`toString()` 輸出 `§` 色碼；`UHCTeam#getPrefix()` 也用 `§l`。Step 21 文件曾明確接受 team prefix / placeholder 的 `§` 色碼輸出。 | 第五刀已改成 section-code 命名，不改玩家可見 team prefix 行為。 |
 | Step 24 message literal tests | `src/test/java/org/mcwonderland/uhc/platform/text/PluginTextTest.java` | 測試 `&` 色碼在 `PluginText.toComponent(...)` 中保持 literal，證明 runtime 不再解析 legacy message format。 | 保留。這不是相容層，而是 Step 24 removal gate 的防回歸測試。 |
 | accepted removed feature residue | `src/main/java/org/mcwonderland/uhc/settings/Settings.java`、`src/main/resources/settings.yml` | 1.7 舊附魔已被接受移除；先前仍保留 unused settings class 與預設 resource section。 | 第六刀已移除 `Settings.OldEnchant` 與預設 `settings.yml` `OldEnchant` section。既有 data folder 多出的 YAML key 會被 `PluginStaticConfig` 忽略。 |
@@ -79,7 +79,7 @@ rg -n "org\.mineacademy|Foundation|Datou|DaTou|NMS|PacketListener|PacketEvents|c
    - 已將 `CenterCleaner.applyLegacyGeneratorSettings(...)` 改成正式 `applyConfiguredGeneratorSettings(...)`。
 
 5. **Alias / section-code naming 小刀**
-   - 已將 material / sound alias 常數改成正式 alias 命名。
+   - 已將 material alias 常數改成正式 alias 命名；sound alias 行為已於後續資源精簡移除。
    - 已將 `PluginColor` / `UHCTeam` 的 `legacy` 命名改成 section-code 命名。
    - 保留既有 data folder 可讀性與 Step 21 team prefix 行為。
 
@@ -90,7 +90,7 @@ rg -n "org\.mineacademy|Foundation|Datou|DaTou|NMS|PacketListener|PacketEvents|c
 
 7. **舊資料格式 fallback 行為移除決策**
    - `PluginItems` / `ScenarioConfig` material alias。
-   - `SoundConfigParser` sound alias。
+   - `SoundConfigParser` sound alias 已於後續資源精簡移除。
    - `PluginColor` section-code parse / output。
    - 第五刀已把命名改為正式支援；若仍要移除行為本身，會影響既有 data folder 與玩家可見顏色，需另行確認「舊設定直接失效」是否可接受。
 

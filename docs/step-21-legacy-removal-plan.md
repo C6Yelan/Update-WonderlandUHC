@@ -562,7 +562,7 @@ command helper 收斂方式：
 
 - 刪除 `command/impl/LeaveCommand.java`，不再提供 `/leave` 指令。
 - 移除 `FeatureRegistry#registerCommands(...)` 中的 `/leave` 註冊，且不保留 `registerNativeCommands()` 過渡方法。
-- 刪除 lobby / spectator hotbar 的 `LeaveItem`，避免道具點擊後觸發不存在的指令。
+- 刪除 lobby / spectator hotbar 的 `LeaveItem`，避免道具點擊後觸發不存在的指令；後續 resource cleanup 已移除 `items.yml` 中不再被讀取的 `Lobby.Leave`。
 - `MatchStopService` 結束比賽時只刪 cache 並關閉伺服器，不再把玩家送往 fallback server。
 - 移除 `Extra#sendToFallbackServer(...)`、`Settings.BUNGEE_LOBBY`、`settings.yml` 的 `Bungee_Lobby`、`plugin.yml` / `permissions.txt` 的 `wonderland.uhc.command.leave`。
 - 移除只服務 BungeeCord outgoing channel 的 `PluginMessagingPort` / `PaperPluginMessagingPort` 與 `PluginBootstrap#registerPluginChannels()`。
@@ -717,8 +717,8 @@ command helper 收斂方式：
 - `command/impl/game/BackPackCommand.java` 不再 extends Foundation `SimpleCommand`，改成 Bukkit `CommandExecutor`。
 - `FeatureRegistry#registerCommands(...)` 不再把 `/backpack|/bp` 交給 Foundation dynamic command registration。
 - `FeatureRegistry#registerNativeCommands()` 直接註冊 `/backpack|/bp`；`plugin.yml` 補上 `/backpack` command entry 與 `bp` alias。
-- 保留舊行為：主指令不額外檢查 `wonderland.uhc.command.backpack`；只有 `/backpack <玩家>` 檢查 `wonderland.uhc.host.seebackpack`；BackPack scenario 未啟用時仍 silent return；超過一個參數時仍走開自己背包的舊分支。
-- 本刀未處理 `ScenarioBackPack`、`UHCTeam` 背包資料、死亡掉落、隊伍資料結構、permission 文件整理或 Foundation `setTellPrefix("")`。
+- 保留舊行為：主指令不額外檢查 `wonderland.uhc.command.backpack`；只有 `/backpack <玩家>` 檢查 `wonderland.uhc.host.seebackpack`；BackPack scenario 未啟用時仍 silent return；超過一個參數時仍走開自己背包的舊分支。後續 `plugin.yml` 已移除未使用的 `wonderland.uhc.command.backpack` 宣告，避免它被誤認為背包功能開關。
+- 本刀未處理 `ScenarioBackPack`、`UHCTeam` 背包資料、死亡掉落、隊伍資料結構或 Foundation `setTellPrefix("")`。
 
 本輪 `/respawn` native command 實作結果：
 
@@ -840,10 +840,10 @@ rg -n "implements ConfigSerializable|SerializedMap" src/main/java/org/mcwonderla
 | `Settings` / `Messages` / `CommandSettings` | 第一刀建立明確 static config load / reload 流程，保留 public static 欄位、現有 YAML key、缺值行為與 `PluginText.colorize(...)` 等既有後處理。 |
 | `Sounds` / `SoundConfigParser` / `Extra.sound(...)` | 單獨一刀把 `SimpleSound` 換成本地 sound value 或直接 Bukkit sound playback；保留 `sounds.yml` 格式，不順手改倒數或 scenario 音效邏輯。 |
 | `UHCSpawn` / `Spawns` | 已移除 Foundation `YamlConfig` 讀寫；保留 `spawns.yml` 路徑、`Lobby` key、單行 `world x y z yaw pitch` 格式、未設定時回 world spawn 的行為與 reload 行為。 |
-| `WorldLoadingCacheStore` / `CacheSaver` | 已移除 `YamlConfig.clearLoadedSections()` 與 Foundation file access；保留 `cache.db` 中 `Host`、`Loading_Status`、`Settings`、`Match_Center.*` 形狀。 |
-| `SavedGameSettingsStore` / `UHCGameSettingsSaver` | 已移除 Foundation `YamlConfig` 讀寫；保留 `savedgames.db` 以 player UUID 儲存多組 `UHCGameSettings` 的形狀。 |
-| `StatsStorageYaml` / `UHCStats` | 保留 `stats.yml` 每 UUID 下的 `Game_Played`、`Kills`、`Wins` 形狀；不改成資料庫、不擴充統計模型。 |
-| `ScenarioConfig` / scenario `@FilePath` 欄位 | 已移除 Foundation `YamlConfig` 讀取；保留 `scenarios.yml` 既有 scenario key、`Type`、`Name`、`Description`、`@FilePath` 欄位、舊 material alias 與 sound alias。 |
+| `WorldLoadingCacheStore` / `CacheSaver` | 已移除 `YamlConfig.clearLoadedSections()` 與 Foundation file access；保留 `cache.db` 中 `Host`、`Loading_Status`、`Settings`、`Match_Center.*` 形狀。0 bytes 空白預設 resource 已於後續資源精簡移除，第一次保存時由 store 建立或更新。 |
+| `SavedGameSettingsStore` / `UHCGameSettingsSaver` | 已移除 Foundation `YamlConfig` 讀寫；保留 runtime `savedgames.db` 以 player UUID 儲存多組 `UHCGameSettings` 的形狀。0 bytes 空白預設 resource 已於後續資源精簡移除，第一次保存時由 store 建立。 |
+| `StatsStorageYaml` / `UHCStats` | 保留 `stats.yml` 每 UUID 下的 `Game_Played`、`Kills`、`Wins` 形狀；不改成資料庫、不擴充統計模型。0 bytes 空白預設 resource 已於後續資源精簡移除，第一次保存時由 store 建立或更新。 |
+| `ScenarioConfig` / scenario `@FilePath` 欄位 | 已移除 Foundation `YamlConfig` 讀取；保留 `scenarios.yml` 既有 scenario key、`Type`、`Name`、`Description`、`@FilePath` 欄位。預設 `scenarios.yml` 內 scenario 專用音效已改成 1.21 原生 sound 名稱，scenario material 舊名 alias 已移除；後續資源精簡也已將 `sounds.yml` 改為 1.21 原生 sound 名稱並移除 sound alias parser。 |
 | `SidebarTheme` / `scoreboards.yml` | 已移除 Foundation `YamlConfig` 讀取；保留頂層 theme key、8 組 scoreboard line list 與 `Default` fallback 語意，不改 scoreboard line model；host menu 中的 theme selector UI 留 21.5 驗證。 |
 | `AbstractBroadcastSender` / `DiscordBroadcastSender` | 已移除 Foundation `YamlConfig` 讀取；保留 `broadcasts.yml` 的 `Discord.Formatting`、`Discord.Invalid_Channel`、`Discord.Channel_Ids` 與 DiscordSRV 發送流程。 |
 | `DeathMessageLoader` | 已移除 Foundation `YamlConfig` 讀取；保留 `messages.yml` death message 結構，不改死亡訊息行為。 |
@@ -913,7 +913,7 @@ rg -n "class .* extends (AutoLoadStaticConfig|SimpleSettings|YamlStaticConfig|Ya
 
 - `StatsMenu#getClickSound()` 與 `LegacyFoundationAdapter#configureMenuClickSound()` 仍使用 Foundation `SimpleSound`，因為它們被 Foundation menu API 簽名綁住，留到 21.5 menu framework 移除時一起處理。
 - `ScenarioConfig` 仍繼承 Foundation `YamlConfig`；本刀只替換 scenario sound 欄位型別，scenario YAML reader 本體留在後續 YAML readers 切片。
-- `sounds.yml` 不做 key migration 或全量 alias 寫回，只保留既有格式與既有 alias parser。
+- 當時 `sounds.yml` 未做 key migration 或全量 alias 寫回；後續資源精簡已將預設 `sounds.yml` 改為 1.21 原生 Bukkit sound 名稱，並移除舊 sound alias parser。
 
 本輪搜尋結果：
 
@@ -929,7 +929,7 @@ rg -n "AutoLoadStaticConfig|YamlConfigLoader|org\\.mineacademy\\.fo\\.model\\.Si
 
 | 狀態 | 切片 | 實際處理 | 驗證 |
 | --- | --- | --- | --- |
-| 本輪完成 | stats.yml 第一刀 | `StatsStorageYaml` 不再繼承 Foundation `YamlConfig`，改用 Bukkit `YamlConfiguration` 直接讀寫 `stats.yml`；`UHCStats` 移除 `ConfigSerializable` / `SerializedMap`，保留既有 `Game_Played`、`Kills`、`Wins` 三個累積統計 key，不保存本場 `kills` 或 `oreMined`。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 stats storage exception。 |
+| 本輪完成 | stats.yml 第一刀 | `StatsStorageYaml` 不再繼承 Foundation `YamlConfig`，改用 Bukkit `YamlConfiguration` 直接讀寫 `stats.yml`；`UHCStats` 移除 `ConfigSerializable` / `SerializedMap`，保留既有 `Game_Played`、`Kills`、`Wins` 三個累積統計 key，不保存本場 `kills` 或 `oreMined`。後續資源精簡已移除 0 bytes 空白預設 `src/main/resources/stats.yml`，runtime data folder 內的 stats 檔仍由 store 保留與寫入。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 stats storage exception。 |
 
 本刀刻意未處理：
 
@@ -952,7 +952,7 @@ rg -n "SerializedMap|ConfigSerializable|YamlConfig" src/main/java/org/mcwonderla
 
 | 狀態 | 切片 | 實際處理 | 驗證 |
 | --- | --- | --- | --- |
-| 本輪完成 | cache.db / savedgames.db settings model 第一刀 | `UHCGameSettings`、5 個 sub-settings 與 `InventoryContent` 改成本地 `toMap()` / `fromSection(...)` / `fromMap(...)`，移除 Foundation `ConfigSerializable` / `SerializedMap`；`WorldLoadingCacheStore` 與 `SavedGameSettingsStore` 改用 Bukkit `YamlConfiguration` 直接讀寫，保留 `cache.db` 的 `Host`、`Loading_Status`、`Settings`、`Match_Center.*` 形狀，以及 `savedgames.db` 的 UUID -> settings list 形狀。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`，既有 `cache.db` 可被讀回；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 settings model / cache store exception。 |
+| 本輪完成 | cache.db / savedgames.db settings model 第一刀 | `UHCGameSettings`、5 個 sub-settings 與 `InventoryContent` 改成本地 `toMap()` / `fromSection(...)` / `fromMap(...)`，移除 Foundation `ConfigSerializable` / `SerializedMap`；`WorldLoadingCacheStore` 與 `SavedGameSettingsStore` 改用 Bukkit `YamlConfiguration` 直接讀寫，保留 `cache.db` 的 `Host`、`Loading_Status`、`Settings`、`Match_Center.*` 形狀，以及 `savedgames.db` 的 UUID -> settings list 形狀。後續資源精簡已移除 0 bytes 空白預設 `src/main/resources/cache.db` / `savedgames.db`，runtime data folder 內的檔案仍由 store 保留與寫入。 | `bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`，既有 `cache.db` 可被讀回；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現本輪 settings model / cache store exception。 |
 
 本刀刻意未處理：
 
@@ -1060,7 +1060,7 @@ rg -n "org\\.mineacademy\\.fo\\.settings\\.YamlConfig|extends YamlConfig" src/ma
 
 - `ConfigBasedScenario` 的 `ItemCreator` icon 建立仍屬 21.5 menu / Foundation menu framework，不在本刀順手替換。
 - scenario 註冊流程、scenario 啟用 / 停用流程、scenario gameplay 行為不改。
-- `scenarios.yml` 內容與 key 不做 migration；舊 material / sound alias 仍保留以讀取既有設定。
+- `scenarios.yml` key 不做 migration；後續資源精簡已先把預設檔內 scenario 專用音效改成 1.21 原生 sound 名稱，並移除 scenario material 舊名 alias。再後續 `sounds.yml` 也已改為 1.21 原生 sound 名稱，舊 sound alias parser 已移除。
 - 不新增通用 config framework；本刀只在 `ScenarioConfig` 內保留現有 reader 需要的少量讀值方法。
 
 本輪搜尋結果：
@@ -1190,7 +1190,7 @@ rg -n "^([A-Za-z0-9_]+):" src/main/resources/gui.yml src/main/resources/items.ym
 
 - `ButtonReturnBack` 與 `CompMaterial` 仍屬 Foundation menu API，留到本地 menu base / back button 切片。
 - 不處理 `ConfigMenu`、`ConfigMenuPagged`、pagination、host settings、inventory editor、conversation input 或 tools registry。
-- `PluginItems` 只支援目前 resource 內實際需要的 material aliases，沒有做完整 legacy material database 或 item DSL。
+- `PluginItems` 當時只支援 resource 內實際需要的 material aliases，沒有做完整 legacy material database 或 item DSL；後續 resource cleanup 已將 `gui.yml` / `items.yml` 改成 Bukkit 1.21 material 名稱並移除 `PluginItems` material alias map。
 - `items.yml` 的 tool hotbar item 讀取尚未切過來；下一刀再處理 `UHCTool` / `Tool.getTool(...)`。
 
 第二個程式碼切片已完成：
@@ -1199,7 +1199,7 @@ rg -n "^([A-Za-z0-9_]+):" src/main/resources/gui.yml src/main/resources/items.ym
 | --- | --- | --- | --- |
 | 本輪完成 | tools registry 第一刀 | `UHCTool` 不再繼承 Foundation `Tool`，也不再使用 `ConfigItem.fromItemsFile(...)`；改由本地薄 registry 讀 `items.yml` 的 item / slot 並比對 hotbar item。`ToolListener` 接手右鍵 dispatch、背包點擊保護與丟棄保護；`DisableItemListener` 改用本地 `UHCTool` 判斷，避免 hotbar 工具被當成禁用物品。`WonderlandUHC#areToolsEnabled()` 回傳 `false`，不再讓 Foundation 自動註冊 `ToolsListener`。 | `rg` gate 確認 source 內無 Foundation `menu.tool`、`Tool.getTool(...)`、`ConfigItem.fromItemsFile(...)` 或 `extends Tool` 命中；`bash scripts/package-plugin-1.21.sh --skip-foundation --no-clean` 通過；部署到 Paper `1.21.11` 測試服後以 `start.bat` 啟動到 `Done`；console 執行 `uhc reload` 成功輸出 `WonderlandUHC 1.0.0-alpha-2 已重新載入。`；`latest.log` 未出現 `UHCTool`、`ToolListener`、`PluginItems`、item slot/material 或 class loading 相關 exception。 |
 
-後續手動測試 `/staff` 時發現 `items.yml` 的 `Spectator.Random_Teleport.Type: ENDER_PORTAL_FRAME` 沒有被本地 `PluginItems` alias 承接，導致 spectator hotbar 初始化失敗；已補 `ENDER_PORTAL_FRAME -> END_PORTAL_FRAME`，避免 staff / spectator 工具載入時因舊材質名爆掉。
+後續手動測試 `/staff` 時發現 `items.yml` 的 `Spectator.Random_Teleport.Type: ENDER_PORTAL_FRAME` 沒有被本地 `PluginItems` alias 承接，導致 spectator hotbar 初始化失敗；當時先補 `ENDER_PORTAL_FRAME -> END_PORTAL_FRAME`。後續 resource cleanup 已改用 `END_PORTAL_FRAME` 並移除 `PluginItems` material alias map。
 
 本刀刻意未處理：
 
@@ -1445,7 +1445,7 @@ rg -n "^([A-Za-z0-9_]+):" src/main/resources/gui.yml src/main/resources/items.ym
 
 本刀刻意未處理：
 
-- 不清理 `gui.yml` 根部 `Leave` / `Next_Page` / `Previous_Page` / `First_Page` / `Last_Page` 資源殘留，避免混入 resource layout / 文案整理。
+- 當時不清理 `gui.yml` 根部 `Leave` / `Next_Page` / `Previous_Page` / `First_Page` / `Last_Page` 資源殘留，避免混入 resource layout / 文案整理；後續 resource cleanup 已確認 `Next_Page` / `Previous_Page` / `First_Page` / `Last_Page` 無 runtime 讀取並移除，`Leave` 仍被子設定頁返回按鈕使用。後續也移除 `Scenarios`、`Saves`、`Sidebar_Theme_Selector`、`Team_Selector` 動態模板按鈕上不再被讀取的 `Slot: -1` placeholder。
 - 不處理 `InventoryListener` 的 Foundation `Menu.getMenu(player)` spectator 防護判斷；它牽涉 inventory policy，需獨立盤點。
 - 不處理 `WonderlandUHC extends SimplePlugin` lifecycle；這是 Step 21 後段 lifecycle 收尾，不和 menu click sound 清理混在一起。
 

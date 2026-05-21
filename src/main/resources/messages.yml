@@ -1,5 +1,4 @@
 No_Permission: "<red>抱歉，你沒有權限使用此功能。</red>"
-Error: "<dark_gray><bold>[</bold></dark_gray><dark_red><bold>!</bold></dark_red><dark_gray><bold>]</bold></dark_gray> <red>此操作在運行時發生了錯誤，請查看後台獲取詳細錯誤訊息。</red>"
 Not_Yet_Started: "<red>由於遊戲尚未開始，因此你無法使用此功能。</red>"
 Use_Only_While_Waiting: "<red>此指令只能於大廳等待時使用。</red>"
 Not_Gaming_Player: "<red>由於你並非遊戲玩家，因此無法使用此功能。</red>"
@@ -121,7 +120,6 @@ Kick:
   Whitelisted: "<red>目前白名單是開啟狀態。</red>"
   Full: "<red>遊戲人數已滿。</red>"
   Game_Started: "<red>遊戲已經開始了。</red>"
-  Thanks_For_Playing: "<gray>謝謝你的遊玩 </gray><white>{player}</white><gray>。</gray>"
 
 CenterCleaner:
   Search_Started: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>正在評估同一張世界中的候選中心...</white>"
@@ -204,13 +202,11 @@ Game:
   No_Nether: "<gray>[</gray><red>地獄</red><gray>]</gray> <red>本場遊戲並沒有開啟地獄。</red>"
   You_Have_Been_Killed: "<gray>你被 </gray><red>{team} {character} {killer}</red><gray> 以 </gray><red>{heal}❤</red><gray> 的血量差距擊殺。</gray>"
   Team_Eliminated: "<yellow>{team}</yellow> <red>全隊滅絕。</red>"
-  World_Border_Reached: "<red><bold>萬里長城外相當危險，請止步吧。</bold></red>"
   Item_Disabled: "<red>本場UHC無法使用此物品。</red>"
   Relog_Death: "<white>{player}</white><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray> <red>因為離線超過 {minute} 分鐘而被判定死亡。</red>"
   Ipvp_Lava: "<red>PvP尚未開放，你無法在玩家附近放岩漿。</red>"
   Ipvp_Fire: "<red><bold>由於PvP尚未開始，因此你無法放置任何可燃物在玩家身旁。</bold></red>"
   Arrow_Health_Message: "<red>{player}</red><gray> 還剩下 </gray><red>{heal}❤</red><gray>。</gray>"
-  Closing_Server_Msg: "<red><bold>伺服器將於 <white>{seconds}</white> 秒後關閉。</bold></red>"
   Victory_Broadcast:
     - "<white><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></white>"
     - "<gold><bold>恭喜隊伍 {winner} 獲得這場UHC的勝利!</bold></gold>"
@@ -273,16 +269,12 @@ Symbol:
   Minutes: "分鐘"
 
 Console:
-  Biome_Replaced: "<gray>[</gray><yellow>生態域轉換系統</yellow><gray>] 成功將 </gray><green>{biome}</green><gray> 轉換成 </gray><green>{changed}</green><gray>。</gray>"
-  Biome_Not_Exist: "<gray>[</gray><yellow>生態域轉換系統</yellow><gray>]</gray> <red>名為 </red><dark_red>{biome}</dark_red><red> 的生態域並不存在。</red>"
-  Can_Not_Replace_Biome: "<gray>[</gray><yellow>生態域轉換系統</yellow><gray>]</gray> <red>在將 </red><dark_red>{biome}</dark_red><red> 生態域轉換至 </red><dark_red>{changed}</dark_red><red> 生態域的過程發生了錯誤。</red>"
   Chunk_Load_Started: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>開始載入 </green><white>{world}</white><green> 世界的地圖。</green>"
   Chunk_Load_Finished: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>成功在世界: </green><white>{world}</white><green> 載入 </green><white>{number}</white><green> 個Chunk。</green>"
   Chunk_Load_Nether_Detected: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <yellow><bold>偵測到本場遊戲有開啟地獄，因此開始載入地獄地圖。</bold></yellow>"
   Force_Nether_Chunk_On: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <gold><bold>雖然並未開啟地獄，但由於開啟了強制載入的功能，因此開始載入地獄地圖。若想關閉此功能，請將 settings.yml 裡面的 Force_Loading_Nether_Chunk 設定為 false。</bold></gold>"
 
 Dependency:
-  Require_Dependency: "<red>你尚未安裝 </red><white>{plugin}</white><red> 插件，因此插件無法啟動。請先至 </red><aqua>{url}</aqua><red> 下載並安裝後，再重新啟動伺服器。</red>"
   Require_Soft_Dependency: "<red>你尚未安裝 </red><white>{plugin}</white><red> 插件，因此本功能無法使用。請先至 </red><aqua>{url}</aqua><red> 下載並安裝後，再重新嘗試一次。</red>"
 
 Motd:

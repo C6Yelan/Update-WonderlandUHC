@@ -1,9 +1,9 @@
 #記分板方面你可以自行更改所有的風格
-#目前下方共有預設的三種風格，而你也可以自己新增其他樣式，如同文件最下方的註解一般。
+#目前下方共有兩種已啟用的預設風格；你也可以依照文件最下方的註解範例新增其他樣式。
 
 #以下為所有記分板的代轉換字元
 # Lobby 方面:
-  # {ign} 每個玩家各自的名子
+  # {ign} 每個玩家各自的名字
   # {online_players} 伺服器玩家總數
   # {teleport_in} 傳送倒數時間
   # {team_size} 隊伍大小
@@ -11,16 +11,17 @@
 # Starting 方面:
   # 包含所有Lobby方面的代轉換字元
   # {start_in} 遊戲開始倒數時間
-  # {teleporting} 傳送完成的玩家數量
-  # {teleported} 已傳送玩家數量
+  # {teleporting} 尚未傳送的隊伍數量
+  # {teleported} 已傳送隊伍數量
 # Spectator_Solo、Spectator_Teams 方面:
-  # {ign} 每個玩家各自的名子
+  # {ign} 每個玩家各自的名字
   # {remaining} 存活玩家數量
   # {all} 本場遊玩玩家數量
   # {alive_teams} 存活隊伍數量
   # {all_teams} 本場總隊伍數量
   # {spectators} 觀察者數量
   # {border_size} 邊界大小(直徑)
+  # {border_size/2} 邊界半徑
   # {shrink_in} 邊界收縮倒數時間
   # {game_time} 遊戲時間
 # Staff_Solo、Staff_Teams 方面:
@@ -31,7 +32,7 @@
   # 包含所有 Spectator_Solo 方面的代轉換字元
   # {kills} 玩家擊殺數
 # Player_Teams 方面:
-  # 包含所有Player_Solo方面方面的代轉換字元
+  # 包含所有 Player_Solo 方面的代轉換字元
   # {team_kills} 隊伍擊殺數
   # {team_name} 隊伍名稱
   # {team_color} 隊伍顏色(顏色代碼)

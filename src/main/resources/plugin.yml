@@ -106,8 +106,6 @@ permissions:
   wonderland.uhc.bypass.kick.death:
     default: true
 
-  wonderland.uhc.command.backpack:
-    default: true
   wonderland.uhc.command.config:
     default: true
   wonderland.uhc.command.scenarios:

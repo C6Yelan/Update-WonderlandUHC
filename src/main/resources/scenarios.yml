@@ -31,7 +31,7 @@ Bench_Blitz:
   Description:
     - "整場遊戲，玩家只能製作一個工作台。"
   Workbench_Created: "<gray>[<dark_green>匠魂之心</dark_green>]</gray> <red>由於匠魂之心模式的限制，你無法製作超過一個工作台。</red>"
-  Workbench_Created_Sound: LEVEL_UP 1.0F 2.0F
+  Workbench_Created_Sound: ENTITY_PLAYER_LEVELUP 1.0F 2.0F
 Blood_Diamonds:
   Type: DIAMOND
   Name: "<dark_red>血鑽石</dark_red><gray>(BloodDiamond)</gray>"
@@ -57,7 +57,7 @@ Damage_Dogers:
   #共有多少人要成為犧牲者
   Amount: 3
   Death_Cause_This: "<gray>[<dark_red>犧牲者</dark_red>]</gray> <dark_red><bold>{player}</bold></dark_red> <red><bold>成為了本場次的犧牲者，目前犧牲者仍然還缺 </bold></red><dark_red><bold>{amount}</bold></dark_red> <red><bold>位。</bold></red>"
-  Death_Cause_This_Sound: CLICK 1.0F 1.0F
+  Death_Cause_This_Sound: UI_BUTTON_CLICK 1.0F 1.0F
 Diamond_Less:
   Type: DIAMOND_ORE
   Name: "<red>無鑽石模式</red><gray>(DiamondLess)</gray>"
@@ -73,7 +73,7 @@ Double_Or_Nothing:
   Trigger_Blocks:
     - DIAMOND_ORE
     - GOLD_ORE
-  Nothing_Sound: CHICKEN_EGG_POP 1.0F 1.0F
+  Nothing_Sound: ENTITY_CHICKEN_EGG 1.0F 1.0F
 Fast_Obsidian:
   Type: OBSIDIAN
   Name: "<yellow>脆弱黑石</yellow><gray>(FastObsidian)</gray>"
@@ -97,8 +97,8 @@ Food_Neophobia:
     - "(藥水，金蘋果，牛奶除外)"
   First_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red><bold>注意，貫徹始終模式的效果，從今以後你只能食用 </bold></red><gold><bold>{foodtype}</bold></gold><red><bold>。</bold></red>"
   Just_Can_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red>由於本場的貫徹始終效果限制，你無法食用其他類別食物，你只能食用 </red><gold>{foodtype}</gold><red>。</red>"
-  First_Eat_Sound: NOTE_BASS 1.0F 1.0F
-  Just_Can_Eat_Sound: CLICK 1.0F 1.0F
+  First_Eat_Sound: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
+  Just_Can_Eat_Sound: UI_BUTTON_CLICK 1.0F 1.0F
 Gold_Less:
   Type: GOLD_ORE
   Name: "<red>無黃金模式</red><gray>(Goldless)</gray>"
@@ -136,8 +136,8 @@ Limitations:
     - "每場遊戲，你最多只能挖掘 {diamond-limit} 個鑽石、{gold-limit} 個黃金及 {iron-limit} 個鐵礦。"
   Reached_Limit: "<gray>[<dark_green>礦物限量</dark_green>]</gray> <red>抱歉，你最多只能挖掘 {amount} 個 {block}。</red>"
   Cant_Mine_More: "<gray>[<dark_green>礦物限量</dark_green>]</gray> <red><bold>你已達到 </bold></red><gold><bold>{block}</bold></gold> <red><bold>的挖掘上限 ({amount}個)，從現在起你將無法再從此方塊獲得任何掉落物。</bold></red>"
-  Reached_Limit_Sound: CLICK 1.0F 1.0F
-  Cant_Mine_More_Sound: NOTE_BASS 1.0F 1.0F
+  Reached_Limit_Sound: UI_BUTTON_CLICK 1.0F 1.0F
+  Cant_Mine_More_Sound: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
   #礦物的限制數量
   Limits:
     Iron: 64
@@ -206,7 +206,7 @@ Switcheroo:
   Name: "<aqua>飄疑不定</aqua><gray>(Switcheroo)</gray>"
   Description:
     - "玩家將會與被射中的人交換位置。"
-  Switch_Sound: ENDERMAN_TELEPORT 1.0F 1.0F
+  Switch_Sound: ENTITY_ENDERMAN_TELEPORT 1.0F 1.0F
 Timber:
   Type: OAK_SAPLING
   Name: "<yellow>快速伐木</yellow><gray>(Timber)</gray>"
@@ -225,8 +225,8 @@ Time_Bomb:
   #爆炸威力
   Explosion_Power: 3
   Exploded: "<dark_gray>[<red>死亡棺材</red>]</dark_gray> <gray>{player} 的棺材爆炸了。</gray>"
-  Warn_Sound: LEVEL_UP 2.0F 2.0F
-  Warn_Sound_Danger: LEVEL_UP 2.0F 5.0F
+  Warn_Sound: ENTITY_PLAYER_LEVELUP 2.0F 2.0F
+  Warn_Sound_Danger: ENTITY_PLAYER_LEVELUP 2.0F 5.0F
 Triple_Arrow:
   Type: ARROW
   Name: "<aqua>三矢弓模式</aqua><gray>(TripleArrow)</gray>"

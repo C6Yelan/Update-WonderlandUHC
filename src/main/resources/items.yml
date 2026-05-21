@@ -11,12 +11,6 @@ Lobby:
     Name: "<yellow>遊戲設定</yellow>"
     Lore:
       - "<gray>包含大大小小的遊戲設定可供調整。</gray>"
-  Leave:
-    Type: REDSTONE
-    Slot: 8
-    Name: "<red>回到大廳</red>"
-    Lore:
-      - "<gray>返回大廳伺服器。</gray>"
   Teams:
     Type: PAPER
     Slot: 2
@@ -24,7 +18,7 @@ Lobby:
     Lore:
       - "<gray>加入已公開的隊伍當中。</gray>"
   Team_Settings:
-    Type: REDSTONE_TORCH_ON
+    Type: REDSTONE_TORCH
     Slot: 4
     Name: "<green>隊伍設定</green>"
     Lore:
@@ -37,19 +31,19 @@ Spectator:
     Lore:
       - "<gray>查看所有位於主世界的存活玩家。</gray>"
   Nether_Players:
-    Type: NETHER_STALK
+    Type: NETHER_WART
     Slot: 1
     Name: "<red>地獄存活玩家</red>"
     Lore:
       - "<gray>查看所有位於地獄的存活玩家。</gray>"
   Random_Teleport:
-    Type: ENDER_PORTAL_FRAME
+    Type: END_PORTAL_FRAME
     Slot: 2
     Name: "<yellow>傳送到隨機玩家</yellow>"
     Lore:
       - "<gray>隨機傳送至一位存活玩家。</gray>"
   Toggle_Gamemode:
-    Type: CARROT_STICK
+    Type: CARROT_ON_A_STICK
     Slot: 3
     Name: "<gold>切換到觀察者模式</gold>"
     Lore:

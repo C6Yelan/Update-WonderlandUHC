@@ -335,7 +335,7 @@ Step 9 開始前，世界與邊界相關現況：
 - `Allow_Bad_Biome` 可暫時只影響是否允許主持人接受非推薦結果，但不應恢復舊 pass/fail 白名單。
 - Slice 7 收尾時已確認 `Range`、`Check_River_In`、`Max_High`、`Bad_Biome_Limit` 與 `Allow_Bad_Biome` 沒有 runtime 引用；Java static 欄位已移除，預設設定檔欄位先保留給舊設定相容與後續 resource migration。
 - 舊版 pass/fail 失敗訊息已不再被 runtime 使用；Java 欄位與預設 `messages.yml` key 已移除。
-- `biomes.yml` 目前只剩預設資源抽出，沒有 Step 9 runtime 引用；本輪先保留，等 Step 12 / resource migration 時一起處理，不在 Step 9 硬刪使用者設定檔。
+- `biomes.yml` 後續已確認只剩預設資源抽出，沒有 runtime 引用；resource migration 已將其從 `UHCFiles` 與 `src/main/resources` 移除。
 
 ## 8. 驗證方式
 

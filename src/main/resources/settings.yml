@@ -4,13 +4,6 @@
 
 #如果有任何設定上的問題，歡迎插件的Discord社群獲得相關協助: https://discord.gg/FgjWsp7
 
-#請將正版驗證代碼放在此處
-Serialization: ""
-
-#請不要更改這些內容
-Version: 0
-Locale: "en"
-
 #是否要開啟聲音
 Sounds: true
 #重新啟動伺服器的指令(遊戲自動關閉、地圖開始載入、地圖載入完成重開時...等等都會用到)
@@ -51,8 +44,6 @@ Team:
   Give_Default_Team_Random_Color: true
   #隊伍徽章預設是否要為粗體?
   Character_Bold_Default: true
-  #隊伍徽章是否允許玩家自訂顏色?
-  Allow_Character_Color: false
   #是否要在玩家列表 (Tab) 顯示隊伍顏色及徽章? (關閉的話只會有玩家 ID)
   Teams_On_Tab: true
   #隊伍徽章最多能幾個字? (數字不可超過 16，否則會有系統問題)
@@ -202,5 +193,3 @@ DiscordVoice:
   Guild_Id: "000000000000000000"
   Voice_Category: "000000000000000000"
   Lobby_Voice: "000000000000000000"
-
-Prefix: ""

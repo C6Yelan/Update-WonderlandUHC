@@ -159,7 +159,6 @@ public class Messages extends PluginStaticConfig {
         public static String WHITELISTED;
         public static String FULL;
         public static String GAME_STARTED;
-        public static String THANKS_FOR_PLAYING;
     }
 
     public static class CenterCleaner {
@@ -222,7 +221,6 @@ public class Messages extends PluginStaticConfig {
         public static String ITEM_DISABLED;
         public static String IPVP_LAVA, IPVP_FIRE;
         public static String ARROW_HEALTH_MESSAGE;
-        public static String CLOSING_SERVER_MSG;
         public static List<String> VICTORY_BROADCAST;
 
 
@@ -252,12 +250,11 @@ public class Messages extends PluginStaticConfig {
     }
 
     public static class Console {
-        public static String BIOME_REPLACED, BIOME_NOT_EXIST, CAN_NOT_REPLACE_BIOME;
         public static String CHUNK_LOAD_STARTED, CHUNK_LOAD_FINISHED, CHUNK_LOAD_NETHER_DETECTED, FORCE_NETHER_CHUNK_ON;
     }
 
     public static class Dependency {
-        public static String REQUIRE_DEPENDENCY, REQUIRE_SOFT_DEPENDENCY;
+        public static String REQUIRE_SOFT_DEPENDENCY;
     }
 
     public static class DiscordVoice {
