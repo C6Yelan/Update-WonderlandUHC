@@ -66,7 +66,9 @@ public final class PluginBootstrap {
     public DependencyReport checkDependencies() {
         DependencyReport report = new DependencyReport();
 
+        checkRequiredDependency(report, Dependency.LUCK_PERMS);
         checkOptionalDependency(report, Dependency.CHUNKY);
+        checkOptionalDependency(report, Dependency.DISCORD_SRV);
 
         logDependencyReport(report);
 
@@ -89,6 +91,13 @@ public final class PluginBootstrap {
             report.markAvailable(dependency);
         else
             report.markDisabled(dependency, "Plugin is not hooked.");
+    }
+
+    private void checkRequiredDependency(DependencyReport report, Dependency dependency) {
+        if (dependency.isHooked())
+            report.markAvailable(dependency);
+        else
+            report.markUnavailable(dependency, "Required plugin is not hooked.");
     }
 
     public StatsStorage loadStatsStorage() {

@@ -6,6 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 @Getter
 public enum Dependency {
+    LUCK_PERMS("LuckPerms", "https://luckperms.net/download"),
     DISCORD_SRV("DiscordSRV", "https://www.spigotmc.org/resources/discordsrv.18494/"),
     CHUNKY("Chunky", "https://modrinth.com/plugin/chunky");
 

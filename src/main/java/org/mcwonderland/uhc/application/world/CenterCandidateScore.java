@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class CenterCandidateScore {
-    private static final double TARGET_SCORE = 78D;
+    private static final double TARGET_SCORE = 75D;
     private static final double ACCEPTABLE_SCORE = 60D;
     private static final double POOR_SCORE = 50D;
     private static final double WATER_WEIGHT = 0.22D;

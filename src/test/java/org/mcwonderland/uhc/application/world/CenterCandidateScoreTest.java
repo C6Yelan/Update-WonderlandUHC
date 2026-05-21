@@ -29,7 +29,7 @@ public class CenterCandidateScoreTest {
                 .build();
 
         assertSame(CenterSearchStatus.RECOMMENDED, score.getStatus());
-        assertTrue(score.getTotalScore() >= 78D);
+        assertTrue(score.getTotalScore() >= 75D);
         assertTrue(score.getReasons().isEmpty());
     }
 
