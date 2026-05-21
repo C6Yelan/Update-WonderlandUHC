@@ -23,7 +23,7 @@
 | `src/main/java/` | 插件主要 Java 程式碼。 |
 | `src/main/resources/` | `plugin.yml` 與預設設定檔，正式格式以 Paper `1.21.11` 與 MiniMessage 為準。 |
 | `src/test/java/` | 單元測試與不需啟動 Paper 的行為測試。 |
-| `scripts/` | 封裝、部署、清理等本機工作流程。 |
+| `build.gradle`、`gradlew`、`gradle/` | Gradle 建置設定與 wrapper。 |
 | `.github/` | GitHub issue template 與 release workflow。 |
 | `docs/` | 正式說明文件，根目錄以摘要文件為主。 |
 | `docs/details/` | 細節說明文件，用來補充摘要文件省略的規則、範例與排查方式。 |

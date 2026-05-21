@@ -42,26 +42,32 @@ git diff --stat
 
 ## 封裝
 
-Paper `1.21.11` 升級線應使用：
+維護者應確認目前環境使用 JDK 21，並以 Gradle wrapper 建置：
 
 ```bash
-bash scripts/package-plugin-1.21.sh
+./gradlew clean test shadowJar --no-daemon -Dorg.gradle.native=false
 ```
 
-這個腳本會：
+若目前 shell 的預設 Java 不是 21，先指定 `JAVA_HOME`：
 
-1. 使用 JDK 21。
-2. 設定 repo-local Java 21 Gradle cache。
-3. 呼叫 `scripts/package-plugin.sh`。
-4. 預設執行 Gradle test 與 shadowJar。
+```bash
+JAVA_HOME=/path/to/jdk-21 ./gradlew clean test shadowJar --no-daemon -Dorg.gradle.native=false
+```
+
+這個流程會：
+
+1. 清理舊 build output。
+2. 編譯 main / test。
+3. 執行 Gradle test。
+4. 產生 shadow jar。
 
 若只想檢查 Java 21 環境：
 
 ```bash
-bash scripts/package-plugin-1.21.sh --check-env
+java -version
+javac -version
+./gradlew --version
 ```
-
-一般不要直接使用裸 Gradle 指令取代腳本，因為腳本已整理好 Java 21 與本機 cache 邊界。
 
 ## 封裝結果
 
@@ -85,26 +91,15 @@ unzip -p build/libs/WonderlandUHC-1.21.11-0.1.0.jar plugin.yml
 
 ## 部署到測試服
 
-部署 jar 應使用腳本：
+部署到測試服時，請用可檢查的流程完成下列步驟：
 
-```bash
-bash scripts/deploy-to-windows-server.sh --server-dir "<Windows Paper server dir>" --port <port>
-```
+1. 先停止測試伺服器。
+2. 確認要部署的是最新 `build/libs/WonderlandUHC-*.jar`。
+3. 將 jar 複製到測試服 `plugins/`。
+4. 確認測試服沒有載入舊版本 jar。
+5. 再使用測試伺服器資料夾內的 `start.bat` 啟動。
 
-常見維護用法：
-
-```bash
-bash scripts/deploy-to-windows-server.sh \
-  --skip-build \
-  --server-dir "<Windows Paper 1.21.11 test server dir>" \
-  --port 25570
-```
-
-注意：
-
-1. 腳本預設路徑保留早期本機測試服設定；Paper `1.21.11` 驗證應明確傳入 `--server-dir`。
-2. 若測試服已啟動，腳本會用 port 檢查避免覆蓋正在使用的 jar。
-3. 只有在確定目標伺服器已停止時，才使用 `--skip-server-check`。
+若測試服仍在執行，不要直接覆蓋 jar；這種部署狀態不能視為有效驗證。
 
 ## 啟動測試
 

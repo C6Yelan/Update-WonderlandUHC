@@ -22,7 +22,7 @@
 | `src/main/java/` | 插件 Java 實作。 |
 | `src/main/resources/` | jar 內預設 resource 與 `plugin.yml`。伺服器已有同名設定檔時不會自動覆蓋。 |
 | `src/test/java/` | 不需啟動 Paper 的單元測試與行為測試。 |
-| `scripts/` | 封裝、部署、清理等維護入口。 |
+| `build.gradle`、`gradlew`、`gradle/` | Gradle 建置設定與 wrapper。 |
 | `libs/` | 本地 compileOnly jar，目前用於 Chunky API。 |
 | `docs/` | 維護摘要。根目錄保留短文件。 |
 | `docs/details/` | 細節文件。修改對應系統前再讀。 |
