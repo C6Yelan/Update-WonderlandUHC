@@ -15,7 +15,11 @@ import java.util.List;
  * @author crisdev333
  */
 public class SimpleSidebar {
-    private static final String SIDEBAR_ENTRY_UNIT = "\u200B";
+    private static final String[] SIDEBAR_ENTRIES = {
+            "\u00A70", "\u00A71", "\u00A72", "\u00A73", "\u00A74",
+            "\u00A75", "\u00A76", "\u00A77", "\u00A78", "\u00A79",
+            "\u00A7a", "\u00A7b", "\u00A7c", "\u00A7d", "\u00A7e"
+    };
 
     @Getter
     private final Scoreboard scoreboard;
@@ -77,8 +81,11 @@ public class SimpleSidebar {
         }
     }
 
-    private final String genEntry(int slot) {
-        return SIDEBAR_ENTRY_UNIT.repeat(slot);
+    static String genEntry(int slot) {
+        if (slot < 1 || slot > SIDEBAR_ENTRIES.length)
+            throw new IllegalArgumentException("Sidebar slot must be between 1 and " + SIDEBAR_ENTRIES.length);
+
+        return SIDEBAR_ENTRIES[slot - 1];
     }
 
     private Component toComponent(String text) {

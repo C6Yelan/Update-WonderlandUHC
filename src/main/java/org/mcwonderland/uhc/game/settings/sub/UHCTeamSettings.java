@@ -21,7 +21,7 @@ public class UHCTeamSettings implements org.mcwonderland.uhc.api.game.UHCTeamSet
 
         map.put("Team_Size", teamSize);
         map.put("Allow_Team_Fire", allowTeamFire);
-        map.put("Team_Split_Mode", teamSplitMode);
+        map.put("Team_Split_Mode", teamSplitMode == null ? null : teamSplitMode.name());
 
         return map;
     }

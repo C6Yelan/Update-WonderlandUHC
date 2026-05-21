@@ -14,7 +14,6 @@ public class TutorialListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChat(AsyncChatEvent e) {
-        System.out.println("Hello");
         Player player = e.getPlayer();
         String message = PlainTextComponentSerializer.plainText().serialize(e.message());
 

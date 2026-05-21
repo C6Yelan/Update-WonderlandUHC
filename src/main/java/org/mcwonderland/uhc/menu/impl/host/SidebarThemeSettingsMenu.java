@@ -7,8 +7,13 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
+import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.scoreboard.SidebarTheme;
 import org.mcwonderland.uhc.scoreboard.line.ScoreLines;
+import org.mcwonderland.uhc.settings.Sounds;
+import org.mcwonderland.uhc.util.Extra;
+
+import java.util.List;
 
 public class SidebarThemeSettingsMenu extends PluginPagedMenu<SidebarTheme> {
     private static final String SECTION = "Sidebar_Theme_Selector";
@@ -28,8 +33,12 @@ public class SidebarThemeSettingsMenu extends PluginPagedMenu<SidebarTheme> {
         return getSection().getButtonItem(
                 THEMES_BUTTON,
                 "{theme_name}", theme.getName(),
-                "{theme_preview}", getTestLinesIn(theme).getFor(uhcPlayer)
+                "{theme_preview}", PluginText.formatted(formatPreview(getTestLinesIn(theme).getFor(uhcPlayer)))
         );
+    }
+
+    private String formatPreview(List<String> lines) {
+        return String.join("\n", lines);
     }
 
     private ScoreLines getTestLinesIn(SidebarTheme theme) {
@@ -47,6 +56,7 @@ public class SidebarThemeSettingsMenu extends PluginPagedMenu<SidebarTheme> {
     @Override
     protected void onPageClick(Player player, SidebarTheme sidebarTheme, ClickType clickType) {
         Game.getSettings().getScoreboardSettings().setSidebarTheme(sidebarTheme);
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         new ScoreboardSettingsMenu().displayTo(player);
     }
 }

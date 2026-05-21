@@ -6,9 +6,13 @@ import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.sub.UHCScoreboardSettings;
 import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
+import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.text.PluginColor;
+import org.mcwonderland.uhc.settings.Sounds;
+import org.mcwonderland.uhc.settings.UHCFiles;
+import org.mcwonderland.uhc.util.Extra;
 
 import java.util.Locale;
 
@@ -17,6 +21,7 @@ public class ScoreboardSettingsMenu extends PluginMenu {
     private static final String THEMES_BUTTON = "Themes";
     private static final String UPDATE_TICKS_BUTTON = "Update_Ticks";
     private static final String HEART_COLOR_BUTTON = "Heart_Color";
+    private static final int BACK_OFFSET = 1;
 
     private final UHCScoreboardSettings scoreboardSettings;
 
@@ -27,6 +32,9 @@ public class ScoreboardSettingsMenu extends PluginMenu {
 
     @Override
     protected ItemStack getItemAt(int slot) {
+        if (slot == getBackButtonSlot())
+            return PluginItems.fromConfig(UHCFiles.MENUS, "Leave");
+
         if (slot == getSection().getButtonSlot(THEMES_BUTTON))
             return getSection().getButtonItem(THEMES_BUTTON, "{theme}", scoreboardSettings.getSidebarTheme().getName());
 
@@ -41,6 +49,11 @@ public class ScoreboardSettingsMenu extends PluginMenu {
 
     @Override
     protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
+        if (slot == getBackButtonSlot()) {
+            new MainSettingsMenu().displayTo(player);
+            return;
+        }
+
         if (slot == getSection().getButtonSlot(THEMES_BUTTON)) {
             new SidebarThemeSettingsMenu(player).displayTo(player);
             return;
@@ -63,6 +76,7 @@ public class ScoreboardSettingsMenu extends PluginMenu {
         else
             return;
 
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         displayTo(player);
     }
 
@@ -71,7 +85,12 @@ public class ScoreboardSettingsMenu extends PluginMenu {
             @Override
             protected void onChooseColor(Player player, PluginColor color) {
                 scoreboardSettings.setHeartColor(color);
+                Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             }
         }.displayTo(player);
+    }
+
+    private int getBackButtonSlot() {
+        return getSection().getSize() - BACK_OFFSET;
     }
 }

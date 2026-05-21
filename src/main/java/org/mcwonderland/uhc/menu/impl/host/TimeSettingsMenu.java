@@ -8,11 +8,15 @@ import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.sub.UHCTimerSettings;
+import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
+import org.mcwonderland.uhc.settings.Sounds;
+import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.util.Chat;
+import org.mcwonderland.uhc.util.Extra;
 
 import java.util.Map;
 import java.util.UUID;
@@ -28,6 +32,7 @@ public class TimeSettingsMenu extends PluginMenu {
     private static final String PVP_BUTTON = "Pvp";
     private static final String BORDER_SHRINK_BUTTON = "Border_Shrink";
     private static final String DISABLE_NETHER_BUTTON = "Disable_Nether";
+    private static final int BACK_OFFSET = 1;
 
     public TimeSettingsMenu() {
         super(PluginMenuSection.of(SECTION));
@@ -51,6 +56,9 @@ public class TimeSettingsMenu extends PluginMenu {
     protected ItemStack getItemAt(int slot) {
         UHCTimerSettings timer = Game.getSettings().getTimer();
 
+        if (slot == getBackButtonSlot())
+            return PluginItems.fromConfig(UHCFiles.MENUS, "Leave");
+
         if (slot == getSection().getButtonSlot(DAMAGE_BUTTON))
             return getSection().getButtonItem(DAMAGE_BUTTON, "{time}", PluginText.formatTime(timer.getDamageTime()));
 
@@ -72,6 +80,11 @@ public class TimeSettingsMenu extends PluginMenu {
     @Override
     protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
         UHCTimerSettings timer = Game.getSettings().getTimer();
+
+        if (slot == getBackButtonSlot()) {
+            new MainSettingsMenu().displayTo(player);
+            return;
+        }
 
         if (slot == getSection().getButtonSlot(DAMAGE_BUTTON)) {
             startTimeInput(player, Messages.Editor.Time.Damage.MESSAGE, Messages.Editor.Time.Damage.SAVED,
@@ -111,11 +124,16 @@ public class TimeSettingsMenu extends PluginMenu {
 
         inputSessions.put(player.getUniqueId(), new TimeInputSession(saveInput, currentTime, savedMessage));
         player.closeInventory();
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         Chat.sendConversing(player, prompt);
     }
 
     private static void saveCurrentSettings() {
         WorldLoadingCacheState.saveCache();
+    }
+
+    private int getBackButtonSlot() {
+        return getSection().getSize() - BACK_OFFSET;
     }
 
     private static final class TimeInputSession {
@@ -141,6 +159,8 @@ public class TimeSettingsMenu extends PluginMenu {
             saveInput.accept(seconds);
             saveCurrentSettings();
             Chat.sendConversing(player, PluginText.replaceTimeToString(savedMessage, currentTime.getAsInt()));
+            Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
+            new TimeSettingsMenu().displayTo(player);
         }
 
         private Integer parseToSeconds(String input) {

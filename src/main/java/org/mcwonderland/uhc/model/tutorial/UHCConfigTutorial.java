@@ -1,8 +1,9 @@
 package org.mcwonderland.uhc.model.tutorial;
 
+import org.bukkit.entity.Player;
+import org.mcwonderland.uhc.References;
 import org.mcwonderland.uhc.model.tutorial.model.Tutorial;
 import org.mcwonderland.uhc.model.tutorial.model.TutorialSection;
-import org.bukkit.entity.Player;
 
 public class UHCConfigTutorial extends Tutorial {
 
@@ -66,10 +67,10 @@ public class UHCConfigTutorial extends Tutorial {
             return new String[]{
                     "<blue>到這裡有任何問題嗎?</blue>",
                     " ",
-                    "如果不是很了解某些功能如何使用，歡迎至<aqua>插件Discord社群</aqua><white>向他人尋求協助。</white>",
-                    "連結: <dark_aqua>https://discord.gg/pJ3RkP5</dark_aqua>",
+                    "如果不是很了解某些功能如何使用，可先至<aqua>插件下載頁面</aqua><white>查看專案資訊。</white>",
+                    "連結: <dark_aqua>" + References.DOWNLOAD_LINK + "</dark_aqua>",
                     " ",
-                    "<yellow>加入社群後，請輸入任意字元前往下個教學...</yellow>"
+                    "<yellow>查看後，請輸入任意字元前往下個教學...</yellow>"
             };
         }
 

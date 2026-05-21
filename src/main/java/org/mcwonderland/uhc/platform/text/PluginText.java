@@ -2,6 +2,7 @@ package org.mcwonderland.uhc.platform.text;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
 
@@ -34,6 +35,10 @@ public final class PluginText {
             return MINI_MESSAGE.deserialize(message);
 
         return Component.text(message);
+    }
+
+    public static Component toItemComponent(String message) {
+        return toComponent(message).decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE);
     }
 
     public static Component toNullableComponent(String message) {

@@ -66,6 +66,11 @@ public class OreRuleSupport {
                 || material == Material.RAW_GOLD)
             return Material.GOLD_INGOT;
 
+        if (material == Material.COPPER_ORE
+                || material == Material.DEEPSLATE_COPPER_ORE
+                || material == Material.RAW_COPPER)
+            return Material.COPPER_INGOT;
+
         return material;
     }
 }

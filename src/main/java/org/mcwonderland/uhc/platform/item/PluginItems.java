@@ -81,7 +81,7 @@ public final class PluginItems {
             return item;
 
         if (name != null && !name.isEmpty())
-            meta.displayName(PluginText.toComponent(itemNameText(name)));
+            meta.displayName(PluginText.toItemComponent(itemNameText(name)));
 
         if (lore != null && !lore.isEmpty())
             meta.lore(toLoreComponents(lore));
@@ -101,7 +101,7 @@ public final class PluginItems {
                 continue;
 
             for (String subLine : line.split("\n"))
-                components.add(PluginText.toComponent(itemLoreText(subLine)));
+                components.add(PluginText.toItemComponent(itemLoreText(subLine)));
         }
 
         return components;

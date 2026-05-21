@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.platform.text;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.junit.Test;
 import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
@@ -127,6 +128,14 @@ public class PluginTextTest {
     @Test
     public void toNullableComponentKeepsNullMessage() {
         assertNull(PluginText.toNullableComponent(null));
+    }
+
+    @Test
+    public void toItemComponentDisablesDefaultItalic() {
+        Component component = PluginText.toItemComponent("<green>遊戲設定</green>");
+
+        assertEquals("遊戲設定", PlainTextComponentSerializer.plainText().serialize(component));
+        assertEquals(TextDecoration.State.FALSE, component.decoration(TextDecoration.ITALIC));
     }
 
     @Test

@@ -6,17 +6,23 @@ import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.api.enums.TeamSplitMode;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.sub.UHCTeamSettings;
+import org.mcwonderland.uhc.platform.item.PluginItems;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
+import org.mcwonderland.uhc.settings.Sounds;
+import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.util.Chat;
+import org.mcwonderland.uhc.util.Extra;
 
 public class TeamModeSettingsMenu extends PluginMenu {
     private static final String SECTION = "Teams";
     private static final String SIZE_BUTTON = "Size";
     private static final String TEAM_FIRE_BUTTON = "Team_Fire";
     private static final String TEAM_SPLIT_MODE_BUTTON = "Team_Split_Mode";
+    private static final int BACK_OFFSET = 1;
     private static final Object ENABLED_STATUS = PluginText.formatted("<green>On</green>");
     private static final Object DISABLED_STATUS = PluginText.formatted("<red>Off</red>");
 
@@ -27,6 +33,9 @@ public class TeamModeSettingsMenu extends PluginMenu {
     @Override
     protected ItemStack getItemAt(int slot) {
         UHCTeamSettings teamSettings = Game.getSettings().getTeamSettings();
+
+        if (slot == getBackButtonSlot())
+            return PluginItems.fromConfig(UHCFiles.MENUS, "Leave");
 
         if (slot == getSection().getButtonSlot(SIZE_BUTTON))
             return getSection().getButtonItem(SIZE_BUTTON, "{count}", teamSettings.getTeamSize());
@@ -43,6 +52,11 @@ public class TeamModeSettingsMenu extends PluginMenu {
     @Override
     protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
         UHCTeamSettings teamSettings = Game.getSettings().getTeamSettings();
+
+        if (slot == getBackButtonSlot()) {
+            new MainSettingsMenu().displayTo(player);
+            return;
+        }
 
         if (slot == getSection().getButtonSlot(SIZE_BUTTON)) {
             handleTeamSizeClick(player, click, teamSettings);
@@ -73,10 +87,13 @@ public class TeamModeSettingsMenu extends PluginMenu {
 
     private void toggleTeamFire(Player player, UHCTeamSettings teamSettings) {
         boolean newStatus = !teamSettings.isAllowTeamFire();
+        String message = (newStatus ? Messages.Host.TEAM_FIRE_ENABLED_PLAYER : Messages.Host.TEAM_FIRE_DISABLED_PLAYER)
+                .replace("{player}", player.getName());
 
         teamSettings.setAllowTeamFire(newStatus);
-        Chat.broadcast((newStatus ? Messages.Host.TEAM_FIRE_ENABLED_PLAYER : Messages.Host.TEAM_FIRE_DISABLED_PLAYER)
-                .replace("{player}", player.getName()));
+        Chat.broadcast(message);
+        PluginConsole.log(message);
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         displayTo(player);
     }
 
@@ -91,5 +108,9 @@ public class TeamModeSettingsMenu extends PluginMenu {
             teamSettings.setTeamSplitMode(TeamSplitMode.RANDOM);
             displayTo(player);
         }
+    }
+
+    private int getBackButtonSlot() {
+        return getSection().getSize() - BACK_OFFSET;
     }
 }

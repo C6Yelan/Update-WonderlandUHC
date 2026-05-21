@@ -15,10 +15,10 @@ public class PreparingLoginListener extends LoginListener {
 
     public PreparingLoginListener() {
         super(
-                new WhitelistChecker(),
                 new GeneratingChecker(),
                 new ConfigChecker(),
-                new FullChecker()
+                new FullChecker(),
+                new WhitelistChecker()
         );
     }
 

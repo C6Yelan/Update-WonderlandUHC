@@ -100,6 +100,7 @@ permissions:
       wonderland.uhc.bypass.join.whitelist: true
       wonderland.uhc.command.staff: true
       wonderland.uhc.command.giveall: true
+      wonderland.uhc.command.respawn: true
       wonderland.uhc.seespectatorchat: true
 
   wonderland.uhc.bypass.kick.death:
@@ -128,9 +129,6 @@ permissions:
   wonderland.uhc.command.reconnect:
     default: true
 
-  wonderland.uhc.command.uhc.spectoggle:
-    default: true
-
   wonderland.uhc.command.team.chat:
     default: true
   wonderland.uhc.command.team.create:
@@ -155,8 +153,11 @@ permissions:
     default: true
 
   wonderland.uhc.team.settings.name:
-    default: op
+    default: true
   wonderland.uhc.team.settings.character:
-    default: op
+    default: true
   wonderland.uhc.team.settings.color:
+    default: true
+
+  wonderland.uhc.command.respawn:
     default: op

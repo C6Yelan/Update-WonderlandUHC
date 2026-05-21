@@ -24,7 +24,7 @@ public class UHCBorderSettings implements org.mcwonderland.uhc.api.game.UHCBorde
         map.put("Initial_Border", initialBorder);
         map.put("Initial_Nether_Border", initialNetherBorder);
         map.put("Final_Size_Of_Shrink_Mode_Border", finalSizeOfShrinkModeBorder);
-        map.put("Border_Type", borderType);
+        map.put("Border_Type", borderType == null ? null : borderType.name());
         map.put("Border_Shrink_Speed", borderShrinkSpeed);
 
         return map;

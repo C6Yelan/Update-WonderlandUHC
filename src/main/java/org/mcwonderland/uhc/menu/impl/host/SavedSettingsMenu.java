@@ -11,7 +11,9 @@ import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
 import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.settings.UHCFiles;
+import org.mcwonderland.uhc.util.Extra;
 
 import java.util.List;
 
@@ -31,12 +33,12 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
     protected ItemStack convertToItemStack(UHCGameSettings settings) {
         ItemStack baseItem = getSection().getButtonItem(
                 SAVED_BUTTON,
-                "{saved_game_title}", settings.getTitle()
+                "{saved_game_title}", PluginText.formatted(settings.getTitle())
         );
 
         return PluginItems.create(
                 baseItem,
-                PluginText.replaceToString(getSection().getButtonName(SAVED_BUTTON), "{saved_game_title}", settings.getTitle()),
+                PluginText.replaceToString(getSection().getButtonName(SAVED_BUTTON), "{saved_game_title}", PluginText.formatted(settings.getTitle())),
                 GamePlaceholderReplacer.replace(getSection().getButtonLore(SAVED_BUTTON), settings),
                 true
         );
@@ -47,13 +49,16 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
         switch (clickType) {
             case LEFT:
                 loadSettings(settings);
+                Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
                 refreshAndOpenMainMenu(player);
                 break;
             case MIDDLE:
                 replaceSettings(player, settings);
+                Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
                 break;
             case RIGHT:
                 deleteSavedSettings(player, settings);
+                Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
                 refreshMenu(player);
                 break;
             default:
@@ -82,6 +87,7 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
     protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
         if (slot == getSaveAsButtonSlot()) {
             saveCurrentSettings(player);
+            Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             refreshMenu(player);
             return;
         }

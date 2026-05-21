@@ -2,7 +2,10 @@ package org.mcwonderland.uhc.game.state.playing.listener;
 
 import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
 import net.kyori.adventure.text.Component;
+import org.mcwonderland.uhc.WonderlandUHC;
+import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.scenario.ScenarioName;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.PotionApplier;
 import org.bukkit.entity.Player;
@@ -29,10 +32,13 @@ public class GoldenHeadListener implements Listener {
                     return;
 
                 PotionEffect regen = new PotionEffect(PotionEffectType.REGENERATION, 10 * 20, 1);
-                PotionEffect absorp = new PotionEffect(PotionEffectType.ABSORPTION, 60 * 20 * 2, 0);
 
                 PotionApplier.addPotionEffect(player, regen);
-                PotionApplier.addPotionEffect(player, absorp);
+
+                if (!isScenarioEnabled(ScenarioName.ABSORPTION_LESS)) {
+                    PotionEffect absorp = new PotionEffect(PotionEffectType.ABSORPTION, 60 * 20 * 2, 0);
+                    PotionApplier.addPotionEffect(player, absorp);
+                }
             });
         }
     }
@@ -48,5 +54,10 @@ public class GoldenHeadListener implements Listener {
 
     private Component goldenHeadName() {
         return PluginText.toComponent(Settings.Misc.GOLDEN_HEAD_NAME);
+    }
+
+    private boolean isScenarioEnabled(ScenarioName scenarioName) {
+        Scenario scenario = WonderlandUHC.getInstance().getScenarioManager().getScenario(scenarioName);
+        return scenario != null && scenario.isEnabled();
     }
 }

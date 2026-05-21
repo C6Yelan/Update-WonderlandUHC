@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
+import org.mcwonderland.uhc.References;
 import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.util.Chat;
 
@@ -86,7 +87,7 @@ public class UHCCommand implements CommandExecutor, TabCompleter {
                 "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>",
                 "<white>  WonderlandUHC </white><gray>" + plugin.getPluginMeta().getVersion() + "</gray>",
                 " ",
-                "<gray>歡迎想自己開UHC的玩家加入 https://discord.gg/pJ3RkP5 購買插件。</gray>",
+                "<gray>插件下載頁面: </gray><aqua>" + References.DOWNLOAD_LINK + "</aqua>",
                 "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>");
     }
 

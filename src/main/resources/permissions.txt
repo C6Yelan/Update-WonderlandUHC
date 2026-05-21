@@ -12,12 +12,17 @@ wonderland.uhc.host
   wonderland.uhc.command.uhc.switchteam
   wonderland.uhc.command.uhc.splitteam
   wonderland.uhc.command.uhc.resetteam
+  wonderland.uhc.command.uhc.choose
+  wonderland.uhc.command.uhc.regen
+  wonderland.uhc.command.uhc.start
   wonderland.uhc.command.uhc.tutorial
   wonderland.uhc.command.uhc.edit
   wonderland.uhc.command.uhc.sethost
   wonderland.uhc.command.uhc.stop
   wonderland.uhc.command.uhc.tp
   wonderland.uhc.command.whitelist
+  wonderland.uhc.command.setspawn
+  wonderland.uhc.host.seebackpack #可查看其他玩家的 backpack
 
 wonderland.uhc.moderator
 包含以下權限
@@ -25,18 +30,22 @@ wonderland.uhc.moderator
   wonderland.uhc.bypass.join.started #於遊戲開始後加入遊戲
   wonderland.uhc.bypass.join.whitelist #無視白名單
   wonderland.uhc.command.staff
+  wonderland.uhc.command.giveall
+  wonderland.uhc.command.respawn
   wonderland.uhc.seespectatorchat #能看到觀戰者的訊息
 
 wonderland.uhc.command.backpack
 wonderland.uhc.command.config
 wonderland.uhc.command.scenarios
 wonderland.uhc.command.disableitems
+wonderland.uhc.command.practice
+wonderland.uhc.command.reconnect
 wonderland.uhc.command.sendcoords
+wonderland.uhc.command.setspawn
 wonderland.uhc.command.spectoggle
 wonderland.uhc.command.stats
 wonderland.uhc.command.topkills
 wonderland.uhc.command.viewheal
-wonderland.uhc.command.uhc.spectoggle
 wonderland.uhc.command.team.chat
 wonderland.uhc.command.team.create
 wonderland.uhc.command.team.disband
@@ -54,5 +63,3 @@ wonderland.uhc.bypass.kick.death #不會於死亡後被系統剔除
 wonderland.uhc.team.settings.name #更換隊伍名稱
 wonderland.uhc.team.settings.character #更換隊伍徽章
 wonderland.uhc.team.settings.color #更換隊伍顏色
-
-wonderland.uhc.spectator.chat.global #即使是觀戰者，發送的訊息大家也依然看得到

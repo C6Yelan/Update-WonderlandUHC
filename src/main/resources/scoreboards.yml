@@ -41,7 +41,7 @@ Default:
     - "<white>玩家數量: </white><green>{online_players}/{max_players}</green>"
     - "<white>隊伍大小: </white><green>{team_size} 人一隊</green>"
     - "    "
-    - "<white>將於 </white><green>{teleport_in}</green><white>後傳送玩家</white>"
+    - "<white>將於 </white><green>{teleport_in}</green><white> 後傳送玩家</white>"
     - "<gray><strikethrough>*----------------------*</strikethrough></gray>"
   Starting:
     - "<gray><strikethrough>*----------------------*</strikethrough></gray>"
@@ -118,14 +118,14 @@ Ultra:
     - " "
     - "<white>遊戲模式: </white><green>{team_size} 人一隊</green>"
     - " "
-    - "<white>將於 </white><green>{teleport_in}</green><white>後開始傳送</white>"
+    - "<white>將於 </white><green>{teleport_in}</green><white> 後開始傳送</white>"
     - "<white><strikethrough>---------------------</strikethrough></white>"
     - "<green>YourIP.net</green>"
   Starting:
     - "<white><strikethrough>---------------------</strikethrough></white>"
     - "<white>傳送玩家中....</white>"
     - " "
-    - "<white>將於 </white><green>{start_in}</green><white>後開始</white>"
+    - "<white>將於 </white><green>{start_in}</green><white> 後開始</white>"
     - "<white><strikethrough>---------------------</strikethrough></white>"
     - "<green>YourIP.net</green>"
   Spectator_Solo:

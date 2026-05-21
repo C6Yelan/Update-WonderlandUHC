@@ -59,7 +59,7 @@ public class GamePlaceholderReplacer {
 
     private void replaceCommons() {
         replace("{host}", Game.getGame().getHost());
-        replace("{title}", settings.getTitle());
+        replace("{title}", PluginText.formatted(settings.getTitle()));
         replace("{team-size}", settings.getTeamSettings().getTeamSize());
     }
 

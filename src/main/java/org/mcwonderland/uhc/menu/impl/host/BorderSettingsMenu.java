@@ -9,12 +9,17 @@ import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.border.BorderType;
 import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.sub.UHCBorderSettings;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
+import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
+import org.mcwonderland.uhc.settings.Sounds;
+import org.mcwonderland.uhc.settings.UHCFiles;
 import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.Chat;
+import org.mcwonderland.uhc.util.Extra;
 
 import java.util.Map;
 import java.util.UUID;
@@ -30,6 +35,7 @@ public class BorderSettingsMenu extends PluginMenu {
     private static final String FINAL_SIZE_BUTTON = "Final_Size_Of_Shrink_Mode_Border";
     private static final String BORDER_SHRINK_SPEED_BUTTON = "Border_Shrink_Speed";
     private static final String SHRINK_CALCULATOR_BUTTON = "Shrink_Calculator";
+    private static final int BACK_OFFSET = 1;
 
     public BorderSettingsMenu() {
         super(PluginMenuSection.of(SECTION));
@@ -52,6 +58,9 @@ public class BorderSettingsMenu extends PluginMenu {
     @Override
     protected ItemStack getItemAt(int slot) {
         UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
+
+        if (slot == getBackButtonSlot())
+            return PluginItems.fromConfig(UHCFiles.MENUS, "Leave");
 
         if (slot == getSection().getButtonSlot(SIZE_BUTTON))
             return getSection().getButtonItem(SIZE_BUTTON, "{number}", borderSettings.getInitialBorder());
@@ -81,6 +90,11 @@ public class BorderSettingsMenu extends PluginMenu {
     @Override
     protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
         UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
+
+        if (slot == getBackButtonSlot()) {
+            new MainSettingsMenu().displayTo(player);
+            return;
+        }
 
         if (slot == getSection().getButtonSlot(SIZE_BUTTON)) {
             startIntegerInput(player, Messages.Editor.Number.BorderSize.MESSAGE,
@@ -126,11 +140,15 @@ public class BorderSettingsMenu extends PluginMenu {
     }
 
     private void setBorderType(Player player, UHCBorderSettings borderSettings, BorderType type) {
+        String message = Messages.Host.BORDER_TYPE_CHANGED
+                .replace("{player}", player.getName())
+                .replace("{type}", type.fancyName());
+
         borderSettings.setBorderType(type);
         saveCurrentSettings();
-        Chat.broadcast(Messages.Host.BORDER_TYPE_CHANGED
-                .replace("{player}", player.getName())
-                .replace("{type}", type.fancyName()));
+        Chat.broadcast(message);
+        PluginConsole.log(message);
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         displayTo(player);
     }
 
@@ -147,6 +165,8 @@ public class BorderSettingsMenu extends PluginMenu {
             saveInput.accept(number);
             saveCurrentSettings();
             Chat.sendConversing(inputPlayer, savedMessage.replace("{number}", number + ""));
+            Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
+            new BorderSettingsMenu().displayTo(inputPlayer);
         });
     }
 
@@ -163,6 +183,8 @@ public class BorderSettingsMenu extends PluginMenu {
             saveInput.accept(number);
             saveCurrentSettings();
             Chat.sendConversing(inputPlayer, savedMessage.replace("{number}", number + ""));
+            Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
+            new BorderSettingsMenu().displayTo(inputPlayer);
         });
     }
 
@@ -186,6 +208,8 @@ public class BorderSettingsMenu extends PluginMenu {
             saveCurrentSettings();
             Chat.sendConversing(inputPlayer, Messages.Editor.Time.ShrinkCalculator.SAVED
                     .replace("{speed}", speed + ""));
+            Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
+            new BorderSettingsMenu().displayTo(inputPlayer);
         });
     }
 
@@ -197,11 +221,16 @@ public class BorderSettingsMenu extends PluginMenu {
 
         inputSessions.put(player.getUniqueId(), session);
         player.closeInventory();
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         Chat.sendConversing(player, prompt);
     }
 
     private static void saveCurrentSettings() {
         WorldLoadingCacheState.saveCache();
+    }
+
+    private int getBackButtonSlot() {
+        return getSection().getSize() - BACK_OFFSET;
     }
 
     private Integer parseInteger(String input) {

@@ -16,6 +16,7 @@ import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.platform.PlayerHand;
+import org.mcwonderland.uhc.platform.console.PluginConsole;
 import org.mcwonderland.uhc.platform.menu.PluginMenu;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.text.PluginText;
@@ -123,7 +124,7 @@ public class MainSettingsMenu extends PluginMenu {
             return getSection().getButtonItem(EXPERIENCE_BUTTON, "{count}", settings.getInitialExperience());
 
         if (slot == getSection().getButtonSlot(TITLE_BUTTON))
-            return getSection().getButtonItem(TITLE_BUTTON, "{title}", settings.getTitle());
+            return getSection().getButtonItem(TITLE_BUTTON, "{title}", PluginText.formatted(settings.getTitle()));
 
         if (slot == getSection().getButtonSlot(NETHER_BUTTON))
             return getSection().getButtonItem(NETHER_BUTTON, "{status}", settings.isUsingNether() ? ENABLED_STATUS : DISABLED_STATUS);
@@ -237,6 +238,7 @@ public class MainSettingsMenu extends PluginMenu {
 
         if (slot == getSection().getButtonSlot(ENDER_PEARL_DAMAGE_BUTTON)) {
             settings.setEnderPearlDamage(!settings.isEnderPearlDamage());
+            Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
             return;
         }
@@ -260,10 +262,12 @@ public class MainSettingsMenu extends PluginMenu {
 
     private void toggleWhitelist(Player player, UHCGameSettings settings) {
         boolean newStatus = !settings.isWhitelistOn();
+        String message = (newStatus ? Messages.Host.WHITELIST_ON : Messages.Host.WHITELIST_OFF)
+                .replace("{player}", player.getName());
 
         settings.setWhitelistOn(newStatus);
-        Chat.broadcast((newStatus ? Messages.Host.WHITELIST_ON : Messages.Host.WHITELIST_OFF)
-                .replace("{player}", player.getName()));
+        Chat.broadcast(message);
+        PluginConsole.log(message);
         displayTo(player);
     }
 
@@ -279,22 +283,25 @@ public class MainSettingsMenu extends PluginMenu {
             inputSessions.remove(inputPlayer.getUniqueId());
             saveInput.accept(number.intValue());
             Chat.sendConversing(inputPlayer, savedMessage.replace("{number}", number + ""));
+            Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
+            new MainSettingsMenu().displayTo(inputPlayer);
         });
     }
 
     private void startTitleInput(Player player, UHCGameSettings settings) {
         startInput(player, Messages.Editor.Text.Title.MESSAGE, (inputPlayer, input) -> {
             String newTitle = input;
-            String broadcastMessage = PluginText.replaceToString(
+            String savedMessage = PluginText.replaceToString(
                     Messages.Editor.Text.Title.SAVED,
-                    "{title}", newTitle,
+                    "{title}", PluginText.formatted(newTitle),
                     "{player}", inputPlayer.getName()
             );
 
             inputSessions.remove(inputPlayer.getUniqueId());
             settings.setTitle(newTitle);
-            Chat.broadcast(broadcastMessage);
-            Chat.sendConversing(inputPlayer, broadcastMessage);
+            Chat.sendConversing(inputPlayer, savedMessage);
+            Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
+            new MainSettingsMenu().displayTo(inputPlayer);
         });
     }
 
@@ -308,18 +315,21 @@ public class MainSettingsMenu extends PluginMenu {
 
         inputSessions.put(player.getUniqueId(), session);
         player.closeInventory();
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         session.start(prompt);
     }
 
     private void handleAppleRateClick(Player player, ClickType click, UHCGameSettings settings) {
         if (click == ClickType.LEFT) {
             settings.setAppleRate(Math.max(0, settings.getAppleRate() - 1));
+            Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
             return;
         }
 
         if (click == ClickType.RIGHT) {
             settings.setAppleRate(Math.min(100, settings.getAppleRate() + 1));
+            Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
         }
     }
@@ -327,24 +337,29 @@ public class MainSettingsMenu extends PluginMenu {
     private void handleExperienceClick(Player player, ClickType click, UHCGameSettings settings) {
         if (click == ClickType.LEFT) {
             settings.setInitialExperience(Math.max(0, settings.getInitialExperience() - 1));
+            Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
             return;
         }
 
         if (click == ClickType.RIGHT) {
             settings.setInitialExperience(settings.getInitialExperience() + 1);
+            Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
         }
     }
 
     private void toggleNether(Player player, UHCGameSettings settings) {
         boolean newStatus = !settings.isUsingNether();
+        String message = (newStatus ? Messages.Host.NETHER_ENABLED_PLAYER : Messages.Host.NETHER_DISABLED_PLAYER)
+                .replace("{player}", player.getName());
 
         settings.setUsingNether(newStatus);
         Game.changeSettings(settings);
         WorldLoadingCacheState.saveCache();
-        Chat.broadcast((newStatus ? Messages.Host.NETHER_ENABLED_PLAYER : Messages.Host.NETHER_DISABLED_PLAYER)
-                .replace("{player}", player.getName()));
+        Chat.broadcast(message);
+        PluginConsole.log(message);
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         displayTo(player);
     }
 
@@ -356,6 +371,7 @@ public class MainSettingsMenu extends PluginMenu {
 
         inputSessions.put(player.getUniqueId(), session);
         player.closeInventory();
+        Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
         Chat.sendConversing(player, prompt);
     }
 
@@ -421,6 +437,7 @@ public class MainSettingsMenu extends PluginMenu {
             Extra.sound(player, Sounds.Host.INVENTORY_EDITED);
             player.getInventory().setContents(cloneContents(inventoryBackup));
             player.setGameMode(gameModeBackup);
+            new MainSettingsMenu().displayTo(player);
         }
 
         private void changeHandItemToHead(Player player) {
@@ -433,7 +450,7 @@ public class MainSettingsMenu extends PluginMenu {
 
             ItemMeta meta = mainHand.getItemMeta();
 
-            meta.displayName(PluginText.toComponent(Settings.Misc.GOLDEN_HEAD_NAME));
+            meta.displayName(PluginText.toItemComponent(Settings.Misc.GOLDEN_HEAD_NAME));
             mainHand.setItemMeta(meta);
             Extra.sound(player, Sounds.Host.GOLDEN_HEAD_CREATED);
         }

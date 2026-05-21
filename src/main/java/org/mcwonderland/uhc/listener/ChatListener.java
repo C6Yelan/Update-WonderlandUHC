@@ -12,7 +12,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.Locale;
 
 public class ChatListener implements Listener {
 
@@ -53,6 +56,12 @@ public class ChatListener implements Listener {
         uhcPlayer.chat(message);
     }
 
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
+        if (isBlockedMeCommand(e.getMessage()))
+            e.setCancelled(true);
+    }
+
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
         TeamSettingsMenu.clear(e.getPlayer());
@@ -60,5 +69,10 @@ public class ChatListener implements Listener {
         BorderSettingsMenu.clear(e.getPlayer());
         MainSettingsMenu.clear(e.getPlayer());
         GameStartTimeInputSession.clear(e.getPlayer());
+    }
+
+    private boolean isBlockedMeCommand(String message) {
+        String command = message.split("\\s+", 2)[0].toLowerCase(Locale.ROOT);
+        return command.equals("/me") || command.equals("/minecraft:me");
     }
 }

@@ -10,6 +10,8 @@ import org.mcwonderland.uhc.settings.UHCFiles;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Locale;
 
 public final class WorldLoadingCacheStore {
@@ -21,6 +23,7 @@ public final class WorldLoadingCacheStore {
 
     public WorldLoadingCacheStore() {
         this.file = new File(WonderlandUHC.getInstance().getDataFolder(), UHCFiles.CACHE);
+        migrateUnsafeEnumTags();
         this.configuration = YamlConfiguration.loadConfiguration(file);
     }
 
@@ -89,6 +92,23 @@ public final class WorldLoadingCacheStore {
     public void delete() {
         if (file.exists())
             file.delete();
+    }
+
+    private void migrateUnsafeEnumTags() {
+        if (!file.exists())
+            return;
+
+        try {
+            String content = Files.readString(file.toPath(), StandardCharsets.UTF_8);
+            String migrated = content
+                    .replaceAll("(?m)^(\\s*Team_Split_Mode:)\\s*!!org\\.mcwonderland\\.uhc\\.api\\.enums\\.TeamSplitMode.*$", "$1 CHOSEN")
+                    .replaceAll("(?m)^(\\s*Border_Type:)\\s*!!org\\.mcwonderland\\.uhc\\.game\\.border\\.BorderType.*$", "$1 TIMER");
+
+            if (!migrated.equals(content))
+                Files.writeString(file.toPath(), migrated, StandardCharsets.UTF_8);
+        } catch (IOException ex) {
+            throw new IllegalStateException("Failed to migrate unsafe enum tags in " + UHCFiles.CACHE, ex);
+        }
     }
 
     private void saveFile() {
