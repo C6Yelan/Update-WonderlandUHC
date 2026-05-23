@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.port.WorldBorderPort;
 public final class BorderService {
 
     private static final double BORDER_SIZE_OFFSET = 2D;
+    private static final double IMMEDIATE_DAMAGE_BUFFER = 0D;
     private static final int TICKS_PER_SECOND = 20;
 
     private final WorldBorderPort worldBorders;
@@ -30,16 +31,19 @@ public final class BorderService {
     public void setExactFixedBorderAtOrigin(String worldName, double size) {
         worldBorders.setCenter(worldName, 0, 0);
         worldBorders.setSize(worldName, size);
+        worldBorders.setDamageBuffer(worldName, IMMEDIATE_DAMAGE_BUFFER);
     }
 
     public void setExactFixedBorder(String worldName, double size, MatchCenter center) {
         worldBorders.setCenter(worldName, center.getX(), center.getZ());
         worldBorders.setSize(worldName, size);
+        worldBorders.setDamageBuffer(worldName, IMMEDIATE_DAMAGE_BUFFER);
     }
 
     public void shrinkBorder(String worldName, int finalSize, long seconds, MatchCenter center) {
         worldBorders.setCenter(worldName, center.getX(), center.getZ());
         worldBorders.changeSize(worldName, finalSize, seconds);
+        worldBorders.setDamageBuffer(worldName, IMMEDIATE_DAMAGE_BUFFER);
     }
 
     public void setWarningDistance(String worldName, int blocks) {

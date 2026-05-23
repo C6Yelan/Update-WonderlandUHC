@@ -228,6 +228,8 @@ public class BorderUtil {
     }
 
     public static void setInitialBorders() {
+        resetLobbyBorderIfSeparate();
+
         for (World uhcWorld : UHCWorldUtils.getUhcWorlds()) {
             BORDER_SERVICE.setWarning(uhcWorld.getName(), 5, 5);
         }
@@ -239,6 +241,15 @@ public class BorderUtil {
 
     public static void setBorders(World world, int size) {
         setNativeBorder(world, size);
+    }
+
+    private static void resetLobbyBorderIfSeparate() {
+        World lobby = UHCWorldUtils.getLobby();
+
+        if (lobby == null || UHCWorldUtils.isUhcWorld(lobby))
+            return;
+
+        BORDER_SERVICE.reset(lobby.getName());
     }
 
     public static int getRadius(int size) {

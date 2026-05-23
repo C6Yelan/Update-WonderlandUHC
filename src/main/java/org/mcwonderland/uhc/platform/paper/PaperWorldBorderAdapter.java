@@ -40,6 +40,11 @@ public final class PaperWorldBorderAdapter implements WorldBorderPort {
     }
 
     @Override
+    public void setDamageBuffer(String worldName, double blocks) {
+        worldBorder(worldName).setDamageBuffer(blocks);
+    }
+
+    @Override
     public double getSize(String worldName) {
         return worldBorder(worldName).getSize();
     }

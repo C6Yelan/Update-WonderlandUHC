@@ -14,5 +14,7 @@ public interface WorldBorderPort {
 
     void setWarningTimeTicks(String worldName, int ticks);
 
+    void setDamageBuffer(String worldName, double blocks);
+
     double getSize(String worldName);
 }

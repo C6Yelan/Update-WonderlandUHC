@@ -1,6 +1,7 @@
 package org.mcwonderland.uhc.game.border.blockborder;
 
 import org.mcwonderland.uhc.platform.material.PluginMaterials;
+import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.mcwonderland.uhc.util.UniqueQueue;
@@ -69,10 +70,17 @@ public class BlockBorder implements Listener {
     }
 
     private int distanceToBorder(Location location) {
-        int borderRadius = Game.getGame().getCurrentBorder() / 2;
+        int borderSize = Game.getGame().getCurrentBorder();
+        MatchCenter center = UHCWorldUtils.getBorderCenter(location.getWorld(), borderSize);
 
-        int xDis = borderRadius - Math.abs(location.getBlockX());
-        int zDis = borderRadius - Math.abs(location.getBlockZ());
+        return distanceToBorder(location, borderSize, center);
+    }
+
+    static int distanceToBorder(Location location, int borderSize, MatchCenter center) {
+        int borderRadius = borderSize / 2;
+
+        int xDis = borderRadius - Math.abs(location.getBlockX() - center.getX());
+        int zDis = borderRadius - Math.abs(location.getBlockZ() - center.getZ());
 
         return Math.min(xDis, zDis);
     }
@@ -89,11 +97,20 @@ public class BlockBorder implements Listener {
     }
 
     private boolean isBorderLocation(Location loc) {
-        return isBorderLocation(loc.getBlockZ()) || isBorderLocation(loc.getBlockX());
+        int borderSize = Game.getGame().getCurrentBorder();
+        MatchCenter center = UHCWorldUtils.getBorderCenter(loc.getWorld(), borderSize);
+
+        return isBorderLocation(loc, borderSize, center);
     }
 
-    private boolean isBorderLocation(int i) {
-        return Math.abs(i) == Game.getGame().getCurrentBorder() / 2;
+    static boolean isBorderLocation(Location loc, int borderSize, MatchCenter center) {
+        int borderRadius = borderSize / 2;
+        return isBorderCoordinate(loc.getBlockZ(), center.getZ(), borderRadius)
+                || isBorderCoordinate(loc.getBlockX(), center.getX(), borderRadius);
+    }
+
+    private static boolean isBorderCoordinate(int coordinate, int centerCoordinate, int borderRadius) {
+        return Math.abs(coordinate - centerCoordinate) == borderRadius;
     }
 
 }

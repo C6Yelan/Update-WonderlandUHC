@@ -43,6 +43,14 @@ public class UHCWorldUtils {
         return new String[]{getWorldName(), getNetherName()};
     }
 
+    public boolean isUhcWorld(World world) {
+        return world != null && isUhcWorldName(world.getName());
+    }
+
+    public boolean isUhcWorldName(String worldName) {
+        return worldName != null && (worldName.equals(getWorldName()) || worldName.equals(getNetherName()));
+    }
+
     public Location getLobbySpawn() {
         UHCSpawn lobbySpawn = Spawns.getLobbySpawn();
         Location location = lobbySpawn.getLocation();

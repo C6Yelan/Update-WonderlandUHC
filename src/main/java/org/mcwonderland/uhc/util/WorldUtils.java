@@ -2,7 +2,6 @@ package org.mcwonderland.uhc.util;
 
 import org.mcwonderland.uhc.platform.material.PluginMaterials;
 import lombok.experimental.UtilityClass;
-import org.mcwonderland.uhc.settings.Settings;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -84,6 +83,6 @@ public class WorldUtils {
     }
 
     public boolean isUHCWorld(World world) {
-        return world.getName().contains(Settings.Game.UHC_WORLD_NAME);
+        return UHCWorldUtils.isUhcWorld(world);
     }
 }
