@@ -62,10 +62,6 @@ public class CommandSettings extends PluginStaticConfig {
         public static String SPAWN_SAVED;
     }
 
-    public static class Heal {
-        public static String FORMAT;
-    }
-
     public static class SendCoords {
         public static String FORMAT;
     }

@@ -52,7 +52,6 @@ public enum UHCPermission {
     COMMAND_UHC_SWITCHTEAM,
     COMMAND_UHC_TP,
     COMMAND_UHC_TUTORIAL,
-    COMMAND_VIEWHEAL,
     COMMAND_WHITELIST;
 
     private final String permission;

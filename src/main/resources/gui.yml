@@ -145,7 +145,7 @@ Main:
       Type: OAK_SIGN
       Name: "<light_purple>計分版</light_purple>"
       Lore:
-        - "<gray>設定遊戲的記分板風格。</gray>"
+        - "<gray>設定資料版更新延遲與血量顏色。</gray>"
     Title:
       Slot: 31
       Type: NAME_TAG
@@ -356,16 +356,8 @@ Scoreboard:
   Title: "<dark_green><bold>資料版設定</bold></dark_green>"
   Rows: 3
   Buttons:
-    Themes:
-      Slot: 12
-      Type: RED_DYE
-      Name: "<yellow>風格</yellow>"
-      Lore:
-        - "<gray>目前風格為: </gray><green>{theme}</green>"
-        - " "
-        - "<yellow>點擊來設定</yellow>"
     Update_Ticks:
-      Slot: 13
+      Slot: 12
       Type: REPEATER
       Name: "<light_purple>資料版更新延遲</light_purple>"
       Lore:
@@ -385,18 +377,6 @@ Scoreboard:
         - "<gray>更改玩家頭頂血量顯示的愛心顏色。</gray>"
         - " "
         - "<yellow>點擊來設定</yellow>"
-Sidebar_Theme_Selector:
-  Title: "<dark_green><bold>資料板風格</bold></dark_green>"
-  Rows: 3
-  Buttons:
-    Themes:
-      Type: OAK_SIGN
-      Name: "<yellow>{theme_name} 風格</yellow>"
-      Lore:
-        - "<yellow>預覽:</yellow>"
-        - "{theme_preview}"
-        - " "
-        - "<yellow>點擊來選擇</yellow>"
 Broadcast:
   Title: "<dark_green><bold>公告功能</bold></dark_green>"
   Rows: 3

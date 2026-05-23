@@ -56,10 +56,6 @@ commands:
   uhc:
     description: 管理 UHC 主流程。
     usage: /<command> <reload|choose|edit|regen|resetteam|sethost|splitteam|switchteam|stop|tp|start|tutorial> [參數]
-  viewheal:
-    aliases: [h]
-    description: 查看玩家血量。
-    usage: /<command> <玩家>
   whitelist:
     aliases: [wl]
     description: 管理本場遊戲白名單。
@@ -118,8 +114,6 @@ permissions:
   wonderland.uhc.command.stats:
     default: true
   wonderland.uhc.command.topkills:
-    default: true
-  wonderland.uhc.command.viewheal:
     default: true
   wonderland.uhc.command.practice:
     default: true

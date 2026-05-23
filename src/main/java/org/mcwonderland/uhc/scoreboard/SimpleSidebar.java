@@ -1,5 +1,6 @@
 package org.mcwonderland.uhc.scoreboard;
 
+import io.papermc.paper.scoreboard.numbers.NumberFormat;
 import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import org.bukkit.scoreboard.Criteria;
@@ -30,6 +31,7 @@ public class SimpleSidebar {
         this.scoreboard = scoreboard;
         this.sidebar = scoreboard.registerNewObjective("sidebar", Criteria.DUMMY, toComponent("sidebar"));
         this.sidebar.setDisplaySlot(DisplaySlot.SIDEBAR);
+        this.sidebar.numberFormat(NumberFormat.blank());
 
         for (int i = 1; i <= 15; i++) {
             Team team = scoreboard.registerNewTeam("SLOT_" + i);

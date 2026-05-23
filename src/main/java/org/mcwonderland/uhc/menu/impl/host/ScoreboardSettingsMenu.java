@@ -18,7 +18,6 @@ import java.util.Locale;
 
 public class ScoreboardSettingsMenu extends PluginMenu {
     private static final String SECTION = "Scoreboard";
-    private static final String THEMES_BUTTON = "Themes";
     private static final String UPDATE_TICKS_BUTTON = "Update_Ticks";
     private static final String HEART_COLOR_BUTTON = "Heart_Color";
     private static final int BACK_OFFSET = 1;
@@ -35,9 +34,6 @@ public class ScoreboardSettingsMenu extends PluginMenu {
         if (slot == getBackButtonSlot())
             return PluginItems.fromConfig(UHCFiles.MENUS, "Leave");
 
-        if (slot == getSection().getButtonSlot(THEMES_BUTTON))
-            return getSection().getButtonItem(THEMES_BUTTON, "{theme}", scoreboardSettings.getSidebarTheme().getName());
-
         if (slot == getSection().getButtonSlot(UPDATE_TICKS_BUTTON))
             return getSection().getButtonItem(UPDATE_TICKS_BUTTON, "{count}", scoreboardSettings.getScoreboardUpdateTick());
 
@@ -51,11 +47,6 @@ public class ScoreboardSettingsMenu extends PluginMenu {
     protected void onClick(Player player, int slot, ClickType click, ItemStack clicked) {
         if (slot == getBackButtonSlot()) {
             new MainSettingsMenu().displayTo(player);
-            return;
-        }
-
-        if (slot == getSection().getButtonSlot(THEMES_BUTTON)) {
-            new SidebarThemeSettingsMenu(player).displayTo(player);
             return;
         }
 

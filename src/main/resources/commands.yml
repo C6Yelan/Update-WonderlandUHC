@@ -67,9 +67,6 @@ Respawn:
 SetSpawn:
   Spawn_Saved: "<green>成功儲存大廳重生點。</green>"
 
-Heal:
-  Format: "<green>{player}</green> <white>還剩下</white> <red>{heal}❤</red>"
-
 SendCoords:
   Format: "<green>[<aqua>玩家座標</aqua>] ></green> <aqua>{player} <bold>></bold></aqua> <green>X:</green> <white>{x}</white> <green>Y:</green> <white>{y}</white> <green>Z:</green> <white>{z}</white>"
 

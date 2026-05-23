@@ -22,7 +22,6 @@ import org.mcwonderland.uhc.command.impl.info.DisableItemsCommand;
 import org.mcwonderland.uhc.command.impl.info.ScenariosCommand;
 import org.mcwonderland.uhc.command.impl.info.StatsCommand;
 import org.mcwonderland.uhc.command.impl.info.TopKillsCommand;
-import org.mcwonderland.uhc.command.impl.info.ViewHealCommand;
 import org.mcwonderland.uhc.command.impl.host.whitelist.WhitelistCommand;
 import org.mcwonderland.uhc.command.team.TeamCommand;
 import org.mcwonderland.uhc.command.uhc.UHCCommand;
@@ -80,7 +79,6 @@ public final class FeatureRegistry {
         ReconnectCommand.register(plugin);
         TopKillsCommand.register(plugin);
         StatsCommand.register(plugin);
-        ViewHealCommand.register(plugin);
         SendCoordsCommand.register(plugin);
         SpecToggleCommand.register(plugin);
         BackPackCommand.register(plugin);

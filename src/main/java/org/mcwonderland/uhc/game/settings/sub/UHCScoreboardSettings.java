@@ -22,7 +22,6 @@ public class UHCScoreboardSettings {
     public Map<String, Object> toMap() {
         Map<String, Object> map = new LinkedHashMap<>();
 
-        map.put("Theme", sidebarTheme.getName());
         map.put("Update_Tick", scoreboardUpdateTick);
         map.put("Heart_Color", heartColor.name().toLowerCase(Locale.ROOT));
 
@@ -32,7 +31,7 @@ public class UHCScoreboardSettings {
     public static UHCScoreboardSettings fromSection(ConfigurationSection section) {
         UHCScoreboardSettings settings = new UHCScoreboardSettings();
 
-        settings.sidebarTheme = SidebarTheme.getThemeOrDefault(section == null ? "" : section.getString("Theme", ""));
+        settings.sidebarTheme = SidebarTheme.defaultTheme();
         settings.scoreboardUpdateTick = section == null ? 5 : section.getInt("Update_Tick", 5);
         settings.heartColor = parseHeartColor(section == null ? "" : section.getString("Heart_Color", ""));
 
