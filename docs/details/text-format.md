@@ -1,6 +1,6 @@
 # WonderlandUHC 文字格式細節說明
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件補充 `docs/text-format.md` 的細節，說明 WonderlandUHC 在設定檔中如何處理 MiniMessage、placeholder、YAML 寫法與 Discord 公告格式。摘要文件只保留核心觀念；若需要修改大量文字、排查顯示問題或新增可見訊息，才需要閱讀本文件。
 
@@ -15,7 +15,7 @@
 | `gui.yml` | GUI title、按鈕名稱、lore。 |
 | `items.yml` | 大廳、觀戰、staff 工具物品名稱與 lore。 |
 | `scenarios.yml` | scenario 名稱、說明、警告訊息與 scenario-specific 訊息。 |
-| `scoreboards.yml` | scoreboard theme 與每一行顯示文字。 |
+| `scoreboards.yml` | default scoreboard theme 與每一行顯示文字。 |
 | `settings.yml` | 少量玩家可見名稱，例如隊伍預設名稱、金頭顱名稱。 |
 | `broadcasts.yml` | Discord 功能錯誤訊息與 Discord 公告模板。 |
 

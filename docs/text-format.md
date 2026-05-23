@@ -1,6 +1,6 @@
 # WonderlandUHC 文字格式摘要
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件摘要說明新版本 WonderlandUHC 的文字格式規則。重點是讓委託人、原作者與後續維護者理解：新版正式文字格式以 Adventure MiniMessage 為準，舊版 `&a` / `§a` 色碼不再作為正式支援格式。
 
@@ -79,7 +79,7 @@ WonderlandUHC 會在程式中替換 `{name}` 形式的 placeholder。
 | `gui.yml` | GUI title、button name、button lore。 |
 | `items.yml` | 大廳、觀戰、staff 等工具物品名稱與 lore。 |
 | `scenarios.yml` | scenario 顯示名稱、說明、警告與 scenario-specific 訊息。 |
-| `scoreboards.yml` | scoreboard theme 與每一行顯示文字。 |
+| `scoreboards.yml` | default scoreboard theme 與每一行顯示文字。 |
 | `settings.yml` | 少量可見名稱文字，例如隊伍預設名稱、金頭顱名稱。 |
 | `broadcasts.yml` | Discord 功能錯誤訊息與 Discord 公告格式。 |
 

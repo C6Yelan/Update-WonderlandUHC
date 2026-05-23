@@ -15,7 +15,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 1. 準備 Paper `1.21.11` 伺服器[(也可以點我下載)](https://fill-ui.papermc.io/projects/paper/version/1.21.11)，並使用 Java `21` 啟動
 2. 從[Releases](https://github.com/C6Yelan/Update-WonderlandUHC/releases)下載 WonderlandUHC.jar
 3. 將插件放入伺服器的插件資料夾 `plugins/`
-4. 安裝[LuckPerms](https://modrinth.com/plugin/luckperms/changelog?g=1.21.11&l=paper)和[Chunky](https://modrinth.com/plugin/chunky/changelog?c=release&g=1.21.11&l=paperr)兩款依賴插件，放入伺服器的插件資料夾 `plugins/`
+4. 安裝[LuckPerms](https://modrinth.com/plugin/luckperms/changelog?g=1.21.11&l=paper)和[Chunky](https://modrinth.com/plugin/chunky/changelog?c=release&g=1.21.11&l=paper)兩款依賴插件，放入伺服器的插件資料夾 `plugins/`
 (若未安裝就開啟伺服器，可能導致插件無法使用！)
 5. 若需使用Discord群組公告功能及語音系統，請安裝[DiscordSRV](https://modrinth.com/plugin/discordsrv/versions?g=1.21.11&l=paper)
 6. 啟動伺服器，讓插件產生預設設定檔
@@ -41,10 +41,11 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 | 插件 | 類型 | 用途 |
 | --- | --- | --- |
 | LuckPerms | 必要 |  檢查與驗證玩家權限 |
-| Chunky | 必要 |進行UHC世界跑圖，提高遊玩效能|
+| Chunky | 跑圖必要 |進行UHC世界跑圖，提高遊玩效能|
 | DiscordSRV | 可選 |啟用Discord群組公告功能及語音系統 |
 
 注意事項：
+**未安裝LuckPerms會讓WonderlandUHC停止啟用，請務必安裝！**
 **未安裝Chunky不會阻止伺服器啟動和插件啟用，但無法開始UHC世界跑圖，這會導致插件無法進入準備開始的狀態，因此使用插件時，請務必檢查是否已安裝Chunky！**
 (此狀況可能於未來修正)
 
@@ -83,6 +84,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 - [遊戲流程摘要](docs/game-flow.md)
 - [選圖與中心搜尋機制摘要](docs/map-selection.md)
 - [文字格式摘要](docs/text-format.md)
+- [移除與替換功能說明](docs/removed-and-changed-features.md)
 
 ## 回報問題
 

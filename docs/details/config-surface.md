@@ -1,6 +1,6 @@
 # WonderlandUHC 設定檔載入面細節說明
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件說明 WonderlandUHC 目前有哪些設定檔、由哪些程式讀取、哪些屬於 jar 預設 resource、哪些屬於運行資料。它不是開服設定教學，而是給維護者在修改 YAML、config parser、文字格式或 cache 時判斷影響範圍。
 
@@ -82,7 +82,6 @@
 - `Misc`
 - `Game`
 - `CenterCleaner`
-- `ChunkLoading`
 - `Practice`
 - `DiscordVoice`
 
@@ -90,8 +89,17 @@
 
 1. `Settings` 類別中的 static field 是啟動後直接讀取的全域設定。
 2. `Game` 區塊會影響 timer、teleport、freeze、UHC 世界名稱等核心流程。
-3. `CenterCleaner` 與 `ChunkLoading` 修改後，通常需要跑選圖 / 跑圖流程驗證。
+3. `CenterCleaner` 修改後，通常需要跑選圖 / 跑圖流程驗證。
 4. `DiscordVoice` 修改後，需要 DiscordSRV ready 才能完整驗證。
+
+已移除的舊設定：
+
+- `ChunkLoading`
+- `Misc.Always_Day`
+- `Misc.No_Fire_Tick`
+- `Misc.Anti_Rain`
+
+這些欄位目前不在 `Settings` 類別中，預設 `settings.yml` 也不再提供。若舊伺服器殘留這些 YAML key，目前程式不會讀取它們；不要為了相容舊檔案重新新增 runtime 行為。
 
 ## 本場遊戲設定快照
 
@@ -189,9 +197,10 @@ item 通常需要：
 
 維護注意：
 
-1. `SidebarTheme.defaultTheme()` 取第一個 theme，因此至少要有一個 top-level theme。
+1. 目前預設檔只保留 `Default` 區塊；host GUI 不再提供多風格切換。
 2. 修改 scoreboard placeholder 時，要同步檢查 line 類別與 `GamePlaceholderReplacer`。
-3. scoreboard theme 是可重新載入流程的一部分，修改後應確認 reload 或重啟後有重新載入。
+3. `SidebarTheme.defaultTheme()` 仍取第一個 top-level theme，因此至少要有一個 top-level theme。
+4. scoreboard text 是可重新載入流程的一部分，修改後應確認 reload 或重啟後有重新載入。
 
 ## Scenario 設定
 

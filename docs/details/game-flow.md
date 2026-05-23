@@ -1,6 +1,6 @@
 # WonderlandUHC 遊戲流程細節說明
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件補充 `docs/game-flow.md` 的細節，說明 WonderlandUHC 從啟動、選圖、跑圖、開局到結束時，各狀態、cache、重啟與玩家登入限制如何互相配合。摘要文件只保留主流程；需要排查流程卡住、修改開局流程或確認重啟接續行為時，再閱讀本文件。
 
@@ -150,20 +150,12 @@
 pregeneration radius = initial border radius + 1
 ```
 
-Chunky 參數主要來自 `settings.yml`：
-
-```yaml
-ChunkLoading:
-  Force_Loading_Nether_Chunk: true
-  Frequency: 600
-  Padding: 208
-```
+Chunky task 目前使用 square shape、region pattern、`MatchCenter` 換算後的中心，以及依本場初始邊界計算出的半徑。舊版 `settings.yml` 的 `ChunkLoading` 區塊已移除，目前不再提供 `Frequency`、`Padding` 或強制載入 Nether chunk 的舊設定。
 
 Overworld 完成後，插件會先建立邊界，再判斷 Nether：
 
 1. 如果本場設定啟用 Nether，繼續預生成 Nether。
-2. 如果本場沒有啟用 Nether，但 `Force_Loading_Nether_Chunk` 是 `true`，仍預生成 Nether。
-3. 如果不需要處理 Nether，將狀態改為 `DONE` 並重啟。
+2. 如果本場沒有啟用 Nether，將狀態改為 `DONE` 並重啟。
 
 Nether 完成後也會將狀態改為 `DONE`、保存 cache，然後重啟。
 
@@ -203,7 +195,7 @@ Nether 完成後也會將狀態改為 `DONE`、保存 cache，然後重啟。
 
 1. 設定初始邊界。
 2. 記錄目前初始邊界大小。
-3. 將 UHC 世界難度設為 peaceful。
+3. 關閉 UHC 世界的 locator bar。
 4. 依隊伍設定分隊。
 5. 關閉線上玩家正在開啟的選單。
 6. staff 傳送到本場中心。
@@ -247,8 +239,10 @@ Nether 完成後也會將狀態改為 `DONE`、保存 cache，然後重啟。
 
 世界規則包含：
 
-- 若 `Misc.Always_Day` 開啟，停止時間推進並設為白天。
-- 若 `Misc.No_Fire_Tick` 開啟，停用火焰蔓延。
+- 關閉 locator bar。
+- 開啟時間與天氣推進。
+- 將火焰蔓延半徑設為 `128`。
+- 開啟生物與怪物生成。
 - 設定世界出生點。
 - 將 UHC 世界難度設為 hard。
 

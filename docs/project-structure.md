@@ -1,6 +1,6 @@
 # WonderlandUHC 新版本專案檔案架構摘要
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件是新版本 WonderlandUHC 的檔案架構入口摘要，目標是讓委託人、原作者與後續維護者快速理解專案目前怎麼分層、主要檔案放在哪裡，以及未來新增功能時應該優先放到哪一類目錄。
 
@@ -43,7 +43,7 @@
 | `org.mcwonderland.uhc.command` | `/uhc`、`/team` 等指令入口。 |
 | `org.mcwonderland.uhc.menu` | 主持設定、隊伍設定、scenario、scoreboard 等 inventory GUI。 |
 | `org.mcwonderland.uhc.scenario` | 各 UHC scenario 的註冊、設定、listener 與實作。 |
-| `org.mcwonderland.uhc.scoreboard` | sidebar、below-name health、tab line、theme 與顯示 fallback。 |
+| `org.mcwonderland.uhc.scoreboard` | sidebar、below-name health、tab line、default theme loader 與顯示 fallback。 |
 | `org.mcwonderland.uhc.settings` | `settings.yml`、`messages.yml`、`commands.yml` 等靜態設定載入。 |
 | `org.mcwonderland.uhc.storage`、`stats` | runtime data、saved games、stats 等資料讀寫。 |
 | `org.mcwonderland.uhc.model` | 跨功能資料模型與輔助流程，例如 broadcast、death message、freeze、tutorial。 |
@@ -55,11 +55,11 @@
 
 | 檔案 | 用途 |
 | --- | --- |
-| `plugin.yml` | Bukkit / Paper plugin manifest、commands、permissions、hard / soft dependencies。 |
+| `plugin.yml` | Bukkit / Paper plugin manifest、commands、permissions、soft dependency 宣告。 |
 | `settings.yml` | 遊戲主要設定預設值。 |
 | `messages.yml`、`commands.yml` | 玩家可見訊息與指令文字，正式格式使用 MiniMessage。 |
 | `gui.yml`、`items.yml` | GUI、按鈕、lore、hotbar item 顯示。 |
-| `scoreboards.yml` | scoreboard theme、sidebar line、below-name 顯示設定。 |
+| `scoreboards.yml` | default scoreboard theme、sidebar line、below-name 顯示設定。 |
 | `scenarios.yml` | scenario 顯示名稱、說明與 scenario-specific config。 |
 | `sounds.yml` | GUI、指令、流程音效設定，使用 Paper `1.21.11` 可用 sound key。 |
 | `broadcasts.yml`、`spawns.yml` | Discord / 遊戲公告格式與 spawn 記錄格式。 |

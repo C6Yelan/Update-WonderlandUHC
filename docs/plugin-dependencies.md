@@ -1,6 +1,6 @@
 # WonderlandUHC 外部整合插件摘要
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件說明新版本 WonderlandUHC 會整合哪些外部插件、各自用途，以及缺少時對伺服器啟動與功能的影響。
 
@@ -8,7 +8,7 @@
 
 | 插件 | 類型 | 用途 | 缺少時行為 |
 | --- | --- | --- | --- |
-| LuckPerms | 必要依賴 | 登入階段權限查詢，判斷玩家是否能 bypass 滿人、白名單、遊戲已開始或設定中狀態。 | `plugin.yml` 以 `depend` 宣告；缺少或未啟用時，WonderlandUHC 會視為必要依賴不可用。 |
+| LuckPerms | runtime 必要依賴 | 登入階段權限查詢，判斷玩家是否能 bypass 滿人、白名單、遊戲已開始或設定中狀態。 | `plugin.yml` 以 `softdepend` 控制載入順序；啟動檢查會視為必要依賴，缺少或未啟用時 WonderlandUHC 會停止啟用。 |
 | Chunky | 啟動可選、跑圖必要 | 世界預生成，承接 UHC 世界產生後的 chunk pregeneration 流程。 | 伺服器可啟動，但無法完成新地圖預生成；若需要選圖、重生地圖或進入正式開局流程，必須安裝 Chunky。 |
 | DiscordSRV | 可選依賴 | Discord 公告與 Discord 語音頻道整合，例如公告發送、隊伍語音、`/reconnect`。 | 伺服器仍可啟動；Discord 相關功能會停用或回傳未安裝 / 不可用提示。 |
 
@@ -17,11 +17,10 @@
 目前 `plugin.yml` 的依賴宣告為：
 
 ```yaml
-depend: [ LuckPerms ]
-softdepend: [ Chunky, DiscordSRV ]
+softdepend: [ LuckPerms, Chunky, DiscordSRV ]
 ```
 
-這代表 LuckPerms 是開服時必須存在的插件；Chunky 與 DiscordSRV 不會阻止伺服器啟動，但 Chunky 對新地圖預生成與正式跑圖流程是必要插件。
+這代表三個外部插件都由 Paper 先作為 soft dependency 處理載入順序。WonderlandUHC 自己的啟動檢查會再把 LuckPerms 視為必要依賴；若 LuckPerms 不可用，插件會停止啟用。Chunky 與 DiscordSRV 則不阻止啟動，但 Chunky 對新地圖預生成與正式跑圖流程是必要插件。
 
 ## 各插件用途
 
@@ -65,12 +64,14 @@ DiscordSRV 是 Discord 文字公告與語音整合的來源。
 
 ## 啟動時依賴狀態
 
-WonderlandUHC 啟動時會在 console 輸出 dependency status，方便確認外部整合狀態。
+WonderlandUHC 啟動時會在 console 輸出依賴插件狀態，方便確認外部整合狀態。
 
 狀態意義：
 
-- `Available`：插件存在且已啟用。
-- `Disabled`：啟動可選的插件不存在或未 hooked，對應功能停用；若是 Chunky，代表新地圖預生成流程不可用。
-- `Unavailable`：必要插件不存在或未 hooked，屬於需要修正的部署問題。
+| Console 顯示 | 內部狀態 | 意義 |
+| --- | --- | --- |
+| `可用` | `Available` | 插件存在且已啟用。 |
+| `未啟用` | `Disabled` | 啟動可選的插件不存在或未 hooked，對應功能停用；若是 Chunky，代表新地圖預生成流程不可用。 |
+| `缺少` | `Unavailable` | 必要插件不存在或未 hooked，屬於需要修正的部署問題。 |
 
 更完整的 `plugin.yml` / `build.gradle` 宣告、runtime adapter、缺少依賴時的行為與驗證重點，見 `docs/details/plugin-dependencies.md`。

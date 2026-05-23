@@ -1,6 +1,6 @@
 # WonderlandUHC 維護驗證細節說明
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件說明維護者修改 WonderlandUHC 後，應如何判斷需要跑哪些驗證。它不是一般開服教學，而是用來避免「編譯過了但插件無法啟動」或「啟動過了但跑圖 / 開局流程壞掉」。
 
@@ -11,7 +11,7 @@
 | 純文件 | `git diff --check` | 人工讀過相關段落。 |
 | README / docs 連結 | `git diff --check` | 確認相對路徑存在。 |
 | Java 程式碼 | 封裝 + 伺服器啟動 | 依功能跑對應流程。 |
-| `build.gradle` / `plugin.yml` | 封裝 + 伺服器啟動 | 檢查 jar metadata 與 dependency status。 |
+| `build.gradle` / `plugin.yml` | 封裝 + 伺服器啟動 | 檢查 jar metadata 與依賴插件狀態。 |
 | `src/main/resources/*.yml` | 封裝 + 伺服器啟動 | 若是文字格式，檢查 MiniMessage 與 placeholder。 |
 | 選圖 / Chunky / cache | 封裝 + 伺服器啟動 | 實際跑 `/uhc regen`、`/uhc choose`、重啟接續。 |
 | 開局 / timer / player state | 封裝 + 伺服器啟動 | 實際跑 `/uhc start` 到 `PLAYING`。 |
@@ -86,7 +86,7 @@ unzip -p build/libs/WonderlandUHC-1.21.11-0.1.0.jar plugin.yml
 重點看：
 
 - `version:`。
-- `depend:` / `softdepend:`。
+- `softdepend:`。
 - `api-version:`。
 
 ## 部署到測試服
@@ -113,30 +113,30 @@ unzip -p build/libs/WonderlandUHC-1.21.11-0.1.0.jar plugin.yml
 2. Java 版本是 21。
 3. LuckPerms 已啟用。
 4. WonderlandUHC 已啟用。
-5. console 有 WonderlandUHC dependency status。
-6. `LuckPerms` 顯示 `Available`。
-7. 缺少 optional plugin 時只顯示 `Disabled`，不應造成 WonderlandUHC enable 失敗。
+5. console 有 WonderlandUHC 依賴插件狀態。
+6. `LuckPerms` 顯示 `可用`。
+7. 缺少 optional plugin 時只顯示 `未啟用`，不應造成 WonderlandUHC enable 失敗。
 8. log 不應出現 `ERROR`、`SEVERE`、`NoClassDefFoundError`、`NoSuchMethodError`、`ClassCastException` 或未處理 exception。
 
-如果修改牽涉 Chunky，則 Chunky 也應顯示 `Available`，且需要進一步跑正式預生成流程。
+如果修改牽涉 Chunky，則 Chunky 也應顯示 `可用`，且需要進一步跑正式預生成流程。
 
 ## Dependency Status 判讀
 
 可接受的啟動狀態例子：
 
 ```text
-Dependency status:
-- LuckPerms: Available
-- Chunky: Disabled (Plugin is not hooked.)
-- DiscordSRV: Disabled (Plugin is not hooked.)
+依賴插件狀態:
+- LuckPerms: 可用
+- Chunky: 未啟用 (未偵測到可用插件，相關功能會停用。)
+- DiscordSRV: 未啟用 (未偵測到可用插件，相關功能會停用。)
 ```
 
-這代表 LuckPerms 正常，Chunky / DiscordSRV 缺少但不阻止啟動。若要驗證跑圖流程，Chunky 不能是 `Disabled`。
+這代表 LuckPerms 正常，Chunky / DiscordSRV 缺少但不阻止啟動。若要驗證跑圖流程，Chunky 不能是 `未啟用`。
 
 不正常例子：
 
 ```text
-- LuckPerms: Unavailable (Required plugin is not hooked.)
+- LuckPerms: 缺少 (必要插件未啟用，WonderlandUHC 將停止啟用。)
 ```
 
 這代表部署狀態不正確，不能視為通過啟動測試。
@@ -153,7 +153,7 @@ Dependency status:
 - `WorldLoadingCacheState`
 - `ChunkPregenerationService`
 - `ChunkPregenerationAdapter`
-- `settings.yml` 的 CenterCleaner / ChunkLoading。
+- `settings.yml` 的 CenterCleaner。
 
 建議流程：
 

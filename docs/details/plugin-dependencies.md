@@ -1,6 +1,6 @@
 # WonderlandUHC 外部整合細節說明
 
-整理日期：2026-05-21
+整理日期：2026-05-23
 
 這份文件補充 `docs/plugin-dependencies.md`，說明 LuckPerms、Chunky、DiscordSRV 在程式中的整合邊界。重點是給維護者理解依賴如何宣告、如何檢查、缺少時哪些流程會受影響，以及修改外部整合時應該注意哪些風險。
 
@@ -8,15 +8,14 @@
 
 | 層面 | 檔案 | 用途 |
 | --- | --- | --- |
-| Paper 載入順序 | `src/main/resources/plugin.yml` | 宣告 `depend` / `softdepend`。 |
+| Paper 載入順序 | `src/main/resources/plugin.yml` | 宣告 `softdepend`，讓 Paper 優先載入可用外部插件。 |
 | 編譯期依賴 | `build.gradle`、`libs/` | 讓 Java 編譯時找得到外部 API。 |
-| 啟動時檢查 | `Dependency`、`PluginBootstrap` | 啟動時輸出 dependency status。 |
+| 啟動時檢查 | `Dependency`、`PluginBootstrap` | 啟動時輸出依賴插件狀態。 |
 
 `plugin.yml` 目前宣告：
 
 ```yaml
-depend: [ LuckPerms ]
-softdepend: [ Chunky, DiscordSRV ]
+softdepend: [ LuckPerms, Chunky, DiscordSRV ]
 ```
 
 `build.gradle` 目前使用：
@@ -33,23 +32,23 @@ compileOnly name: 'Chunky-Bukkit-1.4.40'
 
 `Dependency` enum 保存外部插件名稱與下載網址。`PluginBootstrap.checkDependencies()` 啟動時會依序檢查：
 
-1. LuckPerms: required。
+1. LuckPerms: runtime required。
 2. Chunky: optional。
 3. DiscordSRV: optional。
 
 狀態意義：
 
-| 狀態 | 意義 |
-| --- | --- |
-| `Available` | Bukkit plugin 存在且已啟用。 |
-| `Disabled` | optional plugin 不存在或未啟用，對應功能不可用。 |
-| `Unavailable` | required plugin 不存在或未啟用，部署狀態不正確。 |
+| Console 顯示 | 內部狀態 | 意義 |
+| --- | --- | --- |
+| `可用` | `Available` | Bukkit plugin 存在且已啟用。 |
+| `未啟用` | `Disabled` | optional plugin 不存在或未啟用，對應功能不可用。 |
+| `缺少` | `Unavailable` | required plugin 不存在或未啟用，部署狀態不正確。 |
 
 目前檢查只看 `Bukkit.getPluginManager().getPlugin(name)` 與 `plugin.isEnabled()`。
 
 維護注意：
 
-1. `plugin.yml` 的 `depend` / `softdepend` 與 `PluginBootstrap.checkDependencies()` 要保持一致。
+1. `plugin.yml` 的 `softdepend` 用於 Paper 載入順序；`PluginBootstrap.checkDependencies()` 才是 runtime 必要 / 可選判斷來源。
 2. 新增外部插件時，應同步更新 `Dependency`、`plugin.yml`、`build.gradle` 與文件。
 3. optional plugin 缺少時，入口應有明確停用或錯誤，不應讓流程默默卡住。
 
@@ -129,7 +128,7 @@ Chunk pregeneration requires Chunky. Install Chunky and restart the server.
 - radius X / Z。
 - pattern: `region`。
 
-注意：`ChunkPregenerationPort` 介面保留 `frequency` 與 `padding` 參數，`ChunkPregenerationService` 也會傳入 `Settings.ChunkLoading.FREQUENCY` 與 `Settings.ChunkLoading.PADDING`。但目前 adapter 的 `startTask(...)` 呼叫沒有實際使用這兩個值。若後續要讓 `settings.yml` 的 ChunkLoading 數值真正影響 Chunky 任務，需要先確認目前 Chunky API 版本支援的設定方式。
+注意：舊版 `settings.yml` 的 `ChunkLoading` 數值已不再由目前程式讀取。`ChunkPregenerationService` 只依本場初始邊界計算預生成半徑，並使用 `MatchCenter` 作為 Chunky 任務中心。若未來要新增可調 Chunky 參數，應以新的設定名稱、程式欄位與文件一起設計，不要恢復舊 `ChunkLoading` 語意。
 
 ## DiscordSRV
 
@@ -165,12 +164,12 @@ DiscordSRV plugin enabled 不代表 JDA 已 ready。語音 hook 會等待 `Disco
 新增或調整外部插件整合時，至少檢查：
 
 1. `build.gradle` 是否有正確 `compileOnly`。
-2. `plugin.yml` 的 `depend` / `softdepend` 是否符合實際需求。
+2. `plugin.yml` 的 `softdepend` 與 `PluginBootstrap.checkDependencies()` 的 runtime 必要 / 可選判斷是否符合實際需求。
 3. `Dependency` enum 是否有 plugin name 與 download URL。
 4. `PluginBootstrap.checkDependencies()` 是否會輸出正確狀態。
 5. 缺少 optional plugin 時，入口是否有明確停用或錯誤。
 6. 外部 API 是否只存在於 `integration`、hook 或明確邊界。
 7. package 後 jar 是否沒有誤包外部插件。
-8. 啟動 log 是否包含合理的 dependency status。
+8. 啟動 log 是否包含合理的依賴插件狀態。
 
 通用驗證流程見 `docs/details/verification.md`。
