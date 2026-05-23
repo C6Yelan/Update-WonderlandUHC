@@ -3,7 +3,6 @@ package org.mcwonderland.uhc.game.state.playing.listener;
 import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.settings.Messages;
-import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
@@ -23,7 +22,6 @@ public class PortalListener implements Listener {
     @EventHandler
     public void onPortal(PlayerPortalEvent e) {
         Player p = e.getPlayer();
-        Game game = Game.getGame();
 
         if (!GameUtils.isGamingPlayer(p)) {
             e.setCancelled(true);
@@ -33,11 +31,6 @@ public class PortalListener implements Listener {
         if (getToLocation(e).getWorld() == UHCWorldUtils.getNether()) {
             if (!Game.getSettings().isUsingNether()) {
                 cancelJoin(e, p, Messages.Game.NO_NETHER);
-                return;
-            }
-
-            if (!game.isPvpEnabled() && !Settings.Game.NETHER_BEFORE_PVP) {
-                cancelJoin(e, p, Messages.Game.CANT_JOIN_BEFORE_PVP_ENABLED);
                 return;
             }
         }

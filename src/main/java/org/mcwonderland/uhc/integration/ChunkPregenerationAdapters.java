@@ -20,7 +20,7 @@ public final class ChunkPregenerationAdapters {
     private static final class MissingChunkPregenerationAdapter implements ChunkPregenerationPort {
 
         @Override
-        public void startSquarePregeneration(String worldName, MatchCenter center, int radius, int frequency, int padding) {
+        public void startSquarePregeneration(String worldName, MatchCenter center, int radius) {
             throw new IllegalStateException("Chunk pregeneration requires Chunky. Install Chunky and restart the server.");
         }
     }

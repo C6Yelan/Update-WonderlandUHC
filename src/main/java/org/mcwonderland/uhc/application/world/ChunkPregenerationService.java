@@ -39,9 +39,7 @@ public final class ChunkPregenerationService {
         pregeneration.startSquarePregeneration(
                 worldName,
                 UHCWorldUtils.getBorderCenter(world, borderSize),
-                radius,
-                Settings.ChunkLoading.FREQUENCY,
-                Settings.ChunkLoading.PADDING
+                radius
         );
     }
 
@@ -116,16 +114,10 @@ public final class ChunkPregenerationService {
         if (Game.getSettings().isUsingNether()) {
             PluginConsole.logNoPrefix(Messages.Console.CHUNK_LOAD_NETHER_DETECTED);
             start(UHCWorldUtils.getNether());
-        } else
-            checkForceChunk();
-    }
+            return;
+        }
 
-    private void checkForceChunk() {
-        if (Settings.ChunkLoading.FORCE_LOADING_NETHER_CHUNK) {
-            PluginConsole.logNoPrefix(Messages.Console.FORCE_NETHER_CHUNK_ON);
-            start(UHCWorldUtils.getNether());
-        } else
-            saveAndRestart();
+        saveAndRestart();
     }
 
     private void saveAndRestart() {

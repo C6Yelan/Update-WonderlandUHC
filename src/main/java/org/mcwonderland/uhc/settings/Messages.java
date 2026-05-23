@@ -214,7 +214,7 @@ public class Messages extends PluginStaticConfig {
 
     public static class Game {
         public static String PLAYER_DISCONNECT, PLAYER_RECONNECT;
-        public static String CANT_JOIN_BEFORE_PVP_ENABLED, NO_NETHER;
+        public static String NO_NETHER;
         public static String RELOG_DEATH;
         public static String YOU_HAVE_BEEN_KILLED;
         public static String TEAM_ELIMINATED;
@@ -250,7 +250,7 @@ public class Messages extends PluginStaticConfig {
     }
 
     public static class Console {
-        public static String CHUNK_LOAD_STARTED, CHUNK_LOAD_FINISHED, CHUNK_LOAD_NETHER_DETECTED, FORCE_NETHER_CHUNK_ON;
+        public static String CHUNK_LOAD_STARTED, CHUNK_LOAD_FINISHED, CHUNK_LOAD_NETHER_DETECTED;
     }
 
     public static class Dependency {

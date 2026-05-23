@@ -34,7 +34,7 @@ public final class ChunkyPregenerationAdapter implements ChunkPregenerationPort 
     }
 
     @Override
-    public void startSquarePregeneration(String worldName, MatchCenter center, int radius, int frequency, int padding) {
+    public void startSquarePregeneration(String worldName, MatchCenter center, int radius) {
         World world = Bukkit.getWorld(worldName);
 
         if (world == null)

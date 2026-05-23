@@ -6,7 +6,7 @@ import java.util.function.BiConsumer;
 
 public interface ChunkPregenerationPort {
 
-    void startSquarePregeneration(String worldName, MatchCenter center, int radius, int frequency, int padding);
+    void startSquarePregeneration(String worldName, MatchCenter center, int radius);
 
     default void onComplete(BiConsumer<String, Long> handler) {
     }

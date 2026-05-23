@@ -73,9 +73,6 @@ public class Settings extends PluginStaticConfig {
     }
 
     public static class Misc {
-        public static Boolean ALWAYS_DAY;
-        public static Boolean NO_FIRE_TICK;
-        public static Boolean ANTI_RAIN;
         public static Boolean LOBBY_HIDE;
         public static Boolean DISABLE_LOBBY_SOUNDS;
         public static Boolean DISABLE_SPECTATOR_HIT_SOUNDS;
@@ -98,7 +95,6 @@ public class Settings extends PluginStaticConfig {
     }
 
     public static class Game {
-        public static Boolean NETHER_BEFORE_PVP;
         public static Integer PRE_START_TIME;
         public static Integer TELEPORT_PLAYERS_DELAY;
         public static Integer TIME_TO_START_AFTER_TELEPORT;
@@ -125,12 +121,6 @@ public class Settings extends PluginStaticConfig {
         public static Boolean DEBUG_SEARCH_OUTPUT;
         public static Integer SEARCH_CANDIDATE_COUNT;
         public static String GENERATOR_SETTINGS;
-    }
-
-    public static class ChunkLoading {
-        public static Integer FREQUENCY;
-        public static Integer PADDING;
-        public static Boolean FORCE_LOADING_NETHER_CHUNK;
     }
 
     public static class DiscordVoice {

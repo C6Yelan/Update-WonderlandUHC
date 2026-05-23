@@ -21,6 +21,7 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class StartCountdown extends Countdown {
+    private static final int VANILLA_FIRE_SPREAD_RADIUS = 128;
 
     @Override
     public void execute() {
@@ -54,14 +55,12 @@ public class StartCountdown extends Countdown {
     private static void setupWorlds() {
         for (World world : UHCWorldUtils.getUhcWorlds()) {
             world.setGameRule(GameRules.LOCATOR_BAR, false);
-
-            if (Settings.Misc.ALWAYS_DAY)
-                world.setGameRule(GameRules.ADVANCE_TIME, false);
-            if (Settings.Misc.NO_FIRE_TICK)
-                world.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, 0);
-
+            world.setGameRule(GameRules.ADVANCE_TIME, true);
+            world.setGameRule(GameRules.ADVANCE_WEATHER, true);
+            world.setGameRule(GameRules.FIRE_SPREAD_RADIUS_AROUND_PLAYER, VANILLA_FIRE_SPREAD_RADIUS);
+            world.setGameRule(GameRules.SPAWN_MOBS, true);
+            world.setGameRule(GameRules.SPAWN_MONSTERS, true);
             world.setSpawnLocation(0, 0, 0);
-            world.setTime(Settings.Misc.ALWAYS_DAY ? 6000 : 0);
             world.setDifficulty(Difficulty.HARD);
         }
     }

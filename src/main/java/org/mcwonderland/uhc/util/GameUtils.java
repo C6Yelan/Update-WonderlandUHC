@@ -48,7 +48,7 @@ public class GameUtils {
     }
 
     public boolean isNetherOn() {
-        return Game.getSettings().isUsingNether() && Game.getGame().isPvpEnabled();
+        return Game.getSettings().isUsingNether();
     }
 
     public BorderType getBorderType() {

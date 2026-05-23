@@ -203,7 +203,6 @@ CountDown:
 Game:
   Player_Disconnect: "<white>{player}</white><gray> 離線了。</gray>"
   Player_Reconnect: "<white>{player}</white> <green>重新登入了遊戲。</green>"
-  Cant_Join_Before_Pvp_Enabled: "<gray>[</gray><red>地獄</red><gray>]</gray> <red>由於PvP尚未開啟，因此你還無法進入地獄。</red>"
   No_Nether: "<gray>[</gray><red>地獄</red><gray>]</gray> <red>本場遊戲並沒有開啟地獄。</red>"
   You_Have_Been_Killed: "<gray>你被 </gray><red>{team} {character} {killer}</red><gray> 以 </gray><red>{heal}❤</red><gray> 的血量差距擊殺。</gray>"
   Team_Eliminated: "<yellow>{team}</yellow> <red>全隊滅絕。</red>"
@@ -277,7 +276,6 @@ Console:
   Chunk_Load_Started: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>開始載入 </green><white>{world}</white><green> 世界的地圖。</green>"
   Chunk_Load_Finished: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>成功在世界: </green><white>{world}</white><green> 載入 </green><white>{number}</white><green> 個Chunk。</green>"
   Chunk_Load_Nether_Detected: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <yellow><bold>偵測到本場遊戲有開啟地獄，因此開始載入地獄地圖。</bold></yellow>"
-  Force_Nether_Chunk_On: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <gold><bold>雖然並未開啟地獄，但由於開啟了強制載入的功能，因此開始載入地獄地圖。若想關閉此功能，請將 settings.yml 裡面的 Force_Loading_Nether_Chunk 設定為 false。</bold></gold>"
 
 Dependency:
   Require_Soft_Dependency: "<red>你尚未安裝 </red><white>{plugin}</white><red> 插件，因此本功能無法使用。請先至 </red><aqua>{url}</aqua><red> 下載並安裝後，再重新嘗試一次。</red>"
