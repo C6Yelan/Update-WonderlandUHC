@@ -5,6 +5,7 @@ import org.mcwonderland.uhc.platform.event.PluginEvents;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import org.mcwonderland.uhc.api.enums.RoleName;
 import org.mcwonderland.uhc.api.event.team.TeamCreatedEvent;
 import org.mcwonderland.uhc.api.event.team.TeamDisbandedEvent;
 import org.mcwonderland.uhc.api.event.team.TeamJoinedEvent;
@@ -77,7 +78,7 @@ public class UHCTeam {
     }
 
     private static void updateLobbyItems(UHCPlayer uhcPlayer) {
-        if (uhcPlayer.isOnline() && GameUtils.isWaiting()) {
+        if (uhcPlayer.isOnline() && GameUtils.isWaiting() && uhcPlayer.getRoleName() == RoleName.PLAYER) {
             Player player = uhcPlayer.getPlayer();
             player.getInventory().clear();
             Hotbars.giveLobbyItems(player);

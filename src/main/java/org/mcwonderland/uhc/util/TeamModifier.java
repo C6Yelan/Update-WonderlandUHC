@@ -75,6 +75,7 @@ public class TeamModifier {
     private Iterator<UHCPlayer> getOnlineNoTeamPlayers() {
         List<UHCPlayer> list = UHCPlayers.stream()
                 .filter(uhcPlayer -> uhcPlayer.isOnline() && uhcPlayer.getTeam() == null)
+                .filter(uhcPlayer -> uhcPlayer.getRoleName() == RoleName.PLAYER)
                 .collect(Collectors.toList());
 
         Collections.shuffle(list);
