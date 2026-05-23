@@ -1,67 +1,66 @@
 # WonderlandUHC
+WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的MinecraftUHC插件，內含多達38項特殊模式，以及各式各樣有趣的UHC相關設定，歡迎前來下載體驗！
 
-WonderlandUHC 是一款 Minecraft UHC 插件。本 repository 是基於原作者 WonderlandUHC 的 Paper `1.21.11` 更新維護版本，保留原專案脈絡，但不是原作者本人直接發布的新版本。
+<img width="851" height="315" alt="UHC Group photo (自訂)" src="https://github.com/user-attachments/assets/f504568a-ee37-42e2-ba21-23f928a2e016" />
 
-原專案前身為 **魯大頭UHC**，於 2019 年以付費形式發布，後續由原作者開源，讓玩家能自行主持 UHC 與朋友遊玩。本 fork 的主要目標是讓原插件能在新版 Paper / Java 環境中繼續運作，並整理後續維護所需的文件與流程。
 
-![Marketing Seminar Facebook Cover](https://user-images.githubusercontent.com/41278925/184468277-25183ff3-07bd-4d61-9792-0045d36a0fcd.png)
 
-## 目前支援環境
+## 安裝方式
+### 插件教學資源
+如果您不清楚Minecraft伺服器的安裝方式、看不懂底下的敘述，可以通過下列方法學習
+- 觀看包含安裝伺服器的完整教學影片：[前往插件教學影片清單](https://www.youtube.com/watch?v=muiqzpNwOAk&list=PL86KqzDo7_n0Vkthb9I85hfS390i-4NPb)
+- 若安裝插件後，不熟悉遊戲內操作，可在遊戲裡輸入`/uhc tutorial`，獲取遊戲內UHC主持教學
+
+### 文字安裝步驟
+1. 準備 Paper `1.21.11` 伺服器[(也可以點我下載)](https://fill-ui.papermc.io/projects/paper/version/1.21.11)，並使用 Java `21` 啟動
+2. 從[Releases](https://github.com/C6Yelan/Update-WonderlandUHC/releases)下載 WonderlandUHC.jar
+3. 將插件放入伺服器的插件資料夾 `plugins/`
+4. 安裝[LuckPerms](https://modrinth.com/plugin/luckperms/changelog?g=1.21.11&l=paper)和[Chunky](https://modrinth.com/plugin/chunky/changelog?c=release&g=1.21.11&l=paperr)兩款依賴插件，放入伺服器的插件資料夾 `plugins/`
+(若未安裝就開啟伺服器，可能導致插件無法使用！)
+5. 若需使用Discord群組公告功能及語音系統，請安裝[DiscordSRV](https://modrinth.com/plugin/discordsrv/versions?g=1.21.11&l=paper)
+6. 啟動伺服器，讓插件產生預設設定檔
+7. 依需求修改 `plugins/WonderlandUHC/` 內的設定檔，再重啟伺服器或依情況使用 `/uhc reload`
+8. 享受你的UHC比賽！
+
+#### ※若您還是對安裝插件或主持UHC有疑問，下圖為Fork開發者之一，請在Discord私訊我，我很樂意協助你！
+
+<img width="392" height="279" alt="image" src="https://github.com/user-attachments/assets/6205e399-aa5e-4070-b596-823340c5fadd" />
+
+## 目前支援狀況
 
 | 項目 | 版本 / 狀態 |
 | --- | --- |
-| Minecraft server | Paper `1.21.11` |
+| Minecraft | Paper `1.21.11` |
 | Java | Java `21` |
 | 插件版本 | `1.21.11-0.1.0` |
-| 文字格式 | Adventure MiniMessage |
-| 舊色碼格式 | 不再解析舊 Bukkit 色碼 |
 
-版本號採用 fork 維護版格式：`<目標 Paper 版本>-<fork release 版本>`。例如 `1.21.11-0.1.0` 代表這是針對 Paper `1.21.11` 的 fork 第一次 `0.1.0` release；後續修正可遞增為 `1.21.11-0.1.1`，較大功能或設定變更可遞增為 `1.21.11-0.2.0`。
+此插件未來將視情況跟進新版本，或考慮支援舊版本，目前會以1.21.11為基礎開發
 
-## 外部插件需求
+## 外部插件介紹
 
 | 插件 | 類型 | 用途 |
 | --- | --- | --- |
-| LuckPerms | 必要 | 登入階段權限查詢與 bypass 判斷。 |
-| Chunky | 跑圖必要 | UHC 世界 chunk 預生成；若要使用新地圖流程必須安裝。 |
-| DiscordSRV | 可選 | Discord 公告與語音頻道整合。 |
+| LuckPerms | 必要 |  檢查與驗證玩家權限 |
+| Chunky | 必要 |進行UHC世界跑圖，提高遊玩效能|
+| DiscordSRV | 可選 |啟用Discord群組公告功能及語音系統 |
 
-LuckPerms 會在 `plugin.yml` 中以 `depend` 宣告。Chunky 與 DiscordSRV 是 `softdepend`，缺少時不會阻止伺服器啟動，但缺少 Chunky 會導致正式預生成流程無法完成。
+注意事項：
+**未安裝Chunky不會阻止伺服器啟動和插件啟用，但無法開始UHC世界跑圖，這會導致插件無法進入準備開始的狀態，因此使用插件時，請務必檢查是否已安裝Chunky！**
+(此狀況可能於未來修正)
 
-## 安裝方式
-
-1. 準備 Paper `1.21.11` 伺服器，並使用 Java `21` 啟動。
-2. 從本 repository 的 [Releases](https://github.com/C6Yelan/Update-WonderlandUHC/releases) 下載 WonderlandUHC jar。
-3. 將 WonderlandUHC jar 放入伺服器 `plugins/`。
-4. 安裝 LuckPerms。
-5. 若要使用 UHC 新地圖產生與預生成流程，安裝 Chunky。
-6. 若要使用 Discord 公告或語音整合，安裝 DiscordSRV。
-7. 啟動伺服器，讓插件產生預設設定檔。
-8. 依需求修改 `plugins/WonderlandUHC/` 內的設定檔，再重啟伺服器或依情況使用 `/uhc reload`。
-
-正式開局前，請確認 console 中 WonderlandUHC 的 dependency status。LuckPerms 應為可用；若要跑新地圖，Chunky 也必須可用。
-
-## 基本主持流程
+## 插件運作流程
 
 常見流程如下：
 
 ```text
-/uhc regen -> 預覽地圖 -> /uhc choose -> 等待 Chunky 預生成完成 -> /uhc start
+管理員進入伺服器調整設定->預覽UHC地圖->等待Chunky預生成完成 ->邀請玩家開始UHC比賽
 ```
 
-流程重點：
-
-1. `/uhc regen` 會建立預覽世界，可選擇是否啟用 CenterCleaner 搜尋較適合 UHC 的中心。
-2. 主持人確認預覽世界後，使用 `/uhc choose` 進入正式跑圖流程。
-3. `/uhc choose` 不是直接開局，而是保存目前地圖、重啟伺服器並交給 Chunky 預生成。
-4. 預生成完成後，插件會將地圖狀態標記為可開局。
-5. `/uhc start` 會開始大廳倒數，接著分批傳送玩家並進入正式遊戲。
-
-更完整的流程摘要見 [docs/game-flow.md](docs/game-flow.md)。
+更完整的流程摘要見 [docs/game-flow.md](docs/game-flow.md)
 
 ## 訊息格式
 
-新版預設訊息設定使用 Adventure MiniMessage，例如：
+新版新版預設訊息設定使用 Adventure MiniMessage，例如：
 
 ```text
 <red>錯誤</red>
@@ -69,15 +68,13 @@ LuckPerms 會在 `plugin.yml` 中以 `depend` 宣告。Chunky 與 DiscordSRV 是
 <gray>玩家: </gray><green>{player}</green>
 ```
 
-修改 `commands.yml`、`messages.yml`、`gui.yml`、`items.yml`、`scoreboards.yml`、`scenarios.yml`、`settings.yml` 等文字時，請使用 MiniMessage，並保留既有 `{placeholder}` 名稱。
+修改 `commands.yml`、`messages.yml`、`gui.yml`、`items.yml`、`scoreboards.yml`、`scenarios.yml`、`settings.yml` 等文件時，請使用MiniMessage格式，並保留 `{placeholder}` 名稱
 
-舊 Bukkit 色碼不再作為正式格式解析，也不提供舊設定檔自動轉換工具。既有伺服器資料夾若包含舊格式訊息，需重置設定檔或人工改成 MiniMessage。
+詳細摘要見 [docs/text-format.md](docs/text-format.md)
 
-詳細摘要見 [docs/text-format.md](docs/text-format.md)。
+## 開發文件
 
-## 維護文件
-
-`docs/` 根目錄保留給委託人、原作者與後續維護者閱讀的摘要文件：
+如果您對此插件的Fork流程有興趣，可前往`docs/`瀏覽相關文件：
 
 - [維護脈絡摘要](docs/maintenance-context.md)
 - [開發歷程摘要](docs/development-step-summary.md)
@@ -89,20 +86,19 @@ LuckPerms 會在 `plugin.yml` 中以 `depend` 宣告。Chunky 與 DiscordSRV 是
 
 ## 回報問題
 
-若使用本 fork 的 release，請優先至本 repository 的 [Issues](https://github.com/C6Yelan/Update-WonderlandUHC/issues) 回報問題。回報時請盡量提供：
+若在遊玩中遇到bug，請優先至[Issues](https://github.com/C6Yelan/Update-WonderlandUHC/issues)回報問題，並附上盡可能詳細的敘述與影像資源！
 
-- Paper 與 Java 版本。
-- WonderlandUHC 版本。
-- 已安裝的 LuckPerms、Chunky、DiscordSRV 版本。
-- console 錯誤訊息或 `logs/latest.log` 相關片段。
-- 問題發生前執行的指令或操作步驟。
+**※原作者已不再更新此插件，請不要將問題回報給原作者，以免給原作者造成困擾！**
 
-## 原作者與原專案背景
+## Fork作者、原作者與原專案背景介紹
+### Fork開發者
+- [C6Yelan](https://github.com/C6Yelan/)：負責主要開發、研究程式碼、升級插件
+- [SnYe 玥雪](https://github.com/SnYe-SnowYue)：設計新版中心點篩選系統，設計宣傳網頁，接手後續插件更新
+### 原作者
+#### LU__LU / 魯魯
+- Github個人檔案：[點此前往](https://github.com/lulu2002)
+- 原專案連結：<https://github.com/MCWonderland/WonderlandUHC>
+### 原專案背景介紹
+前身為魯大頭UHC，於2019年以付費形式發布，本次Fork插件的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援
 
-原作者：`LU__LU` / 魯魯
-
-原專案：<https://github.com/MCWonderland/WonderlandUHC>
-
-原專案 Discord 社群：<https://discord.gg/vTnEaX37Nr>
-
-本 fork 保留原專案作者、開源脈絡與 GPL-3.0 授權。若需要理解本 fork 的維護背景與協作方式，請參考 [docs/maintenance-context.md](docs/maintenance-context.md)。
+本fork保留原專案作者、開源脈絡與 GPL-3.0 授權。若需要理解本 fork 的維護背景與協作方式，請參考 [docs/maintenance-context.md](docs/maintenance-context.md)
