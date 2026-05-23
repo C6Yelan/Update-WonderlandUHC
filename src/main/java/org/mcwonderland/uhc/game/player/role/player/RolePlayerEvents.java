@@ -12,6 +12,7 @@ import org.mcwonderland.uhc.game.timer.Timers;
 import org.mcwonderland.uhc.platform.text.PluginText;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
+import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.GameMode;
@@ -42,9 +43,10 @@ public class RolePlayerEvents implements RoleEventHandler {
             Player player = uhcPlayer.getPlayer();
             Location location = Timers.SCATTER.getScatterLocation(team);
 
-            if (location == null)
+            if (location == null) {
                 player.teleport(UHCWorldUtils.getLobbySpawn());
-            else {
+                BorderUtil.resetLobbyBorderIfSeparate();
+            } else {
                 player.teleport(location);
                 GameManager.freeze(player);
             }

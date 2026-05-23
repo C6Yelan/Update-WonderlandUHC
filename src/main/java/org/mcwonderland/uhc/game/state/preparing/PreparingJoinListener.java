@@ -6,6 +6,7 @@ import org.mcwonderland.uhc.game.state.share.join.JoinListener;
 import org.mcwonderland.uhc.game.state.share.join.UHCJoinEvent;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.tools.Hotbars;
+import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.PlayerHider;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.GameMode;
@@ -25,6 +26,7 @@ public class PreparingJoinListener extends JoinListener {
         Game game = e.getGame();
 
         player.teleport(UHCWorldUtils.getLobbySpawn());
+        BorderUtil.resetLobbyBorderIfSeparate();
 
         Hotbars.giveLobbyItems(player);
 

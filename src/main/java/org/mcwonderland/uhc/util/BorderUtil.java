@@ -243,7 +243,7 @@ public class BorderUtil {
         setNativeBorder(world, size);
     }
 
-    private static void resetLobbyBorderIfSeparate() {
+    public static void resetLobbyBorderIfSeparate() {
         World lobby = UHCWorldUtils.getLobby();
 
         if (lobby == null || UHCWorldUtils.isUhcWorld(lobby))

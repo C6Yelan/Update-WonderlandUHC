@@ -53,6 +53,7 @@ public class CenterCleaner {
             public void run() {
                 if (Bukkit.getWorlds().contains(Bukkit.getWorld(worldName))) {
                     player.teleport(UHCWorldUtils.getLobbySpawn());
+                    BorderUtil.resetLobbyBorderIfSeparate();
                     Bukkit.unloadWorld(worldName, false);
                     Chat.send(player, Messages.Host.WORLD_DELETED);
                 }
