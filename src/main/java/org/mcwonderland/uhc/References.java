@@ -6,6 +6,6 @@ import lombok.experimental.UtilityClass;
 public class References {
 
     public final String DISCORD_LINK = "https://discord.gg/FgjWsp7";
-    public final String DOWNLOAD_LINK = "https://github.com/MCWonderland/WonderlandUHC/releases";
+    public final String DOWNLOAD_LINK = "https://github.com/C6Yelan/Update-WonderlandUHC/releases";
 
 }

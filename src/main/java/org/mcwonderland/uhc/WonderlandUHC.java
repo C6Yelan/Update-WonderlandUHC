@@ -47,7 +47,11 @@ public class WonderlandUHC extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        startReloadableRuntime();
+        if (!startReloadableRuntime()) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         startPluginRuntime();
     }
 
@@ -62,7 +66,9 @@ public class WonderlandUHC extends JavaPlugin {
     public void reload() {
         getServer().getScheduler().cancelTasks(this);
         reloadRuntimeState();
-        startReloadableRuntime();
+
+        if (!startReloadableRuntime())
+            getServer().getPluginManager().disablePlugin(this);
     }
 
     private void startPluginRuntime() {
@@ -83,13 +89,14 @@ public class WonderlandUHC extends JavaPlugin {
         SavedGameSettingsCache.reloadFromFile();
     }
 
-    private void startReloadableRuntime() {
+    private boolean startReloadableRuntime() {
         PluginBootstrap bootstrap = new PluginBootstrap(this);
         FeatureRegistry featureRegistry = new FeatureRegistry(this);
 
         bootstrap.loadFiles();
         bootstrap.loadStaticConfiguration();
-        bootstrap.checkDependencies();
+        if (!bootstrap.checkDependencies().isAvailable(Dependency.LUCK_PERMS))
+            return false;
 
         featureRegistry.loadScoreboardThemes();
         Spawns.reload();
@@ -102,6 +109,7 @@ public class WonderlandUHC extends JavaPlugin {
         }
 
         bootstrap.applyTestModeSettings();
+        return true;
     }
 
     private void registerEvents(Listener listener) {

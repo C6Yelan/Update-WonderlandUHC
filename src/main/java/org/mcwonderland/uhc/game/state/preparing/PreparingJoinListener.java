@@ -1,11 +1,16 @@
 package org.mcwonderland.uhc.game.state.preparing;
 
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.settings.LoadingStatus;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.state.share.join.ClearBehavior;
 import org.mcwonderland.uhc.game.state.share.join.JoinListener;
 import org.mcwonderland.uhc.game.state.share.join.UHCJoinEvent;
+import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.tools.Hotbars;
+import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.PlayerHider;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
@@ -39,5 +44,13 @@ public class PreparingJoinListener extends JoinListener {
 
         if (game.getHost().isEmpty())
             game.setHost(player.getName());
+
+        LoadingStatus loadingStatus = WorldLoadingCacheState.getLoadingStatus();
+        if (loadingStatus.isWaitingForHost() && player.getName().equalsIgnoreCase(game.getHost())) {
+            Chat.send(player, "<green>歡迎主持人 </green><white>" + player.getName() + "</white><green>。</green>");
+            Chat.send(player, PluginText.replaceToArray(
+                    Messages.Lobby.WELCOME_MSG_CONFIGURING,
+                    "{cmd}", "uhc tutorial config"));
+        }
     }
 }

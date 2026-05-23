@@ -76,13 +76,14 @@ public final class PluginBootstrap {
     }
 
     private void logDependencyReport(DependencyReport report) {
-        PluginConsole.log("<gray>Dependency status:</gray>");
+        PluginConsole.log("<gray>依賴插件狀態:</gray>");
 
         for (DependencyReport.Entry entry : report.getEntries()) {
-            String status = entry.isAvailable() ? "<green>Available</green>" : entry.isDisabled() ? "<yellow>Disabled</yellow>" : "<red>Unavailable</red>";
+            String status = entry.isAvailable() ? "<green>可用</green>" : entry.isDisabled() ? "<yellow>未啟用</yellow>" : "<red>缺少</red>";
             String reason = entry.getReason().isEmpty() ? "" : " <gray>(" + entry.getReason() + ")</gray>";
+            String download = " <gray>下載: </gray><aqua>" + entry.getDependency().getDownloadUrl() + "</aqua>";
 
-            PluginConsole.log("<gray>- </gray><white>" + entry.getDependency().getPluginName() + "</white><gray>: </gray>" + status + reason);
+            PluginConsole.log("<gray>- </gray><white>" + entry.getDependency().getPluginName() + "</white><gray>: </gray>" + status + reason + download);
         }
     }
 
@@ -90,14 +91,14 @@ public final class PluginBootstrap {
         if (dependency.isHooked())
             report.markAvailable(dependency);
         else
-            report.markDisabled(dependency, "Plugin is not hooked.");
+            report.markDisabled(dependency, "未偵測到可用插件，相關功能會停用。");
     }
 
     private void checkRequiredDependency(DependencyReport report, Dependency dependency) {
         if (dependency.isHooked())
             report.markAvailable(dependency);
         else
-            report.markUnavailable(dependency, "Required plugin is not hooked.");
+            report.markUnavailable(dependency, "必要插件未啟用，WonderlandUHC 將停止啟用。");
     }
 
     public StatsStorage loadStatsStorage() {

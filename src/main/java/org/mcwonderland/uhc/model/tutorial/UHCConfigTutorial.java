@@ -67,8 +67,8 @@ public class UHCConfigTutorial extends Tutorial {
             return new String[]{
                     "<blue>到這裡有任何問題嗎?</blue>",
                     " ",
-                    "如果不是很了解某些功能如何使用，可先至<aqua>插件下載頁面</aqua><white>查看專案資訊。</white>",
-                    "連結: <dark_aqua>" + References.DOWNLOAD_LINK + "</dark_aqua>",
+                    "如果不是很了解某些功能如何使用，可先至<click:open_url:'" + References.DOWNLOAD_LINK + "'><aqua>插件下載頁面</aqua></click><white>查看專案資訊。</white>",
+                    "連結: <click:open_url:'" + References.DOWNLOAD_LINK + "'><dark_aqua>" + References.DOWNLOAD_LINK + "</dark_aqua></click>",
                     " ",
                     "<yellow>查看後，請輸入任意字元前往下個教學...</yellow>"
             };

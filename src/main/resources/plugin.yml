@@ -2,8 +2,7 @@ main: org.mcwonderland.uhc.WonderlandUHC
 name: WonderlandUHC
 version: ${pluginVersion}
 author: LU__LU
-depend: [ LuckPerms ]
-softdepend: [ Chunky, DiscordSRV ]
+softdepend: [ LuckPerms, Chunky, DiscordSRV ]
 api-version: 1.21
 
 commands:
@@ -125,6 +124,8 @@ permissions:
   wonderland.uhc.command.practice:
     default: true
   wonderland.uhc.command.reconnect:
+    default: true
+  wonderland.uhc.command.uhc.tutorial:
     default: true
 
   wonderland.uhc.command.team.chat:

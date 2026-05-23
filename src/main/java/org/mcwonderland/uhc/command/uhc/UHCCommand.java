@@ -87,7 +87,7 @@ public class UHCCommand implements CommandExecutor, TabCompleter {
                 "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>",
                 "<white>  WonderlandUHC </white><gray>" + plugin.getPluginMeta().getVersion() + "</gray>",
                 " ",
-                "<gray>插件下載頁面: </gray><aqua>" + References.DOWNLOAD_LINK + "</aqua>",
+                "<gray>插件下載頁面: </gray><click:open_url:'" + References.DOWNLOAD_LINK + "'><aqua>" + References.DOWNLOAD_LINK + "</aqua></click>",
                 "<dark_gray><strikethrough>-----------------------------------------------------</strikethrough></dark_gray>");
     }
 
