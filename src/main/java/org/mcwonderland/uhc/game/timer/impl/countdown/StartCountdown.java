@@ -53,6 +53,8 @@ public class StartCountdown extends Countdown {
 
     private static void setupWorlds() {
         for (World world : UHCWorldUtils.getUhcWorlds()) {
+            world.setGameRule(GameRules.LOCATOR_BAR, false);
+
             if (Settings.Misc.ALWAYS_DAY)
                 world.setGameRule(GameRules.ADVANCE_TIME, false);
             if (Settings.Misc.NO_FIRE_TICK)

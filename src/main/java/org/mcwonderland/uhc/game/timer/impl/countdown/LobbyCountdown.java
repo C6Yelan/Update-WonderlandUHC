@@ -9,6 +9,8 @@ import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.*;
 import org.bukkit.Difficulty;
+import org.bukkit.GameRules;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 public class LobbyCountdown extends Countdown {
@@ -21,6 +23,9 @@ public class LobbyCountdown extends Countdown {
         BorderUtil.setInitialBorders();
         game.setCurrentBorder(settings.getBorderSettings().getInitialBorder());
         UHCWorldUtils.getWorld().setDifficulty(Difficulty.PEACEFUL);
+        for (World world : UHCWorldUtils.getUhcWorlds())
+            world.setGameRule(GameRules.LOCATOR_BAR, false);
+
         TeamModifier.splitTeams();
 
         for (Player p : PluginPlayers.onlinePlayers()) {

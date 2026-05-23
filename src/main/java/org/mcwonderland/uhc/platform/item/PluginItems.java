@@ -10,6 +10,9 @@ import org.mcwonderland.uhc.WonderlandUHC;
 import org.mcwonderland.uhc.platform.text.PluginText;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -126,6 +129,19 @@ public final class PluginItems {
     }
 
     private static YamlConfiguration loadConfiguration(String fileName) {
-        return YamlConfiguration.loadConfiguration(new File(WonderlandUHC.getInstance().getDataFolder(), fileName));
+        WonderlandUHC plugin = WonderlandUHC.getInstance();
+        YamlConfiguration configuration = YamlConfiguration.loadConfiguration(new File(plugin.getDataFolder(), fileName));
+
+        try (InputStream defaultsStream = plugin.getResource(fileName)) {
+            if (defaultsStream != null) {
+                YamlConfiguration defaults = YamlConfiguration.loadConfiguration(
+                        new InputStreamReader(defaultsStream, StandardCharsets.UTF_8));
+                configuration.setDefaults(defaults);
+            }
+        } catch (java.io.IOException ex) {
+            throw new IllegalStateException("Failed to load default item configuration " + fileName, ex);
+        }
+
+        return configuration;
     }
 }

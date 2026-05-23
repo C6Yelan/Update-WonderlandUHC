@@ -74,6 +74,7 @@ public class SimplePractice extends AbstractPractice {
 
     private void applyPracticeWorldRules() {
         world.setTime(6000);
+        world.setGameRule(GameRules.LOCATOR_BAR, false);
         world.setGameRule(GameRules.ADVANCE_TIME, false);
         world.setGameRule(GameRules.SPAWN_MOBS, false);
     }

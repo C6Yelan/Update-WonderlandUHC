@@ -3,6 +3,7 @@ package org.mcwonderland.uhc.util;
 import lombok.experimental.UtilityClass;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.tools.Hotbars;
+import org.bukkit.GameRules;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -15,6 +16,7 @@ public class Lobby {
     }
 
     public void stuff(Player player) {
+        Extra.comepleteClear(player);
         Hotbars.giveLobbyItems(player);
 
         player.setGameMode(GameMode.ADVENTURE);
@@ -25,6 +27,7 @@ public class Lobby {
 
     public void tpOnly(Player player) {
         player.teleport(UHCWorldUtils.getLobbySpawn());
+        player.getWorld().setGameRule(GameRules.LOCATOR_BAR, false);
         BorderUtil.resetLobbyBorderIfSeparate();
     }
 

@@ -22,12 +22,36 @@ Lobby:
     Name: "<gold>隊伍選擇器</gold>"
     Lore:
       - "<gray>加入已公開的隊伍當中。</gray>"
+  Scenarios:
+    Type: ENCHANTED_BOOK
+    Slot: 3
+    Name: "<light_purple>特殊模式</light_purple>"
+    Lore:
+      - "<gray>查看本場 UHC 啟用的特殊模式。</gray>"
   Team_Settings:
     Type: REDSTONE_TORCH
     Slot: 4
     Name: "<green>隊伍設定</green>"
     Lore:
       - "<gray>編輯隊伍方面相關數值。</gray>"
+  Config:
+    Type: COMPARATOR
+    Slot: 5
+    Name: "<aqua>遊戲設定摘要</aqua>"
+    Lore:
+      - "<gray>查看本場 UHC 的目前設定。</gray>"
+  Disable_Items:
+    Type: BARRIER
+    Slot: 6
+    Name: "<red>禁用物品</red>"
+    Lore:
+      - "<gray>查看本場 UHC 禁止使用的物品。</gray>"
+  Practice:
+    Type: IRON_SWORD
+    Slot: 8
+    Name: "<yellow>FFA 練習</yellow>"
+    Lore:
+      - "<gray>進入 FFA 練習世界。</gray>"
 Spectator:
   Overworld_Players:
     Type: PAPER

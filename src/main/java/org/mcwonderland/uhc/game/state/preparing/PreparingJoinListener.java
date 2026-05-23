@@ -10,6 +10,7 @@ import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.PlayerHider;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.GameMode;
+import org.bukkit.GameRules;
 import org.bukkit.entity.Player;
 
 public class PreparingJoinListener extends JoinListener {
@@ -26,6 +27,7 @@ public class PreparingJoinListener extends JoinListener {
         Game game = e.getGame();
 
         player.teleport(UHCWorldUtils.getLobbySpawn());
+        player.getWorld().setGameRule(GameRules.LOCATOR_BAR, false);
         BorderUtil.resetLobbyBorderIfSeparate();
 
         Hotbars.giveLobbyItems(player);
