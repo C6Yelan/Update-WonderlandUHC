@@ -30,9 +30,13 @@ public class ScenarioLessBowDamage extends ConfigBasedScenario implements Listen
         if (arrowShooter == null)
             return;
 
-        e.setDamage(e.getDamage() * (decreasePercent / 100D));
+        e.setDamage(applyDecreasePercent(e.getDamage(), decreasePercent));
     }
 
+    static double applyDecreasePercent(double damage, Integer decreasePercent) {
+        int percent = Math.max(0, Math.min(100, decreasePercent == null ? 0 : decreasePercent));
+        return damage * ((100D - percent) / 100D);
+    }
 
     @Override
     protected List<String> replaceLore(List<String> list) {

@@ -74,6 +74,7 @@ Double_Or_Nothing:
   Name: "<yellow>得失參半</yellow><gray>(DoubleOrNothing)</gray>"
   Description:
     - "以下方塊可能會掉落以雙倍數量掉落，或者一無所有。"
+    - "若使用絲綢之觸鎬挖掘，模式效果不會生效。"
     - "{materials}"
   #此模式要套用到那些方塊上
   Trigger_Blocks:

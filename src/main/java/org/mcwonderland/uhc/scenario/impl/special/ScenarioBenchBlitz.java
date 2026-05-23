@@ -6,11 +6,13 @@ import org.mcwonderland.uhc.scenario.annotation.FilePath;
 import org.mcwonderland.uhc.scenario.impl.ConfigBasedScenario;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.CrafterCraftEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.inventory.ItemStack;
@@ -39,7 +41,7 @@ public class ScenarioBenchBlitz extends ConfigBasedScenario implements Listener 
     public void onCraftItem(CraftItemEvent e) {
         Player player = ( Player ) e.getWhoClicked();
 
-        if (e.getCurrentItem().getType() != PluginMaterials.materialOf("CRAFTING_TABLE"))
+        if (!isCraftingTable(e.getCurrentItem()))
             return;
 
         if (isBenchCrafted(player))
@@ -49,16 +51,30 @@ public class ScenarioBenchBlitz extends ConfigBasedScenario implements Listener 
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onCrafterCraft(CrafterCraftEvent e) {
+        if (isCraftingTable(e.getResult()))
+            e.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPrepareItemCraft(PrepareItemCraftEvent e) {
         ItemStack result = e.getInventory().getResult();
 
-        if (result == null || result.getType() != PluginMaterials.materialOf("CRAFTING_TABLE"))
+        if (!isCraftingTable(result))
             return;
 
         for (HumanEntity viewer : e.getViewers()) {
             if (isBenchCrafted(viewer))
                 e.getInventory().setResult(PluginMaterials.itemOf("AIR"));
         }
+    }
+
+    static boolean isCraftingTable(ItemStack itemStack) {
+        return itemStack != null && isCraftingTableType(itemStack.getType());
+    }
+
+    static boolean isCraftingTableType(Material material) {
+        return material == PluginMaterials.materialOf("CRAFTING_TABLE");
     }
 
     private boolean isBenchCrafted(HumanEntity player) {
