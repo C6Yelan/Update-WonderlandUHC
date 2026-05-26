@@ -1,24 +1,18 @@
 package org.mcwonderland.uhc.game.state.playing.listener.death;
 
-import org.mcwonderland.uhc.platform.text.PluginText;
-import org.mcwonderland.uhc.platform.player.PluginPlayers;
 import org.mcwonderland.uhc.platform.event.PluginEvents;
 import org.mcwonderland.uhc.platform.scheduler.PluginScheduler;
-import org.mcwonderland.uhc.UHCPermission;
 import org.mcwonderland.uhc.events.UHCGamingDeathEvent;
 import org.mcwonderland.uhc.game.CombatRelog;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
-import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
-import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.PlayerUtils;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -66,10 +60,8 @@ public class PlayingDeathListener implements Listener {
     @EventHandler
     public void onGamingEntityDeath(UHCGamingDeathEvent e) {
         UHCPlayer uhcPlayer = e.getUhcPlayer();
-        Player player = uhcPlayer.getPlayer();
 
         uhcPlayer.markSpectatorRole();
-        checkDeathKick(player);
 
         respawnPlayerAsSpectator(uhcPlayer);
     }
@@ -88,22 +80,6 @@ public class PlayingDeathListener implements Listener {
                     uhcPlayer.getPlayer().teleport(UHCWorldUtils.getMatchCenterLocation());
                 }
             });
-        });
-    }
-
-    private void checkDeathKick(Player player) {
-        if (UHCPermission.BYPASS_KICK_DEATH.hasPerm(player))
-            return;
-
-        Integer seconds = Settings.Spectator.DEATH_KICK_SECONDS;
-        Chat.send(player, PluginText.replaceTimeToString(Messages.Spectator.NO_PERM_TO_SPEC, seconds));
-
-        PluginScheduler.runLater(seconds * 20, () -> {
-            PluginPlayers.kick(
-                    player,
-                    PluginText.replaceToString(
-                            Messages.Spectator.DEATH_KICK_MESSAGE,
-                            "{player}", player.getName()));
         });
     }
 

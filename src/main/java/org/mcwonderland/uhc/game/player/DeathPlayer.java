@@ -25,6 +25,10 @@ public class DeathPlayer {
         return deathPlayers.get(uhcPlayer);
     }
 
+    public static DeathPlayer removeDeathPlayer(UHCPlayer uhcPlayer) {
+        return deathPlayers.remove(uhcPlayer);
+    }
+
     public static DeathPlayer addDeathPlayer(UHCPlayer uhcPlayer) {
         return deathPlayers.put(uhcPlayer, makeDeathPlayer(uhcPlayer));
     }

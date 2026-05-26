@@ -61,7 +61,6 @@ public class Settings extends PluginStaticConfig {
 
     public static class Spectator {
         public static Boolean USE_SPEC_CHAT;
-        public static Integer DEATH_KICK_SECONDS;
         public static SpectateMode SPECTATE_MODE;
 
         @SuppressWarnings("unused")

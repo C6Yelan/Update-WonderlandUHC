@@ -181,6 +181,10 @@ public class UHCPlayer {
         changeRole(RoleName.PLAYER);
     }
 
+    public void markPlayerRole() {
+        setRole(SimpleRoleFactory.getRole(RoleName.PLAYER));
+    }
+
     public void changeSpectatorRole() {
         changeRole(RoleName.SPECTATOR);
     }

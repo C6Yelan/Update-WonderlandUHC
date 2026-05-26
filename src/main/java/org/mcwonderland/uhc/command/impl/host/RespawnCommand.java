@@ -14,6 +14,7 @@ import org.mcwonderland.uhc.api.event.player.UHCPlayerRespawnedEvent;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
+import org.mcwonderland.uhc.game.player.UHCPlayers;
 import org.mcwonderland.uhc.game.settings.sub.UHCItemSettings;
 import org.mcwonderland.uhc.model.InventoryContent;
 import org.mcwonderland.uhc.model.InvinciblePlayer;
@@ -37,6 +38,7 @@ import java.util.Locale;
 public class RespawnCommand implements CommandExecutor, TabCompleter {
 
     public static final String NAME = "respawn";
+    private static final String ALL_DEAD_PLAYERS = "@a";
 
     private static final String PLAYER_NOT_ONLINE = "<red>Player {player} is not online on this server.</red>";
 
@@ -64,15 +66,18 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
         if (args.length < 1)
             return false;
 
+        if (!GameUtils.isGameStarted()) {
+            Chat.send(moderator, Messages.NOT_YET_STARTED);
+            return true;
+        }
+
+        if (ALL_DEAD_PLAYERS.equalsIgnoreCase(args[0]))
+            return respawnAllDeadPlayers(moderator);
+
         Player target = PluginPlayers.getByName(args[0], true);
 
         if (target == null) {
             Chat.send(moderator, PLAYER_NOT_ONLINE.replace("{player}", args[0]));
-            return true;
-        }
-
-        if (!GameUtils.isGameStarted()) {
-            Chat.send(moderator, Messages.NOT_YET_STARTED);
             return true;
         }
 
@@ -81,7 +86,16 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        new RespawnHandler(moderator, target).respawn();
+        new RespawnHandler(moderator, UHCPlayer.getUHCPlayer(target)).respawn();
+        return true;
+    }
+
+    private boolean respawnAllDeadPlayers(Player moderator) {
+        UHCPlayers.stream()
+                .filter(UHCPlayer::isDead)
+                .filter(uhcPlayer -> DeathPlayer.getDeathPlayer(uhcPlayer) != null)
+                .forEach(uhcPlayer -> new RespawnHandler(moderator, uhcPlayer).respawn());
+
         return true;
     }
 
@@ -92,6 +106,9 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
 
         String prefix = args[0].toLowerCase(Locale.ROOT);
         List<String> completions = new ArrayList<>();
+
+        if (ALL_DEAD_PLAYERS.startsWith(prefix))
+            completions.add(ALL_DEAD_PLAYERS);
 
         for (String name : PluginPlayers.playerNames()) {
             if (name.toLowerCase(Locale.ROOT).startsWith(prefix))
@@ -104,22 +121,27 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
     class RespawnHandler {
 
         private final Player moderator;
-        private final Player target;
         private final UHCPlayer targetUHCPlayer;
         private Location toTeleport;
         private InventoryContent inv;
         private int level = 0;
         private float exp = 0;
 
-        public RespawnHandler(Player moderator, Player target) {
+        public RespawnHandler(Player moderator, UHCPlayer targetUHCPlayer) {
             this.moderator = moderator;
-            this.target = target;
-            this.targetUHCPlayer = UHCPlayer.getUHCPlayer(target);
+            this.targetUHCPlayer = targetUHCPlayer;
         }
 
         private void respawn() {
             handleRespawnVaribles();
             handleData();
+
+            if (!targetUHCPlayer.isOnline()) {
+                announceRespawn();
+                return;
+            }
+
+            Player target = targetUHCPlayer.getPlayer();
             if (PlayerUtils.respawnIfDead(target)) {
                 PluginScheduler.runLater(1, this::completeRespawn);
                 return;
@@ -129,19 +151,22 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
         }
 
         private void completeRespawn() {
+            Player target = targetUHCPlayer.getPlayer();
+
             restoreAndTeleport();
             InvinciblePlayer.addInvincible(targetUHCPlayer, Settings.Game.RESPAWN_INVINCIBLE_TIME);
 
             Chat.send(target, CommandSettings.Respawn.RESPAWNED);
-            Chat.broadcast(CommandSettings.Respawn.BROADCAST
-                    .replace("{mod}", moderator.getName())
-                    .replace("{player}", target.getName()));
+            announceRespawn();
             Extra.sound(target, Sounds.Commands.RESPAWN);
+            DeathPlayer.removeDeathPlayer(targetUHCPlayer);
 
             PluginEvents.callEvent(new UHCPlayerRespawnedEvent(targetUHCPlayer));
         }
 
         private void restoreAndTeleport() {
+            Player target = targetUHCPlayer.getPlayer();
+
             Extra.comepleteClear(target);
             target.setGameMode(GameMode.SURVIVAL);
             inv.setContents(target);
@@ -189,8 +214,16 @@ public class RespawnCommand implements CommandExecutor, TabCompleter {
         }
 
         private void handleData() {
-            Game.getGame().getWhiteList().add(target);
-            targetUHCPlayer.changePlayerRole();
+            if (targetUHCPlayer.isOnline())
+                targetUHCPlayer.changePlayerRole();
+            else
+                targetUHCPlayer.markPlayerRole();
+        }
+
+        private void announceRespawn() {
+            Chat.broadcast(CommandSettings.Respawn.BROADCAST
+                    .replace("{mod}", moderator.getName())
+                    .replace("{player}", targetUHCPlayer.getName()));
         }
     }
 }

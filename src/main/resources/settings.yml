@@ -3,7 +3,7 @@
 # - 舊版 Bukkit 色碼不會被當作顏色解析，請改用 MiniMessage。
 # - {player} 這類大括號內容是 WonderlandUHC placeholder，請保留需要的名稱。
 
-#非常感謝你願意花錢投資此插件，魯魯感謝你!
+#非常感謝您下載WonderlandUHC插件，希望你玩得愉快！
 #由於此插件的功能實在相當多樣，能夠調整的東西也不少，以下將會在每種選項完整介紹它的用處
 #即使你不懂英文，也能夠明白每個選項的用途
 
@@ -73,9 +73,6 @@ Spectator:
   #  DEFAULT 觀察者會是創造模式(無法破壞方塊)並且拿到觀察者物品
   #  SPECTATOR: 單純將玩家設定成觀察者模式(gamemode 3)
   Spectate_Mode: DEFAULT
-  #當玩家死亡後，如果沒有觀戰的權限，要在幾秒後把他剔除遊戲呢?
-  Death_Kick_Seconds: 30
-
 
 Misc:
   #當遊戲尚未開始時，是否要隱藏大廳玩家?

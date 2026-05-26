@@ -5,15 +5,21 @@ import org.mcwonderland.uhc.game.CombatRelog;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.game.UHCTeam;
+import org.mcwonderland.uhc.game.player.DeathPlayer;
 import org.mcwonderland.uhc.game.player.UHCPlayer;
 import org.mcwonderland.uhc.game.player.role.models.RoleEventHandler;
 import org.mcwonderland.uhc.game.state.share.join.UHCJoinEvent;
+import org.mcwonderland.uhc.model.InvinciblePlayer;
+import org.mcwonderland.uhc.model.Teleporter;
 import org.mcwonderland.uhc.game.timer.Timers;
 import org.mcwonderland.uhc.platform.text.PluginText;
+import org.mcwonderland.uhc.settings.CommandSettings;
 import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.util.BorderUtil;
+import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.Extra;
+import org.mcwonderland.uhc.util.GameUtils;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -82,6 +88,11 @@ public class RolePlayerEvents implements RoleEventHandler {
         Player player = uhcPlayer.getPlayer();
 
         CombatRelog z = CombatRelog.get(uhcPlayer);
+        if (z == null) {
+            restorePendingRespawn(uhcPlayer);
+            return;
+        }
+
         LivingEntity relogEntity = z.getEntity();
         Extra.copyHealth(relogEntity, player);
         z.getInventoryContent().setContents(player);
@@ -97,5 +108,41 @@ public class RolePlayerEvents implements RoleEventHandler {
             player.teleport(relogEntity.getLocation());
             z.remove();
         });
+    }
+
+    private void restorePendingRespawn(UHCPlayer uhcPlayer) {
+        DeathPlayer deathPlayer = DeathPlayer.getDeathPlayer(uhcPlayer);
+
+        if (deathPlayer == null)
+            return;
+
+        Player player = uhcPlayer.getPlayer();
+
+        Extra.comepleteClear(player);
+        player.setGameMode(GameMode.SURVIVAL);
+        deathPlayer.getInvContent().setContents(player);
+        player.setLevel(deathPlayer.getLevel());
+        player.setExp(deathPlayer.getExp());
+        player.setExpCooldown(0);
+        player.setCollidable(true);
+        player.teleport(getRespawnLocation(deathPlayer, Game.getGame().getCurrentBorder()));
+        DeathPlayer.removeDeathPlayer(uhcPlayer);
+        InvinciblePlayer.addInvincible(uhcPlayer, Settings.Game.RESPAWN_INVINCIBLE_TIME);
+        Chat.send(player, CommandSettings.Respawn.RESPAWNED);
+    }
+
+    private Location getRespawnLocation(DeathPlayer deathPlayer, int border) {
+        Location deathLocation = deathPlayer.getLocation();
+
+        if (deathLocation.getWorld() == UHCWorldUtils.getNether()
+                && (!GameUtils.isNetherOn() || (Settings.Border.INCLUDE_18_BORDER
+                && !BorderUtil.isInBorder(deathLocation, BorderUtil.getMoveBorder(UHCWorldUtils.getNether()))))) {
+            return Teleporter.getRandomTp(UHCWorldUtils.getWorld(), border);
+        }
+
+        if (!BorderUtil.isInBorder(deathLocation, border))
+            return Teleporter.getRandomTp(UHCWorldUtils.getWorld(), border);
+
+        return deathLocation;
     }
 }

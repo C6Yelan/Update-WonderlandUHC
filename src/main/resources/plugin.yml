@@ -27,10 +27,10 @@ commands:
     description: 加入或退出練習模式。
     usage: /<command>
   reconnect:
-    description: 重新連結 Discord 語音頻道。
+    description: 重新連結Discord語音頻道。
   respawn:
     description: 復活玩家。
-    usage: /<command> <玩家>
+    usage: /<command> <玩家|@a>
   scenarios:
     description: 查看本場使用的特殊模式。
   sendcoords:
@@ -42,9 +42,6 @@ commands:
     description: 切換觀戰模式。
   staff:
     description: 切換管理員模式。
-  stats:
-    description: 查看玩家數據。
-    usage: /<command> [玩家]
   team:
     description: 管理隊伍。
     usage: /<command> <chat|create|disband|invite|join|leave|kick|list|promote|public|settings> [參數]
@@ -54,7 +51,7 @@ commands:
     aliases: [killtop, kt]
     description: 查看擊殺數排行榜。
   uhc:
-    description: 管理 UHC 主流程。
+    description: 管理UHC主流程。
     usage: /<command> <reload|choose|edit|regen|resetteam|sethost|splitteam|switchteam|stop|tp|start|tutorial> [參數]
   whitelist:
     aliases: [wl]
@@ -98,9 +95,6 @@ permissions:
       wonderland.uhc.command.respawn: true
       wonderland.uhc.seespectatorchat: true
 
-  wonderland.uhc.bypass.kick.death:
-    default: true
-
   wonderland.uhc.command.config:
     default: true
   wonderland.uhc.command.scenarios:
@@ -110,8 +104,6 @@ permissions:
   wonderland.uhc.command.sendcoords:
     default: true
   wonderland.uhc.command.spectoggle:
-    default: true
-  wonderland.uhc.command.stats:
     default: true
   wonderland.uhc.command.topkills:
     default: true
@@ -153,4 +145,6 @@ permissions:
     default: true
 
   wonderland.uhc.command.respawn:
+    default: op
+  wonderland.uhc.command.whitelist:
     default: op

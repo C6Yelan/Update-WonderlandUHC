@@ -186,9 +186,7 @@ public class Messages extends PluginStaticConfig {
     }
 
     public static class Spectator {
-        public static String NO_PERM_TO_SPEC;
         public static String TELEPORTED_TO_PLAYER;
-        public static List<String> DEATH_KICK_MESSAGE;
     }
 
     public static class CountDown {
