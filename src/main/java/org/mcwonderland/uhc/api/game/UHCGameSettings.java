@@ -14,11 +14,11 @@ public interface UHCGameSettings {
 
     void setInitialExperience(int initialExperience);
 
-    void setWhitelistOn(boolean whitelistOn);
-
     void setUsingNether(boolean usingNether);
 
     void setEnderPearlDamage(boolean enderPearlDamage);
+
+    void setWhitelistOn(boolean whitelistOn);
 
     String getTitle();
 
@@ -28,11 +28,11 @@ public interface UHCGameSettings {
 
     int getInitialExperience();
 
-    boolean isWhitelistOn();
-
     boolean isUsingNether();
 
     boolean isEnderPearlDamage();
+
+    boolean isWhitelistOn();
 
     String getGenerator();
 

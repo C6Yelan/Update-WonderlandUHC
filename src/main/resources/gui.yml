@@ -10,7 +10,7 @@ Leave:
     - "<gray>點擊來回到上一頁。</gray>"
 
 Main:
-  Title: "<dark_green><bold>自定義設定</bold></dark_green>"
+  Title: "<dark_green><bold>UHC設定</bold></dark_green>"
   Rows: 6
   Buttons:
     Players:
@@ -105,8 +105,8 @@ Main:
       Lore:
         - "<gray>目前掉落機率: </gray><green>{count}%</green>"
         - " "
-        - "<yellow>左鍵點擊 > 減少 1% 機率</yellow>"
-        - "<yellow>右鍵點擊 > 增加 1% 機率</yellow>"
+        - "<yellow>左鍵點擊 > 減少1%機率</yellow>"
+        - "<yellow>右鍵點擊 > 增加1%機率</yellow>"
     Experience:
       Slot: 40
       Type: EXPERIENCE_BOTTLE
@@ -114,8 +114,8 @@ Main:
       Lore:
         - "<gray>目前設定為: </gray><green>{count} 等</green>"
         - " "
-        - "<yellow>左鍵點擊 > 減少 1 等</yellow>"
-        - "<yellow>右鍵點擊 > 增加 1 等</yellow>"
+        - "<yellow>左鍵點擊 > 減少1等</yellow>"
+        - "<yellow>右鍵點擊 > 增加1等</yellow>"
     Nether:
       Slot: 41
       Type: NETHERRACK
@@ -143,9 +143,9 @@ Main:
     Scoreboard:
       Slot: 30
       Type: OAK_SIGN
-      Name: "<light_purple>計分版</light_purple>"
+      Name: "<light_purple>記分板</light_purple>"
       Lore:
-        - "<gray>設定資料版更新延遲與血量顏色。</gray>"
+        - "<gray>設定記分板更新延遲與血量顏色。</gray>"
     Title:
       Slot: 31
       Type: NAME_TAG
@@ -174,8 +174,8 @@ Teams:
       Lore:
         - "<gray>目前大小為: </gray><green>{count}</green>"
         - " "
-        - "<yellow>左鍵點擊 > 減少 1 人</yellow>"
-        - "<yellow>右鍵點擊 > 增加 1 人</yellow>"
+        - "<yellow>左鍵點擊 > 減少1人</yellow>"
+        - "<yellow>右鍵點擊 > 增加1人</yellow>"
     Team_Fire:
       Type: FIRE_CHARGE
       Slot: 14
@@ -302,7 +302,7 @@ Times:
       Type: NETHERRACK
       Name: "<red>地獄關閉時間</red>"
       Lore:
-        - "<gray>地獄會於 </gray><green>{time}</green><gray> 分鐘時關閉，</gray>"
+        - "<gray>地獄會於</gray><green>{time}</green><gray>分鐘時關閉，</gray>"
         - "<gray>並將玩家隨機傳送至主世界。</gray>"
         - " "
         - "<yellow>點擊來設定</yellow>"
@@ -350,23 +350,23 @@ Saves:
         - " "
         - "<white><strikethrough>------------------------</strikethrough></white>"
         - " "
-        - "<green>左鍵點擊 </green><gray>></gray> <green>載入此模版</green>"
-        - "<red>右鍵點擊 </red><gray>></gray> <red>刪除此模版</red>"
+        - "<green>左鍵點擊</green><gray>></gray><green>載入此模版</green>"
+        - "<red>右鍵點擊</red><gray>></gray><red>刪除此模版</red>"
 Scoreboard:
-  Title: "<dark_green><bold>資料版設定</bold></dark_green>"
+  Title: "<dark_green><bold>記分板設定</bold></dark_green>"
   Rows: 3
   Buttons:
     Update_Ticks:
       Slot: 12
       Type: REPEATER
-      Name: "<light_purple>資料版更新延遲</light_purple>"
+      Name: "<light_purple>記分板更新延遲</light_purple>"
       Lore:
-        - "<gray>目前延遲為: </gray><green>{count} Tick一次</green>"
+        - "<gray>目前延遲為: </gray><green>{count}Tick一次</green>"
         - " "
         - "<gray>設定每多少Tick要更新一次?</gray>"
         - " "
-        - "<yellow>左鍵點擊 > 減少 1 Tick</yellow>"
-        - "<yellow>右鍵點擊 > 增加 1 Tick</yellow>"
+        - "<yellow>左鍵點擊 > 減少1Tick</yellow>"
+        - "<yellow>右鍵點擊 > 增加1Tick</yellow>"
     Heart_Color:
       Slot: 14
       Type: RED_MUSHROOM
@@ -479,36 +479,6 @@ Players_Nether:
 Disable_Item_List:
   Title: "<dark_green><bold>禁止製作與食用的物品</bold></dark_green>"
   Rows: 6
-Stats:
-  Title: "<green><bold>參賽成績</bold></green>"
-  Rows: 3
-  Buttons:
-    Played:
-      Slot: 4
-      Type: DIAMOND_HELMET
-      Name: "<gray>參賽: </gray><yellow>{played}</yellow>"
-      Lore:
-        - "<gray>總參賽場次</gray>"
-    Wins:
-      Slot: 12
-      Type: GOLDEN_APPLE
-      Name: "<gray>獲勝: </gray><yellow>{wins}</yellow>"
-      Lore:
-        - "<gray>總獲勝場次</gray>"
-    Kills:
-      Slot: 14
-      Type: DIAMOND_SWORD
-      Name: "<gray>擊殺數: </gray><yellow>{kills}</yellow>"
-      Lore:
-        - "<gray>總擊殺數</gray>"
-    Kdr:
-      Slot: 22
-      Type: REDSTONE
-      Name: "<gray>KD: </gray><yellow>{kdr}</yellow>"
-      Lore:
-        - "<gray>計算方式: 擊殺數/死亡數</gray>"
-        - "<gray>(越高代表你的實力越好)</gray>"
-        - "<gray>此數字會隨著你玩過的場次越多而越精準。</gray>"
 Staff_Options:
   Title: "<dark_green><bold>管理員設定</bold></dark_green>"
   Rows: 4
@@ -554,8 +524,8 @@ Staff_Options:
         - " "
         - "<gray>目前移動速度: </gray><aqua>{count}</aqua>"
         - " "
-        - "<red>左鍵點擊 </red><white>></white><red> 減少 </red><yellow>1</yellow><red> 個等級</red>"
-        - "<green>右鍵點擊 </green><white>></white><green> 增加 </green><yellow>1</yellow><green> 個等級</green>"
+        - "<red>左鍵點擊</red><white>></white><red>減少</red><yellow>1</yellow><red>個等級</red>"
+        - "<green>右鍵點擊</green><white>></white><green>增加</green><yellow>1</yellow><green>個等級</green>"
 Center_Cleaner:
   Title: "<dark_green><bold>是否使用中心點清理系統?</bold></dark_green>"
   Rows: 3
@@ -585,19 +555,19 @@ See_Inventory:
       Type: GOLDEN_APPLE
       Name: "<yellow>血量</yellow>"
       Lore:
-        - "<gray>目前還剩下: </gray><light_purple><bold>{health}</bold></light_purple><gray> 滴血</gray>"
+        - "<gray>目前還剩下:</gray><light_purple><bold>{health}</bold></light_purple><gray>滴血</gray>"
     Hunger:
       Slot: 52
       Type: COOKED_BEEF
       Name: "<yellow>飽食度</yellow>"
       Lore:
-        - "<gray>目前還有: </gray><gold><bold>{hunger}</bold></gold><gray> 格飽食度</gray>"
+        - "<gray>目前還有:</gray><gold><bold>{hunger}</bold></gold><gray>格飽食度</gray>"
     Level:
       Slot: 53
       Type: EXPERIENCE_BOTTLE
       Name: "<yellow>等級</yellow>"
       Lore:
-        - "<gray>目前擁有: </gray><green><bold>{level}</bold></green><gray> 等</gray>"
+        - "<gray>目前擁有:</gray><green><bold>{level}</bold></green><gray>等</gray>"
 Color_Picker:
   Title: "<dark_green><bold>顏色選擇器</bold></dark_green>"
   Rows: 3

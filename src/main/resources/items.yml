@@ -13,45 +13,45 @@ Lobby:
   Options:
     Type: BOOK
     Slot: 0
-    Name: "<yellow>遊戲設定</yellow>"
+    Name: "<yellow>開啟UHC設定</yellow>"
     Lore:
       - "<gray>包含大大小小的遊戲設定可供調整。</gray>"
   Teams:
     Type: PAPER
-    Slot: 2
+    Slot: 1
     Name: "<gold>隊伍選擇器</gold>"
     Lore:
       - "<gray>加入已公開的隊伍當中。</gray>"
   Scenarios:
     Type: ENCHANTED_BOOK
-    Slot: 3
-    Name: "<light_purple>特殊模式</light_purple>"
+    Slot: 4
+    Name: "<light_purple>查看本場UHC特殊模式(右鍵開啟)</light_purple>"
     Lore:
-      - "<gray>查看本場 UHC 啟用的特殊模式。</gray>"
+      - "<gray>查看本場UHC啟用的特殊模式。</gray>"
   Team_Settings:
     Type: REDSTONE_TORCH
-    Slot: 4
+    Slot: 2
     Name: "<green>隊伍設定</green>"
     Lore:
       - "<gray>編輯隊伍方面相關數值。</gray>"
   Config:
     Type: COMPARATOR
     Slot: 5
-    Name: "<aqua>遊戲設定摘要</aqua>"
+    Name: "<aqua>查看本場UHC遊戲設定(右鍵開啟)</aqua>"
     Lore:
-      - "<gray>查看本場 UHC 的目前設定。</gray>"
+      - "<gray>查看本場UHC時間點、以及各項遊戲設定</gray>"
   Disable_Items:
     Type: BARRIER
     Slot: 6
-    Name: "<red>禁用物品</red>"
+    Name: "<red>查看本場UHC禁用物品(右鍵開啟)</red>"
     Lore:
-      - "<gray>查看本場 UHC 禁止使用的物品。</gray>"
+      - "<gray>查看本場UHC禁止使用的物品。</gray>"
   Practice:
     Type: IRON_SWORD
     Slot: 8
-    Name: "<yellow>FFA 練習</yellow>"
+    Name: "<yellow>前往FFA練習世界(右鍵傳送)</yellow>"
     Lore:
-      - "<gray>進入 FFA 練習世界。</gray>"
+      - "<gray>進入FFA練習世界。</gray>"
 Spectator:
   Overworld_Players:
     Type: PAPER
@@ -76,7 +76,7 @@ Spectator:
     Slot: 3
     Name: "<gold>切換到觀察者模式</gold>"
     Lore:
-      - "<gray>功能與 /gamemode spectator 相同。</gray>"
+      - "<gray>功能與/gamemode spectator相同。</gray>"
   Teleport_Zerozero:
     Type: BOWL
     Slot: 4

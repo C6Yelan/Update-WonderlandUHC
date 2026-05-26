@@ -17,8 +17,8 @@ public class PreparingLoginListener extends LoginListener {
         super(
                 new GeneratingChecker(),
                 new ConfigChecker(),
-                new FullChecker(),
-                new WhitelistChecker()
+                new WhitelistChecker(),
+                new FullChecker()
         );
     }
 

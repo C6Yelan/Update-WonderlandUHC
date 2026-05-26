@@ -25,37 +25,37 @@ Uhc:
       - " "
       - "<green>預覽世界已經開始載入，當載入完畢後便會將你傳送至該世界。</green>"
       - " "
-      - "<gray>覺得中心點是漂亮的，可使用 </gray><green>/uhc choose </green><gray>來確認並開始正式載入；</gray>"
-      - "<gray>如果世界不好看，則請使用 </gray><gold>/uhc regen </gold><gray>來重新載入世界。</gray>"
+      - "<gray>覺得中心點是漂亮的，可使用</gray><green>/uhc choose</green><gray>來確認並開始正式載入；</gray>"
+      - "<gray>如果世界不好看，則請使用</gray><gold>/uhc regen</gold><gray>來重新載入世界。</gray>"
       - " "
   SpecToggle:
     Only_For_Default_Spectate_Mode: "<gray>[<dark_aqua>觀戰系統</dark_aqua>]</gray> <red>此功能無法在此觀戰模式下使用。</red>"
-    Gamemode_Toggled: "<gray>[<dark_aqua>觀戰系統</dark_aqua>] 已切換觀戰模式，請使用</gray> <yellow>/{cmd}</yellow> <gray>可再切換成另一種。</gray>"
+    Gamemode_Toggled: "<gray>[<dark_aqua>觀戰系統</dark_aqua>] 已切換觀戰模式，請使用</gray><yellow>/{cmd}</yellow><gray>可再切換成另一種。</gray>"
 
 Whitelist:
-  Added: "<gray>[<aqua>白名單</aqua>]</gray> <white>{op}</white> <gray>已將</gray> <green>{player}</green> <gray>添加到白名單中。</gray>"
-  Already_Added: "<gray>[<aqua>白名單</aqua>]</gray> <white>{player}</white> <red>已經在白單中。</red>"
+  Added: "<gray>[<aqua>白名單</aqua>]</gray> <white>{op}</white><gray>已將</gray><green>{player}</green><gray>添加到白名單中。</gray>"
+  Already_Added: "<gray>[<aqua>白名單</aqua>]</gray> <white>{player}</white><red>已經在白單中。</red>"
   Name_Required: "<gray>[<aqua>白名單</aqua>]</gray> <red>請輸入要增加或移除的玩家名稱。</red>"
-  Removed: "<gray>[<aqua>白名單</aqua>]</gray> <white>{op}</white> <gray>將</gray> <red>{player}</red> <gray>從名單中移除。</gray>"
-  Already_Removed: "<gray>[<aqua>白名單</aqua>]</gray> <white>{player}</white> <red>不在白名單中。</red>"
-  Cleared: "<gray>[<aqua>白名單</aqua>]</gray> <white>{player}</white> <red>清除了白名單。</red>"
+  Removed: "<gray>[<aqua>白名單</aqua>]</gray> <white>{op}</white><gray>將</gray><red>{player}</red><gray>從名單中移除。</gray>"
+  Already_Removed: "<gray>[<aqua>白名單</aqua>]</gray> <white>{player}</white><red>不在白名單中。</red>"
+  Cleared: "<gray>[<aqua>白名單</aqua>]</gray> <white>{player}</white><red>清除了白名單。</red>"
   List:
     - "<gray><strikethrough>――――――――――――</strikethrough> <aqua><bold>白名單列表</bold></aqua> <strikethrough>――――――――――――</strikethrough></gray>"
-    - "<gray>  - </gray><aqua>{players}</aqua>"
+    - "<gray>- </gray><aqua>{players}</aqua>"
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
 
 GiveAll:
   Invalid_Item: "<red>系統找不到名為 {item} 的物品，請重新輸入。</red>"
   Invalid_Amount: "<red>物品數量無效，請重新輸入。</red>"
-  Given: "<green>管理員已給予所有玩家</green> <white>{amount}</white> <green>個</green> <white>{material}。</white>"
+  Given: "<green>管理員已給予所有玩家</green><white>{amount}</white><green>個</green><white>{material}。</white>"
 
 Border:
-  Only_Number_Between: "<red>請輸入介於</red> <white>{min} 至 {max}</white> <red>之間的數字。</red>"
+  Only_Number_Between: "<red>請輸入介於</red><white>{min}至{max}</white><red>之間的數字。</red>"
   Only_In_Timer_Mode: "<red>抱歉，只有當邊界為</red><white><bold>瞬縮系統</bold></white><red>時，才能使用此功能。</red>"
 
 Respawn:
   Is_Playing: "<red>此玩家目前正在遊玩中，因此不需要復活。</red>"
-  Broadcast: "<white>{mod} </white><green>使用了神之掌復活了 </green><white>{player}。</white>"
+  Broadcast: "<white>{mod}</white><green>使用了神之掌復活了</green><white>{player}。</white>"
   Respawned:
     - "<white><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></white>"
     - "<green><bold>生命延續，薪火相傳</bold></green>"
@@ -80,18 +80,18 @@ Team:
     Created:
       - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
       - "<green>已成功創建隊伍！</green>"
-      - "<white>輸入 </white><green>/{cmd} </green><white>即可獲得所有相關指令的說明及使用方式。</white>"
+      - "<white>輸入</white><green>/{cmd}</green><white>即可獲得所有相關指令的說明及使用方式。</white>"
       - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
   Invite:
     Already_In_Your_Team: "<red>此玩家已在你的隊伍當中。</red>"
     Invited:
       - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
-      - "<green>{player} </green><white>已向 </white><green>{target} </green><white>發送邀請，目前正等待該玩家回覆。</white>"
+      - "<green>{player}</green><white>已向</white><green>{target}</green><white>發送邀請，目前正等待該玩家回覆。</white>"
       - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
     Invitation_Messages:
       - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
       - "<green>{player} </green><white>邀請你加入他的隊伍</white>"
-      - "<white>若同意請 </white><gold><bold>[</bold></gold>{click-join}<gold><bold>]</bold></gold>"
+      - "<white>若同意請</white><gold><bold>[</bold></gold>{click-join}<gold><bold>]</bold></gold>"
       - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
     Click_Here: "<gold><bold>點擊這裡來接受</bold></gold>"
   Join:
@@ -106,8 +106,8 @@ Team:
       - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
   Chat:
     Cant_Use: "<gray>[<green><bold>隊伍聊天</bold></green>]</gray> <red>你目前暫時無法使用隊伍聊天功能。</red>"
-    Joined: "<gray>[<green><bold>隊伍聊天</bold></green>] 你</gray><green>加入</green><gray>了隊伍聊天頻道，使用</gray> <green>/{cmd}</green> <gray>即可離開。</gray>"
-    Quitted: "<gray>[<green><bold>隊伍聊天</bold></green>] 你</gray><red>離開</red><gray>了隊伍聊天頻道，使用</gray> <red>/{cmd}</red> <gray>即可重新加入。</gray>"
+    Joined: "<gray>[<green><bold>隊伍聊天</bold></green>] 你</gray><green>加入</green><gray>了隊伍聊天頻道，使用</gray><green>/{cmd}</green><gray>即可離開。</gray>"
+    Quitted: "<gray>[<green><bold>隊伍聊天</bold></green>] 你</gray><red>離開</red><gray>了隊伍聊天頻道，使用</gray><red>/{cmd}</red><gray>即可重新加入。</gray>"
 
 Config:
   Messages:
@@ -127,8 +127,8 @@ Config:
     - "<yellow>地獄: </yellow><gray>{nether-on}</gray>"
     - "<yellow>初始經驗: </yellow><gray>{start-level}</gray>"
     - " "
-    - "<gray>想瞭解特殊模式請使用 </gray><green>/scenarios</green>"
-    - "<gray>想瞭解禁止使用的物品請使用 </gray><green>/disableitems</green>"
+    - "<gray>想瞭解特殊模式請使用</gray><green>/scenarios</green>"
+    - "<gray>想瞭解禁止使用的物品請使用</gray><green>/disableitems</green>"
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
 
 #你可以依照你的需求自己增加行數

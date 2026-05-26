@@ -21,9 +21,9 @@ public class UHCGameSettings implements Cloneable, org.mcwonderland.uhc.api.game
     private int maxPlayers;
     private int appleRate;
     private int initialExperience;
-    private boolean whitelistOn;
     private boolean usingNether;
     private boolean enderPearlDamage;
+    private boolean whitelistOn;
     private String generator;
     private UHCTimerSettings timer;
     private UHCTeamSettings teamSettings;
@@ -39,9 +39,9 @@ public class UHCGameSettings implements Cloneable, org.mcwonderland.uhc.api.game
         map.put("Max_Players", maxPlayers);
         map.put("Apple_Rate", appleRate);
         map.put("Initial_Experience", initialExperience);
-        map.put("Whitelist_On", whitelistOn);
         map.put("Using_Nether", usingNether);
         map.put("Ender_Pearl_Damage", enderPearlDamage);
+        map.put("Whitelist_On", whitelistOn);
 
         map.put("Generator", generator);
         map.put("Timer", timer.toMap());
@@ -61,9 +61,9 @@ public class UHCGameSettings implements Cloneable, org.mcwonderland.uhc.api.game
         settings.maxPlayers = integer(section, "Max_Players", 100);
         settings.appleRate = integer(section, "Apple_Rate", 2);
         settings.initialExperience = integer(section, "Initial_Experience", 1);
-        settings.whitelistOn = bool(section, "Whitelist_On", true);
         settings.usingNether = bool(section, "Using_Nether", false);
         settings.enderPearlDamage = bool(section, "Ender_Pearl_Damage", false);
+        settings.whitelistOn = bool(section, "Whitelist_On", false);
         settings.generator = string(section, "Generator", "");
         settings.scenarios = new HashSet<>(section == null ? List.of() : section.getStringList("Scenarios"));
 

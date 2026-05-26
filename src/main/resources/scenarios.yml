@@ -27,7 +27,7 @@ Backpack:
   Type: ENDER_CHEST
   Name: "<aqua>隊伍背包</aqua><gray>(BackPack)</gray>"
   Description:
-    - "玩家可透過 /{cmd} 指令與隊友共享資源。"
+    - "玩家可透過/{cmd}指令與隊友共享資源。"
   Cant_Use_Msg: "<red>本場次並沒有開啟隊伍背包，因此本指令無法使用。</red>"
   #隊伍背包的大小 (必須為 9 的倍數)
   Size: 27
@@ -62,7 +62,7 @@ Damage_Dogers:
     - "遊戲中前 {amount} 位受到傷害的玩家，將會立即死亡。"
   #共有多少人要成為犧牲者
   Amount: 3
-  Death_Cause_This: "<gray>[<dark_red>犧牲者</dark_red>]</gray> <dark_red><bold>{player}</bold></dark_red> <red><bold>成為了本場次的犧牲者，目前犧牲者仍然還缺 </bold></red><dark_red><bold>{amount}</bold></dark_red> <red><bold>位。</bold></red>"
+  Death_Cause_This: "<gray>[<dark_red>犧牲者</dark_red>]</gray> <dark_red><bold>{player}</bold></dark_red><red><bold>成為了本場次的犧牲者，目前犧牲者仍然還缺</bold></red><dark_red><bold>{amount}</bold></dark_red><red><bold>位。</bold></red>"
   Death_Cause_This_Sound: UI_BUTTON_CLICK 1.0F 1.0F
 Diamond_Less:
   Type: DIAMOND_ORE
@@ -102,8 +102,8 @@ Food_Neophobia:
   Description:
     - "玩家整場遊戲，只能食用第一次吃下的東西。"
     - "(藥水，金蘋果，牛奶除外)"
-  First_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red><bold>注意，貫徹始終模式的效果，從今以後你只能食用 </bold></red><gold><bold>{foodtype}</bold></gold><red><bold>。</bold></red>"
-  Just_Can_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red>由於本場的貫徹始終效果限制，你無法食用其他類別食物，你只能食用 </red><gold>{foodtype}</gold><red>。</red>"
+  First_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red><bold>注意，貫徹始終模式的效果，從今以後你只能食用</bold></red><gold><bold>{foodtype}</bold></gold><red><bold>。</bold></red>"
+  Just_Can_Eat: "<gray>[<dark_green>貫徹始終</dark_green>]</gray> <red>由於本場的貫徹始終效果限制，你無法食用其他類別食物，你只能食用</red><gold>{foodtype}</gold><red>。</red>"
   First_Eat_Sound: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
   Just_Can_Eat_Sound: UI_BUTTON_CLICK 1.0F 1.0F
 Gold_Less:
@@ -142,7 +142,7 @@ Limitations:
   Description:
     - "每場遊戲，你最多只能挖掘 {diamond-limit} 個鑽石、{gold-limit} 個黃金及 {iron-limit} 個鐵礦。"
   Reached_Limit: "<gray>[<dark_green>礦物限量</dark_green>]</gray> <red>抱歉，你最多只能挖掘 {amount} 個 {block}。</red>"
-  Cant_Mine_More: "<gray>[<dark_green>礦物限量</dark_green>]</gray> <red><bold>你已達到 </bold></red><gold><bold>{block}</bold></gold> <red><bold>的挖掘上限 ({amount}個)，從現在起你將無法再從此方塊獲得任何掉落物。</bold></red>"
+  Cant_Mine_More: "<gray>[<dark_green>礦物限量</dark_green>]</gray> <red><bold>你已達到</bold></red><gold><bold>{block}</bold></gold><red><bold>的挖掘上限({amount}個)，從現在起你將無法再從此方塊獲得任何掉落物。</bold></red>"
   Reached_Limit_Sound: UI_BUTTON_CLICK 1.0F 1.0F
   Cant_Mine_More_Sound: BLOCK_NOTE_BLOCK_BASS 1.0F 1.0F
   #礦物的限制數量
@@ -243,7 +243,7 @@ Triple_Ores:
   Type: LAPIS_ORE
   Name: "<yellow>三倍礦物</yellow><gray>(TripleOres)</gray>"
   Description:
-    - "礦物掉落量將乘以 3 倍。"
+    - "礦物掉落量將乘以3倍。"
 Vanilla_Plus:
   Type: FLINT
   Name: "<yellow>豐收</yellow><gray>(VanillaPlus)</gray>"

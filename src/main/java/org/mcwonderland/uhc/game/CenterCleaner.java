@@ -107,8 +107,8 @@ public class CenterCleaner {
         Chat.send(player, message(Messages.CenterCleaner.SEARCH_STARTED,
                 "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>正在評估同一張世界中的候選中心...</white>"));
         Location spawn = world.getSpawnLocation();
-        Chat.send(player, "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>搜尋基準: 世界重生點 X </white><green>" + spawn.getBlockX() + "</green><white> Z </white><green>" + spawn.getBlockZ()
-                + "</green> <gray>候選數 </gray><green>" + searchCandidateCount() + "</green>");
+        Chat.send(player, "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>搜尋基準: 世界重生點X:</white><green>" + spawn.getBlockX() + "</green><white>Z:</white><green>" + spawn.getBlockZ()
+                + "</green> <gray>候選數</gray><green>" + searchCandidateCount() + "</green>");
 
         new CenterSearchTask(player, world, initialBorderSize()).runTaskTimer(WonderlandUHC.getInstance(), 1L, 1L);
     }
@@ -177,7 +177,7 @@ public class CenterCleaner {
                 ? message(Messages.CenterCleaner.SEARCH_RECOMMENDED, "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <green>此中心可作為目前預覽地圖。</green>")
                 : message(Messages.CenterCleaner.SEARCH_NOT_RECOMMENDED, "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <yellow>此中心不建議直接跑圖，但已保留目前最佳結果供主持人預覽。</yellow>"));
         Chat.send(player, message(Messages.CenterCleaner.SEARCH_REGEN_HINT,
-                "<gray>如果不滿意目前預覽世界，可使用 </gray><gold>/uhc regen</gold><gray> 重新搜尋，或使用 </gray><gold>/uhc regen <seed></gold><gray> 手動指定 seed。</gray>"));
+                "<gray>如果不滿意目前預覽世界，可使用</gray><gold>/uhc regen</gold><gray>重新搜尋，或使用</gray><gold>/uhc regen <seed></gold><gray>手動指定seed。</gray>"));
     }
 
     private static String formatScore(double score) {

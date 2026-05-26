@@ -1,9 +1,6 @@
 package org.mcwonderland.uhc.tools;
 
 import org.mcwonderland.uhc.UHCPermission;
-import org.mcwonderland.uhc.game.UHCTeam;
-import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
-import org.mcwonderland.uhc.game.settings.LoadingStatus;
 import org.mcwonderland.uhc.tools.lobby.ConfigItem;
 import org.mcwonderland.uhc.tools.lobby.DisableItemsItem;
 import org.mcwonderland.uhc.tools.lobby.PracticeItem;
@@ -29,18 +26,7 @@ public class Hotbars {
         ConfigItem.getInstance().set(p);
         DisableItemsItem.getInstance().set(p);
         PracticeItem.getInstance().set(p);
-
-        if (WorldLoadingCacheState.getLoadingStatus() == LoadingStatus.DONE) {
-            UHCTeam team = UHCTeam.getTeam(p);
-            if (team != null) {
-                if (team.getOwner().getName().equals(p.getName()))
-                    giveTeamSettingsItem(p);
-            }
-            TeamsItem.getInstance().set(p);
-        }
-    }
-
-    public static void giveTeamSettingsItem(Player p) {
+        TeamsItem.getInstance().set(p);
         TeamSettingsItem.getInstance().set(p);
     }
 

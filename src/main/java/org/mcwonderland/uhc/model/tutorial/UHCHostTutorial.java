@@ -40,7 +40,7 @@ public class UHCHostTutorial extends Tutorial {
         protected String[] getMessages() {
             return new String[]{
                     "首先最重要的，請先<aqua><bold>確認你的遊戲設定無誤</bold></aqua>",
-                    "如果有任何問題，趁白名單還沒關閉之前趕快做調整！",
+                    "如果有任何問題，趁玩家入場前趕快做調整！",
                     " ",
                     "提醒: 大部分設定現在調整都還來得及，但請<dark_red><bold>千萬不要把邊界大小條大！</bold></dark_red>",
                     "否則玩家若傳送到未載入過的地方，會造成<red><bold>嚴重的伺服器卡頓。</bold></red>",
@@ -72,24 +72,6 @@ public class UHCHostTutorial extends Tutorial {
                     "<gold><bold>不妨現在就試試看吧！</bold></gold>",
                     " ",
                     "<yellow>了解如何使用管理員模式後，請輸入任一字元前往下個教學。</yellow>"
-            };
-        }
-
-        @Override
-        protected TutorialSection nextSection() {
-            return new WhitelistTutorial();
-        }
-    }
-
-    private class WhitelistTutorial extends TutorialSection {
-        @Override
-        protected String[] getMessages() {
-            return new String[]{
-                    "<green>現在你可以將白名單關閉，開放玩家入場了。</green>",
-                    " ",
-                    "備註: 你也可以手動使用 <yellow>/whitelist</yellow> <white>指令來控制誰能加入遊戲。</white>",
-                    " ",
-                    "<yellow>白單關閉後，請輸入任一字元前往下個教學。</yellow>"
             };
         }
 
@@ -129,7 +111,7 @@ public class UHCHostTutorial extends Tutorial {
                     "  /uhc splitteam true <yellow>- 重新洗牌(先解散所有隊伍，再重新分配一次)</yellow>",
                     " ",
                     "以上指令<dark_aqua>並非一定要使用</dark_aqua><white>，因為遊戲在開始的瞬間</white>",
-                    "系統也會自動使用 /uhc splitteam 指令來分隊。",
+                    "系統也會自動使用/uhc splitteam指令來分隊。",
                     " ",
                     "<yellow>學會如何手動分配隊伍後，請輸入任一字元前往下個教學。</yellow>"
             };
@@ -147,7 +129,7 @@ public class UHCHostTutorial extends Tutorial {
             return new String[]{
                     "<yellow><bold>很好，現在可以準備開始遊戲了！</bold></yellow>",
                     " ",
-                    "請開啟設定介面<gray>(指令為 /uhc edit)</gray><white>，並</white><aqua>點擊右下角的物品來開始傳送倒數。</aqua>",
+                    "請開啟設定介面<gray>(指令為/uhc edit)</gray><white>，並</white><aqua>點擊右下角的物品來開始傳送倒數。</aqua>",
                     "以下大致為遊戲開始前的流程:",
                     " ",
                     "  <dark_aqua>傳送倒數 -> 傳送玩家並使其無法移動 -> 傳送完畢 -> </dark_aqua>",
@@ -170,7 +152,7 @@ public class UHCHostTutorial extends Tutorial {
                     "<gold><bold>恭喜你已完成此教學，你已大致學會如何主持一場UHC！</bold></gold>",
                     " ",
                     "<aqua>最後想再告訴你一些實用的指令，希望對你有幫助：</aqua>",
-                    "  /border <yellow>- 強制於 10 秒後收縮邊界</yellow>",
+                    "  /border <yellow>- 強制於10秒後收縮邊界</yellow>",
                     "  /respawn <yellow>- 復活玩家</yellow>",
                     "  /giveall <yellow>- 給予所有玩家(不包含觀戰者與管理員)指令數量的物品</yellow>",
                     " ",

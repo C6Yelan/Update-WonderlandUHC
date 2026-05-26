@@ -38,6 +38,7 @@ public abstract class AbstractPractice implements Practice {
         stuff(player);
 
         onJoin(player);
+        Chat.send(player, "<green>歡迎進入FFA練習世界，再次輸入/practice返回大廳</green>");
     }
 
     protected abstract void onJoin(Player player);

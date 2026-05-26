@@ -69,9 +69,9 @@ public class UHCSpawn {
         if (world == null)
             throw new IllegalArgumentException("Invalid location world: " + parts[0]);
 
-        int x = Integer.parseInt(parts[1]);
-        int y = Integer.parseInt(parts[2]);
-        int z = Integer.parseInt(parts[3]);
+        double x = Double.parseDouble(parts[1]);
+        double y = Double.parseDouble(parts[2]);
+        double z = Double.parseDouble(parts[3]);
         float yaw = parts.length == 6 ? Float.parseFloat(parts[4]) : 0F;
         float pitch = parts.length == 6 ? Float.parseFloat(parts[5]) : 0F;
 
@@ -81,7 +81,7 @@ public class UHCSpawn {
     private String serializeLocation(Location location) {
         int yaw = Math.round(location.getYaw());
         int pitch = Math.round(location.getPitch());
-        String value = location.getWorld().getName() + " " + location.getBlockX() + " " + location.getBlockY() + " " + location.getBlockZ();
+        String value = location.getWorld().getName() + " " + location.getX() + " " + location.getY() + " " + location.getZ();
 
         return yaw != 0 || pitch != 0 ? value + " " + yaw + " " + pitch : value;
     }

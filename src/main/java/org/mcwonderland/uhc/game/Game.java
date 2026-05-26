@@ -39,6 +39,7 @@ public class Game {
     @Getter(AccessLevel.NONE)
     private final EndMatchUseCase endMatchUseCase = new EndMatchUseCase();
     private UHCGameSettings settings = UHCGameSettings.defaultSettings();
+    private PlayerCollection whiteList = new PlayerCollection();
     private String host = "";
     private int allPlayers;
     private int currentBorder = 0;
@@ -46,7 +47,6 @@ public class Game {
     private boolean centerCleaner;
     private boolean damageEnabled, finalHealEnabled, pvpEnabled;
 
-    private PlayerCollection whiteList = new PlayerCollection();
     private Map<UUID, InvinciblePlayer> invinciblePlayers = new HashMap<>();
 
     //new

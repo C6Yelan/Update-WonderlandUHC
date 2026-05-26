@@ -12,18 +12,18 @@ Enabled: "<green><strikethrough>--</strikethrough>開啟<strikethrough>--</strik
 Disabled: "<red><strikethrough>--</strikethrough>關閉<strikethrough>--</strikethrough></red>"
 
 Host:
-  Whitelist_On: "<gray>[</gray><aqua>白名單</aqua><gray>] </gray><green>{player} 開啟</green><gray>了白名單。</gray>"
-  Whitelist_Off: "<gray>[</gray><aqua>白名單</aqua><gray>] </gray><green>{player} </green><red>關閉</red><gray>了白名單。</gray>"
-  Scenario_Enabled_Player: "<gray>[</gray><light_purple>特殊模式</light_purple><gray>] </gray><green>{player}</green><gray> 開啟了 </gray><green>{scenario}</green><gray>。</gray>"
-  Scenario_Disabled_Player: "<gray>[</gray><light_purple>特殊模式</light_purple><gray>] </gray><green>{player}</green><gray> 關閉了 </gray><green>{scenario}</green><gray>。</gray>"
+  Whitelist_On: "<gray>[</gray><aqua>白名單</aqua><gray>]</gray> <green>{player}開啟</green><gray>了白名單。</gray>"
+  Whitelist_Off: "<gray>[</gray><aqua>白名單</aqua><gray>]</gray> <green>{player}</green><red>關閉</red><gray>了白名單。</gray>"
+  Scenario_Enabled_Player: "<gray>[</gray><light_purple>特殊模式</light_purple><gray>] </gray><green>{player}</green><gray>開啟了</gray><green>{scenario}</green><gray>。</gray>"
+  Scenario_Disabled_Player: "<gray>[</gray><light_purple>特殊模式</light_purple><gray>] </gray><green>{player}</green><gray>關閉了</gray><green>{scenario}</green><gray>。</gray>"
   Nether_Enabled_Player: "<gray>[</gray><red>地獄</red><gray>] </gray><green>{player} 開啟</green><gray>了地獄。</gray>"
   Nether_Disabled_Player: "<gray>[</gray><red>地獄</red><gray>] </gray><green>{player} </green><red>關閉</red><gray>了地獄。</gray>"
   Team_Fire_Enabled_Player: "<gray>[</gray><aqua>隊伍</aqua><gray>] </gray><green>{player} 開啟</green><gray>了同隊傷害。</gray>"
   Team_Fire_Disabled_Player: "<gray>[</gray><aqua>隊伍</aqua><gray>] </gray><green>{player} </green><red>關閉</red><gray>了同隊傷害。</gray>"
-  Border_Type_Changed: "<gray>[</gray><dark_green>邊界</dark_green><gray>] </gray><green>{player}</green><gray> 將邊界模式切換為 </gray><green>{type}</green><gray>。</gray>"
+  Border_Type_Changed: "<gray>[</gray><dark_green>邊界</dark_green><gray>] </gray><green>{player}</green><gray>將邊界模式切換為</gray><green>{type}</green><gray>。</gray>"
   World_Created: "<gray>[</gray><green>遊戲世界</green><gray>] </gray><green>地圖載入完成。</green>"
   World_Deleted: "<gray>[</gray><green>遊戲世界</green><gray>] </gray><red>地圖已刪除。</red>"
-  World_Doesnt_Exist: "<gray>[</gray><green>遊戲世界</green><gray>] </gray><red>世界尚未載入，請先使用 </red><white>/uhc regen</white><red> 來載入世界。</red>"
+  World_Doesnt_Exist: "<gray>[</gray><green>遊戲世界</green><gray>] </gray><red>世界尚未載入，請先使用</red><white>/uhc regen</white><red>來載入世界。</red>"
   Not_Generating: "<gray>[</gray><green>遊戲世界</green><gray>] </gray><red>抱歉，由於地圖已經載入完畢，因此本功能無法使用。</red>"
   Game_Running: "<red>遊戲已經開始倒數了，無須再開始一次。</red>"
 
@@ -35,10 +35,10 @@ Editor:
       Saved: "<gray>標題已變更為: </gray><reset>{title}</reset><gray>。</gray>"
     TeamName:
       Message: "<yellow>請輸入新隊伍名稱:</yellow>"
-      Saved: "<gray>隊伍名稱已被 </gray><green>{player}</green><gray> 改成了: </gray><reset>{name}</reset><gray>。</gray>"
+      Saved: "<gray>隊伍名稱已被</gray><green>{player}</green><gray>改成了:</gray><reset>{name}</reset><gray>。</gray>"
     TeamCharacter:
       Message: "<yellow>請輸入新隊伍徽章 (最多只能 {length} 個字):</yellow>"
-      Saved: "<gray>隊伍徽章已被 </gray><green>{player}</green><gray> 改成了: </gray><reset>{character}</reset><gray>。</gray>"
+      Saved: "<gray>隊伍徽章已被</gray><green>{player}</green><gray>改成了:</gray><reset>{character}</reset><gray>。</gray>"
       Already_Used: "<dark_gray>{symbol}</dark_gray> <red>已被使用，請嘗試其他隊伍名稱。</red>"
   Number:
     Invalid_Number: "<red>系統無法辨認你所輸入的內容，請確定輸入內容為數字後再試一次。</red>"
@@ -62,24 +62,24 @@ Editor:
     Join_Time: "<yellow>請輸入入場時間:</yellow>"
     Start_Time: "<yellow>請輸入開始時間:</yellow>"
   Time:
-    Invalid_Time: "<red>系統無法辨認你所輸入的內容，請確定輸入格式為 </red><gold>小時:分鐘:秒 </gold><red>後再試一次。</red>"
+    Invalid_Time: "<red>系統無法辨認你所輸入的內容，請確定輸入格式為</red><gold>小時:分鐘:秒</gold><red>後再試一次。</red>"
     Damage:
       Message: "<yellow>請輸入無敵失效時間</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
-      Saved: "<gray>無敵失效時間已設定為 </gray><green>{time}</green><gray>。</gray>"
+      Saved: "<gray>無敵失效時間已設定為</gray><green>{time}</green><gray>。</gray>"
     FinalHeal:
       Message: "<yellow>請輸入最終回血時間</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
-      Saved: "<gray>最終回血時間已設定為 </gray><green>{time}</green><gray>。</gray>"
+      Saved: "<gray>最終回血時間已設定為</gray><green>{time}</green><gray>。</gray>"
     Pvp:
-      Message: "<yellow>請輸入 PvP 開啟時間</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
-      Saved: "<gray>PvP開啟時間已設定為 </gray><green>{time}</green><gray>。</gray>"
+      Message: "<yellow>請輸入PvP開啟時間</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
+      Saved: "<gray>PvP開啟時間已設定為</gray><green>{time}</green><gray>。</gray>"
     BorderShrink:
       Message: "<yellow>請輸入第一次邊界收縮時間</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
-      Saved: "<gray>第一次邊界收縮時間已設定為 </gray><green>{time}</green><gray>。</gray>"
+      Saved: "<gray>第一次邊界收縮時間已設定為</gray><green>{time}</green><gray>。</gray>"
     DisableNether:
       Message: "<yellow>請輸入地獄關閉時間</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
-      Saved: "<gray>地獄關閉時間已設定為 </gray><green>{time}</green><gray>。</gray>"
+      Saved: "<gray>地獄關閉時間已設定為</gray><green>{time}</green><gray>。</gray>"
     ShrinkCalculator:
-      Message: "<yellow>你希望邊界從 </yellow><gold>{init}x{init}</gold><yellow> 縮到 </yellow><aqua>{final}x{final}</aqua><yellow> 共需花費多少時間呢</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
+      Message: "<yellow>你希望邊界從</yellow><gold>{init}x{init}</gold><yellow>縮到</yellow><aqua>{final}x{final}</aqua><yellow>共需花費多少時間呢</yellow><gray>(小時:分鐘:秒)</gray><yellow>:</yellow>"
       Saved: "<gray>已依照你的需求，計算出收縮速度為: </gray><green>一秒 {speed} 格</green><gray>。</gray>"
   Inventory:
     To_Head_Failed: "<red>此功能需要你將金蘋果放在手上才能使用。</red>"
@@ -98,26 +98,26 @@ Editor:
       Saved: "<green>禁止物品儲存完成。</green>"
 
 Lobby:
-  Non_Spawn_Set: "<red><bold>未找到大廳座標，請先使用 </bold></red><white><bold>/{cmd}</bold></white><red><bold> 設定大廳重生點。</bold></red>"
+  Non_Spawn_Set: "<red><bold>未找到大廳座標，請先使用</bold></red><white><bold>/{cmd}</bold></white><red><bold>設定大廳重生點。</bold></red>"
   Welcome_Msg_Configuring:
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
-    - "<gold>本遊戲尚未設定完畢，請先使用道具或是 </gold><yellow>/uhc edit</yellow>"
+    - "<gold>本遊戲尚未設定完畢，請先使用道具或是</gold><yellow>/uhc edit</yellow>"
     - "<gold>設定遊戲內容並載入地圖，待一切完成後再開放玩家入場。</gold>"
     - " "
-    - "<dark_aqua>如果不知如何開始，可以輸入 </dark_aqua><white>/{cmd}</white><dark_aqua> 獲取教學。</dark_aqua>"
+    - "<dark_aqua>如果不知如何開始，可以輸入</dark_aqua><white>/{cmd}</white><dark_aqua>獲取教學。</dark_aqua>"
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
   Welcome_Msg:
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
-    - "<green>歡迎你 </green><white>{player}</white>"
+    - "<green>歡迎你</green><white>{player}</white>"
     - " "
-    - "<green>此次UHC由: </green><white>{host}</white><green> 主持。</green>"
+    - "<green>此次UHC由:</green><white>{host}</white><green>主持。</green>"
     - " "
-    - "<green>使用 </green><white>/scenarios</white><green> 將會顯示所有的模式</green>"
-    - "<green>使用 </green><white>/config</white><green> 可以觀看此次UHC的所有設定</green>"
+    - "<green>使用</green><white>/scenarios</white><green>將會顯示所有的模式</green>"
+    - "<green>使用</green><white>/config</white><green>可以觀看此次UHC的所有設定</green>"
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
   Player_Join_Msg: "<green>{player}</green> <gray>加入了WonderlandUHC ({online}/{max})。</gray>"
   Player_Leave_Msg: "<green>{player}</green> <gray>離開了遊戲 ({online}/{max})。</gray>"
-  Automatic_Game_Canceled: "<red>由於人數不足因此遊戲無法開始，至少需要 </red><yellow>{amount}</yellow><red> 位玩家才能開始。</red>"
+  Automatic_Game_Canceled: "<red>由於人數不足因此遊戲無法開始，至少需要</red><yellow>{amount}</yellow><red>位玩家才能開始。</red>"
 
 Kick:
   Waiting_Host: "<red>遊戲設定中，請稍做等待。</red>"
@@ -129,32 +129,28 @@ Kick:
 CenterCleaner:
   Search_Started: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>正在評估同一張世界中的候選中心...</white>"
   Search_Progress: "<gray>中心搜尋: </gray><white>{current}</white><gray>/</gray><white>{total}</white> <dark_gray>-</dark_gray> <green>{stage}</green>"
-  Search_Preview: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>已傳送到候選中心 </white><green>{current}</green><gray>/</gray><green>{total}</green><gray>: </gray><white>X {x}, Z {z}</white>"
+  Search_Preview: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>已傳送到候選中心</white><green>{current}</green><gray>/</gray><green>{total}</green><gray>:</gray><white>X{x},Z{z}</white>"
   Search_Result: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <white>結果: </white><green>{status}</green> <gray>分數: </gray><white>{score}</white> <gray>中心: </gray><white>X {x}, Z {z}</white> <gray>原因: </gray><white>{reasons}</white>"
   Search_Recommended: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <green>此中心可作為目前預覽地圖。</green>"
   Search_Not_Recommended: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <yellow>此中心不建議直接跑圖，但已保留目前最佳結果供主持人預覽。</yellow>"
   Search_Time_Limited: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <yellow>搜尋達到時間限制，已使用目前最佳結果。</yellow>"
   Search_Cancelled: "<gray>[</gray><green>中心搜尋</green><gray>]</gray> <red>搜尋已取消，沒有可用結果。</red>"
-  Search_Regen_Hint: "<gray>如果不滿意目前預覽世界，可使用 </gray><gold>/uhc regen</gold><gray> 重新搜尋，或使用 </gray><gold>/uhc regen <seed></gold><gray> 手動指定 seed。</gray>"
+  Search_Regen_Hint: "<gray>如果不滿意目前預覽世界，可使用</gray><gold>/uhc regen</gold><gray>重新搜尋，或使用</gray><gold>/uhc regen <seed></gold><gray>手動指定seed。</gray>"
 
 Team:
   Full_Msg: "<red>此隊伍已滿。</red>"
-  Player_Joined: "<gray>[</gray><green>隊伍</green><gray>]</gray> <dark_green>{player}</dark_green> <green>加入了隊伍 </green><gray>({players}/{max})。</gray>"
-  Player_Left: "<gray>[</gray><green>隊伍</green><gray>]</gray> <dark_green>{player}</dark_green> <red>離開了隊伍 </red><gray>({players}/{max})。</gray>"
+  Player_Joined: "<gray>[</gray><green>隊伍</green><gray>]</gray> <dark_green>{player}</dark_green><green>加入了隊伍</green><gray>({players}/{max})。</gray>"
+  Player_Left: "<gray>[</gray><green>隊伍</green><gray>]</gray> <dark_green>{player}</dark_green><red>離開了隊伍</red><gray>({players}/{max})。</gray>"
   Player_Promoted: "<gray>[</gray><green>隊伍</green><gray>]</gray> <white>{player}</white> <gold>成為了新隊長。</gold>"
   Only_In_Chosen_Mode: "<red>此功能只能在自選隊伍的模式下使用。</red>"
 
 Staff:
   Enabled: "<gray>[</gray><gold>管理系統</gold><gray>]</gray> <green>你開啟了管理員模式。</green>"
   Disabled: "<gray>[</gray><gold>管理系統</gold><gray>]</gray> <red>你關閉了管理員模式</red>"
-  Mined_Alert: "<gray>[</gray><gold>管理系統</gold><gray>] {player} 已挖掘了 </gray><gold>{amount}</gold><gray> 個 </gray>{block}<gray>。</gray>"
+  Mined_Alert: "<gray>[</gray><gold>管理系統</gold><gray>] {player}已挖掘了</gray><gold>{amount}</gold><gray>個</gray>{block}<gray>。</gray>"
 
 Spectator:
-  No_Perm_To_Spec: "<yellow><bold>因為你沒有權限，因此你將於 <white>{fancy-time}</white> 後被剔除，感謝你的遊玩，祝福你下次能夠贏得勝利。</bold></yellow>"
-  Death_Kick_Message:
-    - "<gray>[</gray><green>Wonderland</green><white>UHC</white><gray>]</gray>"
-    - "<gray>你已被死亡剔除系統請出，歡迎下次再來。</gray>"
-  Teleported_To_Player: "<gray>[</gray><dark_aqua>觀戰系統</dark_aqua><gray>] 正在傳送到 </gray><green>{player}</green>"
+  Teleported_To_Player: "<gray>[</gray><dark_aqua>觀戰系統</dark_aqua><gray>] 正在傳送到</gray><green>{player}</green>"
 
 #時間的代轉換字元共有兩種:
 #  1. {time}
@@ -168,19 +164,19 @@ Spectator:
 #歡迎你選擇合適自己的轉換方式。
 
 CountDown:
-  Scatter_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 將於 </gray><green><bold>{fancy-time}</bold></green><gray> 後開始傳送玩家。</gray>"
+  Scatter_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 將於</gray><green><bold>{fancy-time}</bold></green><gray>後開始傳送玩家。</gray>"
   Scatter_Started: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>]</gray> <yellow><bold>開始傳送所有玩家至遊戲世界...</bold></yellow>"
   Scatting_Players: "<gray>傳送玩家中... ({count}/{total})。</gray>"
   Scatter_Finished: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>]</gray> <yellow><bold>所有玩家皆已傳送完畢，遊戲將於倒數完畢後開始。</bold></yellow>"
-  Damage_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 無敵將於 </gray><yellow><bold>{fancy-time}</bold></yellow><gray> 後失效。</gray>"
+  Damage_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 無敵將於</gray><yellow><bold>{fancy-time}</bold></yellow><gray>後失效。</gray>"
   Damage_Enabled: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>]</gray> <red>無敵已失效。</red>"
-  Pvp_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] PvP將於 </gray><red><bold>{fancy-time}</bold></red><gray> 後開啟。</gray>"
+  Pvp_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] PvP將於</gray><red><bold>{fancy-time}</bold></red><gray>後開啟。</gray>"
   Pvp_Enabled: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>]</gray> <red>PvP已開啟。</red>"
-  Final_Heal_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 將於 </gray><light_purple><bold>{fancy-time}</bold></light_purple><gray> 後恢復所有血量。</gray>"
+  Final_Heal_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 將於</gray><light_purple><bold>{fancy-time}</bold></light_purple><gray>後恢復所有血量。</gray>"
   Final_Heal_Enabled: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>]</gray> <red>已恢復所有玩家血量。</red>"
-  Nether_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 地獄將於 </gray><dark_red><bold>{fancy-time}</bold></dark_red><gray> 後關閉。</gray>"
+  Nether_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 地獄將於</gray><dark_red><bold>{fancy-time}</bold></dark_red><gray>後關閉。</gray>"
   Nether_Disabled: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>]</gray> <red>地獄已關閉。</red>"
-  Starting_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 遊戲即將在 </gray><dark_green><bold>{fancy-time}</bold></dark_green><gray> 後開始。</gray>"
+  Starting_Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 遊戲即將在</gray><dark_green><bold>{fancy-time}</bold></dark_green><gray>後開始。</gray>"
   Game_Started:
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
     - "<green><bold>遊戲開始了!</bold></green>"
@@ -190,27 +186,27 @@ CountDown:
     - "<white>希望你能夠擁有無比的運氣與良好的實力</white>"
     - "<white>獲得最後的勝利。</white>"
     - " "
-    - "<green>主持人 </green><white>{host}</white><green> 祝福你遊玩愉快。</green>"
+    - "<green>主持人</green><white>{host}</white><green>祝福你遊玩愉快。</green>"
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
   Border:
     Timer:
-      Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 邊界將於 </gray><dark_red><bold>{fancy-time}</bold></dark_red><gray> 後收縮到 </gray><dark_red><bold>{size}x{size}</bold></dark_red><gray>。</gray>"
+      Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 邊界將於</gray><dark_red><bold>{fancy-time}</bold></dark_red><gray>後收縮到</gray><dark_red><bold>{size}x{size}</bold></dark_red><gray>。</gray>"
       Reduced: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 邊界已收縮至 {size}x{size}。</gray>"
     Shrink:
-      Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 邊界將於 </gray><dark_red><bold>{fancy-time}</bold></dark_red><gray> 後開始收縮。</gray>"
+      Announce: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 邊界將於</gray><dark_red><bold>{fancy-time}</bold></dark_red><gray>後開始收縮。</gray>"
       Reduced: "<gray>[</gray><gold><bold>遊戲提醒</bold></gold><gray>] 邊界已開始收縮，世界將會不停壓縮，直到 {size}x{size} 為止。</gray>"
 
 Game:
-  Player_Disconnect: "<white>{player}</white><gray> 離線了。</gray>"
+  Player_Disconnect: "<white>{player}</white><gray>離線了。</gray>"
   Player_Reconnect: "<white>{player}</white> <green>重新登入了遊戲。</green>"
   No_Nether: "<gray>[</gray><red>地獄</red><gray>]</gray> <red>本場遊戲並沒有開啟地獄。</red>"
-  You_Have_Been_Killed: "<gray>你被 </gray><red>{team} {character} {killer}</red><gray> 以 </gray><red>{heal}❤</red><gray> 的血量差距擊殺。</gray>"
+  You_Have_Been_Killed: "<gray>你被</gray><red>{team} {character} {killer}</red><gray>以</gray><red>{heal}❤</red><gray>的血量差距擊殺。</gray>"
   Team_Eliminated: "<yellow>{team}</yellow> <red>全隊滅絕。</red>"
   Item_Disabled: "<red>本場UHC無法使用此物品。</red>"
   Relog_Death: "<white>{player}</white><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray> <red>因為離線超過 {minute} 分鐘而被判定死亡。</red>"
   Ipvp_Lava: "<red>PvP尚未開放，你無法在玩家附近放岩漿。</red>"
   Ipvp_Fire: "<red><bold>由於PvP尚未開始，因此你無法放置任何可燃物在玩家身旁。</bold></red>"
-  Arrow_Health_Message: "<red>{player}</red><gray> 還剩下 </gray><red>{heal}❤</red><gray>。</gray>"
+  Arrow_Health_Message: "<red>{player}</red><gray>還剩下</gray><red>{heal}❤</red><gray>。</gray>"
   Victory_Broadcast:
     - "<white><strikethrough>――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――</strikethrough></white>"
     - "<gold><bold>恭喜隊伍 {winner} 獲得這場UHC的勝利!</bold></gold>"
@@ -256,10 +252,10 @@ Game:
     Other:
       - "<white>{player}</white><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray> <red>死亡了。</red>"
     Player_Killed:
-      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray> <gray>被 </gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray> <gray>擊殺。</gray>"
-      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray> <gray>被 </gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray> <gray>砍死了！</gray>"
-      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray> <gray>被 </gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray> <gray>處理掉了！</gray>"
-      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray> <gray>被 </gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray> <gray>取下了首級。</gray>"
+      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray><gray>被</gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray><gray>擊殺。</gray>"
+      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray><gray>被</gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray><gray>砍死了！</gray>"
+      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray><gray>被</gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray><gray>處理掉了！</gray>"
+      - "<red>{player}</red><dark_gray>[</dark_gray><red>{playerKills}</red><dark_gray>]</dark_gray><gray>被</gray><red>{killer}</red><dark_gray>[</dark_gray><red>{killerKills}</red><dark_gray>]</dark_gray><gray>取下了首級。</gray>"
 ChatFormat:
   Team_Chat: "<gray>[</gray><green><bold>隊伍聊天</bold></green><gray>]</gray> <green>{player}: {msg}</green>"
   Player: "<gray>[</gray><aqua>玩家</aqua><gray>]</gray> <green>{player}</green><white>: {msg}</white>"
@@ -273,23 +269,23 @@ Symbol:
   Minutes: "分鐘"
 
 Console:
-  Chunk_Load_Started: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>開始載入 </green><white>{world}</white><green> 世界的地圖。</green>"
-  Chunk_Load_Finished: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>成功在世界: </green><white>{world}</white><green> 載入 </green><white>{number}</white><green> 個Chunk。</green>"
+  Chunk_Load_Started: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>開始載入</green><white>{world}</white><green>世界的地圖。</green>"
+  Chunk_Load_Finished: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <green>成功在世界:</green><white>{world}</white><green>載入</green><white>{number}</white><green>個Chunk。</green>"
   Chunk_Load_Nether_Detected: "<gray>[</gray><green>遊戲世界</green><gray>]</gray> <yellow><bold>偵測到本場遊戲有開啟地獄，因此開始載入地獄地圖。</bold></yellow>"
 
 Dependency:
-  Require_Soft_Dependency: "<red>你尚未安裝 </red><white>{plugin}</white><red> 插件，因此本功能無法使用。請先至 </red><aqua>{url}</aqua><red> 下載並安裝後，再重新嘗試一次。</red>"
+  Require_Soft_Dependency: "<red>你尚未安裝</red><white>{plugin}</white><red>插件，因此本功能無法使用。請先至</red><aqua>{url}</aqua><red>下載並安裝後，再重新嘗試一次。</red>"
 
 Motd:
   Configuring: "<dark_aqua>遊戲設定中</dark_aqua>"
   Generating: "<dark_aqua>正在載入地圖</dark_aqua>"
   Waiting: "<green>開放入場 </green><gray>(</gray><white>{online}</white><gray>/{max})</gray>"
   Starting: "<dark_green>正在傳送玩家，目前尚可加入遊玩</dark_green>"
-  Playing: "<red>遊戲已經開始，目前還有 </red><white>{remaining}</white><red> 位玩家存活</red>"
+  Playing: "<red>遊戲已經開始，目前還有</red><white>{remaining}</white><red>位玩家存活</red>"
 
 DiscordVoice:
-  Requires_Linked_Account: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <red>語音連線失敗！請先使用 /discord link 綁定帳戶，再使用 /reconnect 指令重新連結。</red>"
-  Not_In_Voice: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <red>語音連線失敗！請先隨意加入一個語音房，再使用 /reconnect 指令重新連結。</red>"
-  Moved: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <yellow>你已被移動至 {channel}。</yellow>"
+  Requires_Linked_Account: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <red>語音連線失敗！請先使用/discord link綁定帳戶，再使用/reconnect指令重新連結。</red>"
+  Not_In_Voice: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <red>語音連線失敗！請先隨意加入一個語音房，再使用/reconnect指令重新連結。</red>"
+  Moved: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <yellow>你已被移動至{channel}。</yellow>"
   Reconnecting: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>] 語音連線中...</gray>"
-  Move_Failed: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <red>語音移動失敗，請聯絡主持人檢查 Discord bot 權限與頻道設定。</red>"
+  Move_Failed: "<gray>[</gray><aqua><bold>Discord語音</bold></aqua><gray>]</gray> <red>語音移動失敗，請聯絡主持人檢查Discord bot權限與頻道設定。</red>"
