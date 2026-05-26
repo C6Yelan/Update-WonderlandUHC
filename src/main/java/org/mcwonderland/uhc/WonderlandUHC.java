@@ -95,7 +95,11 @@ public class WonderlandUHC extends JavaPlugin {
 
         bootstrap.loadFiles();
         bootstrap.loadStaticConfiguration();
-        if (!bootstrap.checkDependencies().isAvailable(Dependency.LUCK_PERMS))
+        bootstrap.applyServerCompatibilitySettings();
+
+        var dependencyReport = bootstrap.checkDependencies();
+        if (!dependencyReport.isAvailable(Dependency.LUCK_PERMS)
+                || !dependencyReport.isAvailable(Dependency.CHUNKY))
             return false;
 
         featureRegistry.loadScoreboardThemes();

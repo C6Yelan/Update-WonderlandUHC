@@ -27,6 +27,12 @@ import org.mcwonderland.uhc.util.ChunkFiller;
 import org.mcwonderland.uhc.util.Extra;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 public final class PluginBootstrap {
 
     private final WonderlandUHC plugin;
@@ -67,7 +73,7 @@ public final class PluginBootstrap {
         DependencyReport report = new DependencyReport();
 
         checkRequiredDependency(report, Dependency.LUCK_PERMS);
-        checkOptionalDependency(report, Dependency.CHUNKY);
+        checkRequiredDependency(report, Dependency.CHUNKY);
         checkOptionalDependency(report, Dependency.DISCORD_SRV);
 
         logDependencyReport(report);
@@ -98,7 +104,7 @@ public final class PluginBootstrap {
         if (dependency.isHooked())
             report.markAvailable(dependency);
         else
-            report.markUnavailable(dependency, "必要插件未啟用，WonderlandUHC 將停止啟用。");
+            report.markUnavailable(dependency, "必要插件未啟用，WonderlandUHC將停止啟用。");
     }
 
     public StatsStorage loadStatsStorage() {
@@ -133,6 +139,34 @@ public final class PluginBootstrap {
 
         Settings.Game.TIME_TO_START_AFTER_TELEPORT = 10;
         Settings.Game.PRE_START_TIME = 10;
+    }
+
+    public void applyServerCompatibilitySettings() {
+        File serverProperties = new File(plugin.getServer().getWorldContainer(), "server.properties");
+
+        if (!serverProperties.isFile())
+            return;
+
+        Properties properties = new Properties();
+
+        try (FileInputStream input = new FileInputStream(serverProperties)) {
+            properties.load(input);
+        } catch (IOException ex) {
+            PluginConsole.log("<red>無法讀取server.properties，因此無法自動設定allow-flight。</red>");
+            return;
+        }
+
+        if ("true".equalsIgnoreCase(properties.getProperty("allow-flight")))
+            return;
+
+        properties.setProperty("allow-flight", "true");
+
+        try (FileOutputStream output = new FileOutputStream(serverProperties)) {
+            properties.store(output, "Updated by WonderlandUHC");
+            PluginConsole.log("<gray>已將server.properties的allow-flight設定為true。</gray>");
+        } catch (IOException ex) {
+            PluginConsole.log("<red>無法寫入server.properties，因此無法自動設定allow-flight。</red>");
+        }
     }
 
     public void restoreWorldLoadingStatus() {
@@ -179,6 +213,7 @@ public final class PluginBootstrap {
                 "                                                  ",
                 "<dark_aqua>Author: </dark_aqua><white>LU__LU</white>",
                 "<dark_aqua>Version: </dark_aqua><white>" + plugin.getPluginMeta().getVersion() + "</white>",
+                "<dark_aqua>New Version Forker:</dark_aqua><white>SnYe,C6Yelan</white>",
                 "",
                 "<dark_aqua>Enjoy your own UHC time!</dark_aqua>",
                 PluginConsole.consoleLineSmooth());

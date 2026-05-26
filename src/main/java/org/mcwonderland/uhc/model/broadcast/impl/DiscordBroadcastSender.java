@@ -30,7 +30,7 @@ public class DiscordBroadcastSender extends AbstractBroadcastSender {
     @Override
     protected void send(List<String> messages) {
         if (!DiscordSRV.isReady)
-            throw new BroadcastDeliveryException("<red>DiscordSRV 尚未完成啟動，請稍後再試。</red>");
+            throw new BroadcastDeliveryException("<red>DiscordSRV尚未完成啟動，請稍後再試。</red>");
 
         channelIds.forEach(channel -> {
             TextChannel textChannel = DiscordUtil.getTextChannelById(channel);

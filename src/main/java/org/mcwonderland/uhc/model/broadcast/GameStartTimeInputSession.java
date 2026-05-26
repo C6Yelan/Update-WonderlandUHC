@@ -12,7 +12,7 @@ import java.util.function.Consumer;
 public final class GameStartTimeInputSession {
 
     private static final Map<UUID, GameStartTimeInputSession> sessions = new ConcurrentHashMap<>();
-    private static final String CANCELLED_MESSAGE = "<red>Discord 公告輸入已取消。</red>";
+    private static final String CANCELLED_MESSAGE = "<red>Discord公告輸入已取消。</red>";
 
     private final GameStartTimeInfo.GameStartTimeInfoBuilder infoBuilder = GameStartTimeInfo.builder();
     private final Consumer<GameStartTimeInfo> onComplete;

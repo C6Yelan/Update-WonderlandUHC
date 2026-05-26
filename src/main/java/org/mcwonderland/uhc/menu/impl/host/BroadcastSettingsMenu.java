@@ -56,7 +56,7 @@ public class BroadcastSettingsMenu extends PluginMenu {
             Chat.send(player, PluginText.replaceToString(
                     Messages.Dependency.REQUIRE_SOFT_DEPENDENCY,
                     "{plugin}", Dependency.DISCORD_SRV.getPluginName(),
-                    "{url}", Dependency.DISCORD_SRV.getDownloadUrl()
+                    "{url}", PluginText.formatted(Dependency.DISCORD_SRV.getClickableDownloadUrlTag())
             ));
             return;
         }
@@ -65,7 +65,7 @@ public class BroadcastSettingsMenu extends PluginMenu {
         GameStartTimeInputSession.start(player, info -> {
             try {
                 sender.sendBroadcast(info);
-                Chat.send(player, "<green>Discord 公告已送出。</green>");
+                Chat.send(player, "<green>Discord公告已送出。</green>");
             } catch (BroadcastDeliveryException e) {
                 Chat.send(player, e.getMessage());
             }

@@ -43,7 +43,7 @@ public class ReconnectCommand implements CommandExecutor {
             Chat.send(player, PluginText.replaceToString(
                     Messages.Dependency.REQUIRE_SOFT_DEPENDENCY,
                     "{plugin}", Dependency.DISCORD_SRV.getPluginName(),
-                    "{url}", Dependency.DISCORD_SRV.getDownloadUrl()
+                    "{url}", PluginText.formatted(Dependency.DISCORD_SRV.getClickableDownloadUrlTag())
             ));
             return true;
         }
