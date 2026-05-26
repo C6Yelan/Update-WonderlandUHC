@@ -80,7 +80,7 @@ javac -version
 版本或 manifest 變動時可檢查：
 
 ```bash
-unzip -p build/libs/WonderlandUHC-1.21.11-0.1.1.jar plugin.yml
+unzip -p build/libs/WonderlandUHC-1.21.11-0.1.2.jar plugin.yml
 ```
 
 重點看：
