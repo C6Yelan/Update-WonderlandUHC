@@ -112,13 +112,14 @@ unzip -p build/libs/WonderlandUHC-1.21.11-0.1.1.jar plugin.yml
 1. Paper 版本符合目標線，例如 `1.21.11`。
 2. Java 版本是 21。
 3. LuckPerms 已啟用。
-4. WonderlandUHC 已啟用。
-5. console 有 WonderlandUHC 依賴插件狀態。
-6. `LuckPerms` 顯示 `可用`。
-7. 缺少 optional plugin 時只顯示 `未啟用`，不應造成 WonderlandUHC enable 失敗。
-8. log 不應出現 `ERROR`、`SEVERE`、`NoClassDefFoundError`、`NoSuchMethodError`、`ClassCastException` 或未處理 exception。
+4. Chunky 已啟用。
+5. WonderlandUHC 已啟用。
+6. console 有 WonderlandUHC 依賴插件狀態。
+7. `LuckPerms` 與 `Chunky` 顯示 `可用`。
+8. 缺少 optional plugin 時只顯示 `未啟用`，不應造成 WonderlandUHC enable 失敗。
+9. log 不應出現 `ERROR`、`SEVERE`、`NoClassDefFoundError`、`NoSuchMethodError`、`ClassCastException` 或未處理 exception。
 
-如果修改牽涉 Chunky，則 Chunky 也應顯示 `可用`，且需要進一步跑正式預生成流程。
+如果修改牽涉 Chunky，還需要進一步跑正式預生成流程。
 
 ## Dependency Status 判讀
 
@@ -127,16 +128,17 @@ unzip -p build/libs/WonderlandUHC-1.21.11-0.1.1.jar plugin.yml
 ```text
 依賴插件狀態:
 - LuckPerms: 可用
-- Chunky: 未啟用 (未偵測到可用插件，相關功能會停用。)
+- Chunky: 可用
 - DiscordSRV: 未啟用 (未偵測到可用插件，相關功能會停用。)
 ```
 
-這代表 LuckPerms 正常，Chunky / DiscordSRV 缺少但不阻止啟動。若要驗證跑圖流程，Chunky 不能是 `未啟用`。
+這代表必要依賴正常，DiscordSRV 缺少但不阻止啟動。
 
 不正常例子：
 
 ```text
-- LuckPerms: 缺少 (必要插件未啟用，WonderlandUHC 將停止啟用。)
+- LuckPerms: 缺少 (必要插件未啟用，WonderlandUHC將停止啟用。)
+- Chunky: 缺少 (必要插件未啟用，WonderlandUHC將停止啟用。)
 ```
 
 這代表部署狀態不正確，不能視為通過啟動測試。

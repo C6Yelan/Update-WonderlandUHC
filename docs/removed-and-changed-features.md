@@ -59,7 +59,7 @@
 | --- | --- |
 | Foundation 移除 | 屬於內部 framework 替換。command、menu、settings 等多數使用者功能仍保留，只是改成 repo 自己的實作。 |
 | DatouNMS 移除 | 大多是內部相容層移除；真正跟玩家功能直接相關的是 `OldEnchant` 等 NMS 依賴行為。 |
-| command framework 改寫 | `/team`、`/uhc`、`/whitelist` 等多數指令是換實作，不是刪除。 |
+| command framework 改寫 | `/team`、`/uhc` 等多數指令是換實作，不是刪除。 |
 | menu framework 改寫 | 大多是 GUI 底層從 Foundation menu 換成本 repo menu，不是 GUI 功能整包消失。 |
 | DiscordSRV | Discord 公告與語音整合仍保留；只是依賴狀態與缺失時的降級行為重新整理。 |
 | 中心點與邊界流程 | 舊 `0,0` 假設被替換為 match center / center search，不是移除選圖功能。 |

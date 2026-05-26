@@ -58,7 +58,7 @@
 - DatouNMS 與 Foundation 已不再作為主要 runtime 依賴。
 - LuckPerms 成為登入 gate / 權限查詢策略的一部分。
 - 訊息預設格式已改為 Adventure MiniMessage。
-- Chunky / DiscordSRV 等外部整合以可選依賴或明確降級行為處理。
+- Chunky 作為必要依賴處理；DiscordSRV 以可選依賴與明確降級行為處理。
 - Scenario、GUI、scoreboard、practice、host settings、登入 gate 與主要遊戲流程已經過 Paper `1.21.11` 實機驗收與 regression 修正。
 - Step 26 修正後回測已完成；若後續有新失敗，應回到小範圍修正切片，不應重新展開大範圍重構。
 
