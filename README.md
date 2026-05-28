@@ -1,6 +1,8 @@
 # WonderlandUHC
 WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的MinecraftUHC插件，內含多達38項特殊模式，以及各式各樣有趣的UHC相關設定，歡迎前來下載體驗！
 
+### 前往插件介紹網站：https://snowyue.dpdns.org/
+
 <img width="851" height="315" alt="UHC Group photo (自訂)" src="https://github.com/user-attachments/assets/f504568a-ee37-42e2-ba21-23f928a2e016" />
 
 
@@ -38,7 +40,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 | --- | --- |
 | Minecraft | Paper `1.21.11` |
 | Java | Java `21` |
-| 插件版本 | `1.21.11-0.1.2` |
+| 插件版本 | `1.21.11-0.1.3` |
 
 
 
