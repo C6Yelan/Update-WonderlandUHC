@@ -29,7 +29,7 @@ public class DefaultJoinMessage implements JoinBehavior {
                     .replace("{online}", "" + Extra.getOnlinePlayers())
                     .replace("{max}", "" + Game.getSettings().getMaxPlayers()));
         } else
-            Chat.send(player, PluginText.replaceToString(
+            Chat.send(player, PluginText.replaceToArray(
                     Messages.Lobby.WELCOME_MSG_CONFIGURING,
                     "{cmd}", "uhc tutorial config"));
     }

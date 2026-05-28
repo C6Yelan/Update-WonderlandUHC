@@ -98,12 +98,13 @@ Editor:
       Saved: "<green>禁止物品儲存完成。</green>"
 
 Lobby:
-  Non_Spawn_Set: "<red><bold>未找到大廳座標，請先使用</bold></red><white><bold>/{cmd}</bold></white><red><bold>設定大廳重生點。</bold></red>"
+  Non_Spawn_Set: "<red><bold>未找到大廳座標，目前暫用伺服器預設重生點；請站在想要設定的位置並使用</bold></red><white><bold>/{cmd}</bold></white><red><bold>設定大廳重生點。</bold></red>"
   Welcome_Msg_Configuring:
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
     - "<gold>本遊戲尚未設定完畢，請先使用道具或是</gold><yellow>/uhc edit</yellow>"
     - "<gold>設定遊戲內容並載入地圖，待一切完成後再開放玩家入場。</gold>"
     - " "
+    - "<dark_aqua>若尚未固定大廳位置，請站在大廳並輸入</dark_aqua><white>/setspawn</white><dark_aqua>。</dark_aqua>"
     - "<dark_aqua>如果不知如何開始，可以輸入</dark_aqua><white>/{cmd}</white><dark_aqua>獲取教學。</dark_aqua>"
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
   Welcome_Msg:

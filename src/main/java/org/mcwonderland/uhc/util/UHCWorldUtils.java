@@ -3,7 +3,6 @@ package org.mcwonderland.uhc.util;
 import lombok.experimental.UtilityClass;
 import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
-import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.spawn.Spawns;
 import org.mcwonderland.uhc.settings.spawn.UHCSpawn;
@@ -53,12 +52,7 @@ public class UHCWorldUtils {
 
     public Location getLobbySpawn() {
         UHCSpawn lobbySpawn = Spawns.getLobbySpawn();
-        Location location = lobbySpawn.getLocation();
-
-        if (!lobbySpawn.isSet())
-            Chat.broadcast(Messages.Lobby.NON_SPAWN_SET.replace("{cmd}", "setspawn"));
-
-        return location;
+        return lobbySpawn.getLocation();
     }
 
     public MatchCenter getMatchCenter() {

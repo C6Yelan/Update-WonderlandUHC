@@ -15,6 +15,7 @@ import java.io.IOException;
 
 @Getter
 public class UHCSpawn {
+    private static final String LEGACY_DEFAULT_LOBBY_PLACEHOLDER = "world 0 80 0 0 0";
 
     @Getter(AccessLevel.PRIVATE)
     private final String prefix;
@@ -36,6 +37,9 @@ public class UHCSpawn {
         if (raw == null || raw.isBlank())
             return defaultLocation();
 
+        if (isLegacyDefaultLobbyPlaceholder(path, raw))
+            return defaultLocation();
+
         try {
             Location location = parseLocation(raw);
             set = true;
@@ -43,6 +47,18 @@ public class UHCSpawn {
         } catch (RuntimeException e) {
             return defaultLocation();
         }
+    }
+
+    private boolean isLegacyDefaultLobbyPlaceholder(String path, String raw) {
+        return "Lobby".equals(path)
+                && normalizeLocation(raw).equals(LEGACY_DEFAULT_LOBBY_PLACEHOLDER);
+    }
+
+    private String normalizeLocation(String raw) {
+        return raw.replace("\"", "")
+                .replace(",", " ")
+                .trim()
+                .replaceAll("\\s+", " ");
     }
 
     private Location defaultLocation(String... msg) {
