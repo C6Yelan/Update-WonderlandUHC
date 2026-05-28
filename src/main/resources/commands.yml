@@ -25,8 +25,8 @@ Uhc:
       - " "
       - "<green>預覽世界已經開始載入，當載入完畢後便會將你傳送至該世界。</green>"
       - " "
-      - "<gray>覺得中心點是漂亮的，可使用</gray><green>/uhc choose</green><gray>來確認並開始正式載入；</gray>"
-      - "<gray>如果世界不好看，則請使用</gray><gold>/uhc regen</gold><gray>來重新載入世界。</gray>"
+      - "<gray>如果預覽中心與周圍地形適合比賽，可使用</gray><green>/uhc choose</green><gray>確認並開始正式載入。</gray>"
+      - "<gray>如果地形不適合，請使用</gray><gold>/uhc regen</gold><gray>重新建立預覽世界。</gray>"
       - " "
   SpecToggle:
     Only_For_Default_Spectate_Mode: "<gray>[<dark_aqua>觀戰系統</dark_aqua>]</gray> <red>此功能無法在此觀戰模式下使用。</red>"

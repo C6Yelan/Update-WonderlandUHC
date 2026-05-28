@@ -33,6 +33,26 @@ public class UHCConfigTutorial extends Tutorial {
 
         @Override
         protected TutorialSection nextSection() {
+            return new LobbySpawnTutorialSection();
+        }
+    }
+
+    private class LobbySpawnTutorialSection extends TutorialSection {
+
+        @Override
+        protected String[] getMessages() {
+            return new String[]{
+                    "開始調整遊戲前，請先確認玩家等待用的大廳位置。",
+                    " ",
+                    "如果你使用自訂大廳地圖，請站在希望玩家進入伺服器後出現的位置，輸入 <yellow>/setspawn</yellow><white>。</white>",
+                    "如果還沒準備大廳，系統會暫時使用伺服器預設重生點，並持續提醒你稍後設定。",
+                    " ",
+                    "<yellow>完成或暫時略過大廳設定後，請輸入任意字元前往下個教學...</yellow>"
+            };
+        }
+
+        @Override
+        protected TutorialSection nextSection() {
             return new EditorMenuTutorialSection();
         }
     }
@@ -130,7 +150,8 @@ public class UHCConfigTutorial extends Tutorial {
             return new String[]{
                     "<gold>你滿意現在的世界嗎?</gold>",
                     " ",
-                    "如果覺得中心點<red>不夠平整</red><white>，可以依照上面的文字所述，</white><gold><bold>輸入指令重新生成世界</bold></gold><white>，直到滿意為止。</white>",
+                    "如果覺得預覽中心或周圍地形<red>不適合比賽</red><white>，可以再次使用 </white><gold><bold>/uhc regen</bold></gold><white> 重新建立預覽世界。</white>",
+                    "如果目前結果可以接受，稍後請使用 <green>/uhc choose</green><white> 確認這張地圖並開始正式載入。</white>",
                     " ",
                     "<dark_red><bold>注意！</bold></dark_red><red><bold>找到合適的世界後，別急著輸入指令載入地圖，這邊有些事情還沒交代給你，麻煩繼續把教學看完。</bold></red>",
                     " ",
@@ -151,7 +172,7 @@ public class UHCConfigTutorial extends Tutorial {
             return new String[]{
                     "<gold><bold>恭喜你設定完成！現在可輸入指令開始生成地圖了。</bold></gold>",
                     " ",
-                    "屆時地圖載入完畢後，別忘了輸入 <aqua><bold>/uhc toturial host</bold></aqua> <white>繼續下階段的教學！</white>",
+                    "屆時地圖載入完畢後，別忘了輸入 <aqua><bold>/uhc tutorial host</bold></aqua> <white>繼續下階段的教學！</white>",
                     " ",
                     "<yellow><bold>本教學已告一段落。</bold></yellow>"
             };

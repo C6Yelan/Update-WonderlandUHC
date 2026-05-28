@@ -527,7 +527,7 @@ Staff_Options:
         - "<red>左鍵點擊</red><white>></white><red>減少</red><yellow>1</yellow><red>個等級</red>"
         - "<green>右鍵點擊</green><white>></white><green>增加</green><yellow>1</yellow><green>個等級</green>"
 Center_Cleaner:
-  Title: "<dark_green><bold>是否使用中心點清理系統?</bold></dark_green>"
+  Title: "<dark_green><bold>是否使用中心搜尋系統?</bold></dark_green>"
   Rows: 3
   Buttons:
     Agree:
@@ -535,17 +535,17 @@ Center_Cleaner:
       Type: LIME_WOOL
       Name: "<green>是的，請啟用</green>"
       Lore:
-        - "<gray>啟用後將會不停嘗試生成</gray>"
-        - "<gray>直到有一張中心點平坦的地圖出現後才TP你過去</gray>"
-        - "<red>此選項會增加載入時間，但是會讓中心點非常好看</red>"
+        - "<gray>建立預覽世界後，會在同一張世界中搜尋候選中心。</gray>"
+        - "<gray>系統會將最佳結果作為本場比賽中心並傳送你預覽。</gray>"
+        - "<red>此選項會增加世界生成時間，但可以避免大多數不適合戰鬥的地形</red>"
     Disagree:
       Slot: 14
       Type: RED_WOOL
       Name: "<red>我應該不需要</red>"
       Lore:
-        - "<gray>生成完地圖後不會偵測中心點是否平坦</gray>"
-        - "<gray>會直接將你TP過去</gray>"
-        - "<red>此選項使用後可以減少篩選時間，但是無法保證中心點平坦程度</red>"
+        - "<gray>直接建立預覽世界，不執行候選中心評分。</gray>"
+        - "<gray>系統仍會傳送你到預覽中心，方便人工確認地形。</gray>"
+        - "<red>此選項速度較快，但中心品質由原始地形決定。</red>"
 See_Inventory:
   Title: "<dark_green><bold>{player}</bold></dark_green><yellow>的背包內容</yellow>"
   Rows: 6
