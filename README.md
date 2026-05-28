@@ -8,16 +8,18 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 ## 安裝方式
 ### 插件教學資源
 如果您不清楚Minecraft伺服器的安裝方式、看不懂底下的敘述，可以通過下列方法學習
-- 觀看包含安裝伺服器的完整教學影片：[前往插件教學影片清單](https://www.youtube.com/watch?v=muiqzpNwOAk&list=PL86KqzDo7_n0Vkthb9I85hfS390i-4NPb)
+
+- 我們寫了非常詳細的使用說明，提供給架設伺服器的新手！[前往教學目錄](docs/tutorial/WonderlandUHC%20插件教學目錄.md)
+- 觀看原作者提供的完整教學：[前往插件教學影片清單](https://www.youtube.com/watch?v=muiqzpNwOAk&list=PL86KqzDo7_n0Vkthb9I85hfS390i-4NPb)
 - 若安裝插件後，不熟悉遊戲內操作，可在遊戲裡輸入`/uhc tutorial`，獲取遊戲內UHC主持教學
 
-### 文字安裝步驟
+### 文字安裝步驟(提供有開服基礎的使用者)
 1. 準備 Paper `1.21.11` 伺服器[(也可以點我下載)](https://fill-ui.papermc.io/projects/paper/version/1.21.11)，並使用 Java `21` 啟動
 2. 從[Releases](https://github.com/C6Yelan/Update-WonderlandUHC/releases)下載 WonderlandUHC.jar
 3. 將插件放入伺服器的插件資料夾 `plugins/`
-4. 安裝[LuckPerms](https://modrinth.com/plugin/luckperms/changelog?g=1.21.11&l=paper)和[Chunky](https://modrinth.com/plugin/chunky/changelog?c=release&g=1.21.11&l=paper)兩款依賴插件，放入伺服器的插件資料夾 `plugins/`
-(若未安裝就開啟伺服器，可能導致插件無法使用！)
-5. 若需使用Discord群組公告功能及語音系統，請安裝[DiscordSRV](https://modrinth.com/plugin/discordsrv/versions?g=1.21.11&l=paper)
+4. 安裝[LuckPerms](https://modrinth.com/plugin/luckperms/changelog?g=1.21.11&l=paper)和[Chunky](https://modrinth.com/plugin/chunky)兩款依賴插件，放入伺服器的插件資料夾 `plugins/`
+**(若未安裝就開啟伺服器，可能導致插件無法使用！)**
+5. 若需使用Discord群組公告功能及語音系統，請安裝[DiscordSRV](https://modrinth.com/plugin/discordsrv)
 6. 啟動伺服器，讓插件產生預設設定檔
 7. 依需求修改 `plugins/WonderlandUHC/` 內的設定檔，再重啟伺服器或依情況使用 `/uhc reload`
 8. 享受你的UHC比賽！
@@ -28,25 +30,25 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 
 ## 目前支援狀況
 
+此插件未來將視情況跟進新版本，或考慮支援舊版本，目前會以1.21.11為基礎開發
+
+#### 我們的更新速度非常仰賴社群活躍度，如果您能協助我們宣傳此插件、使用此插件舉辦大型比賽，我們將會非常樂意加快更新速度！
+
 | 項目 | 版本 / 狀態 |
 | --- | --- |
 | Minecraft | Paper `1.21.11` |
 | Java | Java `21` |
 | 插件版本 | `1.21.11-0.1.2` |
 
-此插件未來將視情況跟進新版本，或考慮支援舊版本，目前會以1.21.11為基礎開發
+
 
 ## 外部插件介紹
 
 | 插件 | 類型 | 用途 |
 | --- | --- | --- |
 | LuckPerms | 必要 |  檢查與驗證玩家權限 |
-| Chunky | 必要 |進行UHC世界跑圖，提高遊玩效能|
+| Chunky | 必要 |預加載UHC世界，提高遊玩效能|
 | DiscordSRV | 可選 |啟用Discord群組公告功能及語音系統 |
-
-注意事項：
-**未安裝LuckPerms會讓WonderlandUHC停止啟用，請務必安裝！**
-**未安裝Chunky也會讓WonderlandUHC停止啟用，請務必安裝！**
 
 ## 插件運作流程
 
@@ -60,7 +62,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 
 ## 訊息格式
 
-新版新版預設訊息設定使用 Adventure MiniMessage，例如：
+新版預設訊息設定使用 Adventure MiniMessage，例如：
 
 ```text
 <red>錯誤</red>
@@ -70,7 +72,9 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 
 修改 `commands.yml`、`messages.yml`、`gui.yml`、`items.yml`、`scoreboards.yml`、`scenarios.yml`、`settings.yml` 等文件時，請使用MiniMessage格式，並保留 `{placeholder}` 名稱
 
-詳細摘要見 [docs/text-format.md](docs/text-format.md)
+在此提供一個非常方便的MiniMessage產生器:https://webui.advntr.dev/
+
+關於此段落，詳細內容請見 [docs/text-format.md](docs/text-format.md)
 
 ## 開發文件
 
@@ -98,8 +102,8 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 ### 原作者
 #### LU__LU / 魯魯
 - Github個人檔案：[點此前往](https://github.com/lulu2002)
-- 原專案連結：<https://github.com/MCWonderland/WonderlandUHC>
+- 原專案連結：[點此前往](https://github.com/MCWonderland/WonderlandUHC)
 ### 原專案背景介紹
-前身為魯大頭UHC，於2019年以付費形式發布，本次Fork插件的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援
+前身為魯大頭UHC，於2019年以付費形式發布，我們本次Fork插件的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援。
 
 本fork保留原專案作者、開源脈絡與 GPL-3.0 授權。若需要理解本 fork 的維護背景與協作方式，請參考 [docs/maintenance-context.md](docs/maintenance-context.md)
