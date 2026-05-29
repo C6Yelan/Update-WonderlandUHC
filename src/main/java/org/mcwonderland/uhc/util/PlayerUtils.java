@@ -155,7 +155,6 @@ public class PlayerUtils {
         return getBukkitArmorPoints(itemStack.getType()) + getCustomArmorPoints(itemStack);
     }
 
-    @SuppressWarnings("null")
     private double getBukkitArmorPoints(Material material) {
         if (material == null)
             return 0;
