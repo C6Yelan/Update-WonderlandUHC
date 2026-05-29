@@ -20,9 +20,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
 public class Extra {
+    private static final String DEFAULT_LEVEL_NAME = "world";
+    private static final String PAPER_DIMENSION_NAMESPACE = "minecraft";
+    private static final String SERVER_PROPERTIES = "server.properties";
     private static final Random r = new Random();
 
     public static ItemStack[] mergeArrays(ItemStack[]... arrays) {
@@ -35,17 +40,67 @@ public class Extra {
     }
 
     public static void deleteWorld(final String world) {
-        final File filePath = new File(Bukkit.getWorldContainer(), world);
-        deleteFiles(filePath);
+        deleteWorld(Bukkit.getWorldContainer(), world);
+    }
+
+    static void deleteWorld(final File worldContainer, final String world) {
+        for (File worldPath : worldStoragePaths(worldContainer, world))
+            deleteFiles(worldPath);
+    }
+
+    static List<File> worldStoragePaths(final File worldContainer, final String world) {
+        Set<File> paths = new LinkedHashSet<>();
+        paths.add(new File(worldContainer, world));
+
+        for (String levelName : levelNames(worldContainer)) {
+            paths.add(new File(new File(new File(new File(worldContainer, levelName), "dimensions"), PAPER_DIMENSION_NAMESPACE), world));
+        }
+
+        return new ArrayList<>(paths);
+    }
+
+    private static Set<String> levelNames(final File worldContainer) {
+        Set<String> levelNames = new LinkedHashSet<>();
+        levelNames.add(DEFAULT_LEVEL_NAME);
+
+        String configuredLevelName = readConfiguredLevelName(worldContainer);
+        if (configuredLevelName != null && !configuredLevelName.isBlank())
+            levelNames.add(configuredLevelName);
+
+        File[] files = worldContainer.listFiles();
+        if (files == null)
+            return levelNames;
+
+        for (File file : files) {
+            if (new File(new File(file, "dimensions"), PAPER_DIMENSION_NAMESPACE).isDirectory())
+                levelNames.add(file.getName());
+        }
+
+        return levelNames;
+    }
+
+    private static String readConfiguredLevelName(final File worldContainer) {
+        File serverProperties = new File(worldContainer, SERVER_PROPERTIES);
+        if (!serverProperties.isFile())
+            return null;
+
+        Properties properties = new Properties();
+
+        try (FileInputStream input = new FileInputStream(serverProperties)) {
+            properties.load(input);
+            return properties.getProperty("level-name");
+        } catch (IOException ex) {
+            return null;
+        }
     }
 
     private static boolean deleteFiles(final File path) {
         if (path.exists()) {
             final File[] files = path.listFiles();
-            File[] arrayOfFile1;
-            final int j = (Objects.requireNonNull(arrayOfFile1 = files)).length;
-            for (int i = 0; i < j; i++) {
-                final File file = arrayOfFile1[i];
+            if (files == null)
+                return path.delete();
+
+            for (final File file : files) {
                 if (file.isDirectory()) {
                     deleteFiles(file);
                 } else {
