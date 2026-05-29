@@ -11,6 +11,7 @@ import org.mcwonderland.uhc.util.TimePlaceholderFormatter;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 
 public class PluginTextTest {
@@ -136,6 +137,14 @@ public class PluginTextTest {
 
         assertEquals("遊戲設定", PlainTextComponentSerializer.plainText().serialize(component));
         assertEquals(TextDecoration.State.FALSE, component.decoration(TextDecoration.ITALIC));
+    }
+
+    @Test
+    public void itemComponentsMustBeComparedWithItemComponents() {
+        Component itemName = PluginText.toItemComponent("<gold><bold>金頭顱</bold></gold>");
+
+        assertEquals(itemName, PluginText.toItemComponent("<gold><bold>金頭顱</bold></gold>"));
+        assertNotEquals(itemName, PluginText.toComponent("<gold><bold>金頭顱</bold></gold>"));
     }
 
     @Test
