@@ -54,7 +54,7 @@ dependencies {
     compileOnly 'com.discordsrv:discordsrv:1.30.5'
     compileOnly 'net.luckperms:api:5.5'
 
-    compileOnly files('libs/Chunky-Bukkit-1.4.40.jar')
+    compileOnly files('libs/Chunky-Bukkit-1.5.3.jar')
 
     compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
 

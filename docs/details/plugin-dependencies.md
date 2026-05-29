@@ -23,7 +23,7 @@ softdepend: [ LuckPerms, Chunky, DiscordSRV ]
 ```gradle
 compileOnly 'net.luckperms:api:5.5'
 compileOnly 'com.discordsrv:discordsrv:1.30.5'
-compileOnly name: 'Chunky-Bukkit-1.4.40'
+compileOnly files('libs/Chunky-Bukkit-1.5.3.jar')
 ```
 
 這些都是 `compileOnly`，外部插件本體不會被打包進 WonderlandUHC jar。
@@ -102,7 +102,7 @@ Chunky 是 softdepend，但啟動檢查會將它視為必要外部插件。
 - 缺少 Chunky 時，WonderlandUHC 會停止啟用。
 - Chunky 可用時，新的 UHC 世界才能進入正式預生成流程。
 
-`libs/Chunky-Bukkit-1.4.40.jar` 只用於本地編譯。實際運行時仍要由伺服器 `plugins/` 內的 Chunky 提供 API。
+`libs/Chunky-Bukkit-1.5.3.jar` 只用於本地編譯。實際運行時仍要由伺服器 `plugins/` 內的 Chunky 提供 API。
 
 主要位置：
 

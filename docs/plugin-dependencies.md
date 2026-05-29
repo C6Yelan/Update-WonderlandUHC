@@ -47,7 +47,7 @@ Chunky 是新版世界預生成流程的必要外部插件。它在 `plugin.yml`
 - 透過 Chunky API 接收預生成完成事件。
 - 完成後接回 WonderlandUHC 的世界載入狀態、cache save 與後續流程。
 
-注意：`libs/Chunky-Bukkit-1.4.40.jar` 只是本專案的本地編譯依賴，讓 Gradle 封裝時找得到 Chunky API。實際開服若要啟用 Chunky 整合，仍需在伺服器 `plugins/` 放入 Chunky 插件。
+注意：`libs/Chunky-Bukkit-1.5.3.jar` 只是本專案的本地編譯依賴，讓 Gradle 封裝時找得到 Chunky API。實際開服若要啟用 Chunky 整合，仍需在伺服器 `plugins/` 放入 Chunky 插件。
 
 ### DiscordSRV
 
