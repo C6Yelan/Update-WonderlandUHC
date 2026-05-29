@@ -16,6 +16,7 @@
 - Shadow plugin：`9.4.2`
 - 插件測試版本：`26.1.2-0.1.0-dev`
 - `plugin.yml`：`api-version: '26.1.2'`
+- `build.gradle` 已改為 Gradle 10 相容寫法，`--warning-mode all` 未再列出 Gradle deprecation warnings。
 
 ## 最終驗證結果
 
@@ -42,6 +43,7 @@ api-version: '26.1.2'
 ## 發現事項
 
 - Java 25 會顯示 `sun.misc.Unsafe` 相關警告；目前看到的 server runtime 警告來自 Paper 依賴的 `org.joml`，不是 WonderlandUHC 程式碼造成。
+- Java 25 編譯時仍會顯示 Lombok 觸發的 `sun.misc.Unsafe` 警告；目前 Lombok `1.18.44` 已是官方列出的最新版本且支援 JDK 25，暫不為此切到非正式版本。
 - WonderlandUHC 啟動時列出的依賴下載連結仍指向 `g=1.21.11`，正式 26 線 release 前應改成 26 線資訊或不綁版本的連結。
 - Paper 26.1.2 新世界資料使用 `world/dimensions/minecraft/...` 結構，後續功能測試需特別覆蓋世界建立、載入、選圖、`uhc_practice` 與 `uhc_world` 相關流程。
 

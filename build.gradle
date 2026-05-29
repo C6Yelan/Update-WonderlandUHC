@@ -6,6 +6,8 @@ plugins {
 group = 'me.lulu'
 version = '26.1.2-0.1.0-dev'
 
+def pluginVersion = version.toString()
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(25)
@@ -13,8 +15,10 @@ java {
 }
 
 processResources {
+    inputs.property('pluginVersion', pluginVersion)
+
     filesMatching('plugin.yml') {
-        expand 'pluginVersion': project.version
+        expand 'pluginVersion': pluginVersion
     }
 }
 
@@ -26,18 +30,17 @@ shadowJar {
 repositories {
     mavenLocal()
     mavenCentral()
-    flatDir { dir("./libs") }
 
     maven {
-        name 'm2-dv8tion'
-        url 'https://m2.dv8tion.net/releases'
+        name = 'm2-dv8tion'
+        url = uri('https://m2.dv8tion.net/releases')
     }
-    maven { url 'https://nexus.scarsz.me/content/groups/public/' }
+    maven { url = uri('https://nexus.scarsz.me/content/groups/public/') }
 
 
-    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    maven { url 'https://oss.sonatype.org/content/groups/public/' }
-    maven { url 'https://repo.papermc.io/repository/maven-public/' }
+    maven { url = uri('https://hub.spigotmc.org/nexus/content/repositories/snapshots/') }
+    maven { url = uri('https://oss.sonatype.org/content/groups/public/') }
+    maven { url = uri('https://repo.papermc.io/repository/maven-public/') }
 
     if (project.hasProperty('useNaluwanRepo')) {
         maven {
@@ -51,7 +54,7 @@ dependencies {
     compileOnly 'com.discordsrv:discordsrv:1.30.5'
     compileOnly 'net.luckperms:api:5.5'
 
-    compileOnly name: 'Chunky-Bukkit-1.4.40'
+    compileOnly files('libs/Chunky-Bukkit-1.4.40.jar')
 
     compileOnly 'io.papermc.paper:paper-api:26.1.2.build.+'
 
