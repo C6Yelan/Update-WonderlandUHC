@@ -3,7 +3,7 @@ name: WonderlandUHC
 version: ${pluginVersion}
 author: LU__LU
 softdepend: [ LuckPerms, Chunky, DiscordSRV ]
-api-version: 1.21
+api-version: '26.1.2'
 
 commands:
   backpack:
