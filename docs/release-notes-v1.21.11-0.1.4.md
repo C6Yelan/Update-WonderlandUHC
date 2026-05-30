@@ -37,5 +37,5 @@
 ## 檔案資訊
 
 - jar 檔案：`WonderlandUHC-1.21.11-0.1.4.jar`
-- jar SHA-256：`61e32c53665e0fdb72cf2cb4e9f6dd8b300e69b6a6cbfd8887366b14ee3a5586`
+- jar SHA-256：`6a3439ac139e0b686575b364196cf63d4048a039cfade24ea71cc67286b71f1a`
 - 對應 commit：`v1.21.11-0.1.4` tag 指向的 commit
