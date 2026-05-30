@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mcwonderland.uhc.api.Scenario;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
 import org.mcwonderland.uhc.platform.menu.PluginPagedMenu;
@@ -62,6 +63,7 @@ public class ScenarioSettingsMenu extends PluginPagedMenu<Scenario> {
                 .replace("{scenario}", scenario.getFancyName()));
 
         Extra.sound(Sounds.Host.SCENARIO_TOGGLED);
+        saveCurrentSettings();
         refreshMenu(player);
     }
 
@@ -95,6 +97,7 @@ public class ScenarioSettingsMenu extends PluginPagedMenu<Scenario> {
         manager.getEnabledScenarios().forEach(scenario -> manager.toggleScenario(scenario, false));
         Game.getSettings().getScenarios().clear();
         Extra.sound(player, Sounds.Host.CLEAR_ENABLED_SCENARIOS);
+        saveCurrentSettings();
         refreshMenu(player);
     }
 
@@ -108,6 +111,10 @@ public class ScenarioSettingsMenu extends PluginPagedMenu<Scenario> {
 
     private int getBackButtonSlot() {
         return getSection().getSize() - BACK_OFFSET;
+    }
+
+    private static void saveCurrentSettings() {
+        WorldLoadingCacheState.saveCache();
     }
 
     private void appendStatusLore(ItemStack item, Scenario scenario) {

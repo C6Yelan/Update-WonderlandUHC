@@ -97,13 +97,12 @@ public class BorderSettingsMenu extends PluginMenu {
         }
 
         if (slot == getSection().getButtonSlot(SIZE_BUTTON)) {
-            startIntegerInput(player, Messages.Editor.Number.BorderSize.MESSAGE,
-                    Messages.Editor.Number.BorderSize.SAVED, borderSettings::setInitialBorder);
+            startInitialBorderInput(player, borderSettings);
             return;
         }
 
         if (slot == getSection().getButtonSlot(NETHER_SIZE_BUTTON)) {
-            startIntegerInput(player, Messages.Editor.Number.NetherBorderSize.MESSAGE,
+            startPositiveIntegerInput(player, Messages.Editor.Number.NetherBorderSize.MESSAGE,
                     Messages.Editor.Number.NetherBorderSize.SAVED, borderSettings::setInitialNetherBorder);
             return;
         }
@@ -114,13 +113,12 @@ public class BorderSettingsMenu extends PluginMenu {
         }
 
         if (slot == getSection().getButtonSlot(FINAL_SIZE_BUTTON)) {
-            startIntegerInput(player, Messages.Editor.Number.FinalSizeOrShrinkModeBorder.MESSAGE,
-                    Messages.Editor.Number.FinalSizeOrShrinkModeBorder.SAVED, borderSettings::setFinalSizeOfShrinkModeBorder);
+            startFinalBorderInput(player, borderSettings);
             return;
         }
 
         if (slot == getSection().getButtonSlot(BORDER_SHRINK_SPEED_BUTTON)) {
-            startDoubleInput(player, Messages.Editor.Number.BorderShrinkSpeed.MESSAGE,
+            startPositiveDoubleInput(player, Messages.Editor.Number.BorderShrinkSpeed.MESSAGE,
                     Messages.Editor.Number.BorderShrinkSpeed.SAVED, borderSettings::setBorderShrinkSpeed);
             return;
         }
@@ -152,9 +150,45 @@ public class BorderSettingsMenu extends PluginMenu {
         displayTo(player);
     }
 
-    private void startIntegerInput(Player player, String prompt, String savedMessage, Consumer<Integer> saveInput) {
+    private void startInitialBorderInput(Player player, UHCBorderSettings borderSettings) {
+        startInput(player, Messages.Editor.Number.BorderSize.MESSAGE, (inputPlayer, input) -> {
+            Integer number = parsePositiveInteger(input);
+
+            if (number == null || number <= borderSettings.getFinalSizeOfShrinkModeBorder()) {
+                Chat.sendConversing(inputPlayer, Messages.Editor.Number.INVALID_NUMBER);
+                return;
+            }
+
+            inputSessions.remove(inputPlayer.getUniqueId());
+            borderSettings.setInitialBorder(number);
+            saveCurrentSettings();
+            Chat.sendConversing(inputPlayer, Messages.Editor.Number.BorderSize.SAVED.replace("{number}", number + ""));
+            Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
+            new BorderSettingsMenu().displayTo(inputPlayer);
+        });
+    }
+
+    private void startFinalBorderInput(Player player, UHCBorderSettings borderSettings) {
+        startInput(player, Messages.Editor.Number.FinalSizeOrShrinkModeBorder.MESSAGE, (inputPlayer, input) -> {
+            Integer number = parsePositiveInteger(input);
+
+            if (number == null || number >= borderSettings.getInitialBorder()) {
+                Chat.sendConversing(inputPlayer, Messages.Editor.Number.INVALID_NUMBER);
+                return;
+            }
+
+            inputSessions.remove(inputPlayer.getUniqueId());
+            borderSettings.setFinalSizeOfShrinkModeBorder(number);
+            saveCurrentSettings();
+            Chat.sendConversing(inputPlayer, Messages.Editor.Number.FinalSizeOrShrinkModeBorder.SAVED.replace("{number}", number + ""));
+            Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
+            new BorderSettingsMenu().displayTo(inputPlayer);
+        });
+    }
+
+    private void startPositiveIntegerInput(Player player, String prompt, String savedMessage, Consumer<Integer> saveInput) {
         startInput(player, prompt, (inputPlayer, input) -> {
-            Integer number = parseInteger(input);
+            Integer number = parsePositiveInteger(input);
 
             if (number == null) {
                 Chat.sendConversing(inputPlayer, Messages.Editor.Number.INVALID_NUMBER);
@@ -170,9 +204,9 @@ public class BorderSettingsMenu extends PluginMenu {
         });
     }
 
-    private void startDoubleInput(Player player, String prompt, String savedMessage, Consumer<Double> saveInput) {
+    private void startPositiveDoubleInput(Player player, String prompt, String savedMessage, Consumer<Double> saveInput) {
         startInput(player, prompt, (inputPlayer, input) -> {
-            Double number = parseDouble(input);
+            Double number = parsePositiveDouble(input);
 
             if (number == null) {
                 Chat.sendConversing(inputPlayer, Messages.Editor.Number.INVALID_NUMBER);
@@ -202,6 +236,11 @@ public class BorderSettingsMenu extends PluginMenu {
             }
 
             double speed = BorderUtil.getShrinkSpeedPerSecond(seconds);
+
+            if (speed <= 0D) {
+                Chat.sendConversing(inputPlayer, Messages.Editor.Number.INVALID_NUMBER);
+                return;
+            }
 
             inputSessions.remove(inputPlayer.getUniqueId());
             borderSettings.setBorderShrinkSpeed(speed);
@@ -233,17 +272,19 @@ public class BorderSettingsMenu extends PluginMenu {
         return getSection().getSize() - BACK_OFFSET;
     }
 
-    private Integer parseInteger(String input) {
+    private Integer parsePositiveInteger(String input) {
         try {
-            return Integer.valueOf(input);
+            int number = Integer.parseInt(input);
+            return number > 0 ? number : null;
         } catch (NumberFormatException ex) {
             return null;
         }
     }
 
-    private Double parseDouble(String input) {
+    private Double parsePositiveDouble(String input) {
         try {
-            return Double.valueOf(input);
+            double number = Double.parseDouble(input);
+            return Double.isFinite(number) && number > 0D ? number : null;
         } catch (NumberFormatException ex) {
             return null;
         }

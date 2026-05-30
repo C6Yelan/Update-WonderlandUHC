@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.game.Game;
 import org.mcwonderland.uhc.game.settings.UHCGameSettings;
 import org.mcwonderland.uhc.game.settings.SavedGameSettingsCache;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.model.GamePlaceholderReplacer;
 import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.menu.PluginMenuSection;
@@ -69,7 +70,8 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
     private void replaceSettings(Player player, UHCGameSettings settings) {
         List<UHCGameSettings> savedSettings = SavedGameSettingsCache.getSavedSettings(player);
 
-        savedSettings.set(savedSettings.indexOf(settings), Game.getSettings());
+        savedSettings.set(savedSettings.indexOf(settings), Game.getSettings().clone());
+        SavedGameSettingsCache.saveGameSettings(player);
     }
 
     @Override
@@ -107,6 +109,7 @@ public class SavedSettingsMenu extends PluginPagedMenu<UHCGameSettings> {
 
     private void loadSettings(UHCGameSettings settings) {
         Game.changeSettings(settings.clone());
+        WorldLoadingCacheState.saveCache();
     }
 
     private void deleteSavedSettings(Player player, UHCGameSettings settings) {

@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.sub.UHCScoreboardSettings;
 import org.mcwonderland.uhc.menu.model.ColorPickerMenu;
 import org.mcwonderland.uhc.platform.item.PluginItems;
@@ -68,6 +69,7 @@ public class ScoreboardSettingsMenu extends PluginMenu {
             return;
 
         Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
+        saveCurrentSettings();
         displayTo(player);
     }
 
@@ -76,6 +78,7 @@ public class ScoreboardSettingsMenu extends PluginMenu {
             @Override
             protected void onChooseColor(Player player, PluginColor color) {
                 scoreboardSettings.setHeartColor(color);
+                saveCurrentSettings();
                 Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             }
         }.displayTo(player);
@@ -83,5 +86,9 @@ public class ScoreboardSettingsMenu extends PluginMenu {
 
     private int getBackButtonSlot() {
         return getSection().getSize() - BACK_OFFSET;
+    }
+
+    private static void saveCurrentSettings() {
+        WorldLoadingCacheState.saveCache();
     }
 }

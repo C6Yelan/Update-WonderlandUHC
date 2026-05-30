@@ -5,6 +5,7 @@ import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.mcwonderland.uhc.api.enums.TeamSplitMode;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.settings.WorldLoadingCacheState;
 import org.mcwonderland.uhc.game.settings.sub.UHCTeamSettings;
 import org.mcwonderland.uhc.platform.item.PluginItems;
 import org.mcwonderland.uhc.platform.console.PluginConsole;
@@ -75,12 +76,14 @@ public class TeamModeSettingsMenu extends PluginMenu {
     private void handleTeamSizeClick(Player player, ClickType click, UHCTeamSettings teamSettings) {
         if (click == ClickType.LEFT) {
             teamSettings.setTeamSize(Math.max(1, teamSettings.getTeamSize() - 1));
+            saveCurrentSettings();
             displayTo(player);
             return;
         }
 
         if (click == ClickType.RIGHT) {
             teamSettings.setTeamSize(teamSettings.getTeamSize() + 1);
+            saveCurrentSettings();
             displayTo(player);
         }
     }
@@ -91,6 +94,7 @@ public class TeamModeSettingsMenu extends PluginMenu {
                 .replace("{player}", player.getName());
 
         teamSettings.setAllowTeamFire(newStatus);
+        saveCurrentSettings();
         Chat.broadcast(message);
         PluginConsole.log(message);
         Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
@@ -100,17 +104,23 @@ public class TeamModeSettingsMenu extends PluginMenu {
     private void handleSplitModeClick(Player player, ClickType click, UHCTeamSettings teamSettings) {
         if (click == ClickType.LEFT) {
             teamSettings.setTeamSplitMode(TeamSplitMode.CHOSEN);
+            saveCurrentSettings();
             displayTo(player);
             return;
         }
 
         if (click == ClickType.RIGHT) {
             teamSettings.setTeamSplitMode(TeamSplitMode.RANDOM);
+            saveCurrentSettings();
             displayTo(player);
         }
     }
 
     private int getBackButtonSlot() {
         return getSection().getSize() - BACK_OFFSET;
+    }
+
+    private static void saveCurrentSettings() {
+        WorldLoadingCacheState.saveCache();
     }
 }

@@ -238,6 +238,7 @@ public class MainSettingsMenu extends PluginMenu {
 
         if (slot == getSection().getButtonSlot(ENDER_PEARL_DAMAGE_BUTTON)) {
             settings.setEnderPearlDamage(!settings.isEnderPearlDamage());
+            saveCurrentSettings();
             Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
             return;
@@ -266,6 +267,7 @@ public class MainSettingsMenu extends PluginMenu {
                 .replace("{player}", player.getName());
 
         settings.setWhitelistOn(newStatus);
+        saveCurrentSettings();
         Chat.broadcast(message);
         PluginConsole.log(message);
         displayTo(player);
@@ -275,13 +277,14 @@ public class MainSettingsMenu extends PluginMenu {
         startInput(player, prompt, (inputPlayer, input) -> {
             Integer number = parseInteger(input);
 
-            if (number == null) {
+            if (number == null || number <= 0) {
                 Chat.sendConversing(inputPlayer, Messages.Editor.Number.INVALID_NUMBER);
                 return;
             }
 
             inputSessions.remove(inputPlayer.getUniqueId());
             saveInput.accept(number.intValue());
+            saveCurrentSettings();
             Chat.sendConversing(inputPlayer, savedMessage.replace("{number}", number + ""));
             Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
             new MainSettingsMenu().displayTo(inputPlayer);
@@ -299,6 +302,7 @@ public class MainSettingsMenu extends PluginMenu {
 
             inputSessions.remove(inputPlayer.getUniqueId());
             settings.setTitle(newTitle);
+            saveCurrentSettings();
             Chat.sendConversing(inputPlayer, savedMessage);
             Extra.sound(inputPlayer, Sounds.Host.SCENARIO_TOGGLED);
             new MainSettingsMenu().displayTo(inputPlayer);
@@ -322,6 +326,7 @@ public class MainSettingsMenu extends PluginMenu {
     private void handleAppleRateClick(Player player, ClickType click, UHCGameSettings settings) {
         if (click == ClickType.LEFT) {
             settings.setAppleRate(Math.max(0, settings.getAppleRate() - 1));
+            saveCurrentSettings();
             Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
             return;
@@ -329,6 +334,7 @@ public class MainSettingsMenu extends PluginMenu {
 
         if (click == ClickType.RIGHT) {
             settings.setAppleRate(Math.min(100, settings.getAppleRate() + 1));
+            saveCurrentSettings();
             Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
         }
@@ -337,6 +343,7 @@ public class MainSettingsMenu extends PluginMenu {
     private void handleExperienceClick(Player player, ClickType click, UHCGameSettings settings) {
         if (click == ClickType.LEFT) {
             settings.setInitialExperience(Math.max(0, settings.getInitialExperience() - 1));
+            saveCurrentSettings();
             Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
             return;
@@ -344,6 +351,7 @@ public class MainSettingsMenu extends PluginMenu {
 
         if (click == ClickType.RIGHT) {
             settings.setInitialExperience(settings.getInitialExperience() + 1);
+            saveCurrentSettings();
             Extra.sound(player, Sounds.Host.SCENARIO_TOGGLED);
             displayTo(player);
         }
@@ -386,6 +394,10 @@ public class MainSettingsMenu extends PluginMenu {
     private static Component runCommandComponent(String message, String command) {
         return PluginText.toComponent(message)
                 .clickEvent(ClickEvent.runCommand(command));
+    }
+
+    private static void saveCurrentSettings() {
+        WorldLoadingCacheState.saveCache();
     }
 
     private interface InputSession {
@@ -434,6 +446,7 @@ public class MainSettingsMenu extends PluginMenu {
             inputSessions.remove(player.getUniqueId());
             Chat.sendConversing(player, savedMessage);
             InventorySaver.saveInventoryData(player, saveType);
+            saveCurrentSettings();
             Extra.sound(player, Sounds.Host.INVENTORY_EDITED);
             player.getInventory().setContents(cloneContents(inventoryBackup));
             player.setGameMode(gameModeBackup);
