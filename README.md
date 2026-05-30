@@ -20,7 +20,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 2. 從[Releases](https://github.com/C6Yelan/Update-WonderlandUHC/releases)下載 WonderlandUHC.jar
 3. 將插件放入伺服器的插件資料夾 `plugins/`
 4. 安裝[LuckPerms](https://modrinth.com/plugin/luckperms/changelog?g=1.21.11&l=paper)和[Chunky](https://modrinth.com/plugin/chunky)兩款依賴插件，放入伺服器的插件資料夾 `plugins/`
-**(若未安裝就開啟伺服器，可能導致插件無法使用！)**
+**(若未安裝就開啟伺服器會導致插件無法使用！)**
 5. 若需使用Discord群組公告功能及語音系統，請安裝[DiscordSRV](https://modrinth.com/plugin/discordsrv)
 6. 啟動伺服器，讓插件產生預設設定檔
 7. 依需求修改 `plugins/WonderlandUHC/` 內的設定檔，再重啟伺服器或依情況使用 `/uhc reload`
@@ -35,6 +35,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 此插件未來將視情況跟進新版本，或考慮支援舊版本，目前會以1.21.11為基礎開發
 
 #### 我們的更新速度非常仰賴社群活躍度，如果您能協助我們宣傳此插件、使用此插件舉辦大型比賽，我們將會非常樂意加快更新速度！
+#### 下一次的大型更新預計將在8月釋出，敬請期待！
 
 | 項目 | 版本 / 狀態 |
 | --- | --- |
@@ -97,7 +98,7 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 
 **※原作者已不再更新此插件，請不要將問題回報給原作者，以免給原作者造成困擾！**
 
-## Fork作者、原作者與原專案背景介紹
+## 專案相關資訊
 ### Fork開發者
 - [C6Yelan](https://github.com/C6Yelan/)：負責主要開發、研究程式碼、升級插件
 - [SnYe 玥雪](https://github.com/SnYe-SnowYue)：設計新版中心點篩選系統，設計宣傳網頁，接手後續插件更新
@@ -105,7 +106,11 @@ WonderlandUHC是一款擁有高度自訂性、高效能、極具趣味性的Mine
 #### LU__LU / 魯魯
 - Github個人檔案：[點此前往](https://github.com/lulu2002)
 - 原專案連結：[點此前往](https://github.com/MCWonderland/WonderlandUHC)
-### 原專案背景介紹
-前身為魯大頭UHC，於2019年以付費形式發布，我們本次Fork插件的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援。
+### 原專案背景介紹、來自作者的回信
+本專案前身為魯魯設計的魯大頭UHC，於2019年以付費形式發布
+本次Fork插件的主要目標是讓原插件能在新版Paper環境中繼續運作，並提供新版本支援。
+我們工作完成後向原作者告知，得到了認可，謝謝魯魯設計如此優秀的UHC插件！
 
-本fork保留原專案作者、開源脈絡與 GPL-3.0 授權。若需要理解本 fork 的維護背景與協作方式，請參考 [docs/maintenance-context.md](docs/maintenance-context.md)
+<img width="1577" height="160" alt="image" src="https://github.com/user-attachments/assets/26955ae3-67a2-4569-bc25-a47b682bfbfd" />
+
+本fork保留原專案作者、開源脈絡與 GPL-3.0 授權。若需要理解本fork的維護背景與協作方式，請參考 [docs/maintenance-context.md](docs/maintenance-context.md)
