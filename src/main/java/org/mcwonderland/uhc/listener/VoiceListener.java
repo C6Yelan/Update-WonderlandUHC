@@ -35,6 +35,9 @@ public class VoiceListener implements Listener {
     public void onTeamDisbanded(TeamDisbandedEvent e) {
         VoiceChannel voiceChannel = teamVoices.remove(e.getTeam());
 
+        if (voiceChannel == null)
+            return;
+
         voiceChannel.getMembers().forEach(DiscordVoiceHook::moveToLobby);
         voiceChannel.delete().queueAfter(1000, TimeUnit.MILLISECONDS);
     }

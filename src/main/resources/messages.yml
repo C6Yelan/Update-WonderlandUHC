@@ -116,7 +116,7 @@ Lobby:
     - "<green>使用</green><white>/scenarios</white><green>將會顯示所有的模式</green>"
     - "<green>使用</green><white>/config</white><green>可以觀看此次UHC的所有設定</green>"
     - "<gray><strikethrough>――――――――――――――――――――――――――――――――――――――――――――</strikethrough></gray>"
-  Player_Join_Msg: "<green>{player}</green> <gray>加入了WonderlandUHC ({online}/{max})。</gray>"
+  Player_Join_Msg: "<green>{player}</green> <gray>進入遊戲 ({online}/{max})。</gray>"
   Player_Leave_Msg: "<green>{player}</green> <gray>離開了遊戲 ({online}/{max})。</gray>"
   Automatic_Game_Canceled: "<red>由於人數不足因此遊戲無法開始，至少需要</red><yellow>{amount}</yellow><red>位玩家才能開始。</red>"
 

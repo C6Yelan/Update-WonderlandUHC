@@ -24,6 +24,7 @@ import org.bukkit.event.Listener;
 import java.util.Objects;
 
 public class DiscordVoiceHook {
+    private static final int DISCORD_READY_WAIT_ATTEMPTS = 120;
     private static DiscordSRV discordSRV = DiscordSRV.getPlugin();
     private static Guild guild;
     private static Category voiceCategory;
@@ -36,15 +37,23 @@ public class DiscordVoiceHook {
     public static void setup() {
         HandlerList.unregisterAll(voiceListener);
 
-        if (Settings.DiscordVoice.USE)
-            new Thread(() -> {
-                while (!DiscordSRV.isReady) {
+        if (Settings.DiscordVoice.USE) {
+            Thread setupThread = new Thread(() -> {
+                int waitAttempts = 0;
+
+                while (!DiscordSRV.isReady && waitAttempts < DISCORD_READY_WAIT_ATTEMPTS) {
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         return;
                     }
+                    waitAttempts++;
+                }
+
+                if (!DiscordSRV.isReady) {
+                    PluginConsole.log("<red>Discord voice setup failed: DiscordSRV is not ready.</red>");
+                    return;
                 }
 
                 discordSRV = DiscordSRV.getPlugin();
@@ -86,7 +95,10 @@ public class DiscordVoiceHook {
 
                 clearChannels();
                 PluginEvents.registerEvents(voiceListener);
-            }).start();
+            }, "WonderlandUHC-DiscordVoiceHook");
+            setupThread.setDaemon(true);
+            setupThread.start();
+        }
     }
 
     private static void clearChannels() {

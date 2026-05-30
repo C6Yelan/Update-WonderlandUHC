@@ -3,12 +3,14 @@ package org.mcwonderland.uhc.util;
 import lombok.experimental.UtilityClass;
 import org.mcwonderland.uhc.application.world.MatchCenter;
 import org.mcwonderland.uhc.game.Game;
+import org.mcwonderland.uhc.game.GameManager;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.spawn.Spawns;
 import org.mcwonderland.uhc.settings.spawn.UHCSpawn;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 @UtilityClass
 public class UHCWorldUtils {
@@ -61,7 +63,15 @@ public class UHCWorldUtils {
 
     public Location getMatchCenterLocation() {
         MatchCenter center = getMatchCenter();
-        return new Location(getWorld(), center.getX(), 100, center.getZ());
+        World world = getWorld();
+
+        if (world == null)
+            return new Location(null, center.getX() + 0.5D, 100, center.getZ() + 0.5D);
+
+        Block block = GameManager.getHighestBlock(world, center.getX(), center.getZ());
+        double y = block == null ? 100 : block.getY() + 2.5D;
+
+        return new Location(world, center.getX() + 0.5D, y, center.getZ() + 0.5D);
     }
 
     public MatchCenter getBorderCenter(World world, int borderSize) {

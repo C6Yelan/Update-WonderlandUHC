@@ -10,6 +10,8 @@ import org.mcwonderland.uhc.util.Extra;
 import org.bukkit.entity.Player;
 
 public class DefaultJoinMessage implements JoinBehavior {
+    private static final String LEGACY_DEFAULT_JOIN_MESSAGE = "<green>{player}</green> <gray>加入了WonderlandUHC ({online}/{max})。</gray>";
+    private static final String DEFAULT_JOIN_MESSAGE = "<green>{player}</green> <gray>進入遊戲 ({online}/{max})。</gray>";
 
     @Override
     public void onJoin(UHCJoinEvent e) {
@@ -24,7 +26,7 @@ public class DefaultJoinMessage implements JoinBehavior {
                     "{host}", game.getHost(),
                     "{title}", Game.getSettings().getTitle()));
 
-            Chat.broadcast(Messages.Lobby.PLAYER_JOIN_MSG
+            Chat.broadcast(joinMessage()
                     .replace("{player}", player.getName())
                     .replace("{online}", "" + Extra.getOnlinePlayers())
                     .replace("{max}", "" + Game.getSettings().getMaxPlayers()));
@@ -32,5 +34,12 @@ public class DefaultJoinMessage implements JoinBehavior {
             Chat.send(player, PluginText.replaceToArray(
                     Messages.Lobby.WELCOME_MSG_CONFIGURING,
                     "{cmd}", "uhc tutorial config"));
+    }
+
+    private String joinMessage() {
+        if (Messages.Lobby.PLAYER_JOIN_MSG == null || LEGACY_DEFAULT_JOIN_MESSAGE.equals(Messages.Lobby.PLAYER_JOIN_MSG))
+            return DEFAULT_JOIN_MESSAGE;
+
+        return Messages.Lobby.PLAYER_JOIN_MSG;
     }
 }

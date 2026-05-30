@@ -10,14 +10,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class ScoreBoardUpdater {
 
     public static void start() {
-        PluginScheduler.runTimerAsync(1, new SidebarUpdater());
+        PluginScheduler.runTimer(1, new SidebarUpdater());
         addNewUpdate(1, SimpleScores::updateHeals);
         addNewUpdate(5, SimpleScores::updateNameTagColors);
     }
 
 
     public static void addNewUpdate(int tick, ScoreUpdateCallback scoreUpdateCallback) {
-        PluginScheduler.runTimerAsync(tick, () -> {
+        PluginScheduler.runTimer(tick, () -> {
             for (SimpleScores score : SimpleScores.getAllScores())
                 scoreUpdateCallback.update(score);
         });

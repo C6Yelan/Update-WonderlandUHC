@@ -14,6 +14,7 @@ import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.Sounds;
 import org.mcwonderland.uhc.util.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRules;
@@ -53,7 +54,15 @@ public class StartCountdown extends Countdown {
     }
 
     private static void setupWorlds() {
+        for (World world : Bukkit.getWorlds()) {
+            world.setFullTime(0);
+            world.setGameRule(GameRules.SPAWN_PHANTOMS, false);
+        }
+
         for (World world : UHCWorldUtils.getUhcWorlds()) {
+            if (world == null)
+                continue;
+
             world.setGameRule(GameRules.LOCATOR_BAR, false);
             world.setGameRule(GameRules.ADVANCE_TIME, true);
             world.setGameRule(GameRules.ADVANCE_WEATHER, true);

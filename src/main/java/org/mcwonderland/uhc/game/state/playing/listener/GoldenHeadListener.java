@@ -53,7 +53,7 @@ public class GoldenHeadListener implements Listener {
     }
 
     private Component goldenHeadName() {
-        return PluginText.toComponent(Settings.Misc.GOLDEN_HEAD_NAME);
+        return PluginText.toItemComponent(Settings.Misc.GOLDEN_HEAD_NAME);
     }
 
     private boolean isScenarioEnabled(ScenarioName scenarioName) {

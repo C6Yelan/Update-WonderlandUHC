@@ -23,7 +23,7 @@ public class InvinciblePlayer {
     private static final Set<UUID> invincibleDamageCancelBypass = new HashSet<>();
 
     public static void startTask() {
-        PluginScheduler.runTimerAsync(20 * 1, new InvinciblePlayerTask());
+        PluginScheduler.runTimer(20 * 1, new InvinciblePlayerTask());
     }
 
     private int time;
