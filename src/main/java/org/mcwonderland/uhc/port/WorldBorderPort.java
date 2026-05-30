@@ -8,7 +8,7 @@ public interface WorldBorderPort {
 
     void setSize(String worldName, double size);
 
-    void changeSize(String worldName, double size, long seconds);
+    void changeSize(String worldName, double size, long ticks);
 
     void setWarningDistance(String worldName, int blocks);
 

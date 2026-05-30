@@ -42,7 +42,7 @@ public final class BorderService {
 
     public void shrinkBorder(String worldName, int finalSize, long seconds, MatchCenter center) {
         worldBorders.setCenter(worldName, center.getX(), center.getZ());
-        worldBorders.changeSize(worldName, finalSize, seconds);
+        worldBorders.changeSize(worldName, finalSize, seconds * TICKS_PER_SECOND);
         worldBorders.setDamageBuffer(worldName, IMMEDIATE_DAMAGE_BUFFER);
     }
 

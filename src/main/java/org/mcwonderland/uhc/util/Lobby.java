@@ -28,7 +28,6 @@ public class Lobby {
     public void tpOnly(Player player) {
         player.teleport(UHCWorldUtils.getLobbySpawn());
         player.getWorld().setGameRule(GameRules.LOCATOR_BAR, false);
-        BorderUtil.resetLobbyBorderIfSeparate();
     }
 
 }

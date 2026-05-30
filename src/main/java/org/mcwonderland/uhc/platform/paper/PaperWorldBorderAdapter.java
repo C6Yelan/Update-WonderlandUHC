@@ -25,8 +25,8 @@ public final class PaperWorldBorderAdapter implements WorldBorderPort {
     }
 
     @Override
-    public void changeSize(String worldName, double size, long seconds) {
-        worldBorder(worldName).changeSize(size, seconds);
+    public void changeSize(String worldName, double size, long ticks) {
+        worldBorder(worldName).changeSize(size, ticks);
     }
 
     @Override

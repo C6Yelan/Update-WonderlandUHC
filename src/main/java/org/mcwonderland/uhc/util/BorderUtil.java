@@ -28,6 +28,8 @@ import java.util.Map;
  * 2019-12-11 下午 07:37
  */
 public class BorderUtil {
+    private static final int VISIBLE_BORDER_WARNING_DISTANCE = 5;
+    private static final int VISIBLE_BORDER_WARNING_SECONDS = 5;
     private static final BorderService BORDER_SERVICE = new BorderService(new PaperWorldBorderAdapter());
     public static HashMap<World, Boolean> preBlocksPlaced = new HashMap<>();
     public static HashMap<World, Integer> preBlocksNumber = new HashMap<>();
@@ -176,6 +178,12 @@ public class BorderUtil {
     }
 
     private static void setNativeBorder(World world, int size) {
+        if (world == null)
+            return;
+
+        if (!UHCWorldUtils.isUhcWorld(world))
+            return;
+
         if (!shouldApplyNativeBorder())
             return;
 
@@ -188,10 +196,15 @@ public class BorderUtil {
     }
 
     public static void moverBorder18(double time) {
-        String worldName = UHCWorldUtils.getWorld().getName();
+        World world = UHCWorldUtils.getWorld();
+
+        if (world == null)
+            return;
+
+        String worldName = world.getName();
         int finalSize = Game.getSettings().getBorderSettings().getFinalSizeOfShrinkModeBorder();
-        BORDER_SERVICE.setWarningDistance(worldName, -2);
-        BORDER_SERVICE.shrinkBorder(worldName, finalSize, ( long ) time, UHCWorldUtils.getBorderCenter(UHCWorldUtils.getWorld(), finalSize));
+        BORDER_SERVICE.setWarning(worldName, VISIBLE_BORDER_WARNING_DISTANCE, VISIBLE_BORDER_WARNING_SECONDS);
+        BORDER_SERVICE.shrinkBorder(worldName, finalSize, ( long ) time, UHCWorldUtils.getBorderCenter(world, finalSize));
     }
 
     public static double getShrinkSpeedPerSecond(int time) {
@@ -200,6 +213,9 @@ public class BorderUtil {
     }
 
     public static double getShrinkSpeedPerSecond(int from, int to, int seconds) {
+        if (seconds <= 0)
+            return 0D;
+
         return PluginText.formatFiveDigits((from - to) / (seconds * 2D));
     }
 
@@ -211,7 +227,10 @@ public class BorderUtil {
     }
 
     public static int getShrinkSecondsCost(int from, int to, double shrinkBlocksPerSecond) {
-        return (int) ((from - to) / (shrinkBlocksPerSecond * 2));
+        if (shrinkBlocksPerSecond <= 0D)
+            return 0;
+
+        return (int) ((from - to) / (shrinkBlocksPerSecond * 2D));
     }
 
     public static void removeUHCWorldWBBorders() {
@@ -220,6 +239,9 @@ public class BorderUtil {
     }
 
     public static void removeWBBorder(World world) {
+        if (world == null)
+            return;
+
         removeWBBorder(world.getName());
     }
 
@@ -228,10 +250,11 @@ public class BorderUtil {
     }
 
     public static void setInitialBorders() {
-        resetLobbyBorderIfSeparate();
-
         for (World uhcWorld : UHCWorldUtils.getUhcWorlds()) {
-            BORDER_SERVICE.setWarning(uhcWorld.getName(), 5, 5);
+            if (uhcWorld == null)
+                continue;
+
+            BORDER_SERVICE.setWarning(uhcWorld.getName(), VISIBLE_BORDER_WARNING_DISTANCE, VISIBLE_BORDER_WARNING_SECONDS);
         }
 
         UHCBorderSettings borderSettings = Game.getSettings().getBorderSettings();
@@ -243,21 +266,15 @@ public class BorderUtil {
         setNativeBorder(world, size);
     }
 
-    public static void resetLobbyBorderIfSeparate() {
-        World lobby = UHCWorldUtils.getLobby();
-
-        if (lobby == null || UHCWorldUtils.isUhcWorld(lobby))
-            return;
-
-        BORDER_SERVICE.reset(lobby.getName());
-    }
-
     public static int getRadius(int size) {
         return size / 2;
     }
 
 
     public static int getMoveBorder(World world) {
+        if (world == null)
+            return 0;
+
         return BORDER_SERVICE.getSize(world.getName());
     }
 }

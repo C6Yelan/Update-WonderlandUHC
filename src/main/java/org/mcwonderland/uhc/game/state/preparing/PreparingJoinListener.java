@@ -9,7 +9,6 @@ import org.mcwonderland.uhc.settings.Messages;
 import org.mcwonderland.uhc.settings.Settings;
 import org.mcwonderland.uhc.settings.spawn.Spawns;
 import org.mcwonderland.uhc.tools.Hotbars;
-import org.mcwonderland.uhc.util.BorderUtil;
 import org.mcwonderland.uhc.util.Chat;
 import org.mcwonderland.uhc.util.PlayerHider;
 import org.mcwonderland.uhc.util.UHCWorldUtils;
@@ -33,7 +32,6 @@ public class PreparingJoinListener extends JoinListener {
 
         player.teleport(UHCWorldUtils.getLobbySpawn());
         player.getWorld().setGameRule(GameRules.LOCATOR_BAR, false);
-        BorderUtil.resetLobbyBorderIfSeparate();
 
         Hotbars.giveLobbyItems(player);
 

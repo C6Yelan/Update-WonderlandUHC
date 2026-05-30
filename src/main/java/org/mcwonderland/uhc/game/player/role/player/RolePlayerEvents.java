@@ -51,7 +51,6 @@ public class RolePlayerEvents implements RoleEventHandler {
 
             if (location == null) {
                 player.teleport(UHCWorldUtils.getLobbySpawn());
-                BorderUtil.resetLobbyBorderIfSeparate();
             } else {
                 player.teleport(location);
                 GameManager.freeze(player);
